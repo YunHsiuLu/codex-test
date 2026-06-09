@@ -1,0 +1,6 @@
+{
+  "_說明": "自動重建教師編號表時的檢查報告。additions 已自動加入 teacher_directory.json；conflicts 不會覆蓋既有資料，請人工確認；missing_codes 是有姓名但未抓到編號的老師。",
+  "additions": {},
+  "conflicts": [],
+  "missing_codes": []
+}

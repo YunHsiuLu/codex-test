@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>物理老師留言呼叫器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; cursor: pointer; background: #eee; border: none; border-radius: 5px; }
+        .tab-btn.active { background: #007bff; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        li { margin-bottom: 10px; list-style: none; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('send')">發送留言</button>
+        <button class="tab-btn" onclick="openTab('admin')">後台數據</button>
+    </div>
+
+    <div id="send" class="tab-content active">
+        <h3>給老師的留言</h3>
+        <input type="text" id="name" placeholder="您的姓名">
+        <input type="text" id="purpose" placeholder="找老師做什麼？">
+        <button onclick="sendMsg()">送出訊息</button>
+    </div>
+
+    <div id="admin" class="tab-content">
+        <div id="login_area">
+            <h3>管理員登入</h3>
+            <input type="password" id="admin_pwd" placeholder="輸入密碼">
+            <button onclick="checkPwd()">解鎖歷史紀錄</button>
+        </div>
+        <div id="history_area" style="display:none;">
+            <h3>待處理留言:</h3>
+            <ul id="active_list">
+                {% for msg in active_msgs %}
+                <li><input type="checkbox" onclick="completeMsg('{{ msg[0] }}')"> [{{ msg[3] }}] <strong>{{ msg[1] }}</strong>: {{ msg[2] }}</li>
+                {% endfor %}
+            </ul>
+            <h3>已完成區:</h3>
+            <ul id="done_list">
+                {% for msg in done_msgs %}
+                <li>[{{ msg[3] }}] {{ msg[1] }}: {{ msg[2] }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        const MY_PASSWORD = "a128"; // 請自行修改密碼
+
+        function openTab(tabName) {
+            // 1. 切換標籤頁樣式
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+
+            // 2. 如果使用者切換離開了「後台數據」頁面，自動重置後台狀態
+            if (tabName !== 'admin') {
+                document.getElementById('admin_pwd').value = ''; // 清空密碼框
+                document.getElementById('login_area').style.display = 'block'; // 顯示登入框
+                document.getElementById('history_area').style.display = 'none'; // 隱藏內容
+            }
+        }
+
+        function checkPwd() {
+            if (document.getElementById('admin_pwd').value === MY_PASSWORD) {
+                document.getElementById('login_area').style.display = 'none';
+                document.getElementById('history_area').style.display = 'block';
+            } else { alert("密碼錯誤"); }
+        }
+
+        function sendMsg() {
+            const name = document.getElementById('name').value;
+            const purpose = document.getElementById('purpose').value;
+            fetch('/send', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: `student_name=${name}&purpose=${purpose}` });
+        }
+
+        function completeMsg(id) {
+            fetch('/complete', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: `id=${id}` });
+        }
+
+        socket.on('new_message', () => { location.reload(); });
+        socket.on('refresh_page', () => { location.reload(); });
+    </script>
+</body>
+</html>

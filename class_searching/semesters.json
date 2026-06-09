@@ -1,0 +1,12 @@
+{
+  "semesters": [
+    {
+      "id": "114-2",
+      "label": "114-2",
+      "source_dir": "114-2課表",
+      "database": "databases/114-2.json",
+      "teacher_count": 75,
+      "class_count": 27
+    }
+  ]
+}

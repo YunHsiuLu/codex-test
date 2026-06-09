@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>全校課表查詢</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="topbar">
+        <div>
+          <h1>全校課表查詢</h1>
+          <p id="sourceLabel"></p>
+        </div>
+        <div class="top-controls">
+          <label class="field compact" for="semesterSelect">
+            <span>學期</span>
+            <select id="semesterSelect"></select>
+          </label>
+          <label class="field" for="teacherSelect">
+            <span>查詢老師</span>
+            <select id="teacherSelect"></select>
+          </label>
+          <label class="field compact" for="domainFilter">
+            <span>代課領域</span>
+            <select id="domainFilter"></select>
+          </label>
+          <div class="segmented" role="group" aria-label="查詢模式">
+            <button id="modeSub" type="button" class="active">代課</button>
+            <button id="modeSwap" type="button">調課</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="layout">
+        <article class="panel timetable-panel">
+          <div class="panel-head">
+            <h2 id="teacherTitle"></h2>
+            <div id="stats" class="stats"></div>
+          </div>
+          <div id="timetable" class="timetable"></div>
+        </article>
+
+        <aside class="panel result-panel">
+          <div class="panel-head result-head">
+            <div>
+              <h2 id="resultTitle"></h2>
+              <p id="selectedSlot" class="muted"></p>
+            </div>
+          </div>
+          <div id="selectedLesson" class="selected-lesson"></div>
+          <div id="results" class="results"></div>
+        </aside>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>拉格朗日雙擺模擬</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="stage-panel" aria-label="雙擺模擬畫布">
+        <div class="stage-header">
+          <div>
+            <h1>拉格朗日雙擺模擬</h1>
+            <p>角度以水平向右為 0 度，逆時針為正。</p>
+          </div>
+          <div class="state-chip" id="stateChip">Paused</div>
+        </div>
+        <canvas id="pendulumCanvas" width="960" height="620"></canvas>
+      </section>
+
+      <aside class="control-panel" aria-label="控制與能量讀值">
+        <section class="panel-section">
+          <h2>初始角度</h2>
+          <label class="control-row" for="angle1">
+            <span>第一擺</span>
+            <input id="angle1" type="range" min="-170" max="170" value="-70" step="1" />
+            <output id="angle1Out" for="angle1">-70°</output>
+          </label>
+          <label class="control-row" for="angle2">
+            <span>第二擺</span>
+            <input id="angle2" type="range" min="-170" max="170" value="-25" step="1" />
+            <output id="angle2Out" for="angle2">-25°</output>
+          </label>
+          <div class="button-grid">
+            <button id="applyBtn" type="button">套用角度</button>
+            <button id="toggleBtn" type="button">開始</button>
+            <button id="resetBtn" type="button">重置</button>
+          </div>
+        </section>
+
+        <section class="panel-section">
+          <h2>能量</h2>
+          <dl class="energy-list">
+            <div>
+              <dt>總能量</dt>
+              <dd id="totalEnergy">0.000 J</dd>
+            </div>
+            <div>
+              <dt>第一擺動能</dt>
+              <dd id="k1">0.000 J</dd>
+            </div>
+            <div>
+              <dt>第一擺位能</dt>
+              <dd id="u1">0.000 J</dd>
+            </div>
+            <div>
+              <dt>第二擺動能</dt>
+              <dd id="k2">0.000 J</dd>
+            </div>
+            <div>
+              <dt>第二擺位能</dt>
+              <dd id="u2">0.000 J</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="panel-section compact">
+          <h2>系統參數</h2>
+          <div class="parameter-grid">
+            <span>m1</span><strong>1.0 kg</strong>
+            <span>m2</span><strong>1.0 kg</strong>
+            <span>L1</span><strong>1.4 m</strong>
+            <span>L2</span><strong>1.2 m</strong>
+            <span>g</span><strong>9.81 m/s²</strong>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <script src="simulation.js"></script>
+  </body>
+</html>

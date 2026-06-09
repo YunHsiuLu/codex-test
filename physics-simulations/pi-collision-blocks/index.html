@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>方塊彈性碰撞與 π</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="stage-panel" aria-label="方塊碰撞模擬畫布">
+        <div class="stage-header">
+          <div>
+            <h1>方塊彈性碰撞與 π</h1>
+            <p>一個牆面、兩個方塊、完全彈性碰撞，碰撞次數會吐出 π 的前幾位。</p>
+          </div>
+          <div class="chip-group">
+            <div class="state-chip" id="stateChip">Ready</div>
+            <div class="state-chip secondary" id="targetChip">π ≈ 3.14</div>
+          </div>
+        </div>
+        <canvas id="collisionCanvas" width="1040" height="620"></canvas>
+      </section>
+
+      <aside class="control-panel" aria-label="控制與碰撞讀值">
+        <section class="panel-section">
+          <h2>小數位數</h2>
+          <label class="control-row" for="digits">
+            <span>π 位數</span>
+            <input id="digits" type="range" min="0" max="5" value="2" step="1" />
+            <output id="digitsOut" for="digits">2</output>
+          </label>
+          <dl class="readout-list compact-list">
+            <div>
+              <dt>重方塊質量</dt>
+              <dd id="massReadout">10,000 kg</dd>
+            </div>
+            <div>
+              <dt>理論目標</dt>
+              <dd id="targetReadout">314</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="panel-section">
+          <h2>運行</h2>
+          <div class="button-grid">
+            <button id="toggleBtn" type="button">開始</button>
+            <button id="stepBtn" type="button">單次碰撞</button>
+            <button id="finishBtn" type="button">算到結束</button>
+            <button id="resetBtn" type="button">重置</button>
+          </div>
+          <label class="control-row" for="speed">
+            <span>速度</span>
+            <input id="speed" type="range" min="1" max="5" value="3" step="1" />
+            <output id="speedOut" for="speed">3x</output>
+          </label>
+        </section>
+
+        <section class="panel-section">
+          <h2>碰撞讀值</h2>
+          <dl class="readout-list">
+            <div>
+              <dt>目前碰撞數</dt>
+              <dd id="collisionCount">0</dd>
+            </div>
+            <div>
+              <dt>顯示成 π</dt>
+              <dd id="piReadout">0.00</dd>
+            </div>
+            <div>
+              <dt>最近碰撞</dt>
+              <dd id="lastEvent">尚未碰撞</dd>
+            </div>
+            <div>
+              <dt>狀態</dt>
+              <dd id="doneReadout">等待開始</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="panel-section compact">
+          <h2>模型</h2>
+          <div class="formula-grid">
+            <span>m</span><strong>1 kg</strong>
+            <span>M</span><strong id="massFormula">100² kg</strong>
+            <span>v<sub>M</sub></span><strong>-1 m/s</strong>
+            <span>碰撞數</span><strong id="formulaCount">⌊π × 10²⌋</strong>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <script src="simulation.js"></script>
+  </body>
+</html>

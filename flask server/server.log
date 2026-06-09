@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/codex test/flask server/server.py", line 64, in <module>
+    socketio.run(app, host='0.0.0.0', port=5001, debug=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/flask_socketio/__init__.py", line 664, in run
+    raise RuntimeError('The Werkzeug web server is not '
+    ...<2 lines>...
+                       'run() method to disable this error.')
+RuntimeError: The Werkzeug web server is not designed to run in production. Pass allow_unsafe_werkzeug=True to the run() method to disable this error.
