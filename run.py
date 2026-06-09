@@ -31,16 +31,58 @@ class Session:
         return f"{self.title} {self.cwd} {self.session_id}".lower()
 
 
+@dataclass
+class TimelineEntry:
+    timestamp: str
+    speaker: str
+    message: str
+
+
 def clean_text(value: str) -> str:
     return " ".join(value.split())
 
 
-def display_time(timestamp: str, path: Path) -> str:
+def format_timestamp(timestamp: str, fallback_path: Path | None = None, seconds: bool = False) -> str:
     try:
         parsed = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
-        return parsed.astimezone().strftime("%Y-%m-%d %H:%M")
+        pattern = "%Y-%m-%d %H:%M:%S" if seconds else "%Y-%m-%d %H:%M"
+        return parsed.astimezone().strftime(pattern)
     except (ValueError, AttributeError):
-        return datetime.fromtimestamp(path.stat().st_mtime).strftime("%Y-%m-%d %H:%M")
+        if fallback_path is None:
+            return "時間不明"
+        return datetime.fromtimestamp(fallback_path.stat().st_mtime).strftime("%Y-%m-%d %H:%M")
+
+
+def load_timeline(path: Path) -> list[TimelineEntry]:
+    entries = []
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                try:
+                    item = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+
+                if item.get("type") != "event_msg":
+                    continue
+                payload = item.get("payload", {})
+                event_type = payload.get("type")
+                if event_type not in ("user_message", "agent_message"):
+                    continue
+
+                message = clean_text(payload.get("message", ""))
+                if not message:
+                    continue
+                entries.append(
+                    TimelineEntry(
+                        timestamp=format_timestamp(item.get("timestamp", ""), seconds=True),
+                        speaker="你" if event_type == "user_message" else "Codex",
+                        message=message,
+                    )
+                )
+    except (OSError, UnicodeError):
+        return []
+    return entries
 
 
 def parse_session(path: Path, archived: bool = False) -> Session | None:
@@ -96,7 +138,7 @@ def parse_session(path: Path, archived: bool = False) -> Session | None:
         session_id=session_id,
         title=title,
         cwd=metadata.get("cwd", ""),
-        timestamp=display_time(metadata.get("timestamp", ""), path),
+        timestamp=format_timestamp(metadata.get("timestamp", ""), path),
         source=str(metadata.get("source", "")),
         path=path,
         archived=archived,
@@ -178,6 +220,71 @@ class HistoryUI:
             error = clean_text(result.stderr or result.stdout)
             self.message = f"{verb}失敗：{shorten(error, 70)}"
 
+    def show_timeline(self, session: Session) -> None:
+        entries = load_timeline(session.path)
+        offset = 0
+
+        while True:
+            self.screen.erase()
+            height, width = self.screen.getmaxyx()
+            if height < 8 or width < 50:
+                self.screen.addstr(0, 0, "終端視窗太小，請放大至至少 50x8。")
+                self.screen.refresh()
+                key = self.screen.getch()
+                if key in (ord("q"), 27, ord("t"), curses.KEY_BACKSPACE, 127):
+                    return
+                continue
+
+            self.screen.attron(curses.A_BOLD)
+            self.screen.addnstr(0, 0, "對話時間軸", width - 1)
+            self.screen.attroff(curses.A_BOLD)
+            self.screen.addnstr(1, 0, shorten(session.title, width - 1), width - 1)
+            self.screen.hline(2, 0, curses.ACS_HLINE, width - 1)
+
+            lines = []
+            content_width = max(10, width - 4)
+            for entry in entries:
+                lines.append((f"{entry.timestamp}  {entry.speaker}", curses.A_BOLD))
+                wrapped = textwrap.wrap(
+                    entry.message,
+                    width=content_width,
+                    replace_whitespace=True,
+                    drop_whitespace=True,
+                ) or [""]
+                lines.extend((f"  {line}", curses.A_NORMAL) for line in wrapped)
+                lines.append(("", curses.A_NORMAL))
+
+            visible_height = max(1, height - 5)
+            max_offset = max(0, len(lines) - visible_height)
+            offset = min(offset, max_offset)
+            if not lines:
+                self.screen.addnstr(4, 2, "此工作階段沒有可顯示的對話訊息。", width - 4)
+            else:
+                for row, (line, attribute) in enumerate(
+                    lines[offset : offset + visible_height], start=3
+                ):
+                    self.screen.addnstr(row, 0, line, width - 1, attribute)
+
+            status = f"訊息 {len(entries)} 則｜↑↓ 捲動｜PgUp/PgDn 翻頁｜t／q／Esc 返回"
+            self.screen.addnstr(height - 1, 0, status, width - 1)
+            self.screen.refresh()
+
+            key = self.screen.getch()
+            if key in (ord("q"), 27, ord("t"), curses.KEY_BACKSPACE, 127):
+                return
+            if key in (curses.KEY_UP, ord("k")):
+                offset = max(0, offset - 1)
+            elif key in (curses.KEY_DOWN, ord("j")):
+                offset = min(max_offset, offset + 1)
+            elif key == curses.KEY_PPAGE:
+                offset = max(0, offset - visible_height)
+            elif key == curses.KEY_NPAGE:
+                offset = min(max_offset, offset + visible_height)
+            elif key == curses.KEY_HOME:
+                offset = 0
+            elif key == curses.KEY_END:
+                offset = max_offset
+
     def draw(self) -> None:
         self.screen.erase()
         height, width = self.screen.getmaxyx()
@@ -225,9 +332,9 @@ class HistoryUI:
             self.screen.addnstr(detail_row + 2, 0, f"ID：{session.session_id}", width - 1)
 
         if self.show_archived:
-            help_text = "↑↓ 選擇｜u 還原｜a 返回歷史｜/ 搜尋｜q 離開"
+            help_text = "↑↓ 選擇｜t 時間軸｜u 還原｜a 返回歷史｜/ 搜尋｜q 離開"
         else:
-            help_text = "Enter 恢復｜n 新對話｜d 封存｜a 封存紀錄｜/ 搜尋｜q 離開"
+            help_text = "Enter 恢復｜t 時間軸｜n 新對話｜d 封存｜a 封存｜/ 搜尋｜q 離開"
         footer = self.message or help_text
         self.screen.addnstr(height - 1, 0, footer, width - 1)
         self.screen.refresh()
@@ -259,6 +366,8 @@ class HistoryUI:
                 self.manage_session("archive", self.filtered[self.selected])
             elif key == ord("u") and self.filtered and self.show_archived:
                 self.manage_session("unarchive", self.filtered[self.selected])
+            elif key == ord("t") and self.filtered:
+                self.show_timeline(self.filtered[self.selected])
             elif key == ord("a"):
                 self.show_archived = not self.show_archived
                 self.selected = 0
