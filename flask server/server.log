@@ -7,3 +7,24 @@ Traceback (most recent call last):
     ...<2 lines>...
                        'run() method to disable this error.')
 RuntimeError: The Werkzeug web server is not designed to run in production. Pass allow_unsafe_werkzeug=True to the run() method to disable this error.
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+ * Serving Flask app 'server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.240.63.247:5001
+[33mPress CTRL+C to quit[0m
+10.240.61.70 - - [10/Jun/2026 08:27:38] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:27:39] "GET /socket.io/?EIO=4&transport=polling&t=PwkxNZU HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:27:39] "POST /socket.io/?EIO=4&transport=polling&t=PwkxNbe&sid=9oPYkftY28CY5hIyAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:27:39] "GET /socket.io/?EIO=4&transport=polling&t=PwkxNbg&sid=9oPYkftY28CY5hIyAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:27:39] "GET /socket.io/?EIO=4&transport=polling&t=PwkxNcI&sid=9oPYkftY28CY5hIyAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:27:51] "POST /send HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:28:01] "POST /complete HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:28:01] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:28:01] "GET /socket.io/?EIO=4&transport=websocket&sid=9oPYkftY28CY5hIyAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:28:01] "GET /socket.io/?EIO=4&transport=polling&t=PwkxS-l HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:28:01] "POST /socket.io/?EIO=4&transport=polling&t=PwkxT0E&sid=0zjo4AhW6pv27DJXAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:28:01] "GET /socket.io/?EIO=4&transport=polling&t=PwkxT0F&sid=0zjo4AhW6pv27DJXAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [10/Jun/2026 08:28:01] "GET /socket.io/?EIO=4&transport=polling&t=PwkxT1I&sid=0zjo4AhW6pv27DJXAAAC HTTP/1.1" 200 -
