@@ -176,14 +176,47 @@ class HistoryUI:
         self.show_archived = False
         self.message = ""
         self.action: tuple[str, Session | None] | None = None
+        self.timeline_cache: dict[Path, list[TimelineEntry]] = {}
 
     def refresh(self) -> None:
         self.sessions = load_sessions(self.codex_home, self.show_archived)
+        self.timeline_cache.clear()
         query = self.query.lower()
         self.filtered = [
             session for session in self.sessions if not query or query in session.searchable
         ]
         self.selected = min(self.selected, max(0, len(self.filtered) - 1))
+
+    def get_timeline(self, session: Session) -> list[TimelineEntry]:
+        if session.path not in self.timeline_cache:
+            self.timeline_cache[session.path] = load_timeline(session.path)
+        return self.timeline_cache[session.path]
+
+    def preview_lines(self, session: Session, width: int, height: int) -> list[str]:
+        if height <= 0:
+            return []
+
+        entries = self.get_timeline(session)
+        if not entries:
+            return ["（沒有可預覽的對話內容）"]
+
+        lines = []
+        content_width = max(10, width - 4)
+        for entry in entries[-3:]:
+            prefix = f"{entry.speaker}："
+            wrapped = textwrap.wrap(
+                entry.message,
+                width=max(1, content_width - len(prefix)),
+                replace_whitespace=True,
+                drop_whitespace=True,
+            ) or [""]
+            lines.append(f"{prefix}{wrapped[0]}")
+            lines.extend(f"  {line}" for line in wrapped[1:])
+
+        if len(lines) > height:
+            lines = lines[-height:]
+            lines[0] = f"…{lines[0]}" if lines[0] else "…"
+        return lines
 
     def prompt(self, label: str) -> str:
         height, width = self.screen.getmaxyx()
@@ -221,7 +254,7 @@ class HistoryUI:
             self.message = f"{verb}失敗：{shorten(error, 70)}"
 
     def show_timeline(self, session: Session) -> None:
-        entries = load_timeline(session.path)
+        entries = self.get_timeline(session)
         offset = 0
 
         while True:
@@ -304,7 +337,9 @@ class HistoryUI:
         self.screen.hline(2, 0, curses.ACS_HLINE, width - 1)
 
         list_top = 3
-        list_height = max(1, height - 8)
+        detail_height = min(7, max(4, height // 3))
+        detail_row = height - detail_height - 1
+        list_height = max(1, detail_row - list_top)
         if self.selected < self.offset:
             self.offset = self.selected
         if self.selected >= self.offset + list_height:
@@ -324,12 +359,18 @@ class HistoryUI:
                 attribute = curses.A_REVERSE if index == self.selected else curses.A_NORMAL
                 self.screen.addnstr(row, 0, line.ljust(width - 1), width - 1, attribute)
 
-        detail_row = height - 5
         self.screen.hline(detail_row, 0, curses.ACS_HLINE, width - 1)
         if self.filtered:
             session = self.filtered[self.selected]
-            self.screen.addnstr(detail_row + 1, 0, f"目錄：{session.cwd}", width - 1)
-            self.screen.addnstr(detail_row + 2, 0, f"ID：{session.session_id}", width - 1)
+            details = f"目錄：{session.cwd}｜ID：{session.session_id}"
+            self.screen.addnstr(detail_row + 1, 0, details, width - 1)
+            self.screen.addnstr(detail_row + 2, 0, "預覽（最近對話）：", width - 1, curses.A_BOLD)
+            preview_height = max(0, height - detail_row - 4)
+            for row, line in enumerate(
+                self.preview_lines(session, width, preview_height),
+                start=detail_row + 3,
+            ):
+                self.screen.addnstr(row, 2, line, width - 3)
 
         if self.show_archived:
             help_text = "↑↓ 選擇｜t 時間軸｜u 還原｜a 返回歷史｜/ 搜尋｜q 離開"
