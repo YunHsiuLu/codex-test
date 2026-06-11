@@ -63,3 +63,25 @@ Werkzeug appears to be used in a production deployment. Consider switching to a 
 10.240.61.70 - - [10/Jun/2026 16:06:48] "GET /socket.io/?EIO=4&transport=polling&t=PwmaTVs&sid=awv4IB9gb58W66S3AAAI HTTP/1.1" 200 -
 10.240.61.70 - - [10/Jun/2026 16:06:48] "GET /socket.io/?EIO=4&transport=polling&t=PwmaTWU&sid=awv4IB9gb58W66S3AAAI HTTP/1.1" 200 -
 10.240.61.70 - - [10/Jun/2026 16:30:58] "GET /socket.io/?EIO=4&transport=websocket&sid=awv4IB9gb58W66S3AAAI HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 07:52:39] "GET /socket.io/?EIO=4&transport=polling&t=Pwpyygp HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 07:52:39] "POST /socket.io/?EIO=4&transport=polling&t=Pwpyyhk&sid=06ss_3JVijPGg-S2AAAK HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 07:52:39] "GET /socket.io/?EIO=4&transport=polling&t=Pwpyyhl&sid=06ss_3JVijPGg-S2AAAK HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 07:52:39] "GET /socket.io/?EIO=4&transport=polling&t=PwpyyiO&sid=06ss_3JVijPGg-S2AAAK HTTP/1.1" 200 -
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+ * Serving Flask app 'server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.240.63.247:5001
+[33mPress CTRL+C to quit[0m
+10.240.61.70 - - [11/Jun/2026 09:06:46] "GET /socket.io/?EIO=4&transport=polling&t=PwqDwLi HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 09:06:46] "POST /socket.io/?EIO=4&transport=polling&t=PwqDwML&sid=B5qOOiYO5HDHy6LbAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 09:06:46] "GET /socket.io/?EIO=4&transport=polling&t=PwqDwMM&sid=B5qOOiYO5HDHy6LbAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 09:06:46] "GET /socket.io/?EIO=4&transport=polling&t=PwqDwNf&sid=B5qOOiYO5HDHy6LbAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 09:06:48] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 09:06:48] "GET /socket.io/?EIO=4&transport=websocket&sid=B5qOOiYO5HDHy6LbAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 09:06:48] "GET /socket.io/?EIO=4&transport=polling&t=PwqDwvP HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 09:06:48] "POST /socket.io/?EIO=4&transport=polling&t=PwqDwvl&sid=oxzEjpNAo21uCXo1AAAC HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 09:06:48] "GET /socket.io/?EIO=4&transport=polling&t=PwqDwvm&sid=oxzEjpNAo21uCXo1AAAC HTTP/1.1" 200 -
+10.240.61.70 - - [11/Jun/2026 09:06:48] "GET /socket.io/?EIO=4&transport=polling&t=PwqDwx1&sid=oxzEjpNAo21uCXo1AAAC HTTP/1.1" 200 -
