@@ -60,7 +60,7 @@ case "${1:-}" in
             tmux split-window \
                 -d \
                 -h \
-                -l 30% \
+                -l 35% \
                 -t "$TMUX_PANE" \
                 -P \
                 -F '#{pane_id}' \

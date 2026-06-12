@@ -224,16 +224,21 @@ class HistoryUI:
         curses.curs_set(1)
         self.screen.move(height - 1, 0)
         self.screen.clrtoeol()
-        self.screen.addnstr(height - 1, 0, label, width - 1)
+        self.screen.addnstr(height - 1, 0, label, max(1, width - 2))
+        input_row, input_column = self.screen.getyx()
         try:
-            value = self.screen.getstr(height - 1, len(label), max(1, width - len(label) - 1))
+            value = self.screen.getstr(
+                input_row,
+                input_column,
+                max(1, width - input_column - 1),
+            )
             return value.decode("utf-8", errors="replace")
         finally:
             curses.noecho()
             curses.curs_set(0)
 
     def confirm(self, label: str) -> bool:
-        return self.prompt(f"{label}（輸入 y 確認）：").strip().lower() == "y"
+        return self.prompt(f"{label}（輸入 y 確認；其餘按鍵取消）：").strip().lower() == "y"
 
     def manage_session(self, command: str, session: Session) -> None:
         verb = "還原" if command == "unarchive" else "封存"
@@ -373,9 +378,9 @@ class HistoryUI:
                 self.screen.addnstr(row, 2, line, width - 3)
 
         if self.show_archived:
-            help_text = "↑↓ 選擇｜t 時間軸｜u 還原｜a 返回歷史｜/ 搜尋｜q 離開"
+            help_text = "↑↓ 選擇｜t 時間軸｜u 還原｜a 返回歷史對話｜/ 搜尋｜q 離開"
         else:
-            help_text = "Enter 恢復｜t 時間軸｜n 新對話｜d 封存｜a 封存｜/ 搜尋｜q 離開"
+            help_text = "Enter 恢復｜t 時間軸｜n 新對話｜d 封存｜a 封存紀錄｜/ 搜尋｜q 離開"
         footer = self.message or help_text
         self.screen.addnstr(height - 1, 0, footer, width - 1)
         self.screen.refresh()

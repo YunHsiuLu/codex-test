@@ -130,6 +130,17 @@ def clamp_view(
     return selected, offset
 
 
+def move_selection(
+    selected: int,
+    offset: int,
+    delta: int,
+    item_count: int,
+    visible_rows: int,
+) -> tuple[int, int]:
+    selected += delta
+    return clamp_view(selected, offset, item_count, visible_rows)
+
+
 def draw(
     screen: curses.window,
     root: Path,
@@ -255,17 +266,27 @@ def run(screen: curses.window, window_id: str) -> None:
         if key in (ord("q"), ord("Q")):
             return
         if key in (curses.KEY_UP, ord("k")):
-            selected -= 1
+            selected, offset = move_selection(
+                selected, offset, -1, len(entries), visible_rows
+            )
         elif key in (curses.KEY_DOWN, ord("j")):
-            selected += 1
+            selected, offset = move_selection(
+                selected, offset, 1, len(entries), visible_rows
+            )
         elif key == curses.KEY_PPAGE:
-            selected -= visible_rows
+            selected, offset = move_selection(
+                selected, offset, -visible_rows, len(entries), visible_rows
+            )
         elif key == curses.KEY_NPAGE:
-            selected += visible_rows
+            selected, offset = move_selection(
+                selected, offset, visible_rows, len(entries), visible_rows
+            )
         elif key in (curses.KEY_HOME, ord("g")):
-            selected = 0
+            selected, offset = clamp_view(0, offset, len(entries), visible_rows)
         elif key in (curses.KEY_END, ord("G")):
-            selected = len(entries) - 1
+            selected, offset = clamp_view(
+                len(entries) - 1, offset, len(entries), visible_rows
+            )
         elif key in (curses.KEY_ENTER, 10, 13, curses.KEY_RIGHT, ord("l")):
             new_root = enter_directory(window_id, entries[selected])
             if new_root is not None:
@@ -300,11 +321,13 @@ def run(screen: curses.window, window_id: str) -> None:
                 continue
 
             if state & curses.BUTTON4_PRESSED:
-                selected -= 3
-                offset -= 3
+                selected, offset = move_selection(
+                    selected, offset, -3, len(entries), visible_rows
+                )
             elif state & BUTTON5_PRESSED:
-                selected += 3
-                offset += 3
+                selected, offset = move_selection(
+                    selected, offset, 3, len(entries), visible_rows
+                )
             elif mouse_x >= 0 and mouse_y >= 3:
                 clicked = offset + mouse_y - 3
                 if 0 <= clicked < len(entries):
