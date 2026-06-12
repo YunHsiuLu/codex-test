@@ -10,6 +10,11 @@ shell_quote() {
     printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"
 }
 
+tree_pane_in_window() {
+    tmux list-panes -t "$1" -F '#{pane_id}:#{@tmux_tree}' |
+        awk -F: '$2 == "1" { print $1; exit }'
+}
+
 if [ -z "${TMUX:-}" ]; then
     printf '%s\n' "tmux-help：此指令只能在 tmux 工作階段中使用。" >&2
     printf '%s\n' "請先執行 tmux，再重新輸入 tmux-help。" >&2
@@ -44,10 +49,16 @@ SCRIPT_COMMAND="$(shell_quote "$0") --viewer"
 
 case "${1:-}" in
     "")
+        WINDOW_ID=$(tmux display-message -p -t "$TMUX_PANE" '#{window_id}')
+        TREE_PANE=$(tree_pane_in_window "$WINDOW_ID")
+        TREE_WIDTH=
+        if [ -n "$TREE_PANE" ]; then
+            TREE_WIDTH=$(tmux display-message -p -t "$TREE_PANE" '#{pane_width}')
+        fi
+
         GUIDE_PANE=$(
             tmux split-window \
                 -d \
-                -f \
                 -h \
                 -l 30% \
                 -t "$TMUX_PANE" \
@@ -55,6 +66,9 @@ case "${1:-}" in
                 -F '#{pane_id}' \
                 "$SCRIPT_COMMAND"
         )
+        if [ -n "$TREE_PANE" ] && [ -n "$TREE_WIDTH" ]; then
+            tmux resize-pane -t "$TREE_PANE" -x "$TREE_WIDTH"
+        fi
         tmux select-pane -t "$GUIDE_PANE" -T 'tmux-help'
         tmux set-option -p -t "$GUIDE_PANE" @tmux_help 1
         ;;

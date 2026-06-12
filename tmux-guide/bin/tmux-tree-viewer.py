@@ -181,6 +181,32 @@ def enter_directory(
     return root
 
 
+def preview_file(entry: Entry) -> None:
+    if entry.is_directory or entry.name == "..":
+        return
+    if not entry.path.is_file():
+        return
+
+    subprocess.run(
+        [
+            "tmux",
+            "display-popup",
+            "-E",
+            "-w",
+            "80%",
+            "-h",
+            "80%",
+            "-T",
+            f" Preview: {entry.name} ",
+            "less",
+            "-R",
+            "--",
+            str(entry.path),
+        ],
+        check=False,
+    )
+
+
 def run(screen: curses.window, window_id: str) -> None:
     curses.curs_set(0)
     curses.use_default_colors()
@@ -256,6 +282,8 @@ def run(screen: curses.window, window_id: str) -> None:
                 entries = directory_entries(root)
                 selected = 0
                 offset = 0
+        elif key == ord(" "):
+            preview_file(entries[selected])
         elif key in (ord("r"), ord("R")):
             try:
                 root = tracked_root(window_id, root, force=True)

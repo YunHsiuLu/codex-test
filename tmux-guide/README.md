@@ -117,6 +117,7 @@ set -g mouse on
 | 雙擊資料夾、`Enter`、`→`、`l` | 進入資料夾 |
 | 雙擊 `..`、`←`、`Backspace`、`h` | 返回上一層 |
 | `r` | 恢復追蹤目前 split pane 的工作目錄 |
+| `Space` | 預覽目前選取檔案 |
 | 滑鼠滾輪、`Page Up`／`Page Down` | 移動清單 |
 | `g`／`G` | 跳至開頭／結尾 |
 | `q` | 關閉檔案樹，可用 `Prefix F` 重建 |

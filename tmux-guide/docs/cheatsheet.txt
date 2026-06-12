@@ -83,7 +83,8 @@ cd 路徑                      切換工作目錄後，檔案樹會自動更新
 滑鼠單擊／↑／↓               選取項目
 雙擊資料夾／Enter            進入資料夾
 雙擊 ..／←／Backspace        返回上一層
-r                            恢復追蹤目前 split pane 的工作目錄
+r／R                         重新追蹤目前 split pane
+Space                        預覽檔案內容
 滑鼠滾輪                    上下移動清單
 Page Up／Page Down           整頁捲動
 g／G                         跳到開頭／結尾
