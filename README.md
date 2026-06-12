@@ -1,6 +1,12 @@
-# 程式練習工作區
+# Codex CLI的練習區
 
 此工作區收錄 Codex CLI 輔助工具、校務應用、程式競賽、遊戲、物理模擬，以及 ManimGL 原始碼。
+
+## tmux 簡介
+
+tmux 是一個終端機 multiplexer，可以在同一個 terminal 裡同時管理多個 session、window 與 pane。它的核心價值是把長時間執行的工作分開管理，讓你可以隨時 detach、attach，並在同一個畫面內切換不同工作內容。
+
+這個工作區裡的 `tmux-guide/` 就是把這個概念延伸到實際使用情境：左側常駐 FILE TREE，右側開啟 `tmux-help` 速查，讓你在操作原本工作窗格時，仍能同步查看指令與檔案結構。
 
 ## 目錄結構
 
