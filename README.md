@@ -119,7 +119,7 @@ python3 games/snake.py
 
 ### `tmux-guide/`：tmux 中文指令速查工具
 
-在 tmux 中以 `tmux-help` 或 `Prefix H` 於右側開啟完整高度的中文速查窗格。每個 tmux 視窗最左側也會自動建立可捲動檔案樹，追蹤目前作用中 pane 的工作目錄。安裝程式也會啟用 tmux 滑鼠操作。
+在 tmux 中以 `tmux-help` 或 `Prefix H` 於右側開啟完整高度的中文速查窗格。開啟時會保留同一個視窗左側的 FILE TREE 寬度，不會把樹狀窗格壓縮。每個 tmux 視窗最左側也會自動建立可捲動檔案樹，追蹤目前作用中 pane 的工作目錄。安裝程式也會啟用 tmux 滑鼠操作。
 
 ```bash
 cd tmux-guide
