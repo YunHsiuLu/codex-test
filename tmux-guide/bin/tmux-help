@@ -1,0 +1,87 @@
+#!/bin/sh
+
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+PROJECT_HELP_FILE="$SCRIPT_DIR/../docs/cheatsheet.txt"
+INSTALLED_HELP_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/tmux-guide/cheatsheet.txt"
+
+shell_quote() {
+    printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"
+}
+
+if [ -z "${TMUX:-}" ]; then
+    printf '%s\n' "tmux-help：此指令只能在 tmux 工作階段中使用。" >&2
+    printf '%s\n' "請先執行 tmux，再重新輸入 tmux-help。" >&2
+    exit 1
+fi
+
+if [ -f "$PROJECT_HELP_FILE" ]; then
+    HELP_FILE=$PROJECT_HELP_FILE
+elif [ -f "$INSTALLED_HELP_FILE" ]; then
+    HELP_FILE=$INSTALLED_HELP_FILE
+else
+    printf '%s\n' "tmux-help：找不到 cheatsheet.txt。" >&2
+    exit 1
+fi
+
+if [ "${1:-}" = "--viewer" ]; then
+    exec less -R -M "$HELP_FILE"
+fi
+
+if [ -z "${TMUX_PANE:-}" ]; then
+    printf '%s\n' "tmux-help：無法判斷目前的 tmux 窗格。" >&2
+    exit 1
+fi
+
+if tmux list-panes -t "$TMUX_PANE" -F '#{@tmux_help}' | grep -Fxq '1'; then
+    tmux display-message -t "$TMUX_PANE" \
+        'tmux-help：目前視窗已經開啟說明，未重複建立。'
+    exit 0
+fi
+
+SCRIPT_COMMAND="$(shell_quote "$0") --viewer"
+
+case "${1:-}" in
+    "")
+        GUIDE_PANE=$(
+            tmux split-window \
+                -d \
+                -f \
+                -h \
+                -l 30% \
+                -t "$TMUX_PANE" \
+                -P \
+                -F '#{pane_id}' \
+                "$SCRIPT_COMMAND"
+        )
+        tmux select-pane -t "$GUIDE_PANE" -T 'tmux-help'
+        tmux set-option -p -t "$GUIDE_PANE" @tmux_help 1
+        ;;
+    --popup)
+        tmux display-popup \
+            -E \
+            -w 42% \
+            -h 70% \
+            -x R \
+            -y 0 \
+            -T ' tmux-help ' \
+            "$SCRIPT_COMMAND"
+        ;;
+    --window)
+        SESSION_TARGET=$(tmux display-message -p -t "$TMUX_PANE" '#{session_id}')
+        GUIDE_PANE=$(
+            tmux new-window \
+                -t "${SESSION_TARGET}:" \
+                -n "tmux-help" \
+                -P \
+                -F '#{pane_id}' \
+                "$SCRIPT_COMMAND"
+        )
+        tmux set-option -p -t "$GUIDE_PANE" @tmux_help 1
+        ;;
+    *)
+        printf '%s\n' "用法：tmux-help [--popup|--window]" >&2
+        exit 2
+        ;;
+esac

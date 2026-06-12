@@ -1,0 +1,110 @@
+#!/bin/sh
+
+set -eu
+
+TREE_WIDTH_PERCENT=18
+
+shell_quote() {
+    printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"
+}
+
+get_window_id() {
+    tmux display-message -p -t "$1" '#{window_id}'
+}
+
+tree_exists() {
+    tmux list-panes -t "$1" -F '#{@tmux_tree}' | grep -Fxq '1'
+}
+
+ensure_tree() {
+    TARGET=${1:-${TMUX_PANE:-}}
+
+    if [ -z "$TARGET" ]; then
+        return 0
+    fi
+
+    WINDOW_ID=$(get_window_id "$TARGET")
+    if tree_exists "$WINDOW_ID"; then
+        return 0
+    fi
+
+    START_PATH=$(tmux display-message -p -t "$TARGET" '#{pane_current_path}')
+    tmux set-option -w -t "$WINDOW_ID" @tmux_tree_root "$START_PATH"
+
+    VIEWER_COMMAND="$(shell_quote "$0") --viewer $(shell_quote "$WINDOW_ID")"
+    TREE_PANE=$(
+        tmux split-window \
+            -b \
+            -d \
+            -f \
+            -h \
+            -l "${TREE_WIDTH_PERCENT}%" \
+            -t "$TARGET" \
+            -c "$START_PATH" \
+            -P \
+            -F '#{pane_id}' \
+            "$VIEWER_COMMAND"
+    )
+
+    tmux select-pane -t "$TREE_PANE" -T 'tmux-tree'
+    tmux set-option -p -t "$TREE_PANE" @tmux_tree 1
+}
+
+ensure_all_trees() {
+    tmux list-windows -a -F '#{window_id}:#{pane_id}' |
+        while IFS=: read -r WINDOW_ID PANE_ID; do
+            if ! tree_exists "$WINDOW_ID"; then
+                ensure_tree "$PANE_ID"
+            fi
+        done
+}
+
+rebuild_all_trees() {
+    tmux list-windows -a -F '#{window_id}' | sort -u |
+        while IFS= read -r WINDOW_ID; do
+            tmux list-panes -t "$WINDOW_ID" -F '#{pane_id}:#{@tmux_tree}' |
+                awk -F: '$2 == "1" { print $1 }' |
+                while IFS= read -r TREE_PANE; do
+                    tmux kill-pane -t "$TREE_PANE"
+                done
+
+            TARGET=$(
+                tmux list-panes -t "$WINDOW_ID" -F '#{pane_id}' |
+                    sed -n '1p'
+            )
+            if [ -n "$TARGET" ]; then
+                ensure_tree "$TARGET"
+            fi
+        done
+}
+
+viewer_loop() {
+    WINDOW_ID=$1
+    SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+    exec python3 "$SCRIPT_DIR/tmux-tree-viewer.py" "$WINDOW_ID"
+}
+
+if [ -z "${TMUX:-}" ]; then
+    printf '%s\n' "tmux-tree：此指令只能在 tmux 工作階段中使用。" >&2
+    exit 1
+fi
+
+case "${1:-}" in
+    --ensure)
+        ensure_tree "${2:-${TMUX_PANE:-}}"
+        ;;
+    --ensure-all)
+        ensure_all_trees
+        ;;
+    --rebuild-all)
+        rebuild_all_trees
+        ;;
+    --viewer)
+        viewer_loop "$2"
+        ;;
+    *)
+        printf '%s\n' \
+            "用法：tmux-tree --ensure [pane] | --ensure-all | --rebuild-all" >&2
+        exit 2
+        ;;
+esac

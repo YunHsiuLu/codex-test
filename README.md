@@ -13,7 +13,8 @@
 ├── flask server/          # 物理老師留言呼叫器
 ├── games/                 # 小遊戲
 ├── manim/                 # ManimGL 原始碼
-└── physics-simulations/   # 瀏覽器物理模擬
+├── physics-simulations/   # 瀏覽器物理模擬
+└── tmux-guide/            # tmux 中文指令速查工具
 ```
 
 ## 專案說明
@@ -115,6 +116,17 @@ Tkinter 貪食蛇遊戲。
 ```bash
 python3 games/snake.py
 ```
+
+### `tmux-guide/`：tmux 中文指令速查工具
+
+在 tmux 中以 `tmux-help` 或 `Prefix H` 於右側開啟完整高度的中文速查窗格。每個 tmux 視窗最左側也會自動建立可捲動檔案樹，追蹤目前作用中 pane 的工作目錄。安裝程式也會啟用 tmux 滑鼠操作。
+
+```bash
+cd tmux-guide
+./install.sh
+```
+
+完整說明請參閱 [`tmux-guide/README.md`](tmux-guide/README.md)。
 
 ### `physics-simulations/`：物理模擬
 
