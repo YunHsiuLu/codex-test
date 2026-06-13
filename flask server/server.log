@@ -204,3 +204,4 @@ Werkzeug appears to be used in a production deployment. Consider switching to a 
 10.240.61.70 - - [12/Jun/2026 15:11:40] "GET /socket.io/?EIO=4&transport=polling&t=Pwwh1JP&sid=dDlIzu9yYxiS5d94AABX HTTP/1.1" 200 -
 10.240.61.70 - - [12/Jun/2026 15:11:41] "GET /socket.io/?EIO=4&transport=polling&t=Pwwgv7e HTTP/1.1" 200 -
 10.240.61.70 - - [12/Jun/2026 15:11:47] "GET /socket.io/?EIO=4&transport=websocket&sid=y80Y7zTHQIGBA5kTAABV HTTP/1.1" 200 -
+10.240.61.70 - - [12/Jun/2026 17:01:44] "GET /socket.io/?EIO=4&transport=websocket&sid=dDlIzu9yYxiS5d94AABX HTTP/1.1" 200 -

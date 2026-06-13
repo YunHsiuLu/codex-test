@@ -165,6 +165,9 @@ def shorten(value: str, width: int) -> str:
 
 
 class HistoryUI:
+    MIN_WIDTH = 20
+    MIN_HEIGHT = 4
+
     def __init__(self, screen: curses.window, codex_home: Path):
         self.screen = screen
         self.codex_home = codex_home
@@ -265,24 +268,39 @@ class HistoryUI:
         while True:
             self.screen.erase()
             height, width = self.screen.getmaxyx()
-            if height < 8 or width < 50:
-                self.screen.addstr(0, 0, "終端視窗太小，請放大至至少 50x8。")
+            if height < self.MIN_HEIGHT or width < self.MIN_WIDTH:
+                self.screen.addnstr(
+                    0,
+                    0,
+                    f"視窗太小（至少 {self.MIN_WIDTH}x{self.MIN_HEIGHT}）",
+                    max(1, width - 1),
+                )
                 self.screen.refresh()
                 key = self.screen.getch()
                 if key in (27, ord("t"), curses.KEY_BACKSPACE, 127):
                     return
                 continue
 
+            full_layout = height >= 8 and width >= 50
+            content_top = 3 if full_layout else 1
+            footer_row = height - 1
+
             self.screen.attron(curses.A_BOLD)
             self.screen.addnstr(0, 0, "對話時間軸", width - 1)
             self.screen.attroff(curses.A_BOLD)
-            self.screen.addnstr(1, 0, shorten(session.title, width - 1), width - 1)
-            self.screen.hline(2, 0, curses.ACS_HLINE, width - 1)
+            if full_layout:
+                self.screen.addnstr(1, 0, shorten(session.title, width - 1), width - 1)
+                self.screen.hline(2, 0, curses.ACS_HLINE, width - 1)
 
             lines = []
-            content_width = max(10, width - 4)
+            content_width = max(1, width - 4)
             for entry in entries:
-                lines.append((f"{entry.timestamp}  {entry.speaker}", curses.A_BOLD))
+                heading = (
+                    f"{entry.timestamp}  {entry.speaker}"
+                    if width >= 30
+                    else f"{entry.speaker} {entry.timestamp[11:]}"
+                )
+                lines.append((heading, curses.A_BOLD))
                 wrapped = textwrap.wrap(
                     entry.message,
                     width=content_width,
@@ -292,19 +310,28 @@ class HistoryUI:
                 lines.extend((f"  {line}", curses.A_NORMAL) for line in wrapped)
                 lines.append(("", curses.A_NORMAL))
 
-            visible_height = max(1, height - 5)
+            visible_height = max(1, footer_row - content_top)
             max_offset = max(0, len(lines) - visible_height)
             offset = min(offset, max_offset)
             if not lines:
-                self.screen.addnstr(4, 2, "此工作階段沒有可顯示的對話訊息。", width - 4)
+                self.screen.addnstr(
+                    content_top,
+                    0,
+                    "沒有可顯示的對話訊息。",
+                    width - 1,
+                )
             else:
                 for row, (line, attribute) in enumerate(
-                    lines[offset : offset + visible_height], start=3
+                    lines[offset : offset + visible_height], start=content_top
                 ):
                     self.screen.addnstr(row, 0, line, width - 1, attribute)
 
-            status = f"訊息 {len(entries)} 則｜↑↓ 捲動｜PgUp/PgDn 翻頁｜t / Esc 返回"
-            self.screen.addnstr(height - 1, 0, status, width - 1)
+            status = (
+                f"訊息 {len(entries)} 則｜↑↓ 捲動｜PgUp/PgDn 翻頁｜t / Esc 返回"
+                if width >= 50
+                else f"{len(entries)} 則｜↑↓｜Esc 返回"
+            )
+            self.screen.addnstr(footer_row, 0, status, width - 1)
             self.screen.refresh()
 
             key = self.screen.getch()
@@ -326,8 +353,13 @@ class HistoryUI:
     def draw(self) -> None:
         self.screen.erase()
         height, width = self.screen.getmaxyx()
-        if height < 10 or width < 50:
-            self.screen.addstr(0, 0, "終端視窗太小，請放大至至少 50x10。")
+        if height < self.MIN_HEIGHT or width < self.MIN_WIDTH:
+            self.screen.addnstr(
+                0,
+                0,
+                f"視窗太小（至少 {self.MIN_WIDTH}x{self.MIN_HEIGHT}）",
+                max(1, width - 1),
+            )
             self.screen.refresh()
             return
 
@@ -335,16 +367,26 @@ class HistoryUI:
         self.screen.attron(curses.A_BOLD)
         self.screen.addnstr(0, 0, f"Codex {section}", width - 1)
         self.screen.attroff(curses.A_BOLD)
-        status = f"共 {len(self.filtered)} 筆"
-        if self.query:
-            status += f"｜搜尋：{self.query}"
-        self.screen.addnstr(1, 0, status, width - 1)
-        self.screen.hline(2, 0, curses.ACS_HLINE, width - 1)
 
-        list_top = 3
-        detail_height = min(7, max(4, height // 3))
-        detail_row = height - detail_height - 1
-        list_height = max(1, detail_row - list_top)
+        show_status = height >= 6
+        show_details = height >= 12 and width >= 50
+        list_top = 3 if show_status else 1
+        footer_row = height - 1
+        if show_status:
+            status = f"共 {len(self.filtered)} 筆"
+            if self.query:
+                status += f"｜搜尋：{self.query}"
+            self.screen.addnstr(1, 0, status, width - 1)
+            self.screen.hline(2, 0, curses.ACS_HLINE, width - 1)
+
+        if show_details:
+            detail_height = min(7, max(4, height // 3))
+            detail_row = footer_row - detail_height
+            list_bottom = detail_row
+        else:
+            detail_row = None
+            list_bottom = footer_row
+        list_height = max(1, list_bottom - list_top)
         if self.selected < self.offset:
             self.offset = self.selected
         if self.selected >= self.offset + list_height:
@@ -359,13 +401,19 @@ class HistoryUI:
                 index = self.offset + row - list_top
                 marker = "›" if index == self.selected else " "
                 cwd_name = Path(session.cwd).name if session.cwd else "未知目錄"
-                prefix = f"{marker} {session.timestamp}  [{cwd_name}] "
+                if width >= 50:
+                    prefix = f"{marker} {session.timestamp}  [{cwd_name}] "
+                elif width >= 34:
+                    prefix = f"{marker} {session.timestamp[5:]} "
+                else:
+                    prefix = f"{marker} "
                 line = prefix + shorten(session.title, width - len(prefix) - 1)
                 attribute = curses.A_REVERSE if index == self.selected else curses.A_NORMAL
                 self.screen.addnstr(row, 0, line.ljust(width - 1), width - 1, attribute)
 
-        self.screen.hline(detail_row, 0, curses.ACS_HLINE, width - 1)
-        if self.filtered:
+        if detail_row is not None:
+            self.screen.hline(detail_row, 0, curses.ACS_HLINE, width - 1)
+        if detail_row is not None and self.filtered:
             session = self.filtered[self.selected]
             details = f"目錄：{session.cwd}｜ID：{session.session_id}"
             self.screen.addnstr(detail_row + 1, 0, details, width - 1)
@@ -382,7 +430,7 @@ class HistoryUI:
         else:
             help_text = "Enter 恢復｜t 時間軸｜n 新對話｜d 封存｜a 封存紀錄｜/ 搜尋｜Esc 離開"
         footer = self.message or help_text
-        self.screen.addnstr(height - 1, 0, footer, width - 1)
+        self.screen.addnstr(footer_row, 0, footer, width - 1)
         self.screen.refresh()
 
     def run(self) -> tuple[str, Session | None] | None:
