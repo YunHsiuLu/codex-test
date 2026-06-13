@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import textwrap
+import unicodedata
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -164,6 +165,54 @@ def shorten(value: str, width: int) -> str:
     return textwrap.shorten(value, width=width, placeholder="…")
 
 
+def truncate_terminal(value: str, width: int) -> str:
+    if width <= 0:
+        return ""
+
+    result = []
+    used = 0
+    for character in value:
+        character_width = (
+            0
+            if unicodedata.combining(character)
+            else 2
+            if unicodedata.east_asian_width(character) in ("F", "W")
+            else 1
+        )
+        if used + character_width > width:
+            break
+        result.append(character)
+        used += character_width
+    return "".join(result)
+
+
+def add_text(
+    screen: curses.window,
+    row: int,
+    column: int,
+    value: str,
+    width: int,
+    attribute: int = curses.A_NORMAL,
+) -> None:
+    height, screen_width = screen.getmaxyx()
+    if row < 0 or row >= height or column < 0 or column >= screen_width:
+        return
+
+    available = min(width, screen_width - column - 1)
+    if available <= 0:
+        return
+
+    try:
+        screen.addstr(
+            row,
+            column,
+            truncate_terminal(value, available),
+            attribute,
+        )
+    except curses.error:
+        pass
+
+
 class HistoryUI:
     MIN_WIDTH = 20
     MIN_HEIGHT = 4
@@ -227,7 +276,7 @@ class HistoryUI:
         curses.curs_set(1)
         self.screen.move(height - 1, 0)
         self.screen.clrtoeol()
-        self.screen.addnstr(height - 1, 0, label, max(1, width - 2))
+        add_text(self.screen, height - 1, 0, label, max(1, width - 2))
         input_row, input_column = self.screen.getyx()
         try:
             value = self.screen.getstr(
@@ -269,7 +318,8 @@ class HistoryUI:
             self.screen.erase()
             height, width = self.screen.getmaxyx()
             if height < self.MIN_HEIGHT or width < self.MIN_WIDTH:
-                self.screen.addnstr(
+                add_text(
+                    self.screen,
                     0,
                     0,
                     f"視窗太小（至少 {self.MIN_WIDTH}x{self.MIN_HEIGHT}）",
@@ -285,11 +335,22 @@ class HistoryUI:
             content_top = 3 if full_layout else 1
             footer_row = height - 1
 
-            self.screen.attron(curses.A_BOLD)
-            self.screen.addnstr(0, 0, "對話時間軸", width - 1)
-            self.screen.attroff(curses.A_BOLD)
+            add_text(
+                self.screen,
+                0,
+                0,
+                "對話時間軸",
+                width - 1,
+                curses.A_BOLD,
+            )
             if full_layout:
-                self.screen.addnstr(1, 0, shorten(session.title, width - 1), width - 1)
+                add_text(
+                    self.screen,
+                    1,
+                    0,
+                    shorten(session.title, width - 1),
+                    width - 1,
+                )
                 self.screen.hline(2, 0, curses.ACS_HLINE, width - 1)
 
             lines = []
@@ -314,7 +375,8 @@ class HistoryUI:
             max_offset = max(0, len(lines) - visible_height)
             offset = min(offset, max_offset)
             if not lines:
-                self.screen.addnstr(
+                add_text(
+                    self.screen,
                     content_top,
                     0,
                     "沒有可顯示的對話訊息。",
@@ -324,14 +386,14 @@ class HistoryUI:
                 for row, (line, attribute) in enumerate(
                     lines[offset : offset + visible_height], start=content_top
                 ):
-                    self.screen.addnstr(row, 0, line, width - 1, attribute)
+                    add_text(self.screen, row, 0, line, width - 1, attribute)
 
             status = (
                 f"訊息 {len(entries)} 則｜↑↓ 捲動｜PgUp/PgDn 翻頁｜t / Esc 返回"
                 if width >= 50
                 else f"{len(entries)} 則｜↑↓｜Esc 返回"
             )
-            self.screen.addnstr(footer_row, 0, status, width - 1)
+            add_text(self.screen, footer_row, 0, status, width - 1)
             self.screen.refresh()
 
             key = self.screen.getch()
@@ -354,7 +416,8 @@ class HistoryUI:
         self.screen.erase()
         height, width = self.screen.getmaxyx()
         if height < self.MIN_HEIGHT or width < self.MIN_WIDTH:
-            self.screen.addnstr(
+            add_text(
+                self.screen,
                 0,
                 0,
                 f"視窗太小（至少 {self.MIN_WIDTH}x{self.MIN_HEIGHT}）",
@@ -364,9 +427,14 @@ class HistoryUI:
             return
 
         section = "封存紀錄" if self.show_archived else "歷史對話"
-        self.screen.attron(curses.A_BOLD)
-        self.screen.addnstr(0, 0, f"Codex {section}", width - 1)
-        self.screen.attroff(curses.A_BOLD)
+        add_text(
+            self.screen,
+            0,
+            0,
+            f"Codex {section}",
+            width - 1,
+            curses.A_BOLD,
+        )
 
         show_status = height >= 6
         show_details = height >= 12 and width >= 50
@@ -376,7 +444,7 @@ class HistoryUI:
             status = f"共 {len(self.filtered)} 筆"
             if self.query:
                 status += f"｜搜尋：{self.query}"
-            self.screen.addnstr(1, 0, status, width - 1)
+            add_text(self.screen, 1, 0, status, width - 1)
             self.screen.hline(2, 0, curses.ACS_HLINE, width - 1)
 
         if show_details:
@@ -393,7 +461,13 @@ class HistoryUI:
             self.offset = self.selected - list_height + 1
 
         if not self.filtered:
-            self.screen.addnstr(list_top + 1, 2, "找不到符合的對話紀錄。", width - 4)
+            add_text(
+                self.screen,
+                list_top + 1,
+                2,
+                "找不到符合的對話紀錄。",
+                width - 4,
+            )
         else:
             for row, session in enumerate(
                 self.filtered[self.offset : self.offset + list_height], start=list_top
@@ -409,28 +483,42 @@ class HistoryUI:
                     prefix = f"{marker} "
                 line = prefix + shorten(session.title, width - len(prefix) - 1)
                 attribute = curses.A_REVERSE if index == self.selected else curses.A_NORMAL
-                self.screen.addnstr(row, 0, line.ljust(width - 1), width - 1, attribute)
+                add_text(
+                    self.screen,
+                    row,
+                    0,
+                    line.ljust(width - 1),
+                    width - 1,
+                    attribute,
+                )
 
         if detail_row is not None:
             self.screen.hline(detail_row, 0, curses.ACS_HLINE, width - 1)
         if detail_row is not None and self.filtered:
             session = self.filtered[self.selected]
             details = f"目錄：{session.cwd}｜ID：{session.session_id}"
-            self.screen.addnstr(detail_row + 1, 0, details, width - 1)
-            self.screen.addnstr(detail_row + 2, 0, "預覽（最近對話）：", width - 1, curses.A_BOLD)
+            add_text(self.screen, detail_row + 1, 0, details, width - 1)
+            add_text(
+                self.screen,
+                detail_row + 2,
+                0,
+                "預覽（最近對話）：",
+                width - 1,
+                curses.A_BOLD,
+            )
             preview_height = max(0, height - detail_row - 4)
             for row, line in enumerate(
                 self.preview_lines(session, width, preview_height),
                 start=detail_row + 3,
             ):
-                self.screen.addnstr(row, 2, line, width - 3)
+                add_text(self.screen, row, 2, line, width - 3)
 
         if self.show_archived:
             help_text = "↑↓ 選擇｜t 時間軸｜u 還原｜a 返回歷史對話｜/ 搜尋｜Esc 離開"
         else:
             help_text = "Enter 恢復｜t 時間軸｜n 新對話｜d 封存｜a 封存紀錄｜/ 搜尋｜Esc 離開"
         footer = self.message or help_text
-        self.screen.addnstr(footer_row, 0, footer, width - 1)
+        add_text(self.screen, footer_row, 0, footer, width - 1)
         self.screen.refresh()
 
     def run(self) -> tuple[str, Session | None] | None:
