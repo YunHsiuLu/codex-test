@@ -327,7 +327,7 @@ class HistoryUI:
                 )
                 self.screen.refresh()
                 key = self.screen.getch()
-                if key in (27, ord("t"), curses.KEY_BACKSPACE, 127):
+                if key in (ord("q"), 27, ord("t"), curses.KEY_BACKSPACE, 127):
                     return
                 continue
 
@@ -389,9 +389,9 @@ class HistoryUI:
                     add_text(self.screen, row, 0, line, width - 1, attribute)
 
             status = (
-                f"訊息 {len(entries)} 則｜↑↓ 捲動｜PgUp/PgDn 翻頁｜t / Esc 返回"
+                f"訊息 {len(entries)} 則｜↑↓ 捲動｜PgUp/PgDn 翻頁｜t / q / Esc 返回"
                 if width >= 50
-                else f"{len(entries)} 則｜↑↓｜Esc 返回"
+                else f"{len(entries)} 則｜↑↓｜q / Esc 返回"
             )
             add_text(self.screen, footer_row, 0, status, width - 1)
             self.screen.refresh()
@@ -514,9 +514,9 @@ class HistoryUI:
                 add_text(self.screen, row, 2, line, width - 3)
 
         if self.show_archived:
-            help_text = "↑↓ 選擇｜t 時間軸｜u 還原｜a 返回歷史對話｜/ 搜尋｜Esc 離開"
+            help_text = "↑↓ 選擇｜t 時間軸｜u 還原｜a 返回歷史對話｜/ 搜尋｜q / Esc 離開"
         else:
-            help_text = "Enter 恢復｜t 時間軸｜n 新對話｜d 封存｜a 封存紀錄｜/ 搜尋｜Esc 離開"
+            help_text = "Enter 恢復｜t 時間軸｜n 新對話｜d 封存｜a 封存紀錄｜/ 搜尋｜q / Esc 離開"
         footer = self.message or help_text
         add_text(self.screen, footer_row, 0, footer, width - 1)
         self.screen.refresh()
@@ -532,7 +532,7 @@ class HistoryUI:
             self.message = ""
             key = self.screen.getch()
 
-            if key == 27:
+            if key in (ord("q"), 27):
                 return None
             if key in (curses.KEY_UP, ord("k")) and self.filtered:
                 self.selected = max(0, self.selected - 1)

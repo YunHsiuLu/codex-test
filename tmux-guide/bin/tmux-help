@@ -66,11 +66,14 @@ case "${1:-}" in
                 -F '#{pane_id}' \
                 "$SCRIPT_COMMAND"
         )
-        if [ -n "$TREE_PANE" ] && [ -n "$TREE_WIDTH" ]; then
-            tmux resize-pane -t "$TREE_PANE" -x "$TREE_WIDTH"
-        fi
         tmux select-pane -t "$GUIDE_PANE" -T 'tmux-help'
         tmux set-option -p -t "$GUIDE_PANE" @tmux_help 1
+
+        # Complex layouts may not have enough room to restore the tree exactly.
+        # The guide is already usable, so a resize failure must not fail Prefix H.
+        if [ -n "$TREE_PANE" ] && [ -n "$TREE_WIDTH" ]; then
+            tmux resize-pane -t "$TREE_PANE" -x "$TREE_WIDTH" 2>/dev/null || :
+        fi
         ;;
     --popup)
         tmux display-popup \
