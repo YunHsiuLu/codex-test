@@ -2,3 +2,6 @@ __pycache__/
 *.py[cod]
 .DS_Store
 flask server/data/server.pid
+student-workspace/data/
+student-workspace/.venv/
+student-workspace/.env
