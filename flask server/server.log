@@ -205,3 +205,15 @@ Werkzeug appears to be used in a production deployment. Consider switching to a 
 10.240.61.70 - - [12/Jun/2026 15:11:41] "GET /socket.io/?EIO=4&transport=polling&t=Pwwgv7e HTTP/1.1" 200 -
 10.240.61.70 - - [12/Jun/2026 15:11:47] "GET /socket.io/?EIO=4&transport=websocket&sid=y80Y7zTHQIGBA5kTAABV HTTP/1.1" 200 -
 10.240.61.70 - - [12/Jun/2026 17:01:44] "GET /socket.io/?EIO=4&transport=websocket&sid=dDlIzu9yYxiS5d94AABX HTTP/1.1" 200 -
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+ * Serving Flask app 'server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.240.63.247:5001
+[33mPress CTRL+C to quit[0m
+10.240.61.70 - - [15/Jun/2026 08:02:12] "GET /socket.io/?EIO=4&transport=polling&t=Px8bVWp HTTP/1.1" 200 -
+10.240.61.70 - - [15/Jun/2026 08:02:12] "POST /socket.io/?EIO=4&transport=polling&t=Px8bVXe&sid=2i4sBz1SIFyGIMcKAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [15/Jun/2026 08:02:12] "GET /socket.io/?EIO=4&transport=polling&t=Px8bVXf&sid=2i4sBz1SIFyGIMcKAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [15/Jun/2026 08:02:12] "GET /socket.io/?EIO=4&transport=polling&t=Px8bVYr&sid=2i4sBz1SIFyGIMcKAAAA HTTP/1.1" 200 -
