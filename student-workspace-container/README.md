@@ -11,7 +11,7 @@ Apple container 會為每個 Linux 容器建立輕量虛擬機，支援 Dockerfi
 - Apple `container` CLI 1.0.0 以上。
 
 下載：
-至Apple官方Github下載Release version: [Apple/container](https://github.com/apple/container){:target="_blank"}
+至Apple官方Github下載Release version: [Apple/container](https://github.com/apple/container)
 
 右側下方有Release tag，可以直接進入`Latest version`，滑到最下面的Assets下載`.pkg`
 
