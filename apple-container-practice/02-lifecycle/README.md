@@ -53,6 +53,31 @@ container list --all
 2. 查閱 `container stop --help`，將等待時間改為 10 秒。
 3. 說明 `run` 與 `create` 加上 `start` 的適用情境差異。
 
+<details>
+<summary>點此顯示解答</summary>
+
+前面的動手做已刪除 `acp-clock`，先重新建立：
+
+```zsh
+container create --name acp-clock docker.io/library/alpine:3.22 sh -c 'while true; do date; sleep 2; done'
+```
+
+1. 執行 `container start --attach acp-clock` 後會在前景看到日期輸出。按 `Control + C` 會中斷附加的前景工作；再用下列指令確認容器實際狀態，因版本與訊號處理方式不同，不應只憑終端返回來判斷：
+
+   ```zsh
+   container list --all
+   ```
+
+2. `--time` 的單位是秒，表示送出停止訊號後，強制終止前的等待時間：
+
+   ```zsh
+   container stop --time 10 acp-clock
+   ```
+
+3. `run` 是「建立並立即啟動」的捷徑，適合一次性工作及一般啟動流程。`create` 加上 `start` 把設定與執行分開，適合先建立、檢查設定，稍後再啟動，或由另一個流程控制啟動時機。
+
+</details>
+
 ## 清理
 
 若挑戰過程中容器仍存在：

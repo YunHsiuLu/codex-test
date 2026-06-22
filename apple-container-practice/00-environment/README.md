@@ -51,4 +51,19 @@ container system df
 2. Apple `container` 和傳統共用 Linux VM 的容器架構有何差異？
 3. 找出查看 `run` 指令 CPU 選項的方法。
 
+<details>
+<summary>點此顯示解答</summary>
+
+1. 映像是建立容器所用的唯讀範本，容器則是由映像建立的執行個體。停止或刪除容器只改變容器資源，不會自動刪除仍可供其他容器重複使用的映像。
+2. 傳統做法通常讓許多容器共用同一個 Linux 核心，或先共用一部 Linux VM 再執行容器。Apple `container` 則讓每個 Linux 容器在各自的輕量 VM 中執行，因此 VM 邊界、核心與資源設定彼此獨立，隔離程度較高，但每個容器也有個別 VM 的啟動與資源成本。
+3. 先查閱說明，再搜尋 CPU 相關旗標：
+
+   ```zsh
+   container run --help | grep -i cpu
+   ```
+
+   可找到 `--cpus <cpus>`；例如 `--cpus 2`。若目前版本的子指令說明未正常顯示，先用 `container --version` 確認版本並更新 CLI。
+
+</details>
+
 本章不會建立資源，不需要清理。

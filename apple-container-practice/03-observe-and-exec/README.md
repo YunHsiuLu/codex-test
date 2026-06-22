@@ -55,6 +55,27 @@ container inspect acp-observe | jq '.[0].status'
 2. 將 stats 輸出改為 JSON 格式。
 3. `logs` 與 `logs --boot` 的資料來源有何差異？
 
+<details>
+<summary>點此顯示解答</summary>
+
+1. 對新程序設定環境變數，再以 `grep` 找出它：
+
+   ```zsh
+   container exec -e COURSE=physics acp-observe env | grep '^COURSE='
+   ```
+
+   預期輸出為 `COURSE=physics`。此變數只提供給這次 `exec` 啟動的程序，不會永久改寫容器設定。
+2. 取得單次 JSON 快照：
+
+   ```zsh
+   container stats --format json --no-stream acp-observe
+   ```
+
+   若已安裝 `jq`，可在最後加上 `| jq` 排版。
+3. `container logs` 讀取容器主要應用程式的標準輸出與標準錯誤；`container logs --boot` 讀取該容器輕量 VM 的開機紀錄，內容通常是核心及系統初始化訊息。兩者用來診斷的層級不同。
+
+</details>
+
 ## 清理
 
 ```zsh

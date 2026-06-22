@@ -48,6 +48,39 @@ Apple `container` 會提供容器名稱加上 `.test` 的 DNS 名稱。同一網
 2. 為 `acp-net` 指定不與現有網路重疊的 IPv4 subnet。
 3. 解釋「EXPOSE 80」和「publish 8081:80」的差異。
 
+<details>
+<summary>點此顯示解答</summary>
+
+1. 建立另一個網路與測試容器：
+
+   ```zsh
+   container network create acp-net-2
+   container run --name acp-isolated --detach --network acp-net-2 \
+     docker.io/library/alpine:3.22 sleep 3600
+   container exec acp-isolated wget -T 3 -qO- http://acp-server.test
+   ```
+
+   最後一行應因無法解析名稱或無法連線而失敗，證明兩個網路互相隔離。清理額外資源：
+
+   ```zsh
+   container stop acp-isolated
+   container delete acp-isolated
+   container network delete acp-net-2
+   ```
+
+2. 先用 `container network list` 查看現有 subnet，再選一段不重疊的私有網段，例如：
+
+   ```zsh
+   container network create acp-custom --subnet 192.168.100.0/24
+   container network inspect acp-custom
+   container network delete acp-custom
+   ```
+
+   若該網段已被本機使用，需改選其他 RFC 1918 私有網段；CLI 也會拒絕與既有容器網路重疊的設定。
+3. `EXPOSE 80` 是映像中記錄「應用程式預期監聽 80」的中繼資料，不會自行開放主機連接埠。`--publish 127.0.0.1:8081:80` 則建立實際轉送規則，讓 macOS 的 `127.0.0.1:8081` 流量送到容器的 80。
+
+</details>
+
 ## 清理
 
 ```zsh
