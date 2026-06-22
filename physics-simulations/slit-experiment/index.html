@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>狹縫干涉與繞射實驗室</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>狹縫干涉與繞射實驗室</h1>
+    <p>比較光的波動圖樣，以及單顆電子逐步累積成干涉圖樣的過程。</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls" aria-label="實驗參數">
+      <div class="control">
+        <label for="particleType">實驗粒子
+          <select id="particleType">
+            <option value="photon">光子</option>
+            <option value="electron">電子</option>
+          </select>
+        </label>
+      </div>
+      <div class="control">
+        <label for="slitType">狹縫種類
+          <select id="slitType">
+            <option value="single">單狹縫</option>
+            <option value="double" selected>雙狹縫</option>
+          </select>
+        </label>
+      </div>
+      <div class="control">
+        <label for="displayMode">顯示方式
+          <select id="displayMode">
+            <option value="wave">理論強度</option>
+            <option value="particle">粒子累積</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="control" id="wavelengthControl">
+        <div class="label-row"><label for="wavelength">光波長</label><output id="wavelengthOut"></output></div>
+        <input id="wavelength" type="range" min="380" max="700" step="1" value="530">
+      </div>
+      <div class="control" id="voltageControl" hidden>
+        <div class="label-row"><label for="voltage">加速電壓</label><output id="voltageOut"></output></div>
+        <input id="voltage" type="range" min="20" max="500" step="1" value="150">
+      </div>
+      <div class="control">
+        <label for="slitWidth">縫寬 a
+          <span class="unit-input"><input id="slitWidth" type="number" min="0.01" step="0.1" value="15"><span class="unit lengthUnit">μm</span></span>
+        </label>
+      </div>
+      <div class="control" id="separationControl">
+        <label for="slitSeparation">縫心距 d
+          <span class="unit-input"><input id="slitSeparation" type="number" min="0.02" step="0.1" value="45"><span class="unit lengthUnit">μm</span></span>
+        </label>
+      </div>
+      <div class="control">
+        <label for="distance">狹縫至屏幕 L
+          <span class="unit-input"><input id="distance" type="number" min="0.05" max="10" step="0.05" value="1"><span class="unit">m</span></span>
+        </label>
+      </div>
+      <div class="control">
+        <label for="screenSpan">屏幕範圍
+          <span class="unit-input"><input id="screenSpan" type="number" min="0.001" step="1" value="80"><span class="unit">mm</span></span>
+        </label>
+      </div>
+      <div class="control" id="rateControl">
+        <div class="label-row"><label for="rate">粒子速率</label><output id="rateOut"></output></div>
+        <input id="rate" type="range" min="1" max="5" step="1" value="3">
+      </div>
+
+      <div class="button-row">
+        <button class="primary" id="toggleButton">暫停</button>
+        <button id="resetButton">重新開始</button>
+      </div>
+
+      <div class="readout" aria-live="polite">
+        <div><span>德布羅意／光波長</span><strong id="lambdaReadout">—</strong></div>
+        <div><span id="spacingLabel">干涉條紋間距</span><strong id="spacingReadout">—</strong></div>
+        <div><span>偵測粒子數</span><strong id="countReadout">0</strong></div>
+      </div>
+      <p class="note">模型採用遠場（夫朗和斐）近似。電子以德布羅意波描述；粒子落點依照理論機率分布隨機取樣。</p>
+    </section>
+
+    <section class="panel stage">
+      <div class="stage-bar">
+        <span>實驗側視圖與偵測屏</span>
+        <span id="status">連續顯示理論強度</span>
+      </div>
+      <canvas id="experiment" width="960" height="540" aria-label="狹縫實驗動畫"></canvas>
+      <div class="chart-wrap">
+        <canvas id="chart" width="960" height="190" aria-label="理論強度與粒子統計圖"></canvas>
+      </div>
+      <p class="formula" id="formula">I(θ) = I₀ sinc²(β) cos²(α)，β = πa sinθ／λ，α = πd sinθ／λ</p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
