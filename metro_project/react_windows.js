@@ -35,11 +35,12 @@ for (const station of stations.values()) {
   const group = svg('g', {
     class: `station${station.lines.length > 1 ? ' transfer' : ''}`,
     tabindex: '0', role: 'button',
+    'data-station': station.key,
     'aria-label': `${station.name}站${station.lines.length > 1 ? '，轉乘站' : ''}`,
     transform: `translate(${station.x} ${station.y})`
   });
-  group.append(svg('circle', { class: 'hit-area', r: 17 }));
-  group.append(svg('circle', { class: 'dot', r: station.lines.length > 1 ? 9 : 6 }));
+  group.append(svg('circle', { class: 'hit-area', r: 20 }));
+  group.append(svg('circle', { class: 'dot', r: 12 }));
   const label = svg('text', { x: station.dx, y: station.dy });
   label.textContent = station.name;
   group.append(label);
@@ -76,14 +77,16 @@ async function stationInfo(station) {
 
 async function showStation(station, event) {
   event.stopPropagation();
-  const info = await stationInfo(station);
-  popup.querySelector('h2').textContent = info.title || `${station.name}站`;
-  popup.querySelector('p').textContent = info.description || '詳細站點資訊建置中。';
+  popup.querySelector('h2').textContent = `${station.name}站`;
+  popup.querySelector('p').textContent = '正在載入站點資訊⋯⋯';
   popup.hidden = false;
   const anchor = event.currentTarget.getBoundingClientRect();
   const width = Math.min(320, window.innerWidth - 28);
   popup.style.left = `${Math.max(14, Math.min(anchor.left + 18, window.innerWidth - width - 14))}px`;
   popup.style.top = `${Math.max(14, Math.min(anchor.top + 22, window.innerHeight - popup.offsetHeight - 14))}px`;
+  const info = await stationInfo(station);
+  popup.querySelector('h2').textContent = info.title || `${station.name}站`;
+  popup.querySelector('p').textContent = info.description || '詳細站點資訊建置中。';
 }
 
 function hidePopup() { popup.hidden = true; }
@@ -94,3 +97,12 @@ document.addEventListener('click', event => {
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') hidePopup();
 });
+
+// 支援以 ?station=Taipei 直接開啟指定站點，也方便自動化驗證互動視窗。
+const requestedStation = new URLSearchParams(location.search).get('station');
+if (requestedStation && stations.has(requestedStation)) {
+  const target = stationLayer.querySelector(`[data-station="${CSS.escape(requestedStation)}"]`);
+  requestAnimationFrame(() => showStation(stations.get(requestedStation), {
+    stopPropagation() {}, currentTarget: target
+  }));
+}

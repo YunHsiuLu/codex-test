@@ -1,19 +1,33 @@
-const s = (key, name, x, y, dx = 10, dy = -10) => ({ key, name, x, y, dx, dy });
+import { redLineStations } from './metroLines/red/red-line.js';
+import { blueLineStations } from './metroLines/blue/blue-line.js';
+import { orangeLineStations } from './metroLines/orange/orange-line.js';
+
+const station = (key, name, x, y) => ({ key, label: key, name, x, y });
+const normalize = (points, names) => points.map(point => ({
+  ...point, key: point.label, name: names[point.label] || point.label
+}));
+
+const redNames = {
+  Tamsui:'淡水',Hongshulin:'紅樹林',Zhuwei:'竹圍',Guandu:'關渡',Zhongyi:'忠義',Fuxinggang:'復興崗',Beitou:'北投',Xinbeitou:'新北投',Qiyan:'奇岩',Qilian:'唭哩岸',Shipai:'石牌',Mingde:'明德',Zhishan:'芝山',Shilin:'士林',Jiantan:'劍潭',Yuanshan:'圓山',Minquan:'民權西路',Shuanglian:'雙連',Zhongshan:'中山',Taipei:'台北車站','NTU-Hospital':'台大醫院',CKS:'中正紀念堂',Dongmen:'東門','Daan-Park':'大安森林公園',Daan:'大安',Xinyi:'信義安和',Taipei101:'台北101／世貿',Xiangshan:'象山'
+};
+const blueNames = {
+  Dingpu:'頂埔',Yongning:'永寧',Tucheng:'土城',Haishan:'海山','FE-Hospital':'亞東醫院',Fuzhong:'府中',Banqiao:'板橋',Xinpu:'新埔',Jiangzicui:'江子翠',LongshanTemple:'龍山寺',Ximen:'西門',Taipei:'台北車站',ShandaoTemple:'善導寺',ZhongxiaoXinsheng:'忠孝新生',ZhongXiaoFuxing:'忠孝復興',ZhongxiaoDunhua:'忠孝敦化',SYS:'國父紀念館',TaipeiCityHall:'市政府',Yongchun:'永春',Houshanpi:'後山埤',Kunyang:'昆陽',Nangang:'南港','Nangang-EC':'南港展覽館'
+};
+const orangeNames = {
+  Nanshijiao:'南勢角',Jingan:'景安',Yongan:'永安市場',Dingxi:'頂溪',Guting:'古亭',Songjiangnanjing:'松江南京',XingtianTemple:'行天宮','Zhongshan-ES':'中山國小',Daqiaotou:'大橋頭','Taipei-bridge':'台北橋',Cailiao:'菜寮',Sanchong:'三重',XianseTemple:'先嗇宮',Touqianzhuang:'頭前庄',Xinzhuang:'新莊','FuJen-University':'輔大',Danfeng:'丹鳳',Huilong:'迴龍','Sanchong-ES':'三重國小','Sanhe-JHS':'三和國中','St-Ignatius-HS':'徐匯中學','Sanmin-HS':'三民高中',Luzhou:'蘆洲'
+};
+
+const green = [
+  station('Songshan','松山',1015,1077),station('Nanjing-Sanmin','南京三民',930,1077),station('Taipei-Arena','台北小巨蛋',830,1077),station('Nanjing-Fuxing','南京復興',758,1077),station('Songjiangnanjing','松江南京',660,1077),station('Zhongshan','中山',550,1080),station('Beimen','北門',510,1120),station('Ximen','西門',472,1213),station('Xiaonanmen','小南門',515,1250),station('CKS','中正紀念堂',550,1270),station('Guting','古亭',595,1315),station('Taipower-Building','台電大樓',635,1360),station('Gongguan','公館',665,1405),station('Wanlong','萬隆',700,1450),station('Jingmei','景美',730,1500),station('Dapinglin','大坪林',730,1550),station('Qizhang','七張',730,1610),station('Xindian-District-Office','新店區公所',730,1660),station('Xindian','新店',730,1710),station('Xiaobitan','小碧潭',660,1600)
+];
+const brown = [
+  station('Taipei-Zoo','動物園',1110,1550),station('Muzha','木柵',1050,1550),station('Wanfang-Community','萬芳社區',990,1550),station('Wanfang-Hospital','萬芳醫院',930,1550),station('Xinhai','辛亥',880,1500),station('Linguang','麟光',850,1440),station('Liuzhangli','六張犁',820,1380),station('Technology-Building','科技大樓',790,1330),station('Daan','大安',760,1270),station('ZhongXiaoFuxing','忠孝復興',758,1170),station('Nanjing-Fuxing','南京復興',758,1077),station('Zhongshan-JHS','中山國中',758,1010),station('Songshan-Airport','松山機場',758,930),station('Dazhi','大直',800,850),station('Jiannan-Road','劍南路',820,760),station('Xihu','西湖',885,760),station('Gangqian','港墘',950,760),station('Wende','文德',1010,760),station('Neihu','內湖',1070,760),station('Dahu-Park','大湖公園',1130,810),station('Huzhou','葫洲',1170,870),station('Donghu','東湖',1190,930),station('Nangang-Software-Park','南港軟體園區',1190,1010),station('Nangang-EC','南港展覽館',1220,1100)
+];
 
 export const lines = [
-  { id: 'red', code: 'R', name: '淡水信義線', color: '#e4002b', paths: [[
-    s('Tamsui','淡水',150,70),s('Hongshulin','紅樹林',185,110),s('Zhuwei','竹圍',215,150),s('Guandu','關渡',245,190),s('Zhongyi','忠義',280,225),s('Fuxinggang','復興崗',325,245),s('Beitou','北投',380,245),s('Qiyan','奇岩',420,280),s('Qilian','唭哩岸',450,315),s('Shipai','石牌',475,350),s('Mingde','明德',500,385),s('Zhishan','芝山',520,420),s('Shilin','士林',535,455),s('Jiantan','劍潭',545,490),s('Yuanshan','圓山',550,525),s('Minquan','民權西路',550,560),s('Shuanglian','雙連',550,600),s('Zhongshan','中山',550,640),s('Taipei','台北車站',550,685),s('NTU-Hospital','台大醫院',550,725),s('CKS','中正紀念堂',550,770),s('Dongmen','東門',680,770),s('Daan-Park','大安森林公園',745,770),s('Daan','大安',815,770),s('Xinyi','信義安和',885,770),s('Taipei101','台北101／世貿',960,770),s('Xiangshan','象山',1040,770)
-  ], [s('Beitou','北投',380,245),s('Xinbeitou','新北投',440,195)]] },
-  { id: 'blue', code: 'BL', name: '板南線', color: '#0070bd', paths: [[
-    s('Dingpu','頂埔',100,950),s('Yongning','永寧',135,915),s('Tucheng','土城',170,880),s('Haishan','海山',205,845),s('FE-Hospital','亞東醫院',240,810),s('Fuzhong','府中',275,775),s('Banqiao','板橋',310,740),s('Xinpu','新埔',350,705),s('Jiangzicui','江子翠',395,685),s('LongshanTemple','龍山寺',445,685),s('Ximen','西門',495,685),s('Taipei','台北車站',550,685),s('ShandaoTemple','善導寺',615,685),s('ZhongxiaoXinsheng','忠孝新生',680,685),s('ZhongXiaoFuxing','忠孝復興',815,685),s('ZhongxiaoDunhua','忠孝敦化',875,685),s('SYS','國父紀念館',935,685),s('TaipeiCityHall','市政府',995,685),s('Yongchun','永春',1045,660),s('Houshanpi','後山埤',1080,625),s('Kunyang','昆陽',1110,590),s('Nangang','南港',1110,545),s('Nangang-EC','南港展覽館',1110,500)
-  ]] },
-  { id: 'green', code: 'G', name: '松山新店線', color: '#008659', paths: [[
-    s('Songshan','松山',1015,580),s('Nanjing-Sanmin','南京三民',940,580),s('Taipei-Arena','台北小巨蛋',875,600),s('Nanjing-Fuxing','南京復興',815,620),s('Songjiangnanjing','松江南京',680,640),s('Zhongshan','中山',550,640),s('Beimen','北門',505,655),s('Ximen','西門',495,685),s('Xiaonanmen','小南門',510,730),s('CKS','中正紀念堂',550,770),s('Guting','古亭',620,825),s('Taipower-Building','台電大樓',650,855),s('Gongguan','公館',680,885),s('Wanlong','萬隆',710,915),s('Jingmei','景美',740,945),s('Dapinglin','大坪林',770,975),s('Qizhang','七張',810,985),s('Xindian-District-Office','新店區公所',850,985),s('Xindian','新店',895,985)
-  ], [s('Qizhang','七張',810,985),s('Xiaobitan','小碧潭',820,935)]] },
-  { id: 'orange', code: 'O', name: '中和新蘆線', color: '#f8b61c', paths: [[
-    s('Huilong','迴龍',80,610),s('Danfeng','丹鳳',120,640),s('FuJen-University','輔大',160,670),s('Xinzhuang','新莊',205,690),s('Touqianzhuang','頭前庄',250,675),s('XianseTemple','先嗇宮',295,640),s('Sanchong','三重',340,605),s('Cailiao','菜寮',385,580),s('Taipei-bridge','台北橋',430,560),s('Daqiaotou','大橋頭',490,560),s('Minquan','民權西路',550,560),s('Zhongshan-ES','中山國小',615,560),s('XingtianTemple','行天宮',650,600),s('Songjiangnanjing','松江南京',680,640),s('ZhongxiaoXinsheng','忠孝新生',680,685),s('Dongmen','東門',680,770),s('Guting','古亭',620,825),s('Dingxi','頂溪',590,860),s('Yongan','永安市場',580,895),s('Jingan','景安',580,930),s('Nanshijiao','南勢角',580,970)
-  ], [s('Daqiaotou','大橋頭',490,560),s('Sanchong-ES','三重國小',445,510),s('Sanhe-JHS','三和國中',400,465),s('St-Ignatius-HS','徐匯中學',355,420),s('Sanmin-HS','三民高中',310,375),s('Luzhou','蘆洲',265,330)]] },
-  { id: 'brown', code: 'BR', name: '文湖線', color: '#a67c24', paths: [[
-    s('Taipei-Zoo','動物園',1080,950),s('Muzha','木柵',1035,930),s('Wanfang-Community','萬芳社區',990,910),s('Wanfang-Hospital','萬芳醫院',945,890),s('Xinhai','辛亥',910,860),s('Linguang','麟光',875,830),s('Liuzhangli','六張犁',845,800),s('Technology-Building','科技大樓',825,785),s('Daan','大安',815,770),s('ZhongXiaoFuxing','忠孝復興',815,685),s('Nanjing-Fuxing','南京復興',815,620),s('Zhongshan-JHS','中山國中',815,565),s('Songshan-Airport','松山機場',835,515),s('Dazhi','大直',870,475),s('Jiannan-Road','劍南路',920,455),s('Xihu','西湖',970,455),s('Gangqian','港墘',1020,455),s('Wende','文德',1070,455),s('Neihu','內湖',1120,455),s('Dahu-Park','大湖公園',1150,475),s('Huzhou','葫洲',1160,515),s('Donghu','東湖',1150,550),s('Nangang-Software-Park','南港軟體園區',1135,525),s('Nangang-EC','南港展覽館',1110,500)
-  ]] }
+  { id:'red', code:'R', name:'淡水信義線', color:'#e4002b', paths:[normalize(redLineStations, redNames)] },
+  { id:'blue', code:'BL', name:'板南線', color:'#0070bd', paths:[normalize(blueLineStations, blueNames)] },
+  { id:'green', code:'G', name:'松山新店線', color:'#008659', paths:[green] },
+  { id:'orange', code:'O', name:'中和新蘆線', color:'#f8b61c', paths:[normalize(orangeLineStations, orangeNames)] },
+  { id:'brown', code:'BR', name:'文湖線', color:'#a67c24', paths:[brown] }
 ];
