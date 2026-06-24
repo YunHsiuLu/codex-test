@@ -1,32 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>捷運路線圖互動功能</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>台北捷運互動路線圖</title>
   <style>
-    .img-container { position: relative; display: inline-block; }
-    #mrt-map { max-width: 100%; display: block; }
-    #react-window-root { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-    #react-popup {
-      position: absolute;
-      background: #fff;
-      border: 1px solid #888;
-      padding: 12px;
-      border-radius: 8px;
-      box-shadow: 2px 2px 8px #aaa;
-      z-index: 10;
-      pointer-events: auto;
-      display: none;
-    }
+    :root { color-scheme: light; font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #17212b; background: #edf2f5; }
+    header { padding: 20px clamp(18px, 4vw, 48px) 12px; }
+    h1 { margin: 0 0 4px; font-size: clamp(1.35rem, 2.5vw, 2rem); }
+    header p { margin: 0; color: #5b6873; }
+    .map-shell { position: relative; margin: 0 clamp(10px, 3vw, 36px) 28px; overflow: auto; border: 1px solid #cad5dc; border-radius: 16px; background: #fff; box-shadow: 0 12px 32px #23374618; }
+    #metro-map { display: block; width: 100%; min-width: 820px; height: auto; }
+    .route { fill: none; stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
+    .station { cursor: pointer; }
+    .station .hit-area { fill: transparent; }
+    .station .dot { fill: #fff; stroke: #33424d; stroke-width: 2.5; transition: transform .15s ease, fill .15s ease; transform-box: fill-box; transform-origin: center; }
+    .station.transfer .dot { stroke-width: 5; }
+    .station:hover .dot, .station:focus .dot { fill: #ffe45c; transform: scale(1.25); }
+    .station text { fill: #22303a; font-size: 13px; font-weight: 650; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
+    .line-badge text { fill: #fff; font-size: 15px; font-weight: 800; text-anchor: middle; dominant-baseline: central; }
+    .line-badge rect { rx: 7; }
+    #station-popup { position: fixed; z-index: 20; width: min(320px, calc(100vw - 28px)); padding: 16px 18px; border: 1px solid #b9c5cc; border-radius: 12px; background: #fff; box-shadow: 0 14px 38px #172b3a38; }
+    #station-popup[hidden] { display: none; }
+    #station-popup h2 { margin: 0 24px 6px 0; font-size: 1.2rem; }
+    #station-popup p { margin: 0; line-height: 1.65; color: #44515a; }
+    #station-popup button { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border: 0; border-radius: 50%; background: transparent; font-size: 20px; cursor: pointer; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0 22px 18px; color: #485761; font-size: 14px; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .legend i { width: 24px; height: 7px; border-radius: 9px; }
+    @media (max-width: 700px) { header { padding-top: 14px; } .map-shell { border-radius: 10px; } }
   </style>
 </head>
 <body>
-  <div class="img-container">
-    <img id="mrt-map" src="metrotaipeimap.jpg" alt="台北捷運路線圖">
-    <div id="react-window-root"></div>
-  </div>
-  <script src="label_position.js"></script>
+  <header>
+    <h1>台北捷運互動路線圖</h1>
+    <p>點選站點查看資訊；可水平捲動瀏覽完整路網。</p>
+  </header>
+  <main class="map-shell">
+    <svg id="metro-map" viewBox="0 0 1200 1040" role="img" aria-labelledby="map-title map-desc">
+      <title id="map-title">台北捷運路線圖</title>
+      <desc id="map-desc">包含文湖線、淡水信義線、松山新店線、中和新蘆線與板南線的互動式示意圖。</desc>
+      <g id="route-layer"></g>
+      <g id="station-layer"></g>
+      <g id="badge-layer"></g>
+    </svg>
+    <div class="legend" id="legend" aria-label="路線圖例"></div>
+  </main>
+  <aside id="station-popup" role="dialog" aria-live="polite" hidden>
+    <button type="button" aria-label="關閉">×</button>
+    <h2></h2><p></p>
+  </aside>
   <script src="react_windows.js" type="module"></script>
 </body>
 </html>
-

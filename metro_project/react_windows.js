@@ -1,99 +1,96 @@
-// react_windows.js
-import { redLineStations } from './metroLines/red/red-line.js';
-import { blueLineStations } from './metroLines/blue/blue-line.js';
-import { orangeLineStations } from './metroLines/orange/orange-line.js';
+import { lines } from './metro-map-data.js';
 
-const interactivePoints = [
-  ...redLineStations,
-  ...blueLineStations,
-  ...orangeLineStations
-];
+const NS = 'http://www.w3.org/2000/svg';
+const routeLayer = document.querySelector('#route-layer');
+const stationLayer = document.querySelector('#station-layer');
+const badgeLayer = document.querySelector('#badge-layer');
+const popup = document.querySelector('#station-popup');
+const legend = document.querySelector('#legend');
+const stations = new Map();
 
-const THRESHOLD = 20;
-const img = document.getElementById('mrt-map');
-const windowRoot = document.getElementById('react-window-root');
-let currentPopup = null;
-let currentPoint = null;
-
-async function loadStationInfo(label, color) {
-  try {
-    const module = await import(`./metroLines/${color}/${label}.js`);
-    return module.default || module;
-  } catch (e) {
-    console.error(`無法載入 ${label}.js:`, e);
-    return { title: label, description: `找不到 ${label} 的資訊` };
-  }
+function svg(tag, attrs = {}) {
+  const node = document.createElementNS(NS, tag);
+  Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+  return node;
 }
 
-async function createReactWindow(x, y, label, color) {
-  // 若已經有視窗且不是同一個點，先隱藏
-  if (currentPopup && currentPoint !== label) {
-    currentPopup.style.display = 'none';
-  }
-  // 載入資訊
-  const info = await loadStationInfo(label, color);
-  // 建立或更新視窗
-  if (!currentPopup) {
-    currentPopup = document.createElement('div');
-    currentPopup.id = 'react-popup';
-    currentPopup.style.position = 'absolute';
-    currentPopup.style.background = '#fff';
-    currentPopup.style.border = '1px solid #888';
-    currentPopup.style.padding = '12px';
-    currentPopup.style.borderRadius = '8px';
-    currentPopup.style.boxShadow = '2px 2px 8px #aaa';
-    currentPopup.style.zIndex = '10';
-    windowRoot.appendChild(currentPopup);
-
-    // 點擊視窗本身時，不會關閉
-    currentPopup.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
-  }
-  currentPopup.innerHTML = `
-    <h3>${info.title || label}</h3>
-    <p>${info.description || '無資訊'}</p>
-  `;
-  currentPopup.style.left = (x + 20) + 'px';
-  currentPopup.style.top = (y + 20) + 'px';
-  currentPopup.style.display = 'block';
-  currentPoint = label;
-}
-
-function hideReactWindow() {
-  if (currentPopup) {
-    currentPopup.style.display = 'none';
-    currentPoint = null;
-  }
-}
-
-// 點擊圖片時，檢查是否在任何一個站點附近
-img.addEventListener('click', function(event) {
-  const rect = img.getBoundingClientRect();
-  const clickX = event.clientX - rect.left;
-  const clickY = event.clientY - rect.top;
-
-  let found = false;
-  for (const pt of interactivePoints) {
-    const dx = pt.x - clickX;
-    const dy = pt.y - clickY;
-    if (Math.sqrt(dx*dx + dy*dy) < THRESHOLD) {
-      createReactWindow(pt.x, pt.y, pt.label, pt.c);
-      found = true;
-      break;
+for (const line of lines) {
+  for (const path of line.paths) {
+    routeLayer.append(svg('polyline', {
+      class: 'route', stroke: line.color,
+      points: path.map(({ x, y }) => `${x},${y}`).join(' ')
+    }));
+    for (const point of path) {
+      const current = stations.get(point.key) || { ...point, lines: [] };
+      if (!current.lines.some(({ id }) => id === line.id)) current.lines.push(line);
+      stations.set(point.key, current);
     }
   }
-  if (!found) hideReactWindow();
-});
+  const item = document.createElement('span');
+  item.innerHTML = `<i style="background:${line.color}"></i>${line.code} ${line.name}`;
+  legend.append(item);
+}
 
-// 點擊文件其他地方時，隱藏視窗（但點擊視窗本身不會觸發）
-document.addEventListener('click', function(event) {
-  if (
-    currentPopup &&
-    !currentPopup.contains(event.target) &&
-    !img.contains(event.target)
-  ) {
-    hideReactWindow();
+for (const station of stations.values()) {
+  const group = svg('g', {
+    class: `station${station.lines.length > 1 ? ' transfer' : ''}`,
+    tabindex: '0', role: 'button',
+    'aria-label': `${station.name}站${station.lines.length > 1 ? '，轉乘站' : ''}`,
+    transform: `translate(${station.x} ${station.y})`
+  });
+  group.append(svg('circle', { class: 'hit-area', r: 17 }));
+  group.append(svg('circle', { class: 'dot', r: station.lines.length > 1 ? 9 : 6 }));
+  const label = svg('text', { x: station.dx, y: station.dy });
+  label.textContent = station.name;
+  group.append(label);
+  group.addEventListener('click', event => showStation(station, event));
+  group.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault(); showStation(station, event);
+    }
+  });
+  stationLayer.append(group);
+}
+
+for (const line of lines) {
+  const first = line.paths[0][0];
+  const badge = svg('g', { class: 'line-badge', transform: `translate(${first.x - 44} ${first.y - 17})` });
+  badge.append(svg('rect', { width: line.code === 'BR' || line.code === 'BL' ? 38 : 34, height: 34, fill: line.color }));
+  const text = svg('text', { x: line.code === 'BR' || line.code === 'BL' ? 19 : 17, y: 17 });
+  text.textContent = line.code;
+  badge.append(text); badgeLayer.append(badge);
+}
+
+async function stationInfo(station) {
+  for (const line of station.lines) {
+    try {
+      const module = await import(`./metroLines/${line.id}/${station.key}.js`);
+      return module.default || module;
+    } catch (_) { /* 沒有專屬資料時使用下方通用資訊。 */ }
   }
-});
+  return {
+    title: `${station.name}站`,
+    description: `${station.lines.map(line => line.name).join('、')}的車站。詳細站點資訊建置中。`
+  };
+}
 
+async function showStation(station, event) {
+  event.stopPropagation();
+  const info = await stationInfo(station);
+  popup.querySelector('h2').textContent = info.title || `${station.name}站`;
+  popup.querySelector('p').textContent = info.description || '詳細站點資訊建置中。';
+  popup.hidden = false;
+  const anchor = event.currentTarget.getBoundingClientRect();
+  const width = Math.min(320, window.innerWidth - 28);
+  popup.style.left = `${Math.max(14, Math.min(anchor.left + 18, window.innerWidth - width - 14))}px`;
+  popup.style.top = `${Math.max(14, Math.min(anchor.top + 22, window.innerHeight - popup.offsetHeight - 14))}px`;
+}
+
+function hidePopup() { popup.hidden = true; }
+popup.querySelector('button').addEventListener('click', hidePopup);
+document.addEventListener('click', event => {
+  if (!popup.hidden && !popup.contains(event.target)) hidePopup();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') hidePopup();
+});
