@@ -54,6 +54,29 @@ container image list
 2. 移除 `--rm` 再執行一次，觀察 `container list --all`。
 3. 解釋 `-i` 與 `-t` 各自的用途。
 
+<details>
+<summary>點此顯示解答</summary>
+
+1. 執行並比較：
+
+   ```zsh
+   arch
+   container run --rm docker.io/library/alpine:3.22 arch
+   ```
+
+   Apple silicon 的 macOS 通常顯示 `arm64`，Alpine 通常顯示 `aarch64`；兩者名稱不同，但都是 ARM 64 位元架構。若指定不同平台的映像，容器結果可能不同。
+2. 可執行：
+
+   ```zsh
+   container run docker.io/library/alpine:3.22 echo '保留此容器'
+   container list --all
+   ```
+
+   程序結束後容器會呈現停止狀態並保留，直到手動 `container delete <容器-ID>`。
+3. `-i` 讓標準輸入保持開啟，使終端輸入能傳給容器程序；`-t` 配置虛擬終端（TTY），提供提示字元、行編輯及較自然的互動顯示。互動式 shell 通常同時需要兩者。
+
+</details>
+
 ## 清理
 
 若挑戰題留下容器，從清單取得 ID 後刪除：

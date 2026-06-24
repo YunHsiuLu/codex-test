@@ -60,6 +60,35 @@ container run --rm --mount "type=bind,source=$PWD/shared,target=/course,readonly
 2. 停止並重建 `acp-mount`，確認主機資料仍存在。
 3. 說明為何掛載整個家目錄通常不是好做法。
 
+<details>
+<summary>點此顯示解答</summary>
+
+1. 嘗試寫入只讀掛載：
+
+   ```zsh
+   container run --rm \
+     --mount "type=bind,source=$PWD/shared,target=/course,readonly" \
+     docker.io/library/alpine:3.22 \
+     sh -c 'touch /course/new.txt'
+   ```
+
+   指令應失敗並回報 `Read-only file system` 或同義訊息，且主機端不會出現 `shared/new.txt`。
+2. 刪除容器不會刪除 bind mount 的主機資料：
+
+   ```zsh
+   container stop acp-mount
+   container delete acp-mount
+   container run --name acp-mount --detach \
+     --volume "$PWD/shared:/course" \
+     docker.io/library/alpine:3.22 sleep 3600
+   container exec acp-mount cat /course/note.txt
+   ```
+
+   仍應讀到 `第二版`。
+3. 掛載整個家目錄會讓容器接觸 SSH 金鑰、雲端憑證、設定檔及其他專案資料；若可寫，遭入侵的程序還能修改或刪除它們。應只掛載必要的子目錄，並盡可能使用 `readonly`。
+
+</details>
+
 ## 清理
 
 ```zsh

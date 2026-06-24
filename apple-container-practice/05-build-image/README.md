@@ -56,6 +56,45 @@ container build --tag acp-web:v2 .
 2. 比較 `v1`、`v2` 的映像資訊。
 3. 使用 `--no-cache` 重建，觀察耗時差異。
 
+<details>
+<summary>點此顯示解答</summary>
+
+1. 修改 `app/index.html`，在 `<body>` 內加入姓名，例如 `<p>呂昀修</p>`，再執行：
+
+   ```zsh
+   container build --tag acp-web:v2 .
+   ```
+
+   因現有 `acp-web` 仍執行 `v1`，可用另一個容器驗證 `v2`：
+
+   ```zsh
+   container run --rm --publish 127.0.0.1:8083:80 acp-web:v2
+   # 另開終端執行：curl http://127.0.0.1:8083
+   ```
+
+2. 檢查兩個標籤的詳細資訊：
+
+   ```zsh
+   container image inspect acp-web:v1 | jq
+   container image inspect acp-web:v2 | jq
+   ```
+
+   `v2` 的 manifest、設定或圖層 digest 應因 HTML 內容改變而不同；未受影響的基礎映像圖層通常仍可共用。
+3. 可用 shell 的 `time` 比較：
+
+   ```zsh
+   time container build --tag acp-web:cached .
+   time container build --no-cache --tag acp-web:uncached .
+   ```
+
+   `--no-cache` 會重新執行建置步驟，通常較慢；實際差距會受本機快取、網路及檔案大小影響。完成後可刪除額外標籤：
+
+   ```zsh
+   container image delete acp-web:cached acp-web:uncached
+   ```
+
+</details>
+
 ## 清理
 
 ```zsh

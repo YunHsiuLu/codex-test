@@ -52,6 +52,31 @@ container run --rm --read-only --tmpfs /tmp docker.io/library/alpine:3.22 sh -c 
 2. 使用 `--cap-drop ALL` 執行一個簡單程序。
 3. 比較 bind mount 與具名卷的管理者、路徑可見性與適用情境。
 
+<details>
+<summary>點此顯示解答</summary>
+
+1. 不提供可寫掛載時，寫入根檔案系統應失敗：
+
+   ```zsh
+   container run --rm --read-only \
+     docker.io/library/alpine:3.22 \
+     sh -c 'echo test > /result.txt'
+   ```
+
+   預期回報 `Read-only file system`。
+2. 移除所有 Linux capabilities 後執行不需要特權的程序：
+
+   ```zsh
+   container run --rm --cap-drop ALL \
+     docker.io/library/alpine:3.22 \
+     sh -c 'echo ok; id'
+   ```
+
+   簡單輸出仍能執行，但需要特定 capability 的操作會失敗。這符合最小權限原則。
+3. bind mount 由使用者管理 macOS 上的明確路徑，主機可直接編輯，適合原始碼、設定及開發時即時同步；但會耦合主機路徑，也必須自行管理權限。具名卷由 `container` 管理，主機路徑不是日常操作介面，適合資料庫及應用程式持久資料，也較容易用名稱在容器間重用。兩者的生命週期都獨立於容器，但具名卷要用 `container volume` 指令管理。
+
+</details>
+
 ## 清理
 
 ```zsh
