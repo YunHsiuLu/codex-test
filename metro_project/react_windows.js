@@ -8,6 +8,10 @@ const popup = document.querySelector('#station-popup');
 const legend = document.querySelector('#legend');
 const stations = new Map();
 
+if (new URLSearchParams(location.search).has('debug')) {
+  document.documentElement.classList.add('debug-stations');
+}
+
 function svg(tag, attrs = {}) {
   const node = document.createElementNS(NS, tag);
   Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
