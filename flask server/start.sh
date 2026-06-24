@@ -4,7 +4,12 @@ set -eu
 
 SCRIPT_DIR=${0:A:h}
 PID_FILE="$SCRIPT_DIR/data/server.pid"
+MODE_FILE="$SCRIPT_DIR/data/server.mode"
+CERT_PID_FILE="$SCRIPT_DIR/data/cert-server.pid"
 LOG_FILE="$SCRIPT_DIR/server.log"
+CERT_LOG_FILE="$SCRIPT_DIR/cert-server.log"
+PRIVATE_CERT_DIR="$SCRIPT_DIR/data/https/private"
+PUBLIC_CERT_DIR="$SCRIPT_DIR/data/https/public"
 
 get_lan_ip() {
     local interface
@@ -28,25 +33,20 @@ get_lan_ip() {
 show_urls() {
     local lan_ip
     lan_ip=$(get_lan_ip)
+    if [[ -z "$lan_ip" && -f "$PRIVATE_CERT_DIR/server-ip.txt" ]]; then
+        lan_ip=$(<"$PRIVATE_CERT_DIR/server-ip.txt")
+    fi
 
-    echo "本機網址：http://127.0.0.1:5001"
+    echo "本機網址：https://127.0.0.1:5001"
     if [[ -n "$lan_ip" ]]; then
-        echo "手機網址：http://$lan_ip:5001"
+        echo "手機網址：https://$lan_ip:5001"
+        echo "憑證網址：http://$lan_ip:5003/teacher-messenger-ca.crt"
         echo "手機與電腦必須連接同一個網路。"
+        echo "iPhone 第一次安裝請閱讀：$SCRIPT_DIR/IPHONE_SETUP.md"
     else
         echo "目前無法取得區域網路 IP，請確認 Wi-Fi 或網路連線。"
     fi
 }
-
-if [[ -f "$PID_FILE" ]]; then
-    PID=$(<"$PID_FILE")
-    if kill -0 "$PID" 2>/dev/null; then
-        echo "留言板已在背景執行，PID：$PID"
-        show_urls
-        exit 0
-    fi
-    rm -f "$PID_FILE"
-fi
 
 if [[ -n "${PYTHON_BIN:-}" ]]; then
     PYTHON="$PYTHON_BIN"
@@ -63,10 +63,56 @@ if ! "$PYTHON" -c 'import flask, flask_socketio' 2>/dev/null; then
     exit 1
 fi
 
+"$SCRIPT_DIR/setup_https.sh" >/dev/null
+CERT_RENEWED=false
+if [[ -f "$SCRIPT_DIR/data/https/server-cert-renewed" ]]; then
+    CERT_RENEWED=true
+    rm -f "$SCRIPT_DIR/data/https/server-cert-renewed"
+fi
+
+if [[ -f "$CERT_PID_FILE" ]]; then
+    CERT_PID=$(<"$CERT_PID_FILE")
+    if ! kill -0 "$CERT_PID" 2>/dev/null; then
+        rm -f "$CERT_PID_FILE"
+    fi
+fi
+
+if [[ ! -f "$CERT_PID_FILE" ]]; then
+    nohup "$PYTHON" -m http.server 5003 \
+        --bind 0.0.0.0 \
+        --directory "$PUBLIC_CERT_DIR" >> "$CERT_LOG_FILE" 2>&1 &
+    CERT_PID=$!
+    echo "$CERT_PID" > "$CERT_PID_FILE"
+    sleep 1
+    if ! kill -0 "$CERT_PID" 2>/dev/null; then
+        rm -f "$CERT_PID_FILE"
+        echo "憑證下載服務啟動失敗，請查看：$CERT_LOG_FILE"
+        exit 1
+    fi
+fi
+
+if [[ -f "$PID_FILE" ]]; then
+    PID=$(<"$PID_FILE")
+    if kill -0 "$PID" 2>/dev/null; then
+        MODE=$(cat "$MODE_FILE" 2>/dev/null || true)
+        if [[ "$MODE" == "https" && "$CERT_RENEWED" == false ]]; then
+            echo "留言板已在背景執行，PID：$PID"
+            show_urls
+            exit 0
+        fi
+        kill "$PID"
+        sleep 1
+    fi
+    rm -f "$PID_FILE" "$MODE_FILE"
+fi
+
 cd "$SCRIPT_DIR"
+SSL_CERT_FILE="$PRIVATE_CERT_DIR/server-cert.pem" \
+SSL_KEY_FILE="$PRIVATE_CERT_DIR/server-key.pem" \
 nohup "$PYTHON" server.py >> "$LOG_FILE" 2>&1 &
 PID=$!
 echo "$PID" > "$PID_FILE"
+echo "https" > "$MODE_FILE"
 sleep 1
 
 if kill -0 "$PID" 2>/dev/null; then
@@ -74,7 +120,7 @@ if kill -0 "$PID" 2>/dev/null; then
     show_urls
     echo "紀錄：$LOG_FILE"
 else
-    rm -f "$PID_FILE"
+    rm -f "$PID_FILE" "$MODE_FILE"
     echo "留言板啟動失敗，請查看：$LOG_FILE"
     exit 1
 fi

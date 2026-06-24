@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#155eef">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>物理老師留言呼叫器</title>
+    <link rel="manifest" href="/static/manifest.webmanifest">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { position: relative; padding: 10px 20px; cursor: pointer; background: #eee; border: none; border-radius: 5px; }
+        :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; background: #f4f7fb; color: #172033; }
+        main { width: min(100%, 560px); margin: 0 auto; padding: 18px 16px 40px; }
+        h1 { margin: 8px 0 4px; font-size: 28px; }
+        .subtitle { margin: 0 0 18px; color: #667085; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 16px; padding: 4px; background: #e8edf5; border-radius: 12px; }
+        .tab-btn { position: relative; min-height: 44px; padding: 10px 16px; cursor: pointer; background: transparent; color: #344054; border: none; border-radius: 9px; }
         .tab-btn.active { background: #007bff; color: white; }
         .notification-badge {
             display: none;
@@ -34,20 +42,35 @@
             0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.5); }
             50% { transform: scale(1.3); box-shadow: 0 0 0 8px rgba(220, 53, 69, 0); }
         }
-        .tab-content { display: none; }
+        .tab-content { display: none; padding: 20px; background: white; border: 1px solid #e4e7ec; border-radius: 16px; box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06); }
         .tab-content.active { display: block; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .connection-status { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; padding: 11px 12px; border-radius: 10px; background: #fff4e5; color: #9a4f00; font-weight: 700; }
+        .connection-status.online { background: #eaf8ef; color: #16733d; }
+        .connection-status.syncing { background: #edf4ff; color: #155eef; }
+        .queue-count { font-size: 14px; white-space: nowrap; }
+        label { display: block; margin-top: 14px; font-size: 15px; font-weight: 700; }
+        input { width: 100%; min-height: 50px; padding: 13px 14px; margin: 7px 0 0; border: 1px solid #cfd5df; border-radius: 10px; font-size: 16px; }
+        input:focus { border-color: #155eef; outline: 3px solid rgba(21, 94, 239, 0.12); }
         input[type="checkbox"] { width: auto; padding: 0; margin: 0 6px 0 0; }
-        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button { width: 100%; min-height: 48px; padding: 12px; background: #155eef; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 700; }
+        button:disabled { cursor: wait; opacity: 0.7; }
+        .send-button { margin-top: 20px; min-height: 54px; font-size: 18px; }
         .phone-reminder { margin: 14px 0 0; color: #dc3545; font-size: 24px; font-weight: bold; text-align: center; }
+        .delivery-note { margin: 12px 0 0; color: #667085; font-size: 14px; line-height: 1.5; text-align: center; }
         li { margin-bottom: 10px; list-style: none; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        ul { padding-left: 0; }
+        @media (min-width: 640px) {
+            main { padding-top: 32px; }
+        }
     </style>
 </head>
 <body>
-
+<main>
+    <h1>給老師的留言</h1>
+    <p class="subtitle">手機離線時也能先留下訊息</p>
     <div class="tabs">
-        <button class="tab-btn active" onclick="openTab('send', this)">發送留言</button>
-        <button class="tab-btn" onclick="openTab('admin', this)">
+        <button id="send_tab_button" class="tab-btn active" onclick="openTab('send', this)">發送留言</button>
+        <button id="admin_tab_button" class="tab-btn" onclick="openTab('admin', this)">
             後台數據
             <span id="pending_badge"
                   class="notification-badge{% if active_count > 0 %} visible{% endif %}"
@@ -56,11 +79,17 @@
     </div>
 
     <div id="send" class="tab-content active">
-        <h3>給老師的留言</h3>
-        <input type="text" id="name" placeholder="學生：班級座號姓名；不是學生：姓名">
-        <input type="text" id="purpose" placeholder="留言事項">
-        <button onclick="sendMsg()">送出訊息</button>
+        <div id="connection_status" class="connection-status" role="status" aria-live="polite">
+            <span id="connection_text">正在確認伺服器連線</span>
+            <span id="queue_count" class="queue-count">待傳 0 則</span>
+        </div>
+        <label for="name">姓名或班級座號</label>
+        <input type="text" id="name" autocomplete="name" placeholder="學生：班級座號姓名；不是學生：姓名">
+        <label for="purpose">留言事項</label>
+        <input type="text" id="purpose" placeholder="請輸入要告訴老師的事情">
+        <button id="send_button" class="send-button" onclick="sendMsg()">送出訊息</button>
         <p class="phone-reminder">請將手機取下打字</p>
+        <p class="delivery-note">離線時，留言會先保存在這支手機；連回老師的電腦後會自動傳送。</p>
     </div>
 
     <div id="admin" class="tab-content">
@@ -84,13 +113,53 @@
             </ul>
         </div>
     </div>
+</main>
 
     <script>
-        const socket = io();
+        const socket = typeof io === 'function' ? io() : null;
         const MY_PASSWORD = "a128"; // 請自行修改密碼
+        const QUEUE_KEY = 'teacher-message-queue-v1';
+        const ACTIVE_TAB_KEY = 'teacher-message-active-tab';
+        const ADMIN_UNLOCKED_KEY = 'teacher-message-admin-unlocked';
 
         const badge = document.getElementById('pending_badge');
+        const connectionStatus = document.getElementById('connection_status');
+        const connectionText = document.getElementById('connection_text');
+        const queueCount = document.getElementById('queue_count');
+        const sendButton = document.getElementById('send_button');
         let pendingCount = {{ active_count }};
+        let syncPromise = null;
+
+        function loadQueue() {
+            try {
+                const queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+                return Array.isArray(queue) ? queue : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveQueue(queue) {
+            localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+            renderQueueCount();
+        }
+
+        function renderQueueCount() {
+            const count = loadQueue().length;
+            queueCount.textContent = `待傳 ${count} 則`;
+        }
+
+        function setConnectionState(state) {
+            connectionStatus.className = `connection-status ${state}`;
+            if (state === 'online') connectionText.textContent = '已連線至老師的電腦';
+            if (state === 'offline') connectionText.textContent = '目前離線，留言將保存在手機';
+            if (state === 'syncing') connectionText.textContent = '正在傳送手機中的留言';
+        }
+
+        function createMessageId() {
+            if (crypto.randomUUID) return crypto.randomUUID();
+            return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        }
 
         function openTab(tabName, button) {
             // 1. 切換標籤頁樣式
@@ -98,12 +167,14 @@
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             button.classList.add('active');
+            sessionStorage.setItem(ACTIVE_TAB_KEY, tabName);
 
             // 2. 如果使用者切換離開了「後台數據」頁面，自動重置後台狀態
             if (tabName !== 'admin') {
                 document.getElementById('admin_pwd').value = ''; // 清空密碼框
                 document.getElementById('login_area').style.display = 'block'; // 顯示登入框
                 document.getElementById('history_area').style.display = 'none'; // 隱藏內容
+                sessionStorage.removeItem(ADMIN_UNLOCKED_KEY);
             }
         }
 
@@ -111,30 +182,105 @@
             if (document.getElementById('admin_pwd').value === MY_PASSWORD) {
                 document.getElementById('login_area').style.display = 'none';
                 document.getElementById('history_area').style.display = 'block';
+                sessionStorage.setItem(ADMIN_UNLOCKED_KEY, 'true');
             } else { alert("密碼錯誤"); }
         }
 
-        function sendMsg() {
+        function restoreTabState() {
+            if (sessionStorage.getItem(ACTIVE_TAB_KEY) !== 'admin') return;
+
+            openTab('admin', document.getElementById('admin_tab_button'));
+            if (sessionStorage.getItem(ADMIN_UNLOCKED_KEY) === 'true') {
+                document.getElementById('login_area').style.display = 'none';
+                document.getElementById('history_area').style.display = 'block';
+            }
+        }
+
+        async function sendMsg() {
             const nameInput = document.getElementById('name');
             const purposeInput = document.getElementById('purpose');
-            const body = new URLSearchParams({
-                student_name: nameInput.value,
-                purpose: purposeInput.value
-            });
+            const name = nameInput.value.trim();
+            const purpose = purposeInput.value.trim();
 
-            fetch('/send', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body
-            }).then(async response => {
-                if (!response.ok) {
-                    alert(await response.text());
-                    return;
-                }
-                nameInput.value = '';
-                purposeInput.value = '';
-                alert('留言已送出');
+            if (!name || !purpose) {
+                alert('姓名與留言內容不可空白');
+                return;
+            }
+
+            const message = {
+                clientMessageId: createMessageId(),
+                studentName: name,
+                purpose,
+                createdAt: new Date().toISOString()
+            };
+            saveQueue([...loadQueue(), message]);
+            nameInput.value = '';
+            purposeInput.value = '';
+            sendButton.disabled = true;
+
+            await syncQueue();
+            const isPending = loadQueue().some(item => item.clientMessageId === message.clientMessageId);
+            alert(isPending ? '目前離線中，留言已保存於手機中' : '留言已送出');
+            sendButton.disabled = false;
+        }
+
+        function syncQueue() {
+            if (syncPromise) return syncPromise;
+            syncPromise = performSync().finally(() => {
+                syncPromise = null;
             });
+            return syncPromise;
+        }
+
+        async function performSync() {
+            let queue = loadQueue();
+            if (!queue.length) {
+                renderQueueCount();
+                return true;
+            }
+
+            setConnectionState('syncing');
+            try {
+                for (const message of queue) {
+                    const response = await fetch('/send', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        cache: 'no-store',
+                        body: JSON.stringify({
+                            student_name: message.studentName,
+                            purpose: message.purpose,
+                            client_message_id: message.clientMessageId
+                        })
+                    });
+                    if (!response.ok) throw new Error(await response.text());
+
+                    queue = loadQueue().filter(item => item.clientMessageId !== message.clientMessageId);
+                    saveQueue(queue);
+                }
+                setConnectionState('online');
+                return true;
+            } catch (error) {
+                setConnectionState('offline');
+                return false;
+            }
+        }
+
+        async function refreshConnection() {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 3000);
+            try {
+                const response = await fetch('/health', {
+                    cache: 'no-store',
+                    signal: controller.signal
+                });
+                if (!response.ok) throw new Error('Server unavailable');
+                setConnectionState('online');
+                if (loadQueue().length) await syncQueue();
+            } catch (error) {
+                setConnectionState('offline');
+            } finally {
+                clearTimeout(timeout);
+            }
         }
 
         function completeMsg(id) {
@@ -168,11 +314,33 @@
             document.getElementById('active_list').prepend(item);
         }
 
-        socket.on('new_message', message => {
-            updateBadge(pendingCount + 1, true);
-            prependMessage(message);
+        if (socket) {
+            socket.on('new_message', message => {
+                updateBadge(pendingCount + 1, true);
+                prependMessage(message);
+            });
+            socket.on('refresh_page', () => {
+                const activeTab = document.querySelector('.tab-content.active');
+                sessionStorage.setItem(ACTIVE_TAB_KEY, activeTab ? activeTab.id : 'send');
+                if (document.getElementById('history_area').style.display !== 'none') {
+                    sessionStorage.setItem(ADMIN_UNLOCKED_KEY, 'true');
+                }
+                location.reload();
+            });
+        }
+
+        restoreTabState();
+        renderQueueCount();
+        refreshConnection();
+        window.addEventListener('online', refreshConnection);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') refreshConnection();
         });
-        socket.on('refresh_page', () => { location.reload(); });
+        setInterval(refreshConnection, 10000);
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js');
+        }
     </script>
 </body>
 </html>

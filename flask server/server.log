@@ -372,3 +372,404 @@ Werkzeug appears to be used in a production deployment. Consider switching to a 
 10.240.61.70 - - [22/Jun/2026 12:21:53] "POST /socket.io/?EIO=4&transport=polling&t=Pxja3pK&sid=125vGyzDewoRWH-BAABL HTTP/1.1" 200 -
 10.240.61.70 - - [22/Jun/2026 12:21:53] "GET /socket.io/?EIO=4&transport=polling&t=Pxja3pL&sid=125vGyzDewoRWH-BAABL HTTP/1.1" 200 -
 10.240.61.70 - - [22/Jun/2026 12:21:53] "GET /socket.io/?EIO=4&transport=polling&t=Pxja3qW&sid=125vGyzDewoRWH-BAABL HTTP/1.1" 200 -
+10.240.61.70 - - [22/Jun/2026 17:41:21] "GET /socket.io/?EIO=4&transport=websocket&sid=125vGyzDewoRWH-BAABL HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:42:41] "GET /socket.io/?EIO=4&transport=polling&t=Pxt53Fh HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:42:41] "POST /socket.io/?EIO=4&transport=polling&t=Pxt53In&sid=cQfhn_NNAI7UJYawAABN HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:42:41] "GET /socket.io/?EIO=4&transport=polling&t=Pxt53Io&sid=cQfhn_NNAI7UJYawAABN HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:42:41] "GET /socket.io/?EIO=4&transport=polling&t=Pxt53NH&sid=cQfhn_NNAI7UJYawAABN HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:42:42] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:42:42] "GET /socket.io/?EIO=4&transport=websocket&sid=cQfhn_NNAI7UJYawAABN HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:42:42] "GET /socket.io/?EIO=4&transport=polling&t=Pxt53iY HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:42:43] "POST /socket.io/?EIO=4&transport=polling&t=Pxt53lx&sid=p1eLf96emJclpyyUAABP HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:42:43] "GET /socket.io/?EIO=4&transport=polling&t=Pxt53lz&sid=p1eLf96emJclpyyUAABP HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:42:43] "GET /socket.io/?EIO=4&transport=polling&t=Pxt53rQ&sid=p1eLf96emJclpyyUAABP HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 08:45:38] "GET /socket.io/?EIO=4&transport=websocket&sid=p1eLf96emJclpyyUAABP HTTP/1.1" 200 -
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+ * Serving Flask app 'server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on https://127.0.0.1:5001
+ * Running on https://10.240.63.247:5001
+[33mPress CTRL+C to quit[0m
+10.240.61.70 - - [24/Jun/2026 09:29:53] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:29:53] "GET /static/manifest.webmanifest HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:29:53] "GET /socket.io/?EIO=4&transport=polling&t=PxtFtrc HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:29:53] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:29:53] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+10.240.61.70 - - [24/Jun/2026 09:29:53] "GET /service-worker.js HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:29:54] "POST /socket.io/?EIO=4&transport=polling&t=PxtFttb&sid=HIJ5Um6z2xrqbcMJAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:29:54] "GET /socket.io/?EIO=4&transport=polling&t=PxtFttd&sid=HIJ5Um6z2xrqbcMJAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:29:54] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:29:54] "GET /static/app-icon.svg HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:29:54] "[36mGET /static/manifest.webmanifest HTTP/1.1[0m" 304 -
+10.240.61.70 - - [24/Jun/2026 09:29:54] "GET /socket.io/?EIO=4&transport=polling&t=PxtFtxo&sid=HIJ5Um6z2xrqbcMJAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:03] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:13] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:15] "[33mGET /apple-touch-icon-120x120-precomposed.png HTTP/1.1[0m" 404 -
+10.240.61.70 - - [24/Jun/2026 09:30:15] "GET /static/app-icon.svg HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:15] "[33mGET /apple-touch-icon-120x120.png HTTP/1.1[0m" 404 -
+10.240.61.70 - - [24/Jun/2026 09:30:15] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
+10.240.61.70 - - [24/Jun/2026 09:30:16] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
+10.240.61.70 - - [24/Jun/2026 09:30:19] "GET /socket.io/?EIO=4&transport=websocket&sid=HIJ5Um6z2xrqbcMJAAAA HTTP/1.1" 200 -
+Error on request:
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 335, in execute
+    write(data)
+    ~~~~~^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 301, in write
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1263, in sendall
+    v = self.send(byte_view[count:])
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1232, in send
+    return self._sslobj.write(data)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 371, in run_wsgi
+    execute(self.server.app)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 356, in execute
+    data = self.rfile.read(10_000_000)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+ssl.SSLError: [SSL: UNEXPECTED_EOF_WHILE_READING] unexpected eof while reading (_ssl.c:2711)
+10.240.61.70 - - [24/Jun/2026 09:30:22] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:23] "GET /static/manifest.webmanifest HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:25] "GET /socket.io/?EIO=4&transport=polling&t=PxtF_U- HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:25] "GET /service-worker.js HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:25] "POST /socket.io/?EIO=4&transport=polling&t=PxtF_ZD&sid=_eqcHOe3d-zT2xIuAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:26] "GET /socket.io/?EIO=4&transport=polling&t=PxtF_ZE&sid=_eqcHOe3d-zT2xIuAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:26] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:26] "GET /socket.io/?EIO=4&transport=polling&t=PxtF_nW&sid=_eqcHOe3d-zT2xIuAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:26] "GET /static/app-icon.svg HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:26] "[36mGET /static/manifest.webmanifest HTTP/1.1[0m" 304 -
+10.240.61.70 - - [24/Jun/2026 09:30:26] "GET /socket.io/?EIO=4&transport=polling&t=PxtF_r4&sid=_eqcHOe3d-zT2xIuAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:30:35] "GET /health HTTP/1.1" 200 -
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+ * Serving Flask app 'server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on https://127.0.0.1:5001
+ * Running on https://10.240.63.247:5001
+[33mPress CTRL+C to quit[0m
+10.240.61.70 - - [24/Jun/2026 09:31:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:31:16] "GET /socket.io/?EIO=4&transport=polling&t=PxtGC52 HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:31:17] "POST /socket.io/?EIO=4&transport=polling&t=PxtGC6t&sid=DuAaMPDP2k3tbOLNAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:31:17] "GET /socket.io/?EIO=4&transport=polling&t=PxtGC6x&sid=DuAaMPDP2k3tbOLNAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:31:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:31:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:31:45] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:31:55] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:32:05] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:32:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:32:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:32:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:32:45] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:32:55] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:33:05] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:33:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:33:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:33:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:33:45] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:33:55] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:34:05] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:34:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:34:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:34:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:34:45] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:34:55] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:35:05] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:35:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:35:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:35:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:35:45] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:35:55] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:36:05] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:36:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:36:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:36:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:36:45] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:36:55] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:37:05] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:37:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:37:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:37:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:37:45] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:37:55] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:38:05] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:38:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:38:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:38:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:38:45] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:38:55] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:39:05] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:39:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:39:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:39:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:39:41] "POST /send HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:39:46] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:39:56] "GET /health HTTP/1.1" 200 -
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+ * Serving Flask app 'server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on https://127.0.0.1:5001
+ * Running on https://10.240.63.247:5001
+[33mPress CTRL+C to quit[0m
+10.240.61.70 - - [24/Jun/2026 09:40:39] "GET /socket.io/?EIO=4&transport=polling&t=PxtILOI HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:40:39] "POST /socket.io/?EIO=4&transport=polling&t=PxtILRo&sid=hDCMrbDDgjWYEv4YAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:40:39] "GET /socket.io/?EIO=4&transport=polling&t=PxtILRq&sid=hDCMrbDDgjWYEv4YAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:40:39] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:40:39] "POST /send HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:40:49] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:40:59] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:41:09] "GET /health HTTP/1.1" 200 -
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+ * Serving Flask app 'server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on https://127.0.0.1:5001
+ * Running on https://10.240.63.247:5001
+[33mPress CTRL+C to quit[0m
+10.240.61.70 - - [24/Jun/2026 09:42:52] "GET /socket.io/?EIO=4&transport=polling&t=PxtIs48 HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:42:53] "POST /socket.io/?EIO=4&transport=polling&t=PxtIs5R&sid=rHLyspo54GtF7UXSAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:42:53] "GET /socket.io/?EIO=4&transport=polling&t=PxtIs5T&sid=rHLyspo54GtF7UXSAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:42:59] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:07] "POST /complete HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:08] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:08] "GET /socket.io/?EIO=4&transport=websocket&sid=rHLyspo54GtF7UXSAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:09] "GET /service-worker.js HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:10] "GET /socket.io/?EIO=4&transport=polling&t=PxtIwD0 HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:10] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:10] "POST /socket.io/?EIO=4&transport=polling&t=PxtIwFm&sid=Yt9ftoKddoTanYflAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:10] "GET /socket.io/?EIO=4&transport=polling&t=PxtIwFo&sid=Yt9ftoKddoTanYflAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:16] "POST /complete HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:16] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:16] "GET /socket.io/?EIO=4&transport=websocket&sid=Yt9ftoKddoTanYflAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:16] "GET /socket.io/?EIO=4&transport=polling&t=PxtIxqF HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:16] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:16] "POST /socket.io/?EIO=4&transport=polling&t=PxtIxuj&sid=zJS1porxIDMTtJhJAAAE HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:16] "GET /socket.io/?EIO=4&transport=polling&t=PxtIxum&sid=zJS1porxIDMTtJhJAAAE HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:17] "GET /service-worker.js HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:26] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:31] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:31] "GET /static/manifest.webmanifest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:32] "GET /socket.io/?EIO=4&transport=polling&t=PxtI_eK HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:32] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:32] "POST /socket.io/?EIO=4&transport=polling&t=PxtI_ee&sid=nwKr58HkQiNOHlo8AAAG HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:32] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [24/Jun/2026 09:43:32] "GET /static/app-icon.svg HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:32] "GET /socket.io/?EIO=4&transport=polling&t=PxtI_eg&sid=nwKr58HkQiNOHlo8AAAG HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:32] "GET /service-worker.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:32] "GET /socket.io/?EIO=4&transport=polling&t=PxtI_et&sid=nwKr58HkQiNOHlo8AAAG HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:36] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:42] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:46] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:48] "POST /send HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:52] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:56] "POST /complete HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:56] "GET /socket.io/?EIO=4&transport=websocket&sid=nwKr58HkQiNOHlo8AAAG HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:56] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:56] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:56] "GET /socket.io/?EIO=4&transport=polling&t=PxtJ5Xu HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:56] "GET /static/manifest.webmanifest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:56] "POST /socket.io/?EIO=4&transport=polling&t=PxtJ5Y6&sid=VhupNWFsm2x9IvucAAAI HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:56] "GET /static/app-icon.svg HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:56] "GET /socket.io/?EIO=4&transport=polling&t=PxtJ5Y7&sid=VhupNWFsm2x9IvucAAAI HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:43:56] "GET /socket.io/?EIO=4&transport=polling&t=PxtJ5YG&sid=VhupNWFsm2x9IvucAAAI HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:56] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:56] "GET /socket.io/?EIO=4&transport=websocket&sid=zJS1porxIDMTtJhJAAAE HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:56] "GET /socket.io/?EIO=4&transport=polling&t=PxtJ5gM HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:56] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:57] "POST /socket.io/?EIO=4&transport=polling&t=PxtJ5hY&sid=4bT2u3k4Na3_GppFAAAK HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:57] "GET /socket.io/?EIO=4&transport=polling&t=PxtJ5hZ&sid=4bT2u3k4Na3_GppFAAAK HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:43:57] "GET /service-worker.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:44:06] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:44:07] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:44:16] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:44:17] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:44:26] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:44:26] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:44:36] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:44:37] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:44:46] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:44:47] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 09:44:56] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:44:57] "GET /health HTTP/1.1" 200 -
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+ * Serving Flask app 'server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on https://127.0.0.1:5001
+ * Running on https://10.240.63.247:5001
+[33mPress CTRL+C to quit[0m
+10.240.61.70 - - [24/Jun/2026 09:46:01] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:01] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:01] "GET /socket.io/?EIO=4&transport=polling&t=PxtJa5k HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:01] "POST /socket.io/?EIO=4&transport=polling&t=PxtJa7b&sid=Cr7dlAPh_dQhHbGFAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:01] "GET /socket.io/?EIO=4&transport=polling&t=PxtJa7c&sid=Cr7dlAPh_dQhHbGFAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:01] "GET /socket.io/?EIO=4&transport=polling&t=PxtJaBt&sid=Cr7dlAPh_dQhHbGFAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:02] "GET /service-worker.js HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:09] "POST /send HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:12] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:14] "POST /complete HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:15] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:15] "GET /socket.io/?EIO=4&transport=websocket&sid=Cr7dlAPh_dQhHbGFAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:15] "GET /socket.io/?EIO=4&transport=polling&t=PxtJdS4 HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:15] "POST /socket.io/?EIO=4&transport=polling&t=PxtJdUk&sid=TVnVp-DMCt5TseREAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:15] "GET /socket.io/?EIO=4&transport=polling&t=PxtJdUl&sid=TVnVp-DMCt5TseREAAAC HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:16] "GET /service-worker.js HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:45] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:46:55] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:47:05] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:47:15] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:47:25] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:47:35] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:47:45] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:47:55] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:48:05] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:48:12] "GET /socket.io/?EIO=4&transport=websocket&sid=TVnVp-DMCt5TseREAAAC HTTP/1.1" 200 -
+Error on request:
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 335, in execute
+    write(data)
+    ~~~~~^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 301, in write
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1263, in sendall
+    v = self.send(byte_view[count:])
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1232, in send
+    return self._sslobj.write(data)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 371, in run_wsgi
+    execute(self.server.app)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 356, in execute
+    data = self.rfile.read(10_000_000)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+ssl.SSLError: [SSL: UNEXPECTED_EOF_WHILE_READING] unexpected eof while reading (_ssl.c:2711)
+10.240.61.70 - - [24/Jun/2026 09:48:32] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:48:32] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:48:33] "GET /socket.io/?EIO=4&transport=polling&t=PxtK9DR HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:48:33] "POST /socket.io/?EIO=4&transport=polling&t=PxtK9Ev&sid=t9oOj9bJrIjgHZh0AAAE HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:48:33] "GET /socket.io/?EIO=4&transport=polling&t=PxtK9Ez&sid=t9oOj9bJrIjgHZh0AAAE HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:48:42] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:48:53] "GET /socket.io/?EIO=4&transport=websocket&sid=t9oOj9bJrIjgHZh0AAAE HTTP/1.1" 200 -
+Error on request:
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 335, in execute
+    write(data)
+    ~~~~~^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 301, in write
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1263, in sendall
+    v = self.send(byte_view[count:])
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1232, in send
+    return self._sslobj.write(data)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 371, in run_wsgi
+    execute(self.server.app)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 356, in execute
+    data = self.rfile.read(10_000_000)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+ssl.SSLError: [SSL: UNEXPECTED_EOF_WHILE_READING] unexpected eof while reading (_ssl.c:2711)
+10.240.61.70 - - [24/Jun/2026 09:49:09] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:49:09] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:49:10] "GET /socket.io/?EIO=4&transport=polling&t=PxtKID0 HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:49:10] "POST /socket.io/?EIO=4&transport=polling&t=PxtKIIP&sid=moZHbRfv8ANOc8fFAAAG HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:49:11] "GET /socket.io/?EIO=4&transport=polling&t=PxtKIIS&sid=moZHbRfv8ANOc8fFAAAG HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:49:19] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:49:29] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:49:37] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:49:39] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:49:49] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:49:53] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:50:00] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:50:09] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:50:19] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:50:29] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:50:39] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:50:49] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:50:59] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:51:09] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:51:19] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:51:30] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:51:39] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:51:49] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [24/Jun/2026 09:51:59] "GET /health HTTP/1.1" 200 -

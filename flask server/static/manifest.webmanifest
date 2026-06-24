@@ -1,0 +1,18 @@
+{
+    "name": "物理老師留言呼叫器",
+    "short_name": "留言給老師",
+    "description": "可在離線時暫存，連線後自動傳送的留言工具",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#f4f7fb",
+    "theme_color": "#155eef",
+    "icons": [
+        {
+            "src": "/static/app-icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}
