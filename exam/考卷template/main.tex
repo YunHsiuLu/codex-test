@@ -1,0 +1,153 @@
+\documentclass[10pt,a4paper]{article}
+
+% 引入外部設定檔
+\input{preamble}
+\input{commands}
+
+\begin{document}
+
+% --- 考試抬頭 ---
+\examheader
+
+% --- 個人資訊 (置右) ---
+\noindent \hspace*{\fill} \large 班級：\underline{\hspace{1.5cm}} 座號：\underline{\hspace{1cm}} 姓名：\underline{\hspace{2.5cm}}
+
+\vspace{1em}
+
+% --- 考試說明區 ---
+\begin{itemize}[leftmargin=1em]
+    \item[$\ast$] 命題範圍：
+    \item[$\ast$] 命題教師：
+    \item[$\ast$] 科目代碼：
+    \item[$\ast$] 段考注意事項：
+    \begin{enumerate}[label=\arabic*., leftmargin=2em]
+        \item 讀卡部分請使用 2B 鉛筆書寫；若基本資料畫記不完整，扣該科段考成績十分；\\若答案畫記不清楚，致使電腦無法辨識判斷者，該題以零分計。
+        \item 答案卡上除了填入年級、年級代號、座號、科目代碼之外，也請同學們用正楷填寫上\textbf{姓名}及\textbf{科目}！
+        \item 答案卷一律用藍或黑色原子筆/簽字筆書寫，禁用擦擦筆，並確實填寫基本資料，否則扣該科段考成績十分。
+        \item 本次試卷計 \pageref{EndOfExam} 頁，共 \total{qcount} 題，總分 \the\numexpr (\totvalue{sccount}*\scscore) + (\totvalue{mccount}*\mcscore) + \totvalue{wtscore} \relax 分，請確實檢查題目卷，有問題請立刻向監考老師反映。
+    \end{enumerate}
+\end{itemize}
+
+% --- 自動計算單選總分 ---
+\subsection*{一、單選題 (每題 \scscore 分，共 \the\numexpr \totvalue{sccount} * \scscore \relax 分)}
+\begin{center}
+    \begin{tcolorbox}[colframe=black, colback=white, halign=left, width=\textwidth, arc=2mm]
+        \small \textbf{說明：} \\
+        第 \the\numexpr\value{qcount}+1\relax 題至第 \the\numexpr\value{qcount}+\totvalue{sccount}\relax 題，每題選出一個最適當的選項，以 2B 鉛筆於「答案卡」上作答。每題答對得 \scscore 分，答錯不倒扣。 \\
+    \end{tcolorbox}
+\end{center}
+
+\schoices{以下單位以SI基本量表示，何者錯誤？}{h}
+{比熱：$\frac{m^2}{s\cdot K}$}{壓力：$\frac{kg}{m\cdot s^2}$}{電壓：$\frac{kg\cdot m^2}{A\cdot s^2}$}{力：$\frac{kg\cdot m}{s^2}$}{功率：$\frac{kg\cdot m^2}{s^3}$}
+
+\sideimg{\schoices{重量 10 kgw 的木塊原靜止於粗糙水平地面上，以 40 N 的水平推力 F 使木塊沿著施力方向移動 3 m 的位移，移動過程中木塊受到地面的動摩擦力 f 為 20 N，請問下列敘述何者正確？}{v}{水平推力所作的功為 60 N}{地板對木塊的施力方向垂直於地面}{若在移動中的木塊上，加上10 kgw 的砝碼，會使木塊立即停住}{若在移動中的木塊上，加上任意重量的砝碼，重力作功皆為 0}{若在靜止的木塊上，加上10 kgw 的砝碼，施以 F 推力時，無法推動木塊}}{q5.png}{0.25}{n}
+
+\newpage
+\noindent 第\the\numexpr\value{qcount}+1\relax ～\the\numexpr\value{qcount}+2\relax 題為題組
+
+2011年3月11日，日本東北外海發生規模9.0的地震，所引發的海嘯沖毀福島核電廠的備用柴油發電機，使得抽水機無法供應足夠的冷卻水讓原子爐的爐心溫度降溫，因而引起氫爆，到輻射物質大量外洩，而其核反應$^{235}_{92}\text{U}+^{1}_{0}\text{n}\rightarrow ^{141}_{56}\text{Ba}+^{92}_{36}\text{Kr}+^{1}_{0}\text{n}$，每1公斤的 U 完全分裂，反應前後質量虧損 0.9 克，請回答下列問題：（$1\text{cal}=4.2\text{J}$）
+
+\schoices{若有 0.82 公斤的 U 完全分裂，所產生的能量有$2\%$轉為熱能，則可使$10^8$公斤的水溫度上升若干$^\circ \text{C}$？}{h}{8.1}{3.24}{0.81}{0.324}{0.0324}
+
+\schoices{根據上文，福島核變的原因敘述，何者正確？}{v}
+{地震使抽水機無法提供冷卻水，導致爆炸}
+{地震動搖反應爐，使反應爐爆炸}
+{地震將核廢料移動至居住的區域}
+{儲存輻射物質的蓋子，沒有安全措施}
+{地震造成火山爆炸}
+
+% --- 自動計算複選總分 ---
+\subsection*{二、複選題 (每題 \mcscore 分，共 \the\numexpr \totvalue{mccount} * \mcscore \relax 分)}
+\begin{center}
+    \begin{tcolorbox}[colframe=black, colback=white, halign=left, width=\textwidth, arc=2mm]
+        \small \textbf{說明：} \\
+        第 \the\numexpr\value{qcount}+1\relax 題至第 \the\numexpr\value{qcount}+\totvalue{mccount}\relax 題，每題選出一個最適當的選項，以 2B 鉛筆於「答案卡」上作答。錯一個選項均扣
+        \ExplSyntaxOn
+            \fp_eval:n { \mcscore * 2 / 5 }
+        \ExplSyntaxOff 分，扣至該題零分止。 \\
+    \end{tcolorbox}
+\end{center}
+
+\mchoices{某原子的三個能階分別為$\text{E}_1=0\ \text{eV}$、$\text{E}_2=10.2\ \text{eV}$、$\text{E}_3=12.1\ \text{eV}$，此原子處於$\text{E}_1$的基態吸收能量後，躍遷至$\text{E}_3$的狀態。當此原子從$\text{E}_3$回到$\text{E}_1$的過程中，放出的光子能量最可能有哪些}{3}{h}{12.1 eV}{10.2 eV}{6.05 eV}{5.1 eV}{1.9 eV}
+
+\sideimg{\mchoices{如右圖所示，有一沿 $30^\circ$ 斜面的拉力 F 等速將質量 1 kg 的木塊，拉至高度 1 m 處。已知拉力 F 作功為 16 J，重力加速度 $g=10\ m/s^2$，則下列有關物體上滑過程中的敘述，何者正確？}{2}{v}
+{拉力 F 為 8N}
+{斜面給予物體的作用力對物體的作功為零}
+{重力對物體作功為 10 J}
+{物體所受到摩擦力為 3 N}
+{摩擦力對物體作功為 -16 J}
+}
+{q18.png}{0.25}{n}
+
+\sideimg{\mchoices{一光滑水平面上，靜置甲、乙兩材質相同的物體，甲、乙質量分別為 3 kg、1 kg，如右圖所示。現施以向右的力 F 於甲物體上，使甲乙一起向右加速運動，加速度量值為$1\ \text{m/s}^2$，並且向右移動3 m，請問下列敘述何者正確}{3}{v}
+{平面施於甲的作用力量值，等於平面施於乙的作用力量值}
+{F 的量值為 4 N}
+{F 對甲共作功 12 J}
+{F 對乙共作功 12 J}
+{平面施於乙的作用力，對乙不作功}}
+{q22.png}{0.3}{w}
+
+\begin{center}
+    \large \textbf{--- 試題尚未結束，請至手寫卷繼續作答 ---}
+\end{center}
+
+% --- 若不需要答案卷，就刪掉以下區域 ---
+% --- 小心不要刪掉底下的label{EndOfExam} ---
+% --- 這個label是用來計算頁碼用的 ---
+\newpage
+\examheader
+
+\noindent \hspace*{\fill} \large 班級：\underline{\hspace{1.5cm}} 座號：\underline{\hspace{1cm}} 姓名：\underline{\hspace{2.5cm}}
+
+\subsection*{三、非選擇題 (共 \total{wtscore} 分)}
+
+\sideimg{
+\writings{10}{有一物體靜止放置於一傾斜角度為$30^\circ$的粗糙斜面上，並且該斜面固定於水平地面上，如右圖所示。物體的質量為 1 kg，重力加速度 $g=10\ \text{m/s}^2$，請回答下列問題。}{
+    \subq{6}{請畫出斜面上物體的受力情形，請直些繪製於右圖中，並且繪製出箭頭，以及標示數值。}
+    \subq{2}{若將該物體換成原物體兩倍質量、且材質相同的物體，發現該物體會開始滑動，請問斜面與該材質的最大靜摩擦力不超過多少牛頓？}
+    \vspace{1cm}
+    \subq{2}{承上題，此時該物體下滑的加速度為$3\ \text{m/s}^2$，請問動摩擦力為多少？}
+    \vspace{1cm}
+}
+}{q25.png}{0.25}{w}
+
+\sideimg{
+\writings{10}{一個與地面絕緣的金屬板，另一側以特定光源照射金屬板後，再以導線與金箔驗電器的金屬球連接，金屬球底下連接著金屬箔片，如右圖所示。}{
+    \subq{4}{若在驗電器尚未連接金屬板之前，原本驗電器上的金屬箔片為閉合的狀態，當一道入射光線照在金屬板上，可使金屬箔片漸漸張開、角度變大，則金屬板、金屬球、金屬箔片帶電的狀況分別為何？請在下表中打$\checkmark$}
+    \wrapstuffclear
+    \begin{center}
+        \renewcommand{\arraystretch}{1.5} % 增加行高，讓格子更大一點
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+             & \makebox[2.5cm]{帶正電} & \makebox[2.5cm]{帶負電} & \makebox[2.5cm]{不帶電} \\
+            \hline
+            照光後的金屬板 & & & \\
+            \hline
+            照光後的金屬球 & & & \\
+            \hline
+            照光前的金屬箔片 & & & \\
+            \hline
+            照光後的金屬箔片 & & & \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \subq{6}{在導線與金箔驗電器的金屬球連接時，驗電器上的金屬箔片張開一角度，此時更換特定光源，以另一光源的入射光線照在金屬板上，可使金屬箔片張角漸小至閉合，而後再張開，則從一開始到後來，金屬箔片的電性如何變化？}
+}
+}{q26.png}{0.25}{w}
+\label{EndOfExam}
+
+% --- 答案區 ---
+\newpage
+\section*{正確答案區}
+% --- type 1 ---
+\begin{center}
+\autoanswer[10]{
+A, E, D, C, D,
+C, E, C, B, E,
+B, E, B, A, D,
+A, ABE, AD, CE, AE,
+BCD, BCE, AC, DE
+}
+\end{center}
+
+\end{document}
