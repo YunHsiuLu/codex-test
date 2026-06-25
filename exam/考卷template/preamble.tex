@@ -25,8 +25,16 @@
 % --- 清單環境 (處理題目編號與選項) ---
 \usepackage[shortlabels]{enumitem} 
 
-% --- 字體設定 (Overleaf 預設) ---
-\setCJKmainfont{Noto Sans CJK TC}
+% --- 字體設定 ---
+\IfFontExistsTF{Noto Sans CJK TC}{
+  \setCJKmainfont{Noto Sans CJK TC}
+}{
+  \IfFontExistsTF{PingFang TC}{
+    \setCJKmainfont{PingFang TC}
+  }{
+    \setCJKmainfont{Songti TC}
+  }
+}
 
 % --- 頁面邊界設定 ---
 \geometry{top=1.5cm, bottom=2.5cm, left=1cm, right=1cm}

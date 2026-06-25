@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.6.3)  25 JUN 2026 11:01
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.5.4)  25 JUN 2026 21:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -809,20 +809,30 @@ Package: enumitem 2025/02/06 v3.11 Customized lists
 )
 
 Package fontspec Info: 
-(fontspec)             Font family 'NotoSansCJKtc(0)' created for font
-(fontspec)             'NotoSansCJKtc' with options
-(fontspec)             [Script={CJK},Path={/Users/lvyunxiu/Library/Fonts/},Upri
-ghtFont={NotoSansCJKtc-Regular.otf},BoldFont={NotoSansCJKtc-Bold.otf}].
+(fontspec)             Script 'CJK' not explicitly supported within font
+(fontspec)             'Songti TC'. Check the typeset output, and if it is
+(fontspec)             okay then ignore this warning. Otherwise a different
+(fontspec)             font should be chosen.
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Songti TC/I" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'SongtiTC(0)' created for font 'Songti TC'
+(fontspec)             with options [Script={CJK}].
 (fontspec)              
 (fontspec)              This font family consists of the following NFSS
 (fontspec)             series/shapes:
 (fontspec)              
-(fontspec)             - 'normal' (m/n) with NFSS spec.:
-(fontspec)             <->"[/Users/lvyunxiu/Library/Fonts/NotoSansCJKtc-Regular
-.otf]/OT:script=hani;language=dflt;"
-(fontspec)             - 'bold' (b/n) with NFSS spec.:
-(fontspec)             <->"[/Users/lvyunxiu/Library/Fonts/NotoSansCJKtc-Bold.ot
-f]/OT:script=hani;language=dflt;"
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"Songti
+(fontspec)             TC/OT:script=hani;language=dflt;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.: <->"Songti
+(fontspec)             TC/B/OT:script=hani;language=dflt;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.: <->"Songti
+(fontspec)             TC/BI/OT:script=hani;language=dflt;"
 
 )
 (./commands.tex
@@ -970,12 +980,12 @@ L3 programming layer <2022/08/05>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 22472 strings out of 468168
- 523135 string characters out of 5432816
- 938108 words of memory out of 5000000
- 50831 multiletter control sequences out of 15000+600000
- 633068 words of font info for 78 fonts, out of 8000000 for 9000
+ 22485 strings out of 468168
+ 521877 string characters out of 5432816
+ 937840 words of memory out of 5000000
+ 50838 multiletter control sequences out of 15000+600000
+ 633084 words of font info for 80 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  103i,8n,121p,463b,611s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (4 pages).
+Output written on main.xdv (4 pages, 34980 bytes).
