@@ -1,0 +1,30 @@
+2)                                   若是將圓盤以線圈取代,由於磁通量與
+8 #8                            SGPT PTE Le + FES NE ET
+交流發電機中,當「線圈面」和磁場垂直時 , 威                圖       還點
+應電動勢有最大值? 還是0?                         應電動勢,這便是現代發電機設計的原型。
+如圖3-10(1) 所示,面積為4、匝數為X 的
+線圈在均勻磁場中轉動。若其角速度o 為
+定值,則通過線圈的磁通量為
+8) 小百科   ¢ = NBAcos 6 = NBAcosot
+計算發電機的威應電動勢時,需計算餘弦函數
+Gb @f 對時間的微分。我們先計算在時段 Af           根據法拉第定律,所產生的感應電動替
+內餘弦函數的變化:                                y
+Acoset = cos [a(t +At)] — cos wt            為
+三cos(o#十@A一cos0#   e- stim 2? = tim A(NBA cos of)
+利用三角函數的和角公式 :                                      aro At     aro      At
+cos(A+B)=cosAcosB-sinA sin有,可以將餘                               = NBA Ii   Acosot
+SE AIRO LI                                                     Ors Bt
+Acosat=cos@ Atcosat— sing Atsinwt — coset      上式中的時段 At 若趨近於零 , 可由微積分
+=-q@Atsinot
+SLey yet qs           ae   o HSE Sek
+在上式推導中,由於時間間隔極短 Ar<l,       計算得 lim (Acosat /At) =  osinoz。將此結
+餘弦與正弦函數可近似為 cosoA/x1,sinoA#      果代入感應電動勢的公式 ,可得
+xo@A/。如此一來 '餘弦函數 cos@/ 對時間的
+微分為  €= (NBA) im ACC08@D.
+lim Acoset =lim —o(Adsinot =—osinot                              .   '
+amo At     RE)     At                                     —(NBA)(—@sin@t)
+=a@NBAsinot
+由於 sino7會隨著時間呈現週期性的正
+負交錯,如圖 3-10(2) 所示,此感應電動勢
+的電流稱為交流電 (alternating current, AC )。
+128

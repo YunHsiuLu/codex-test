@@ -1,0 +1,28 @@
+範例 5-3
+某密閉容器裝設有可自由移動的活塞,今在容器內放入 P TEE
+理想氣體,觀察氣體壓力和和體積/的變化,並繪製成       EERE RES eE EEE)
+PP一函數圖,圖中甲乙丙丁皆為7一yy反比曲線。已知 77 HRRCERAREEEEEH
+當氣體為1mol、溫度為300K 時 ,P一曲線為乙曲線。     R ESSEC SSS SEEE
+試問:                                                     FEES SSEERSSEEEE
+(1) SSRN 2 mol » RAE 300 Keg +P — venga = EE
+Vo      2Vo         Vv
+乙、丙、丁何者 ?
+(2) 當氣體改為 1mol、溫度為7了K 時,P一V曲線為丁曲線,則了值為何 ?
+1. 在4條反比曲線上找一個容易計算的坐標點 ,求其PV值。
+2. PVenT >
+如圖所示 » 4條曲線通過的坐標點如下 :                      人 latlgie
+1                1           1               生AT
+四曲線通過 (Vy. TP) 二wp文參戰二文          HAERSEEEEEREH
+‘      ;    °    2 EES
+乙曲線通過 (Vy .P)) @>Pz2Vz=PV                         CACKEE NT erry
+時                              PERERA EEE H
+丙曲線通過 (2 .P,) > PeVin = Po x 2V)=2PVe                * FESS]
+eeov 2                3                         EEEPRS ERG
+丁曲線通過 (2多 ,.—P.) > P+ Vy = —Py X 2V) = 3P Vy          a
+2                2                                 Vo       2Vo         也
+ff PV =nRT > PV cnt
+P2Vz_ PV _ 1300    _              ,
+(1) SV py 300 > PV=2P,V> 此為丙曲線
+(2) 2300 _PaVe_ 900K。
+1xXT  PsVy  3PoVo
+1

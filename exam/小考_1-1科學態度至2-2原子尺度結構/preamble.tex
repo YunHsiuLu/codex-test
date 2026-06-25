@@ -1,0 +1,40 @@
+% --- 核心字體與語言設定 ---
+\usepackage[utf8]{inputenc}
+\usepackage{xeCJK} 
+
+% --- 數學與符號 ---
+\usepackage{amsmath, amssymb} 
+
+% --- 圖片與版面控制 ---
+\usepackage{graphicx} 
+\usepackage{geometry} 
+\usepackage{fancyhdr} 
+\usepackage{tcolorbox} 
+\usepackage{float} 
+\usepackage[export]{adjustbox} % <--- 重要！一定要有 [export]，sidefig 的 valign=t 才不會報錯
+\usepackage{etoolbox}
+\usepackage{tabularx}
+\usepackage{wrapstuff}
+\usepackage{array}
+\linespread{1.2}
+
+% --- 頁碼與總計計數器 ---
+\usepackage{lastpage}  
+\usepackage{totcount}  
+
+% --- 清單環境 (處理題目編號與選項) ---
+\usepackage[shortlabels]{enumitem} 
+
+% --- 字體設定 ---
+\IfFontExistsTF{Noto Sans CJK TC}{
+  \setCJKmainfont{Noto Sans CJK TC}
+}{
+  \IfFontExistsTF{PingFang TC}{
+    \setCJKmainfont{PingFang TC}
+  }{
+    \setCJKmainfont{Songti TC}
+  }
+}
+
+% --- 頁面邊界設定 ---
+\geometry{top=1.5cm, bottom=2.5cm, left=1cm, right=1cm}

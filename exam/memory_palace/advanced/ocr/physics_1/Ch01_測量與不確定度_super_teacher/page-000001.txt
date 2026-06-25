@@ -1,0 +1,31 @@
+ee pie       AR HESE BE u(Z) =u (XY +u (YP
+不確定度               棚
+_ [2  2   SHY Sees  加 = (X+Y)+u(Z)
+TB       Sats | 相減 一(一7土z(Z)
+同時存在             加減後
+A 類與B 類                         I
+"           a         基
+A
+=         Fall
+s=/= yG一z)? -— #
+n—-1loa'      =
+一一  ARMA 一一一一
+不確定度      一二
+u(X)=                   計算流程
+vn            |
+步驟          說明
+求出=與
+步驟   還
+」 ” 分別算出=與v,可暫時不需擔心保留位數,
+將計算結果寫下即可
+求出不確定度 u(X)
+AE i uc) = 的計算結果,以無條件進位法
+n
+至多保留2 位有效數字,即為不確定度。
+S05       SR ERE(AEHEX
+3 將#的計算結果,以四捨五入進位法,保留到
+waa        ic            BOSH REWIARCL SK > RIDE ETA
+EE | Eleael |) Basel
+as  as  Fiala            步驟           寫出測量結果
+回中生回cc還回只2            4          測量結果 <x Lux)
+2

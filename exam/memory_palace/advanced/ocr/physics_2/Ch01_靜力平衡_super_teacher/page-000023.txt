@@ -1,0 +1,33 @@
+範例        力矩一進階
+附圖為一重 而、半徑為有之圓球,階梯高為富&。試問:                           Vy
+() Ai ASO EERE > AURA, = SW
+{2
+(0)欲施一力使球滾上臺階,則最小施力的量值為 。 We                         國
+ 如圖所示,欲施力最小,需力臂最大,故:                                    Py ag,
+OF BAETHHERAE OF, BAHN TEE Coe =e)
+值為直徑 ) 此力與水平夾 53" 角。                                               人
+07x R+ 2R)=Wx 23 P= Ww                      3 7
+(2) F,x2R=Wx R= F,=2W >                               w
+  ORF LMM TOA: (T 水平力7 OLAW @ 地面對輪子的正向力
+階梯對輸子的正向力。
+(2) AOI sino = R=
+五
+2                              |R-h
+> c0s0=/1—sino = /y— (REM) VARIN,               6
+DO 垂直的合力為零: W=N,+N,sind=n,+N,(2 54) °               "
+O APMIS + F=Nycos O=N,x LN
+3)@ GHGS = Fx (R-h)+N,xRceosO=WxReos8
+@ 輪子恰脫離地面瞬間 AM二0,承(可得
+Fx (R—h)=WxRcosO=WxRX LORIN p= Rw °
+如圖所示,有一半徑為有、重為 Ww PES DEE: >
+高7的階梯接觸,靜置於水平地面上。今在輪子中心處施一水        tr
+SPH F > ERC LIER LFA, + [ELS SOUR:           ~~. 歸
+(1輪子在受到一水平力了,但尚未脫離地面,呈靜態平衡時,
+輪子受到哪些力?列舉並繪出其力圖。
+     DAPH Fs @ 重力 W> @ 地面對輸子的正向力 Wi、d4 階梯對輪子的正向力 AM
+垂直 : w=n,+N,7R")
+(2)承上題,列出輪子所受垂直與水平分力的方程式。    |                  ——>
+~                                   水平: F=N, xe
+(3)以輸子與階梯的接觸點為參考點,列出力矩方程式,求在輪子中心處最少需施力多少
+才能使輸子脫苑地面?圖。 F-補讓全                                      (ia)
+24

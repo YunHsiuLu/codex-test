@@ -1,0 +1,37 @@
+© 〒面連動
+四、向量的分解與坐標表示法
+1. 向量的直角坐標表示法
+(i= (1,0) > f= (0,1) 分別表+軸及y軸的單位向量 (長度皆等於1) 。
+(2)我們可以將平面上的向量 4,分解成z軸與y軸上的分量,即4二4汪47王(4,4),
+如圖(a) 所示。
+(3)如圖所示的直角三角形,可得4的量值|4|二4二7y4 +4"
+2. 向量加減的坐標解析法
+如圖 (b) 所示,向量以直角坐標表示時,向量相加、減可由其分量相加、減得出。
+2 G=4+R
++                          (CeCe Be.AytB,)
+J=(,1)     x      4  Za a  x
+i=(1,0) Agi=(Ay,0)                 A,     B
+48 (a2) 向量的直角坐標表示法   AB (b) 利用坐標法算向量相加
+ 向量的加減法
+坐標平面上有4、有有兩向量,4二6汪37;有二3人7。
+(1)在下面的坐標中,利用方格中以平行四邊形法畫出 4+有,以三角形法畫出 4一有8。
+(2)以坐標解析法算出 4+及及4一有,並計算其量值。
+[YT TTT yy ar ay        [YT TTT TTT yyy
+圖圖圖圖圖圖圖圖圖了品44國圖|        圖點圖圖圖圖圖圖圖圖圖圖圖圖|
+LTT TTT TAP        LTT TTT yyy yyy
+LTT Ty rae        LTT TTT yyy yyy
+PTT ery Aa ey        LTT TET yyy yyy
+LTT IATA ry Ty        LT TPN Sie
+LT eyT A TAT TTT Ty        [TeV TNETe TTT
+LT PAM Tey TT        LT PAT TNT TT TT
+LT VU er        LT Vi) eer rt
+bi Ae        | Jee
+Dyei ATT        AA a
+CVT TTT TT Prt 6        ClaT TTT TTT rr rt i
+A+B=(6+3,3+6)=(9, 9)=91+9j > HAB(H |4+B|=/9 +9°=/162=9/2
+ofa (6—3,3—6)=(3, —3)=37—-37 > HEME |4—B|= /B)+ (3) =/18=3/2
+_, [At B= GB+5,4+6)= (8, 10)=87+ 107» HH |4+B|=/8"+10=/164=2/41
+ 人
+坐標平面上有4、有有兩向量 ,已知4王(3,4) ;有8一(5,6),求4+有有及4一有,並計算其量
+值。
+81

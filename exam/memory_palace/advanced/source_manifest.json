@@ -1,0 +1,432 @@
+[
+  {
+    "course": "physics_1",
+    "chapter": "Ch01",
+    "title": "測量與不確定度",
+    "kind": "textbook",
+    "pages": 24,
+    "source": "翰林版本選修物理/選修物理1/Ch01測量與不確定度-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch01_測量與不確定度_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch01_測量與不確定度_textbook"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch01",
+    "title": "測量與不確定度",
+    "kind": "super_teacher",
+    "pages": 24,
+    "source": "翰林版本選修物理/選修物理1/Ch01測量與不確定度-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch01_測量與不確定度_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch01_測量與不確定度_super_teacher"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch02",
+    "title": "直線運動",
+    "kind": "textbook",
+    "pages": 38,
+    "source": "翰林版本選修物理/選修物理1/Ch02直線運動-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch02_直線運動_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch02_直線運動_textbook"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch02",
+    "title": "直線運動",
+    "kind": "super_teacher",
+    "pages": 52,
+    "source": "翰林版本選修物理/選修物理1/Ch02直線運動-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch02_直線運動_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch02_直線運動_super_teacher"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch03",
+    "title": "平面運動",
+    "kind": "textbook",
+    "pages": 28,
+    "source": "翰林版本選修物理/選修物理1/Ch03平面運動-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch03_平面運動_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch03_平面運動_textbook"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch03",
+    "title": "平面運動",
+    "kind": "super_teacher",
+    "pages": 28,
+    "source": "翰林版本選修物理/選修物理1/Ch03平面運動-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch03_平面運動_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch03_平面運動_super_teacher"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch04",
+    "title": "牛頓運動定律",
+    "kind": "textbook",
+    "pages": 42,
+    "source": "翰林版本選修物理/選修物理1/Ch04牛頓運動定律-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch04_牛頓運動定律_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch04_牛頓運動定律_textbook"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch04",
+    "title": "牛頓運動定律",
+    "kind": "super_teacher",
+    "pages": 54,
+    "source": "翰林版本選修物理/選修物理1/Ch04牛頓運動定律-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch04_牛頓運動定律_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch04_牛頓運動定律_super_teacher"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch05",
+    "title": "週期運動",
+    "kind": "textbook",
+    "pages": 26,
+    "source": "翰林版本選修物理/選修物理1/Ch05週期運動-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch05_週期運動_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch05_週期運動_textbook"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch05",
+    "title": "週期運動",
+    "kind": "super_teacher",
+    "pages": 34,
+    "source": "翰林版本選修物理/選修物理1/Ch05週期運動-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch05_週期運動_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch05_週期運動_super_teacher"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch06",
+    "title": "萬有引力",
+    "kind": "textbook",
+    "pages": 24,
+    "source": "翰林版本選修物理/選修物理1/Ch06萬有引力-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch06_萬有引力_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch06_萬有引力_textbook"
+  },
+  {
+    "course": "physics_1",
+    "chapter": "Ch06",
+    "title": "萬有引力",
+    "kind": "super_teacher",
+    "pages": 30,
+    "source": "翰林版本選修物理/選修物理1/Ch06萬有引力-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_1/Ch06_萬有引力_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_1/Ch06_萬有引力_super_teacher"
+  },
+  {
+    "course": "physics_2",
+    "chapter": "Ch01",
+    "title": "靜力平衡",
+    "kind": "textbook",
+    "pages": 30,
+    "source": "翰林版本選修物理/選修物理2/Ch01靜力平衡-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_2/Ch01_靜力平衡_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_2/Ch01_靜力平衡_textbook"
+  },
+  {
+    "course": "physics_2",
+    "chapter": "Ch01",
+    "title": "靜力平衡",
+    "kind": "super_teacher",
+    "pages": 40,
+    "source": "翰林版本選修物理/選修物理2/Ch01靜力平衡-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_2/Ch01_靜力平衡_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_2/Ch01_靜力平衡_super_teacher"
+  },
+  {
+    "course": "physics_2",
+    "chapter": "Ch02",
+    "title": "動量與角動量",
+    "kind": "textbook",
+    "pages": 52,
+    "source": "翰林版本選修物理/選修物理2/Ch02動量與角動量-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_2/Ch02_動量與角動量_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_2/Ch02_動量與角動量_textbook"
+  },
+  {
+    "course": "physics_2",
+    "chapter": "Ch02",
+    "title": "動量與角動量",
+    "kind": "super_teacher",
+    "pages": 54,
+    "source": "翰林版本選修物理/選修物理2/Ch02動量與角動量-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_2/Ch02_動量與角動量_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_2/Ch02_動量與角動量_super_teacher"
+  },
+  {
+    "course": "physics_2",
+    "chapter": "Ch03",
+    "title": "功與能量",
+    "kind": "textbook",
+    "pages": 52,
+    "source": "翰林版本選修物理/選修物理2/Ch03功與能量-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_2/Ch03_功與能量_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_2/Ch03_功與能量_textbook"
+  },
+  {
+    "course": "physics_2",
+    "chapter": "Ch03",
+    "title": "功與能量",
+    "kind": "super_student_fallback",
+    "pages": 63,
+    "source": "翰林版本選修物理/選修物理2/Ch03功與能量-SUPER講義pdf檔(學用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_2/Ch03_功與能量_super_student_fallback",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_2/Ch03_功與能量_super_student_fallback"
+  },
+  {
+    "course": "physics_2",
+    "chapter": "Ch04",
+    "title": "碰撞",
+    "kind": "textbook",
+    "pages": 24,
+    "source": "翰林版本選修物理/選修物理2/Ch04碰撞-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_2/Ch04_碰撞_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_2/Ch04_碰撞_textbook"
+  },
+  {
+    "course": "physics_2",
+    "chapter": "Ch04",
+    "title": "碰撞",
+    "kind": "super_teacher",
+    "pages": 26,
+    "source": "翰林版本選修物理/選修物理2/Ch04碰撞-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_2/Ch04_碰撞_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_2/Ch04_碰撞_super_teacher"
+  },
+  {
+    "course": "physics_2",
+    "chapter": "Ch05",
+    "title": "熱學",
+    "kind": "textbook",
+    "pages": 27,
+    "source": "翰林版本選修物理/選修物理2/Ch05熱學-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_2/Ch05_熱學_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_2/Ch05_熱學_textbook"
+  },
+  {
+    "course": "physics_2",
+    "chapter": "Ch05",
+    "title": "熱學",
+    "kind": "super_teacher",
+    "pages": 36,
+    "source": "翰林版本選修物理/選修物理2/Ch05熱學-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_2/Ch05_熱學_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_2/Ch05_熱學_super_teacher"
+  },
+  {
+    "course": "physics_3",
+    "chapter": "Ch01",
+    "title": "波動",
+    "kind": "textbook",
+    "pages": 56,
+    "source": "翰林版本選修物理/選修物理3/Ch01波動-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_3/Ch01_波動_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_3/Ch01_波動_textbook"
+  },
+  {
+    "course": "physics_3",
+    "chapter": "Ch01",
+    "title": "波動",
+    "kind": "super_teacher",
+    "pages": 60,
+    "source": "翰林版本選修物理/選修物理3/Ch01波動-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_3/Ch01_波動_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_3/Ch01_波動_super_teacher"
+  },
+  {
+    "course": "physics_3",
+    "chapter": "Ch02",
+    "title": "聲波",
+    "kind": "textbook",
+    "pages": 30,
+    "source": "翰林版本選修物理/選修物理3/Ch02聲波-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_3/Ch02_聲波_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_3/Ch02_聲波_textbook"
+  },
+  {
+    "course": "physics_3",
+    "chapter": "Ch02",
+    "title": "聲波",
+    "kind": "super_teacher",
+    "pages": 38,
+    "source": "翰林版本選修物理/選修物理3/Ch02聲波-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_3/Ch02_聲波_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_3/Ch02_聲波_super_teacher"
+  },
+  {
+    "course": "physics_3",
+    "chapter": "Ch03",
+    "title": "幾何光學",
+    "kind": "textbook",
+    "pages": 46,
+    "source": "翰林版本選修物理/選修物理3/Ch03幾何光學-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_3/Ch03_幾何光學_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_3/Ch03_幾何光學_textbook"
+  },
+  {
+    "course": "physics_3",
+    "chapter": "Ch03",
+    "title": "幾何光學",
+    "kind": "super_teacher",
+    "pages": 68,
+    "source": "翰林版本選修物理/選修物理3/Ch03幾何光學-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_3/Ch03_幾何光學_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_3/Ch03_幾何光學_super_teacher"
+  },
+  {
+    "course": "physics_3",
+    "chapter": "Ch04",
+    "title": "物理光學",
+    "kind": "textbook",
+    "pages": 30,
+    "source": "翰林版本選修物理/選修物理3/Ch04物理光學-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_3/Ch04_物理光學_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_3/Ch04_物理光學_textbook"
+  },
+  {
+    "course": "physics_3",
+    "chapter": "Ch04",
+    "title": "物理光學",
+    "kind": "super_teacher",
+    "pages": 40,
+    "source": "翰林版本選修物理/選修物理3/Ch04物理光學-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_3/Ch04_物理光學_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_3/Ch04_物理光學_super_teacher"
+  },
+  {
+    "course": "physics_4",
+    "chapter": "Ch01",
+    "title": "靜電學",
+    "kind": "textbook",
+    "pages": 56,
+    "source": "翰林版本選修物理/選修物理4/Ch01靜電學-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_4/Ch01_靜電學_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_4/Ch01_靜電學_textbook"
+  },
+  {
+    "course": "physics_4",
+    "chapter": "Ch01",
+    "title": "靜電學",
+    "kind": "super_teacher",
+    "pages": 58,
+    "source": "翰林版本選修物理/選修物理4/Ch01靜電學-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_4/Ch01_靜電學_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_4/Ch01_靜電學_super_teacher"
+  },
+  {
+    "course": "physics_4",
+    "chapter": "Ch02",
+    "title": "電流的磁效應",
+    "kind": "textbook",
+    "pages": 52,
+    "source": "翰林版本選修物理/選修物理4/Ch02電流的磁效應-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_4/Ch02_電流的磁效應_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_4/Ch02_電流的磁效應_textbook"
+  },
+  {
+    "course": "physics_4",
+    "chapter": "Ch02",
+    "title": "電流的磁效應",
+    "kind": "super_teacher",
+    "pages": 64,
+    "source": "翰林版本選修物理/選修物理4/Ch02電流的磁效應-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_4/Ch02_電流的磁效應_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_4/Ch02_電流的磁效應_super_teacher"
+  },
+  {
+    "course": "physics_4",
+    "chapter": "Ch03",
+    "title": "電磁感應",
+    "kind": "textbook",
+    "pages": 49,
+    "source": "翰林版本選修物理/選修物理4/Ch03電磁感應-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_4/Ch03_電磁感應_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_4/Ch03_電磁感應_textbook"
+  },
+  {
+    "course": "physics_4",
+    "chapter": "Ch03",
+    "title": "電磁感應",
+    "kind": "super_teacher",
+    "pages": 59,
+    "source": "翰林版本選修物理/選修物理4/Ch03電磁感應-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_4/Ch03_電磁感應_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_4/Ch03_電磁感應_super_teacher"
+  },
+  {
+    "course": "physics_5",
+    "chapter": "Ch01",
+    "title": "電路學",
+    "kind": "textbook",
+    "pages": 38,
+    "source": "翰林版本選修物理/選修物理5/Ch01電路學-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_5/Ch01_電路學_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_5/Ch01_電路學_textbook"
+  },
+  {
+    "course": "physics_5",
+    "chapter": "Ch01",
+    "title": "電路學",
+    "kind": "super_teacher",
+    "pages": 52,
+    "source": "翰林版本選修物理/選修物理5/Ch01電路學-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_5/Ch01_電路學_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_5/Ch01_電路學_super_teacher"
+  },
+  {
+    "course": "physics_5",
+    "chapter": "Ch02",
+    "title": "量子現象",
+    "kind": "textbook",
+    "pages": 46,
+    "source": "翰林版本選修物理/選修物理5/Ch02量子現象-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_5/Ch02_量子現象_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_5/Ch02_量子現象_textbook"
+  },
+  {
+    "course": "physics_5",
+    "chapter": "Ch02",
+    "title": "量子現象",
+    "kind": "super_teacher",
+    "pages": 60,
+    "source": "翰林版本選修物理/選修物理5/Ch02量子現象-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_5/Ch02_量子現象_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_5/Ch02_量子現象_super_teacher"
+  },
+  {
+    "course": "physics_5",
+    "chapter": "Ch03",
+    "title": "原子結構",
+    "kind": "textbook",
+    "pages": 38,
+    "source": "翰林版本選修物理/選修物理5/Ch03原子結構-課本pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_5/Ch03_原子結構_textbook",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_5/Ch03_原子結構_textbook"
+  },
+  {
+    "course": "physics_5",
+    "chapter": "Ch03",
+    "title": "原子結構",
+    "kind": "super_teacher",
+    "pages": 50,
+    "source": "翰林版本選修物理/選修物理5/Ch03原子結構-SUPER講義pdf檔(教用).pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/physics_5/Ch03_原子結構_super_teacher",
+    "ocr_dir": "memory_palace/advanced/ocr/physics_5/Ch03_原子結構_super_teacher"
+  },
+  {
+    "course": "answer_reference",
+    "chapter": "physics_5_all",
+    "title": "解答本",
+    "kind": "answer_book",
+    "pages": 52,
+    "source": "翰林版本選修物理/選修物理5/解答本-選修物理V(全)-SUPER教學講義pdf檔.pdf",
+    "ppm_dir": "memory_palace/advanced/ppm/answer_reference/physics_5_all_answer_book",
+    "ocr_dir": "memory_palace/advanced/ocr/answer_reference/physics_5_all_answer_book"
+  }
+]

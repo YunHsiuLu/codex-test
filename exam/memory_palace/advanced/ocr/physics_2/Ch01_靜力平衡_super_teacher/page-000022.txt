@@ -1,0 +1,29 @@
+Ossr6
+範例        力矩一基礎
+如圖所示, 單擺的擺長為《,擺鍾質量為,以懸點O作為參考點,
+當擺鍾擺到左邊與鉻直線成角度9 時:                                               '
+(DIED TY o BATEEN IZ EMAR 0»                                  /#/
+(2)重力ang對0點所產生的力矩為一7gfsin9 >                                T  |
+mg
+ (1) 張力的作用線通過參考點,其力臂為零,故所產生的力矩亦為零。
+(2) 重力所造成的力矩 :
+方法1: 如圖(39,7?與的夾角為 9,可得力矩量值為 ssin9
+ 方法2 : 如圖 (b),畫力的作用線,力臂為 sin9,可得力矩量值為jgfsin9
+方法3 : 如圖(c),分解#s',有用的垂直分量為jgsin9,可得力矩量值為ssin2
+利用右手螺旋定則可知其方向為垂直穿出紙面。
+oO               <9
+1              | dsind/:                    1
+;  a                | fai                 fi
+名 oe       ee mee ae
+‘mg                  ‘mg                Ymg
+A圖(3                  Ad)                  AB)
+  如圖,可得 r= mg x 色in9+ (—2mg x sina)  = — 184 sing (負號代表順時針方向)
+= juts "84 sing «                                                          ay,
+ma VON 6\d sing |
+Lo Nd
+2mg
+RE Rd: AOI: BE ORE nea om       1a
+RR m Ke 2m 的質點;細桿與鉻垂方向之夾角為? (如圖) ,設       OF
+重力加速度為s,則重力對oo點所產生的力矩之量值為     品
+MEd sing»                                              co         om
+23

@@ -1,0 +1,30 @@
+© 和上成座
+(1)在圖(a) 中,通過與發電機連接的電阻及之電流                          7
+:                                                      _ NBA
+I=      z = ONBA SOF ot NBA Xsin@t=[y.SMet *        an  /                    ,
+CC                          us       Qn
+@NBA      @       oO
+BRHF Tau = 入為電阻及內所通過的最大電流。                 ~和   Bx   .
+(2) ESC AT LE 7 BO» CACAO @) Rize ae ABO SRESROSS
+£ (BAcos ot) = —oBAsinot 的推導 (僅供參考 )
+計算發電機的威應電動勢時,需計算餘弦函數 eoso# 對時間的微分。其計算過程如下,供有興趣的
+同學參考。
+1 先計算在時段 A#內餘弦函數的變化
+Aeos@#二cos[o(#十A7)]一cos wt=cos (wt+@At)—cos et)
+2. RIFAAIPS AZ cos(A+B)=cosAcosB—sinAsinB » (1 式可寫為
+Acos wt=cos wtcos aA t—sinet sinwA t—cos wt-++(2)
+coswAt=1          -
+3. Ae At 0: | sinoAte@At = 2 HABA Acosot~ —a(At)sinot
+4. BREET cos or SYRFRRAIGLAI Z (coseor) =m MESO jim —OCAN SINE _ _ sino
+5. sane (BAcos wt) = — @BAsinat °
+二、直流發電機
+1上述的交流發電機只要稍加改裝,即可變成直流發電機。直流發電機是將交流發電機中兩
+個圓形的集電環改成兩個半圓形狀的換向器 , 如圖 (a)tb) 所示。
+2.當線圈上護應電動勢改變符號時,換向器同時改變接觸的電刷,使兩個電刷的正負極性保
+持不變,所以通過燈泡的電流方向得以固定不變 ,如圖(c)所示。
+ae      aaa dis            1
+集電環                    換向器       -         Tax PX
+if                  電刷         1 te,    Sail              0 到 2n
+7                     A                             o 8
+AB (a) 交流發電機           圖 (b) 直流發電機        AB’) 直流發電機的電流
+155

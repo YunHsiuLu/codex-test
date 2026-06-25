@@ -1,0 +1,31 @@
+Ft m=3 kg 的小鋼球置於無摩擦的水平桌面上, 以細繩
+和繫之,繩跨過桌子中央小洞而與質量 M= 15 kg AY RR AG SE
+接。今使小鋼球在桌面上作半徑/三50 cm 的等速圓周運
+動,且太碼不升也不降,如右圖所示。設重力加速度
+g=10 ms ,且忽略所有阻力與細斷質量,則下列關於小鋼
+球作圓周運動的敘述,哪些正確?
+(a) 作圓周運動所需的向心力由繩子的張力提供,其量值為3N _(B) 向心加速度的量值為
+50m/s” (C) 角速度的量值為5Iad/s (D) 速率為10 m/s (E) 週期為全 s。   BE
+ (a) x :如圖所示,只有張力的方向指向圓心,提供了圓周運動       和      關
+所需的向心力,因張力量值即為物體 划的重量,故      peer
+F,=Mg= 15x 10=150(N) °                                    OO
+(B) O : F.=ma,=150=3 x a,a,=50(m/s’) °
+(© X : F.=mra*=3x0.5X0'>o=10(rad/s) °                  | ms    aw     |
+(0) x Fam =3x 府 y=sims) 。
+@O: Fe=mSEP 3x S205 sp tus) 。
+ (ANB) x : 週期相同王 SSK f= > PSHE = SEMI «
+OO : UAE v=Ro RP vq ive =1i2°
+(D) x :切向加速度均為零。
+嶼0:如圖所示,甲所需的向心力由五一天 提供,乙所需        說           同
+的向心力由為 提供。                                              ‘ mn           ‘
+(1) 對乙而言: Fp=m2 Ro =2m x 2r Ko =4mro °       aOR — Oz
+(2) SHIPS : A-Fyp=me Reo =mxrxo=mra”           ‘   %,  e       號
+= E,=mro’ + F,=mro’+4mrea’=Smro °                       a             “
+ROL «FAs COPOREHSEE RCS ILS om Be 2,以相同長度/的繼
+4及繩有連結;兩物體均繞著轉軸O,以等角速度在水平面上旋 /   a)
+HD a 4 BBE BITS ER Fae POURS CONVO ff owas |
+的描述,哪些正確?                                                  Vee Of
+(頻率比為1:2 (0B)角速度比為1:2 (C) 切向速度比為1:2        See
+(D) 切向加速度比為1:2 (2) Ey=Smro’ ; F;=4mro °
+ cE
+166

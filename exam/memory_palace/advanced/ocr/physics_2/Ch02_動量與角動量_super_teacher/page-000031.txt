@@ -1,0 +1,27 @@
+3. 質心與質心的位置
+(1)上面我們利用力矩定義了重心的位置,若把物體移到沒有重力的外太空,重心便失去
+了意義。但利用重量 砂=zg,將重心的公式運算後,我們可以得到一個與重力無關的
+(09)由忌= Wixit Wort + Wyry mx tim y+ +My Xy _— MX +My ++ + myXy
+Xor    WW, +Wy omg tm gt tm gm +m + +my
+3 WRBRIER x= Ms ,稱為質量中心,簡稱質心。
+m,+m,+*** + my
+(3)與重心類似,雙質點系統中,單一質點與質心的距離和質量成_反_比。
+二、雙質點系統的買心運動
+1. 質心位置
+由兩個質量分別為am 與 的質點所組成的系統,若以向量形式表示,質心的位置向
+r= ATS (a) BE»
+2 質心速度
+依據速度的定義yim一全
+ARS  一   To. m, rtm n
+六質心速度 ve=lim—= 加說圖
+mv, +m         ray      F未。
+— EEE ABH)
+3. 質心動量
+令系統的總質量 M=m,+m,’ Ki Est
+= SER p= _m vy m, v,= (my tm.) x Ve=M Ve
+= 質心動量,如圖 (c) 所示。
+4   mM
+2. 質心                   ye                OO
+[ez x       vs 之 / i        ws 字 了  /
+條圖 (a) S08            條圖 (b) 質心速度          AS) Ble
+72

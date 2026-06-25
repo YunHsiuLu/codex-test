@@ -1,0 +1,307 @@
+% --- 自動計數器設定 ---
+\newtotcounter{qcount} \regtotcounter{qcount}
+\newtotcounter{sccount} \regtotcounter{sccount} 
+\newtotcounter{mccount} \regtotcounter{mccount} 
+\newtotcounter{wtscore} \regtotcounter{wtscore} % 非選題總分計數器
+\newcommand{\scscore}{3}
+\newcommand{\mcscore}{4}
+
+% --- 抬頭設定 ---
+\newcommand{\examheader}{
+    \begin{center}
+        \section*{新竹市立建功高中 OOO 學年度第O學期高中部O年級物理段考卷}
+    \end{center}
+}
+
+% --- 基礎縮排設定 ---
+\newcommand{\choiceindent}{0.85cm}
+
+% --- 1. 防分頁容器 (qblock) ---
+\newif\ifqblockpassthrough
+
+\newenvironment{qblock}{%
+    \ifqblockpassthrough
+    \else
+        \par\vspace{0.5em}
+        \noindent
+        \begin{minipage}{\linewidth}
+    \fi
+}{%
+    \ifqblockpassthrough
+    \else
+        \end{minipage}
+        \par\vspace{1em}
+    \fi
+}
+% --- 2. 單選題指令 ---
+\newcommand{\schoices}[7]{% 
+    \begin{qblock}
+        \stepcounter{qcount}\stepcounter{sccount}%
+        \begin{enumerate}[label=\textbf{\theqcount.}, leftmargin=\choiceindent, labelsep=0.2cm, nosep]
+            \item #1
+        \end{enumerate}\vspace{0.2em}
+        \ifstrequal{#2}{h}{
+            % 水平模式：利用 \leftskip 讓整段文字的左邊界鎖定在 \choiceindent
+            {\leftskip=\choiceindent \noindent
+            (A) #3 \hspace{0.5cm} (B) #4 \hspace{0.5cm} (C) #5 \hspace{0.5cm} (D) #6 \hspace{0.5cm} (E) #7 \par}
+        }{
+            \ifstrequal{#2}{m}{
+                \noindent\hspace*{\choiceindent}%
+                \begin{tabular}[t]{@{}l @{\hspace{0.5cm}} l @{\hspace{0.5cm}} l @{\hspace{0.5cm}} l @{\hspace{0.5cm}} l}
+                    (A) #3 & (B) #4 & (C) #5 & (D) #6 & (E) #7
+                \end{tabular}\par
+            }{
+                \begin{enumerate}[(A), topsep=0.3em, itemsep=0.5em, parsep=0pt, leftmargin=*, labelindent=\choiceindent, labelsep=0.25cm, align=left] 
+                    \item #3 \item #4 \item #5 \item #6 \item #7
+                \end{enumerate}
+            }
+        }
+    \end{qblock}
+}
+
+% --- 3. 複選題指令 ---
+\newcommand{\mchoices}[8]{% 
+    \begin{qblock}
+        \stepcounter{qcount}\stepcounter{mccount}%
+        \begin{enumerate}[label=\textbf{\theqcount.}, leftmargin=\choiceindent, labelsep=0.2cm, nosep]
+            \item #1 \textbf{(應選 #2 項)}
+        \end{enumerate}\vspace{0.2em}
+        \ifstrequal{#3}{h}{
+            % 水平模式同步修改
+            {\leftskip=\choiceindent \noindent
+            (A) #4 \hspace{0.5cm} (B) #5 \hspace{0.5cm} (C) #6 \hspace{0.5cm} (D) #7 \hspace{0.5cm} (E) #8 \par}
+        }{
+            \ifstrequal{#3}{m}{
+                \noindent\hspace*{\choiceindent}%
+                \begin{tabular}[t]{@{}l @{\hspace{0.5cm}} l @{\hspace{0.5cm}} l @{\hspace{0.5cm}} l @{\hspace{0.5cm}} l}
+                    (A) #4 & (B) #5 & (C) #6 & (D) #7 & (E) #8
+                \end{tabular}\par
+            }{
+                \begin{enumerate}[(A), topsep=0.3em, itemsep=0.5em, parsep=0pt, leftmargin=*, labelindent=\choiceindent, labelsep=0.25cm, align=left] 
+                    \item #4 \item #5 \item #6 \item #7 \item #8
+                \end{enumerate}
+            }
+        }
+    \end{qblock}
+}
+
+% --- 側邊圖片包裝指令 ---
+% #1: 題目內容
+% #2: 圖片檔名
+% #3: 圖片佔頁面寬度比例
+% #4: 模式選擇: w (文繞圖) / n (原版左右並排)
+\newlength{\sideimgwidth}
+
+\newcommand{\sideimg}[4]{%
+    \begin{qblock}
+        \ifstrequal{#4}{w}{%
+            \setlength{\sideimgwidth}{#3\linewidth}%
+
+            \begin{wrapstuff}[
+                r,
+                width=\sideimgwidth,
+                hsep=0.8em,
+                voffset=-0.5em
+            ]
+                \includegraphics[
+                    width=\sideimgwidth
+                ]{#2}
+            \end{wrapstuff}
+
+            \qblockpassthroughtrue
+            #1
+            \qblockpassthroughfalse
+
+            \wrapstuffclear
+        }{%
+            \noindent
+            \begin{minipage}[t]{%
+                \dimexpr0.91\linewidth-#3\linewidth\relax
+            }
+                \vspace{-0.5em}
+                \qblockpassthroughtrue
+                #1
+                \qblockpassthroughfalse
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{#3\linewidth}
+                \includegraphics[
+                    width=\linewidth,
+                    valign=t
+                ]{#2}
+            \end{minipage}
+        }
+    \end{qblock}
+}
+
+% --- 4. 非選題指令 ---
+% (1) 單一非選題 (無子題): \writing{該題總分}{題幹敘述}
+\newcommand{\writing}[2]{%
+    \begin{qblock}
+        \stepcounter{qcount}% 
+        \addtocounter{wtscore}{#1}% 將此題分數累加至「非選總分」
+        \begin{enumerate}[label=\textbf{\theqcount.}, leftmargin=\choiceindent, labelsep=0.2cm, nosep]
+            \item #2 \textbf{(共 #1 分)}
+        \end{enumerate}\vspace{0.2em}
+    \end{qblock}
+}
+
+% (2) 多子題非選題: \writings{該題總分}{題幹敘述}{子題內容}
+\newcommand{\writings}[3]{%
+    \begin{qblock}
+        \stepcounter{qcount}% 
+        \addtocounter{wtscore}{#1}% 
+        \begin{enumerate}[label=\textbf{\theqcount.}, leftmargin=\choiceindent, labelsep=0.2cm, nosep]
+            \item #2 \textbf{(共 #1 分)}
+        \end{enumerate}\vspace{0.2em}
+        \ifblank{#3}{}{
+            \begin{enumerate}[label=(\arabic*), leftmargin=\dimexpr\choiceindent+0.8cm\relax, labelsep=0.2cm, topsep=0.2em, itemsep=0.5em]
+                #3
+            \end{enumerate}
+        }
+    \end{qblock}
+}
+
+% (3) 子題專用指令: \subq{配分}{敘述}
+\newcommand{\subq}[2]{%
+    \item #2 \textbf{(#1 分)}
+}
+
+% --- 5. 選項排版 ---
+\newcommand{\hchoices}[5]{% 水平排列
+    \noindent\hspace*{\choiceindent}% 
+    (A) #1 \hfill (B) #2 \hfill (C) #3 \hfill (D) #4 \hfill (E) #5 \par
+}
+
+\newcommand{\vchoices}[5]{% 垂直排列
+    \begin{enumerate}[(A), nosep, leftmargin=*, labelindent=\choiceindent, labelsep=0.25cm, align=left] 
+        \item #1 \item #2 \item #3 \item #4 \item #5
+    \end{enumerate}
+}
+
+% ---------- 自動答案表格 ----------
+
+% 每格寬度
+\newlength{\answercellwidth}
+\setlength{\answercellwidth}{1.5cm}
+
+% 每格高度倍率
+\newcommand{\answerarraystretch}{1.8}
+
+\ExplSyntaxOn
+
+\clist_new:N \l__autoanswer_clist
+\int_new:N \l__autoanswer_columns_int
+
+% 產生題號列
+\cs_new_protected:Npn \__autoanswer_number_row:n #1
+{
+    \int_step_inline:nnnn
+        {0}
+        {1}
+        {\l__autoanswer_columns_int - 1}
+    {
+        \int_compare:nT
+            {
+                #1 + ##1
+                <=
+                \clist_count:N \l__autoanswer_clist
+            }
+            {
+                \int_eval:n {#1 + ##1}
+            }
+
+        \int_compare:nNnT
+            {##1}
+            <
+            {\l__autoanswer_columns_int - 1}
+            {&}
+    }
+
+    \tabularnewline
+    \hline
+}
+
+% 產生答案列
+\cs_new_protected:Npn \__autoanswer_answer_row:n #1
+{
+    \int_step_inline:nnnn
+        {0}
+        {1}
+        {\l__autoanswer_columns_int - 1}
+    {
+        \int_compare:nT
+            {
+                #1 + ##1
+                <=
+                \clist_count:N \l__autoanswer_clist
+            }
+            {
+                \clist_item:Nn
+                    \l__autoanswer_clist
+                    {#1 + ##1}
+            }
+
+        \int_compare:nNnT
+            {##1}
+            <
+            {\l__autoanswer_columns_int - 1}
+            {&}
+    }
+}
+
+% 建立完整表格
+\cs_new_protected:Npn \__autoanswer_table:nn #1#2
+{
+    \group_begin:
+
+    % #1：每列題數
+    % #2：答案清單
+    \int_set:Nn \l__autoanswer_columns_int {#1}
+    \clist_set:Nn \l__autoanswer_clist {#2}
+
+    \setlength{\tabcolsep}{0pt}
+    \renewcommand{\arraystretch}{\answerarraystretch}
+
+    \begin{tabular}{
+        |*{\int_use:N \l__autoanswer_columns_int}{
+            >{\centering\arraybackslash}
+            m{\answercellwidth}|
+        }
+    }
+        \hline
+
+        \int_step_inline:nnnn
+            {1}
+            {\l__autoanswer_columns_int}
+            {\clist_count:N \l__autoanswer_clist}
+        {
+            % 從第二組開始，先關閉上一個答案列
+            \int_compare:nNnT
+                {##1}
+                >
+                {1}
+                {
+                    \tabularnewline
+                    \hline
+                }
+
+            \__autoanswer_number_row:n {##1}
+            \__autoanswer_answer_row:n {##1}
+        }
+
+        % 關閉最後一列
+        \tabularnewline
+        \hline
+    \end{tabular}
+
+    \group_end:
+}
+
+% 預設每列 5 題
+\NewDocumentCommand{\autoanswer}{O{5}m}
+{
+    \__autoanswer_table:nn {#1} {#2}
+}
+
+\ExplSyntaxOff

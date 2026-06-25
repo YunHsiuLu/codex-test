@@ -1,0 +1,50 @@
+2 接著我們依序將分子編號 二1,2,..,M,第7顆分子的速度為= Ong ave) BT
+
+向速率平方的平均值為: mr二訪訪0 :
+
+( ArMRRERSEBIANREHE TIS = r= SM mS AMA LP Ny
+= fs ES FMLA IG | P= Lo Nyy A Ny
+
+(2) ABS i (FASE GAEL v2 ype? vy 十 ye? PSPs
+>= wy,   Lye 十bo +7)   dv,   Lv   Ww, a
+Ve NTN TON Ne PH MS
+
+(3) ARIAL IRR BRE» AML FINE» BM vv v2 ov LP
+= P= 生or # xmx 4¥= IN = PV= 才Mo二 Sx dmv => NK 。
+
+三、分子的平均動能與溫度
+
+1.利用氣體分子數與莫耳數之間的關係 n= (6.02x10?(Lmol) ,稱為亞佛加
+厥常數)
+
+今理想氣體方程式可改寫為_PD二/R7二 * XRT=NX 章 xT=NkT 。
+及8.31JCmol.K) _       Bae , ABST eheH ,
+Este k= =%.02%10"(Iimely 71 38X10 °K  稱為波茲曼常數
+巨觀:由理想氣體方程式得 PV=nRT
+
+2. 歸納前述討論可得:                         ss
+Pennies [ag App Ln? 2.8
+=> IAS: wer= SNK=   K-ur   。
+
+3 上式指出氣體分子的平均動能到 ( 微觀) 與    ye     SS
+絕對溫度了(巨觀) wae» A «gL    AA
+溫度時,氣體分子的運動較緩和,其平均 9  ate   Yom
+DAE): ez» IR RM FO  ow fs   WWE?
+動較激烈,其平均動能較大。         ~e * SK.     ~—
+
+4 平均動能較大者亦有較低動能的氣體分子, 低溫時       高過時
+反之,平均動能較小者亦有較高動能的氣_氣體分子平均動能較小]氣體分子平均動能較大
+體分子,故溫度較高不代表每個分子的動      條氣體分子的平均動能與絕對溫度成正比。
+
+能均較低溫者大。
+
+四、單原子理想氣體的內能
+
+L 氣體內部全體分子的_ 動能_ 與分子間_位能_(由分子間交互作用力所造成)的總
+和,稱為氣體的內能。
+
+2 若我們僅考慮單原子理想氣體,因理想氣體分子間沒有作用力存在,無分子間位能。故單
+原子分子理想氣體的內能即為其總動能。
+=> 單原子理想氣體的內能 USEK=NK= Nx4T=S.NeT= 3 nRT= 3 PV 。
+
+202

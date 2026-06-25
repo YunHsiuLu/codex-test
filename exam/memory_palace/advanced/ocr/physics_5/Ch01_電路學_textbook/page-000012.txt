@@ -1,0 +1,25 @@
+回1-6
+F:
+將不同的電阻器以導線頭尾             將不同的電阻器並排,元件         rte 2
+吊接,稱為串聯。              兩端各以導線分別連接 ,稱       入 文上
+7                         tb °                          peat ood
+和   |:    電路圖     4                   Sa
+er ety
+age                  心        pms
+111l      aes SO ay
+條             等效電路圖  和            區潑二條
+g                                    G            : be hs .     ay
+R=R,+R,          等效電阻        R R + R     *  f   . <¥  oF.
+hed  oe     .  .**
+Vat Va,=E      各電阻的電壓     Va=Ve,      S    eres |
+=H        各電阻的電流    7+7二7     BP, 3 i$  wi.”
+ae *  人 wae  .
+ti sae
+rs rs   as   說
+os        acters
+J      SA     De      聖誕樹燈飾
+i     @      聖誕節裝飾的燈飾是利用
+{|                    並聯電路 ,因此當其中一
+|                    顆燈泡故障時,其他燈泡
+\ MX Y            仍可維持運作不受影響。
+PTL                                                 B

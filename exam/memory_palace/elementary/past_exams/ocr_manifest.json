@@ -1,0 +1,38 @@
+[
+  {
+    "title": "01_12K-高中物理(全)隨堂卷{教用}",
+    "source": "memory_palace/elementary/past_exams/raw/01_12K-高中物理(全)隨堂卷{教用}.pdf",
+    "pages": 24,
+    "ocr_dir": "memory_palace/elementary/past_exams/ocr/01_12K-高中物理(全)隨堂卷{教用}"
+  },
+  {
+    "title": "114-2補考卷0624",
+    "source": "memory_palace/elementary/past_exams/raw/114-2補考卷0624.pdf",
+    "pages": 8,
+    "ocr_dir": "memory_palace/elementary/past_exams/ocr/114-2補考卷0624"
+  },
+  {
+    "title": "114上高中物理(全)A卷{教用}-PDF檔",
+    "source": "memory_palace/elementary/past_exams/raw/114上高中物理(全)A卷{教用}-PDF檔.pdf",
+    "pages": 48,
+    "ocr_dir": "memory_palace/elementary/past_exams/ocr/114上高中物理(全)A卷{教用}-PDF檔"
+  },
+  {
+    "title": "第一次段考題_完整版v2",
+    "source": "memory_palace/elementary/past_exams/raw/第一次段考題_完整版v2.pdf",
+    "pages": 9,
+    "ocr_dir": "memory_palace/elementary/past_exams/ocr/第一次段考題_完整版v2"
+  },
+  {
+    "title": "第二次段考題",
+    "source": "memory_palace/elementary/past_exams/raw/第二次段考題.pdf",
+    "pages": 9,
+    "ocr_dir": "memory_palace/elementary/past_exams/ocr/第二次段考題"
+  },
+  {
+    "title": "高一第三次114b",
+    "source": "memory_palace/elementary/past_exams/raw/高一第三次114b.pdf",
+    "pages": 9,
+    "ocr_dir": "memory_palace/elementary/past_exams/ocr/高一第三次114b"
+  }
+]

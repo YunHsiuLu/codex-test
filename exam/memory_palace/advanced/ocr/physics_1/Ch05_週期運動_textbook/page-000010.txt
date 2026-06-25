@@ -1,0 +1,29 @@
+範例 5-2
+如圖,質量#的小球以擺繩懸掛作錐動擺運動,已知擺角為9、圓心到天          f
+花板的垂直距離為7,上且重力加速度為 g,不計擺繩質量與各種阻力,則:         (i
+(1) 小球圓周運動的向心力量值為何 ?                                             h
+(2) 小球圓周運動的切向速率為何 ?        (3) 小球圓周運動的週其為何? 1» a
+繩張力與重力的合力,提供圓周運動所需的向心力。
+    ,「水平方向:了sin9三五 一0                              人
+Ce pa : cos = mg---®               venta 0
+‘cosO}.    4
+(1) pO tano= & R= me tand »                           } ee aan
+@         ms                                              mg iar
+(2) £8 = mg tana=m—= v= /gR tand =. /g x (htand) x tand= tnd, /gh »
+= mgtone= m2 pare | Ro og [BDF Log |B,
+(3) HR = mg tan9    7  =T=2   Zand  2   etn  me [A
+範例 5-3
+一個質量為3kg 的小鋼球,在半徑為有==15m 的超大光滑碗內的
+某水平面上作等速圓周運動,設重力加速度為 10 mA 0= 53°
+如圖所示,則小鋼球作圓周運動的:
+(1) 半徑為多少 ? (2) 角速度量值為多少? (3) 週期為多少 ?
+正向力與重力的合力,提供圓周運動所需的向心力。
+(1) r= Rss二15x 2 =12m-                    ee
+如右圖所示,設正向力為 Y,角速度為9:                   As名 an  y)
+pene :Nsind= FD
+鉛直方向 : Ncos@= mg-----@                           ms
+O_, sind 五    = metnd=mre’s o— [Stan — /1tans3? _ 10 a). ,
+O° cod me   ig tan      >      a      5G  d/
+(3)由 oa spam 2 _ Ms,
+T        o 10/3 5
+143

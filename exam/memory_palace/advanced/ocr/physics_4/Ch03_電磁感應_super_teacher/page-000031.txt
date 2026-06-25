@@ -1,0 +1,27 @@
+一             ABLE                       oe BRE
+一、交流發電機                             Pe
+1交流發電機的電動替                                             RAN =a)
+(DE @) 所示為交流發電機的構造圖,有一緊密纏繞六        SGN 全
+吊、面積為 4 的線圈 epcd,在一均勻永久磁場及中   Le   WAS
+繞一與及垂直的 gg'軸,以等角速度o@疾時針方向 和          S
+轉動。線圈轉動時,其兩端各接在集電環上,保持          Rem
+與外電路接觸以輸出電流。                人圖 (交流發電機構造圖
+9圖(bp)為沿 OO" 軸觀察的側視圖,設線圈面的法線向        ARM
+量在一0時與及平行,在時刻/時與有方向的夾角               2            i
+為2(9二oz),則此時:                     sansa °       _
+(a) GATES B PETE                           is ele ane                B
+=   Acos0=Acosat   °                        tessa’?
+(b) 通過每一匝線圈面的磁通量              條圖 (b) 交流發電機的側視圖
+= 及4cos9一肪4cosoz# o
+(c) 共有N匝,故總莖應電動勢二二2 — v4 BAcosor)
+由微分計算得 了 (24coso/)二一924sino/ ( 其推導請參閱課外補充)
+Se=__ONBASIN@t=e,,,SMot >» str Emax = ONBA FECES BAR AIE °
+(cl) 磁通量#與電動勢‧隨時間/變化的情形如圖 (c) 所示,故感應電動勢量值隨時間做
+週期性正負交蔡變換。
+[3
+0       +       ST    t
+  ajay
+N                                     S
+BEE 0      90°     180°     270°     360°
+AG (Cc) HBB ESHA ty OSSD Bl (PBR WBA LE SK IBIS,
+154

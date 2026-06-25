@@ -1,0 +1,30 @@
+=: SWAT
+如上頁圖(b) 所示,自0點將物體以初速度w、仰角?斜向拋出。以出發點 O為原點,令向
+右及向上之方向為正,建立坐標系統。
+           鋁直方向 (y Wh)                         AEA (x Hh)
+運動狀況      初速wsin9 WH LAE           PILE vo cos 的等速運動
+X= V9 CcosOt++++++-D)
+由 fray sindr—1_ gr?-----@ > 由山得 cot *代人人@
+軌跡方程式       2
+— yy. sj        3       1            2            生     2
+六psi9X一26s9 78 (east) =tan oS cos
+三、斜向拋射公式
+1 公式推導
+最高點鉛直速度為0
+=v, sind — gt=0 > t= pend
+~總飛行時間7還2
+^      0
+vo ge        mins in
+        0                        Ho, u- ge- v, sin’?  、
+!   @ Moco84                             a       2g      a
+一一一 水和射程人 ————_______
+Y
+2uusin9 2uosingcos9 usin24
+R=yv,cos@ * 7二bocos9x — — = ~~
+2. 公式整理
+到達最高點時間 /二    a    ; 總飛行時間 T=   fen   。
+2.. 2
+最大高度 SRO
+PEER 2 sm9eos9 = _ sy sin28
+&                      &
+94

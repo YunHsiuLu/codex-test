@@ -1,0 +1,16 @@
+g 電磁威應
+3 KEY
+1, 交流發電機的威應電動勢:5=oM84 sin ot = oNBAsin 0» HR O AB AMAT °
+2. 當?-=05 X 180° FF /El=0; BO =90° BF ,/&/有最大值 NBA ©
+gel 3-9
+某交流發電機共有 500 匝線圈,每匝線圈的面積為 200 cm',以頻率 300 rpm (轉/分) 在0.1T
+的均勻磁場中旋轉。則此發電機 :
+(1) 當線圈面法向量與磁場夾角為 37。 瞬間 ,威應電動勢為多少V?
+(2) 最大威應電動勢為多少V7?
+1. €=NABosind ,其中為及和4的夾角。
+2. gu = NBA sin90° = NBA@ °
+(1) 300 rpm => @ = CO0roundsySz radtoun’) 10x rad/s ,
+s
+RESHMA € = NBAosin 0 = 500 x 0.10 T x 0.020 m*x 107 rad/s x sin 37° = 62 V °
+(2) @ 0=90° > € BRK E,,.. =NBAo = 500 x 0.10 T x 0.020 m’ x 107 rad/s = 107 V ©
+132

@@ -2,34 +2,36 @@
 
 ## 層級
 
-目前與未來資料分成兩個主層級：
+目前資料分成兩個主層級：
 
-- `foundation`：高一物理（全），基礎物理範圍。現有 `global/`、`Ch1/` 到 `Ch6/`、`ocr/Ch2` 到 `ocr/Ch6` 都屬於此層級。
-- `advanced`：高二、高三選修物理 I-V，進階物理範圍。尚未匯入講義，已預留資料夾。
+- `elementary`：高一物理（全），基礎物理範圍。對應概念層級標籤為 `foundation`。
+- `advanced`：高二、高三選修物理 I-V，進階物理範圍。對應概念層級標籤為 `advanced`。
 
 出題時的預設規則：
 
-- 若考卷指定「高一」、「高一物理」、「基礎」、「Ch1-Ch6」，只查 `foundation` 資料。
-- 若考卷指定「選修物理」、「高二」、「高三」、「物理 I-V」，優先查 `advanced` 資料；需要補前置觀念時才查 `foundation`。
+- 若考卷指定「高一」、「高一物理」、「基礎」、「物理（全）」、「Ch1-Ch6」，只查 `elementary`。
+- 若考卷指定「選修物理」、「高二」、「高三」、「物理 I-V」，優先查 `advanced`；需要補前置觀念時才查 `elementary`。
 - 若題目要求銜接、複習、素養或跨冊整合，才同時查兩個層級。
 
 ## 目前資料夾對應
 
-Foundation：
+Elementary：
 
-- `global/`：高一基礎全域概念索引。
-- `Ch1/` 到 `Ch6/`：高一各章入口與整理。
-- `ocr/Ch2/` 到 `ocr/Ch6/`：高一講義 OCR 原始文字。
+- `elementary/global/`：高一基礎全域概念索引。
+- `elementary/Ch1/` 到 `elementary/Ch6/`：高一各章入口與整理。
+- `elementary/ocr/Ch2/` 到 `elementary/ocr/Ch6/`：高一講義 OCR 原始文字。
 
 Advanced：
 
-- `advanced/README.md`：選修物理預留入口。
-- 未來建議結構：`advanced/physics_I/`、`advanced/physics_II/`、`advanced/physics_III/`、`advanced/physics_IV/`、`advanced/physics_V/`。
-- 未來 OCR 建議結構：`advanced/ocr/physics_I/` 等。
+- `advanced/README.md`：選修物理入口。
+- `advanced/global/`：選修物理 I-V 跨冊概念索引。
+- `advanced/physics_1/` 到 `advanced/physics_5/`：選修各冊索引。
+- `advanced/ocr/physics_1/` 到 `advanced/ocr/physics_5/`：選修 OCR 原始文字。
+- `advanced/answer_reference/`：解答本參考，不混入概念主索引。
 
 ## 標籤格式
 
-每個新增 chunk 建議在檔案開頭加入 metadata：
+高一 chunk 建議 metadata：
 
 ```yaml
 ---
@@ -45,7 +47,7 @@ exam_use:
 ---
 ```
 
-選修物理範例：
+選修物理 chunk 建議 metadata：
 
 ```yaml
 ---
@@ -110,15 +112,16 @@ exam_use:
 
 高一考卷：
 
-1. 查 `global/README.md`。
-2. 查 `global/concept_map.md`。
-3. 查相關 `global/chunks/`。
-4. 需要來源時查 `global/source_map.md` 與 `ocr/`。
+1. 查 `elementary/global/README.md`。
+2. 查 `elementary/global/concept_map.md`。
+3. 查相關 `elementary/global/chunks/`。
+4. 需要來源時查 `elementary/global/source_map.md` 與 `elementary/ocr/`。
 
 選修考卷：
 
-1. 查 `advanced/README.md`。
-2. 查選修冊別索引。
-3. 查進階 chunk。
-4. 若需要前置概念，再回查 `global/` 的高一基礎。
+1. 查 `advanced/global/README.md`。
+2. 查 `advanced/global/concept_map.md`。
+3. 查相關 `advanced/global/chunks/`。
+4. 需要來源時查 `advanced/source_map.md` 與 `advanced/ocr/`。
+5. 若需要前置概念，再回查 `elementary/global/` 的高一基礎。
 

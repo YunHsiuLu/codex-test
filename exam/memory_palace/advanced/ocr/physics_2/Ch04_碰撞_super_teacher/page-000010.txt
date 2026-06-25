@@ -1,0 +1,37 @@
+Owe
+二、一維彈性碰撞的特殊情形
+1. 兩質量相等時物體的彈性碰撞
+當發生一維彈性碰撞的兩物體質量相等 Cn, m= m) 時,碰撞後兩物體的速度交換(兩
+物體的動量和動能亦互換)。若兩物體碰撞前的速度為wu、uw; 碰撞後的速度為w'、
+oe a 。                                              Pero
+v)'=Vy
+全 MM,       2m,    二 mam,  2m    _           ”   o-
+a" m+m, vt m, +m, ne m+m ‘i   m+m Ma Vo  5    © 碰撞後
+轉    1 MyM       2m,    _ m—        2     _                Vv          vy
+7 nem mace mem em          人一
+過列       vy =v)
+2 被撞物體靜止時的彈性碰撞
+1)碰撞後的速度                                                    a wee
+如圖所示,質量為 zi 的物體以速度uw 碰撞質量為jo的                 1. @?
+靜止物體,碰撞後兩者的速度分別為w',和uwy',則碰撞後        @
+一 冊撞後
+ | -    aim - 同  -
+1十2               m,+m,                @-  (@e-4
+(09)各種可能的狀況
+om ee |  oe e  «im, mFS my 原來的運動方向行人
+2度引季不繼
+2mm 會~ bd :  會一 — : a DUBELE mm, ASRS AS om, 原來的運動方向行進
+mem  ee | “ee &   | omy ZENS + mS m, 原來的運動方向行進
+mam  eo} e@ are    【 )     | im DUR ARLE IS] + my ERISA Lb
+(A) O : SEPERATE PNO » ANG SLAM - co) O = REPO ERE
+eS ee ee ee, eee
+Pibsticse 冰為多選題 (C) 0 : 質量相等的物體碰撞後速度交換。(D x :較重物體碰撞較輕
+的靜止物體後,二者皆沿重物原來的運動方向前進。
+*_ABC_1有一單擺如圖所示,擺鍾的質量為轎 (如為一定值),由了點從靜
+八條代目各放,在最低貼與靜止於光滑水平面、質量為 紋的木塊作正面完
+的靜止 物體 全彈性碰撞,則下列敘述哪些正確?                                            u         P
+mere & SMD 1,則碰撞後擺鍾會反彈 加 AC > 1» seni REBER        全
+而輕物則以接以原來的速率反向彈回,木塊紙乎保持靜止 G若葷1,則碰撞後拉鍾靜止,木塊
+cae 以擺鍾碰撞前瞬間的速度運動 (CM <1» puma DR REAR RES SAD
+來的運動方向相反、( 若 葡 <1,則碰撞後瞬間木塊與擺鍾速率幾乎相等。
+前進。                                                                                                  167
