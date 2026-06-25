@@ -1,0 +1,39 @@
+
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{xeCJK}
+\IfFontExistsTF{Noto Sans CJK TC}{
+  \setCJKmainfont{Noto Sans CJK TC}
+}{
+  \IfFontExistsTF{PingFang TC}{
+    \setCJKmainfont{PingFang TC}
+  }{
+    \setCJKmainfont{Songti TC}
+  }
+}
+\usetikzlibrary{arrows.meta,calc,decorations.pathmorphing,decorations.markings,patterns}
+\begin{document}
+
+\begin{tikzpicture}[
+  line cap=round,
+  line join=round,
+  force/.style={-{Stealth[length=8pt,width=6pt]}, very thick},
+  arrow/.style={-{Stealth[length=7pt,width=5pt]}, thick},
+  label/.style={font=\small},
+  note/.style={font=\footnotesize}
+]
+
+  \draw[fill=blue!8, very thick] (0.2,-0.45) rectangle (2.0,0.45);
+  \draw (1.1,-0.45) -- (1.1,0.45);
+  \node[label] at (0.65,0) {S};
+  \node[label] at (1.55,0) {N};
+  \draw[arrow] (2.1,0) -- (3.05,0) node[midway, above, note] {靠近};
+  \draw[very thick] (3.65,0) ellipse (0.32 and 0.95);
+  \draw[very thick] (3.82,0) ellipse (0.32 and 0.95);
+  \draw[thick] (3.65,-0.95) -- (3.65,-1.35) -- (5.0,-1.35);
+  \draw[thick] (3.82,-0.95) -- (3.82,-1.7) -- (5.0,-1.7);
+  \draw[very thick] (5.0,-1.52) circle (0.28);
+  \node[note] at (5.0,-1.52) {G};
+  \node[label] at (3.75,1.2) {封閉線圈};
+  \node[note] at (5.05,-1.08) {電流計};
+\end{tikzpicture}
+\end{document}

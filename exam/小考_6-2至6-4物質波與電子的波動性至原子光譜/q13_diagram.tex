@@ -1,0 +1,30 @@
+
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{xeCJK}
+\IfFontExistsTF{Noto Sans CJK TC}{
+  \setCJKmainfont{Noto Sans CJK TC}
+}{
+  \IfFontExistsTF{PingFang TC}{
+    \setCJKmainfont{PingFang TC}
+  }{
+    \setCJKmainfont{Songti TC}
+  }
+}
+\usetikzlibrary{arrows.meta,calc,decorations.pathmorphing,decorations.markings,patterns}
+\begin{document}
+\begin{tikzpicture}[
+  line cap=round,
+  line join=round,
+  force/.style={-{Stealth[length=8pt,width=6pt]}, very thick},
+  arrow/.style={-{Stealth[length=7pt,width=5pt]}, thick},
+  label/.style={font=\small},
+  note/.style={font=\footnotesize}
+]
+
+  \fill[black] (0,0) rectangle (5.6,1.45);
+  \foreach \x/\c in {1.0/blue,2.35/green!70!white,4.2/red} {
+    \draw[\c, line width=5pt] (\x,0.18) -- (\x,1.25);
+  }
+  \node[font=\small, white] at (2.8,-0.35) {某元素發射光譜};
+\end{tikzpicture}
+\end{document}

@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1782395671.11573 "main.xdv" "main.pdf" "main" 1782395671.57956 0
-  "main.xdv" 1782395671.06225 36840 474de53ea52e4eda9cc97d03c6538ec4 "xelatex"
+["xdvipdfmx"] 1782397459.65849 "main.xdv" "main.pdf" "main" 1782397460.01582 0
+  "main.xdv" 1782397459.60411 36836 967b432b5a7ad64bed9a2c06145f268a "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1782395670.42808 "main.tex" "main.xdv" "main" 1782395671.57811 0
+["xelatex"] 1782397458.9635 "main.tex" "main.xdv" "main" 1782397460.01452 0
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -158,13 +158,13 @@
   "/usr/local/texlive/2026/texmf-var/web2c/xetex/xelatex.fmt" 1777894760 5948572 80d6a6877eb3b5fd1d556e8f098dfa10 ""
   "/usr/local/texlive/2026/texmf.cnf" 1774209515 577 648cd9f92f9c0eac486f4c71c85cfbbe ""
   "commands.tex" 1782394731.98288 8689 3055de9812255f13af40ad917b03a31b ""
-  "main.aux" 1782395671.06169 1089 4c2b1ba8c78efd5c0a4821dc4bc22d3c "xelatex"
+  "main.aux" 1782397459.60353 1089 4c2b1ba8c78efd5c0a4821dc4bc22d3c "xelatex"
   "main.tex" 1782395631.52716 5120 54d2f09b0a34c326276dda1b5c8e1629 ""
   "preamble.tex" 1782394731.9847 966 4112628dd7d31b160cd0ea8f11c7bfa1 ""
-  "q11.png" 1782395391.21624 12971 c8a146689aead76a4a1c8244e63212f0 ""
-  "q12.png" 1782395391.21837 12971 c8a146689aead76a4a1c8244e63212f0 ""
-  "q13.png" 1782395391.22053 12971 c8a146689aead76a4a1c8244e63212f0 ""
-  "q15.png" 1782395391.22237 12971 c8a146689aead76a4a1c8244e63212f0 ""
+  "q11.png" 1782397304.93985 7565 ef334655e3f50508ab3c594d361c7c9f ""
+  "q12.png" 1782397305.77685 7619 5b3dd735473036f3ab0ccd5532c0d16b ""
+  "q13.png" 1782397307.44882 4782 90ea523f2f207902daf5cb436ac32089 ""
+  "q15.png" 1782397306.61676 8792 e6126895c7291e9b3775a89ef6c90b53 ""
   (generated)
   "main.aux"
   "main.log"

@@ -1,0 +1,31 @@
+
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{xeCJK}
+\IfFontExistsTF{Noto Sans CJK TC}{
+  \setCJKmainfont{Noto Sans CJK TC}
+}{
+  \IfFontExistsTF{PingFang TC}{
+    \setCJKmainfont{PingFang TC}
+  }{
+    \setCJKmainfont{Songti TC}
+  }
+}
+\usetikzlibrary{arrows.meta,calc,decorations.pathmorphing,decorations.markings,patterns}
+\begin{document}
+\begin{tikzpicture}[
+  line cap=round,
+  line join=round,
+  force/.style={-{Stealth[length=8pt,width=6pt]}, very thick},
+  arrow/.style={-{Stealth[length=7pt,width=5pt]}, thick},
+  label/.style={font=\small},
+  note/.style={font=\footnotesize}
+]
+
+  \draw[very thick] (0.4,0) -- (4.8,0); \node[label, right] at (4.85,0) {$E_1=0\,\mathrm{eV}$};
+  \draw[very thick] (0.4,0.65) -- (4.8,0.65); \node[label, right] at (4.85,0.65) {$E_2=2\,\mathrm{eV}$};
+  \draw[very thick] (0.4,1.6) -- (4.8,1.6); \node[label, right] at (4.85,1.6) {$E_3=5\,\mathrm{eV}$};
+  \draw[arrow, red] (3.2,1.6) -- (3.2,0) node[midway, right, note] {放出};
+
+  \node[note] at (0.85,1.95) {能階圖};
+\end{tikzpicture}
+\end{document}

@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1782395662.47569 "main.xdv" "main.pdf" "main" 1782395662.79388 0
-  "main.xdv" 1782395662.42124 39836 00def7d7c06ec86c1ccbbaa5f9a1e598 "xelatex"
+["xdvipdfmx"] 1782396768.95351 "main.xdv" "main.pdf" "main" 1782396769.29523 0
+  "main.xdv" 1782396768.89902 39836 62d331c1910573533e755a14b6067235 "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1782395661.78924 "main.tex" "main.xdv" "main" 1782395662.79264 0
+["xelatex"] 1782396768.18421 "main.tex" "main.xdv" "main" 1782396769.29388 0
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -158,10 +158,10 @@
   "/usr/local/texlive/2026/texmf-var/web2c/xetex/xelatex.fmt" 1777894760 5948572 80d6a6877eb3b5fd1d556e8f098dfa10 ""
   "/usr/local/texlive/2026/texmf.cnf" 1774209515 577 648cd9f92f9c0eac486f4c71c85cfbbe ""
   "commands.tex" 1782394731.94723 8689 3055de9812255f13af40ad917b03a31b ""
-  "main.aux" 1782395662.42071 1089 4c2b1ba8c78efd5c0a4821dc4bc22d3c "xelatex"
+  "main.aux" 1782396768.89845 1089 4c2b1ba8c78efd5c0a4821dc4bc22d3c "xelatex"
   "main.tex" 1782395631.52281 5583 9ce8d14803b8778016ae0740f569f2d4 ""
   "preamble.tex" 1782394731.94955 966 4112628dd7d31b160cd0ea8f11c7bfa1 ""
-  "q15.png" 1782395254.42703 12971 c8a146689aead76a4a1c8244e63212f0 ""
+  "q15.png" 1782396744.24646 11724 c2f476cda1a6896a4447728f86a5ce6c ""
   (generated)
   "main.aux"
   "main.log"
