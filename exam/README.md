@@ -104,6 +104,83 @@ LaTeX 共用模板。
     └── 段考_第三次段考4-5至6-4.pdf
 ```
 
+## 安裝 LaTeX 編譯環境
+
+本專案的考卷使用 LaTeX 撰寫，編譯指令主要使用 `xelatex`。如果老師電腦尚未安裝 LaTeX，必須先完成安裝，否則只能閱讀或修改 `main.tex`，無法產生 PDF。
+
+### Windows
+
+建議安裝 MiKTeX 或 TeX Live，二擇一即可。
+
+#### 方式一：MiKTeX
+
+MiKTeX 適合第一次使用 LaTeX 的老師，安裝檔較小，缺少套件時可以自動補裝。
+
+步驟：
+
+1. 到 MiKTeX 官方網站下載 Windows 安裝檔。
+2. 安裝時選擇「Install missing packages on-the-fly」或類似的自動安裝套件選項。
+3. 安裝完成後，重新開啟命令提示字元或 PowerShell。
+4. 輸入以下指令確認安裝成功：
+
+```powershell
+xelatex --version
+```
+
+若能看到版本資訊，就代表可以編譯本專案考卷。
+
+#### 方式二：TeX Live
+
+TeX Live 套件完整，但安裝檔較大、安裝時間較長。若學校資訊組已經有統一安裝方式，也可以使用 TeX Live。
+
+步驟：
+
+1. 到 TeX Live 官方網站下載 Windows 安裝程式。
+2. 執行完整安裝。
+3. 安裝完成後，重新開啟命令提示字元或 PowerShell。
+4. 輸入：
+
+```powershell
+xelatex --version
+```
+
+### macOS
+
+macOS 建議安裝 MacTeX。MacTeX 是 TeX Live 的 macOS 發行版，套件完整，最適合直接編譯本專案。
+
+步驟：
+
+1. 到 MacTeX 官方網站下載 MacTeX 安裝檔。
+2. 開啟 `.pkg` 並完成安裝。
+3. 安裝完成後，重新開啟 Terminal。
+4. 輸入以下指令確認安裝成功：
+
+```zsh
+xelatex --version
+```
+
+若出現版本資訊，就代表可以編譯。
+
+若老師習慣使用 Homebrew，也可以安裝 BasicTeX，但 BasicTeX 預設套件較少，可能需要額外補裝套件。除非熟悉 LaTeX 套件管理，否則建議直接安裝 MacTeX。
+
+### 編譯測試
+
+安裝完成後，可以進入 `考卷template` 測試：
+
+```zsh
+cd 考卷template
+xelatex -interaction=nonstopmode main.tex
+xelatex -interaction=nonstopmode main.tex
+```
+
+若成功產生 `main.pdf`，表示 LaTeX 編譯環境可用。
+
+常見問題：
+
+- 找不到 `xelatex`：通常是 LaTeX 尚未安裝完成，或安裝後終端機尚未重新開啟。
+- 缺少中文字體：本專案會依序嘗試 `Noto Sans CJK TC`、`PingFang TC`、`Songti TC`。若 Windows 顯示字體錯誤，建議安裝 Noto Sans CJK TC。
+- 缺少 LaTeX 套件：MiKTeX 可開啟自動補裝；TeX Live 或 MacTeX 通常已包含本專案需要的套件。
+
 ## 第一次使用流程
 
 ### １．放入教材或文本資料
