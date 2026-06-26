@@ -1,0 +1,110 @@
+% --- 自動計數器設定 ---
+\newtotcounter{qcount} \regtotcounter{qcount}
+\newtotcounter{sccount} \regtotcounter{sccount} 
+\newtotcounter{mccount} \regtotcounter{mccount} 
+
+% --- 基礎縮排設定 ---
+\newcommand{\choiceindent}{0.85cm}
+
+% --- 1. 防分頁容器 (qblock) ---
+\newenvironment{qblock}{%
+    \par\vspace{0.5em}
+    \noindent\begin{minipage}{\textwidth} % 確保整題不分頁
+}{%
+    \end{minipage}\par\vspace{1em}
+}
+
+% --- 2. 題幹指令 (純計數) ---
+\newcommand{\schoices}[7]{% 
+    \begin{qblock}
+        \stepcounter{qcount}\stepcounter{sccount}%
+        \begin{enumerate}[label=\textbf{\theqcount.}, leftmargin=\choiceindent, labelsep=0.2cm, nosep]
+            \item #1
+        \end{enumerate}\vspace{0.2em}
+        \ifstrequal{#2}{h}{
+            \noindent\hspace*{\choiceindent}% 
+            (A) #3 \hspace{0.5cm} (B) #4 \hspace{0.5cm} (C) #5 \hspace{0.5cm} (D) #6 \hspace{0.5cm} (E) #7 \par
+        }
+        {
+            \begin{enumerate}[(A), topsep=0.3em, itemsep=0.5em, parsep=0pt, leftmargin=*, labelindent=\choiceindent, labelsep=0.25cm, align=left] 
+                \item #3 \item #4 \item #5 \item #6 \item #7
+            \end{enumerate}
+        }
+    \end{qblock}
+}
+
+\newcommand{\mchoices}[8]{% 
+    \begin{qblock}
+        \stepcounter{qcount}\stepcounter{mccount}%
+        \begin{enumerate}[label=\textbf{\theqcount.}, leftmargin=\choiceindent, labelsep=0.2cm, nosep]
+            \item #1 \textbf{(應選 #2 項)}
+        \end{enumerate}\vspace{0.2em}
+        \ifstrequal{#3}{h}{
+            \noindent\hspace*{\choiceindent}% 
+            (A) #4 \hspace{0.5cm} (B) #5 \hspace{0.5cm} (C) #6 \hspace{0.5cm} (D) #7 \hspace{0.5cm} (E) #8 \par
+        }
+        {
+            \begin{enumerate}[(A), topsep=0.3em, itemsep=0.5em, parsep=0pt, leftmargin=*, labelindent=\choiceindent, labelsep=0.25cm, align=left] 
+                \item #4 \item #5 \item #6 \item #7 \item #8
+            \end{enumerate}
+        }
+    \end{qblock}
+}
+
+% --- 側邊圖片包裝指令 ---
+% #1: 題目內容 (填入 \schoices{...} 或 \mchoices{...})
+% #2: 圖片檔名
+% #3: 圖片佔頁面寬度的比例 (例如 0.1)
+\newcommand{\sideimg}[3]{%
+    \begin{qblock} % 使用你之前的防分頁環境
+        \noindent
+        % 左側：自動計算剩餘寬度 (總預算 0.91 扣掉圖片寬度)
+        \begin{minipage}[t]{\dimexpr 0.91\textwidth - #3\textwidth \relax}
+            % 這裡必須要把 \schoices 原本內建的 before=\vspace 抵消掉，
+            % 否則圖片跟第一行字會對不齊，所以稍微修正間距
+            \vspace{-0.5em} 
+            #1
+        \end{minipage}
+        \hfill 
+        % 右側：放圖片
+        \begin{minipage}[t]{#3\textwidth}
+            \includegraphics[width=\textwidth, valign=t]{#2}
+        \end{minipage}
+    \end{qblock}
+}
+
+\newcommand{\singlechoice}[1]{% 
+    \stepcounter{qcount}\stepcounter{sccount}%
+    \begin{enumerate}[label=\textbf{\theqcount.}, leftmargin=\choiceindent, labelsep=0.2cm, nosep]
+        \item #1
+    \end{enumerate}\vspace{0.2em}
+}
+
+\newcommand{\multiplechoice}[2]{% 
+    \stepcounter{qcount}\stepcounter{mccount}%
+    \begin{enumerate}[label=\textbf{\theqcount.}, leftmargin=\choiceindent, labelsep=0.2cm, nosep]
+        \item #1 \textbf{(應選 #2 項)}
+    \end{enumerate}\vspace{0.2em}
+}
+
+% --- 3. 自動比例圖片 (sidefig) ---
+\newcommand{\sidefig}[3]{% {1:題幹文字}{2:圖片檔名}{3:圖片比例}
+    \begin{minipage}[t]{\dimexpr 0.91\textwidth - #3\textwidth \relax}
+        #1
+    \end{minipage}\hfill 
+    \begin{minipage}[t]{#3\textwidth}
+        \includegraphics[width=\textwidth, valign=t]{#2}%
+    \end{minipage}
+}
+
+% --- 4. 選項排版 ---
+\newcommand{\hchoices}[5]{% 水平排列
+    \noindent\hspace*{\choiceindent}% 
+    (A) #1 \hfill (B) #2 \hfill (C) #3 \hfill (D) #4 \hfill (E) #5 \par
+}
+
+\newcommand{\vchoices}[5]{% 垂直排列
+    \begin{enumerate}[(A), nosep, leftmargin=*, labelindent=\choiceindent, labelsep=0.25cm, align=left] 
+        \item #1 \item #2 \item #3 \item #4 \item #5
+    \end{enumerate}
+}

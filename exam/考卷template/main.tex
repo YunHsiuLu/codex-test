@@ -1,8 +1,25 @@
 \documentclass[10pt,a4paper]{article}
 
-% 引入外部設定檔
+% --- 共用設定檔 ---
+% 新考卷資料夾不要複製 preamble.tex 與 commands.tex。
+% 若 main.tex 不在考卷template資料夾內，請改用相對路徑，例如：
+% \input{../../考卷template/preamble}
+% \input{../../考卷template/commands}
 \input{preamble}
 \input{commands}
+
+% --- 每份考卷獨立設定 ---
+% \scscore：單選題每題配分。
+% \mcscore：複選題每題配分。
+\newcommand{\scscore}{4}
+\newcommand{\mcscore}{4}
+
+% \examheader 不寫在 commands.tex，避免所有考卷共用同一個抬頭。
+\newcommand{\examheader}{
+    \begin{center}
+        \section*{新竹市立建功高中 OOO 學年度第O學期高中部O年級物理段考卷}
+    \end{center}
+}
 
 \begin{document}
 
@@ -28,7 +45,9 @@
     \end{enumerate}
 \end{itemize}
 
-% --- 自動計算單選總分 ---
+% --- 單選題 ---
+% \schoices{題幹}{排列模式}{A}{B}{C}{D}{E}
+% 排列模式：h 為水平，m 為表格式，v 為垂直。
 \subsection*{一、單選題 (每題 \scscore 分，共 \the\numexpr \totvalue{sccount} * \scscore \relax 分)}
 \begin{center}
     \begin{tcolorbox}[colframe=black, colback=white, halign=left, width=\textwidth, arc=2mm]
@@ -56,12 +75,14 @@
 {儲存輻射物質的蓋子，沒有安全措施}
 {地震造成火山爆炸}
 
-% --- 自動計算複選總分 ---
+% --- 複選題 ---
+% \mchoices{題幹}{應選項數}{排列模式}{A}{B}{C}{D}{E}
+% 若不顯示應選幾項，改用 \mchoicesblind{題幹}{占位參數}{A}{B}{C}{D}{E}。
 \subsection*{二、複選題 (每題 \mcscore 分，共 \the\numexpr \totvalue{mccount} * \mcscore \relax 分)}
 \begin{center}
     \begin{tcolorbox}[colframe=black, colback=white, halign=left, width=\textwidth, arc=2mm]
         \small \textbf{說明：} \\
-        第 \the\numexpr\value{qcount}+1\relax 題至第 \the\numexpr\value{qcount}+\totvalue{mccount}\relax 題，每題選出一個最適當的選項，以 2B 鉛筆於「答案卡」上作答。錯一個選項均扣
+        第 \the\numexpr\value{qcount}+1\relax 題至第 \the\numexpr\value{qcount}+\totvalue{mccount}\relax 題，每題選出適當的選項，以 2B 鉛筆於「答案卡」上作答。錯一個選項均扣
         \ExplSyntaxOn
             \fp_eval:n { \mcscore * 2 / 5 }
         \ExplSyntaxOff 分，扣至該題零分止。 \\
@@ -91,7 +112,8 @@
     \large \textbf{--- 試題尚未結束，請至手寫卷繼續作答 ---}
 \end{center}
 
-% --- 若不需要答案卷，就刪掉以下區域 ---
+% --- 非選擇題 ---
+% 若不需要答案卷，就刪掉以下區域。
 % --- 小心不要刪掉底下的label{EndOfExam} ---
 % --- 這個label是用來計算頁碼用的 ---
 \newpage
@@ -137,6 +159,7 @@
 \label{EndOfExam}
 
 % --- 答案區 ---
+% 若不需要正確答案區，可刪除本區。
 \newpage
 \section*{正確答案區}
 % --- type 1 ---

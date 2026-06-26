@@ -1,0 +1,234 @@
+\documentclass[10pt,a4paper]{article}
+
+% 引入外部設定檔
+\input{../../考卷template/preamble}
+\input{../../考卷template/commands}
+
+\newcommand{\scscore}{4}
+\newcommand{\mcscore}{4}
+
+\newcommand{\examheader}{
+    \begin{center}
+        \section*{新竹市立建功高中 114 學年度第2學期高中部一年級物理段考卷}
+    \end{center}
+}
+
+\begin{document}
+
+% --- 考試抬頭 ---
+\examheader
+
+% --- 個人資訊 (置右) ---
+\noindent \hspace*{\fill} \large 班級：\underline{\hspace{1.5cm}} 座號：\underline{\hspace{1cm}} 姓名：\underline{\hspace{2.5cm}}
+
+\vspace{1em}
+
+% --- 考試說明區 ---
+\begin{itemize}[leftmargin=1em]
+    \item[$\ast$] 命題範圍：Ch1 科學態度與方法～Ch3-1 對物體運動的描述＋Ch3-2 慣性定律
+    \item[$\ast$] 命題教師：高一物理教師群
+    \item[$\ast$] 科目代碼：012
+    \item[$\ast$] 段考注意事項：
+    \begin{enumerate}[label=\arabic*., leftmargin=2em]
+        \item 讀卡部分請使用 2B 鉛筆書寫；若基本資料畫記不完整，扣該科段考成績十分；\\若答案畫記不清楚，致使電腦無法辨識判斷者，該題以零分計。
+        \item 答案卡上除了填入年級、年級代號、座號、科目代碼之外，也請同學們用正楷填寫上\textbf{姓名}及\textbf{科目}！
+        \item 答案卷一律用藍或黑色原子筆/簽字筆書寫，禁用擦擦筆，並確實填寫基本資料，否則扣該科段考成績十分。
+        \item 本次試卷計 \pageref{EndOfExam} 頁，共 \total{qcount} 題，總分 \the\numexpr (\totvalue{sccount}*\scscore) + (\totvalue{mccount}*\mcscore) + \totvalue{wtscore} \relax 分，請確實檢查題目卷，有問題請立刻向監考老師反映。
+    \end{enumerate}
+\end{itemize}
+
+% --- 自動計算單選總分 ---
+\subsection*{一、單選題 (每題 \scscore 分，共 \the\numexpr \totvalue{sccount} * \scscore \relax 分)}
+\begin{center}
+    \begin{tcolorbox}[colframe=black, colback=white, halign=left, width=\textwidth, arc=2mm]
+        \small \textbf{說明：} \\
+        第 \the\numexpr\value{qcount}+1\relax 題至第 \the\numexpr\value{qcount}+\totvalue{sccount}\relax 題，每題選出一個最適當的選項，以 2B 鉛筆於「答案卡」上作答。每題答對得 \scscore 分，答錯不倒扣。 \\
+    \end{tcolorbox}
+\end{center}
+
+\schoices{以下單位以 SI 基本量表示，何者錯誤？}{h}
+{力：$\mathrm{kg}\cdot \frac{\mathrm{m}}{\mathrm{s}^2}$}
+{功率：$\mathrm{kg}\cdot \frac{\mathrm{m}^2}{\mathrm{s}^3}$}
+{比熱：$\frac{\mathrm{m}^2}{\mathrm{s}^2\cdot \mathrm{K}}$}
+{壓力：$\frac{\mathrm{kg}}{\mathrm{m}\cdot \mathrm{s}^2}$}
+{電壓：$\frac{\mathrm{kg}\cdot \mathrm{m}^2}{\mathrm{A}\cdot \mathrm{s}^3}$}
+
+\schoices{下列對單位的敘述，何者錯誤？}{v}
+{1889 年國際間以存放在法國巴黎的國際千克原器作為質量 1 千克的標準原型。}
+{最初公尺曾以地球子午線長度定義；現代公尺則以光在真空中行進距離定義。}
+{過去 1 秒曾以平均太陽日定義；1967 年後以銫原子特定躍遷輻射週期定義。}
+{為了確保物理量描述的客觀性與國際通用性，科學界建立國際單位制。}
+{現行國際單位制已由物理常數定義，因此單位大小絕對穩定，未來不會再有修訂。}
+
+\schoices{下列是同學對數量前綴詞的敘述，何者錯誤？}{v}
+{手機內存 256 G 位元組，代表約 $2.56\times 10^{11}$ 位元組。}
+{一部影片占 3 G 位元組，代表約 $3\times 10^9$ 位元組。}
+{奈米等級代表約 $10^{-9}\ \mathrm{m}$。}
+{毫米等級約為 $10^{-2}\ \mathrm{m}$。}
+{細菌大約是微米等級，約 $10^{-6}\ \mathrm{m}$。}
+
+\schoices{以下有關物理史演進的敘述，何者正確？}{v}
+{愛因斯坦提出狹義相對論，因此光源快速移動時觀察者測得光速會超越常數 $c$。}
+{馬克士威藉由實驗證明電磁波存在，並在實驗室中發現電磁波。}
+{普朗克提出電磁能量以不連續的量子化形式輻射出去，能量不連續概念成為近代物理的重要起點。}
+{伽利略以實驗證實亞里斯多德的自然哲學完全正確。}
+{克卜勒親自進行長期天文觀測，最終歸納出行星運動規律。}
+
+
+\schoices{下列有關物質組成的敘述，何者正確？}{v}
+{道耳頓的原子論提及，各種原子都有各自的質量與性質。}
+{布朗運動中，花粉隨時都受到水分子作用力，因此合力為零。}
+{只要調高顯微鏡倍率，即可觀察到單一原子的影像。}
+{液態分子之間沒有束縛力，所以液體可以任意改變形狀。}
+{加熱 $-5^\circ\mathrm{C}$ 的冰至 $120^\circ\mathrm{C}$ 水蒸氣時，溫度會持續上升不中斷。}
+
+\schoices{下列關於基本交互作用的敘述，何者正確？}{v}
+{用手打排球的力，與將網子固定在柱子上的力，是不一樣的交互作用。}
+{蘋果從樹上掉落到地上，與磁鐵相互吸引，是不一樣的交互作用。}
+{強交互作用能將原子核中的質子聚集在一起，所以強交互作用是一種同性電荷間的吸引力。}
+{弱交互作用包含碳－14 衰變與金屬原子在化學反應中失去電子。}
+{弱交互作用的相對強度是四種交互作用中最弱的。}
+
+\sideimg{\schoices{右圖是一物體在直線上運動的位置對時間作圖，請問該物體一共折返多少次？}{h}{5}{6}{7}{8}{9}}{q7.png}{0.32}{n}
+
+\sideimg{\schoices{右圖是一物體在直線上運動的速度對時間作圖，請問該物體一共折返多少次？}{h}{5}{6}{7}{8}{9}}{q8.png}{0.32}{n}
+
+\schoices{已知空氣阻力與物體移動速率成正比，當物體在空中自由落下至等速的過程，其運動速率對時間作圖最符合下列何者？}{h}
+{\includegraphics[width=0.2\textwidth, valign=t]{q9a.png}}
+{\includegraphics[width=0.2\textwidth, valign=t]{q9b.png}}
+{\includegraphics[width=0.2\textwidth, valign=t]{q9c.png}\\}
+{\includegraphics[width=0.2\textwidth, valign=t]{q9d.png}}
+{\includegraphics[width=0.2\textwidth, valign=t]{q9e.png}}
+
+\schoices{下列對物體運動的描述，何者錯誤？}{v}
+{只要加速度不是 0，物體的運動狀態就一定會被改變。}
+{路徑長一定大於等於位移的量值。}
+{若物體作等加速度直線運動，其在任何時距內的平均速度量值，必等於平均速率。}
+{物體速度的方向必等於物體運動的方向。}
+{在 $v-t$ 圖中，圖形線與 $t$ 軸所圍成的面積為物體在該時距內的位移。}
+
+\schoices{一質點作等加速度直線運動。定義向北為正，其初速度為 $-3\ \mathrm{m}/\mathrm{s}$，經 4 秒後速度為 $10\ \mathrm{m}/\mathrm{s}$，則此物體的加速度為何？}{h}
+{$3.25\ \mathrm{m}/\mathrm{s}^2$，向北}{$3.25\ \mathrm{m}/\mathrm{s}^2$，向南}{$1.75\ \mathrm{m}/\mathrm{s}^2$，向北}{$1.75\ \mathrm{m}/\mathrm{s}^2$，向南}{$0.5\ \mathrm{m}/\mathrm{s}^2$，向北}
+
+\sideimg{\schoices{右圖為某一物體運動時的速度對時間作圖，請問下列選項中，何者的運動速度對時間作圖與右圖不同？}{v}
+{電梯由靜止加速上升，之後等速上升，再減速至停止。}
+{棒球被外野手回傳本壘，先上升至最高點後下降，捕手接球後立刻傳向三壘。}
+{火車由月台發車時乘客看見手把向車尾傾斜，等速後垂直，進站減速時手把向車頭傾斜。}
+{物體先加速，接著等速，最後減速至停止。}
+{物體在同一直線上先受定力加速，再不受合力等速，最後受反向定力減速。}}{q12.png}{0.24}{n}
+
+\schoices{確定電子為組成原子粒子的實驗為何？}{h}
+{陰極射線實驗}{焦耳實驗}{電子顯微鏡}{布朗運動}{粒子散射實驗}
+
+\noindent 第\the\numexpr\value{qcount}+1\relax ～\the\numexpr\value{qcount}+3\relax 題為題組
+
+知名遊樂園六福村的大怒神是一個高空自由落體遊樂設施。座位費時 30 秒以 $1.8\ \mathrm{m}/\mathrm{s}$ 等速上升至最頂端，靜止 5 秒後做自由落體運動，落下 2 秒後開始啟用煞車系統作等加速度運動，使座位回到地面上靜止。假設 $g=10\ \mathrm{m}/\mathrm{s}^2$，不考慮空氣阻力。
+
+\schoices{大怒神的座位從頂端開始下降時算起，經過幾秒回到地面？}{h}
+{$1.8\ \mathrm{s}$}{$3.6\ \mathrm{s}$}{$5.4\ \mathrm{s}$}{$7.2\ \mathrm{s}$}{$9.0\ \mathrm{s}$}
+
+\schoices{煞車時，座位的平均加速度量值約為多少？}{h}
+{$5.9\ \mathrm{m}/\mathrm{s}^2$}{$-5.9\ \mathrm{m}/\mathrm{s}^2$}{$3.7\ \mathrm{m}/\mathrm{s}^2$}{$-3.7\ \mathrm{m}/\mathrm{s}^2$}{$10\ \mathrm{m}/\mathrm{s}^2$}
+
+\schoices{大怒神的高度為多少公尺？}{h}
+{$20\ \mathrm{m}$}{$34\ \mathrm{m}$}{$54\ \mathrm{m}$}{$67\ \mathrm{m}$}{$74\ \mathrm{m}$}
+
+\noindent 第\the\numexpr\value{qcount}+1\relax ～\the\numexpr\value{qcount}+2\relax 題為題組
+
+假設有一恆星 $M$ 固定不動，如圖所示，$r_P:r_A=1:4$。
+
+\sideimg{\schoices{若有一行星 $m_1$，其質量為 $m$，且於 $P$ 點所受恆星 $M$ 之重力為 $F$，請問行星 $m_1$ 於 $A$ 點所受重力為幾倍的 $F$？}{h}
+{$\frac{1}{4}F$}{$\frac{1}{8}F$}{$\frac{1}{16}F$}{$\frac{1}{32}F$}{$\frac{1}{64}F$}}{q17_18.png}{0.34}{n}
+
+\schoices{承上題，若另一行星 $m_2$ 位於 $B$ 點，使恆星 $M$ 所受重力合力恰為零，則 $m_2$ 的質量為何？}{h}
+{$\frac{1}{2}m$}{$\frac{1}{4}m$}{$m$}{$4m$}{$16m$}
+
+% --- 自動計算複選總分 ---
+\subsection*{二、複選題 (每題 \mcscore 分，共 \the\numexpr \totvalue{mccount} * \mcscore \relax 分)}
+\begin{center}
+    \begin{tcolorbox}[colframe=black, colback=white, halign=left, width=\textwidth, arc=2mm]
+        \small \textbf{說明：} \\
+        第 \the\numexpr\value{qcount}+1\relax 題至第 \the\numexpr\value{qcount}+\totvalue{mccount}\relax 題，每題選出一個最適當的選項，以 2B 鉛筆於「答案卡」上作答。錯一個選項均扣
+        \ExplSyntaxOn
+            \fp_eval:n { \mcscore * 2 / 5 }
+        \ExplSyntaxOff 分，扣至該題零分止。 \\
+    \end{tcolorbox}
+\end{center}
+
+
+\mchoices{下列哪些物理現象可以用慣性定律來解釋？}{2}{v}
+{旋轉雨傘時，傘上的雨滴沿傘緣切線方向甩出。}
+{百米賽跑選手抵達終點後無法立刻停下。}
+{在冰面斜面下滑後速率較快，而在柏油路面斜面下滑後速率較慢。}
+{棒球投手投出快速旋轉的球，使球的軌跡會轉彎。}
+{天冷時，呼出的空氣變成白霧向上飄。}
+
+\sideimg{\mchoices{我們知道指北針是一塊 N 極永遠指向地磁北極的磁鐵。若將整個地球視為一根巨大磁鐵，請問下列哪些選項正確？}{3}{v}
+{依照指北針的運作原理，北極就像是磁鐵的 N 極。}
+{地球的磁場強度在南北極較強，在赤道上較弱。}
+{若位於充滿鐵礦的山洞中，指北針絲毫不受影響。}
+{若在地磁南極附近使用可自由旋轉的磁針，其 N 極會指向天空方向。}
+{若將指北針靠近使用中的充電線旁邊，指北針會受到影響產生偏轉。}}{q20.png}{0.17}{n}
+
+\sideimg{\mchoices{一物體做等加速度直線運動，$v-t$ 圖如右圖。已知 $|v_1|:|v_2|=1:2$，請問下列哪些選項正確？}{3}{v}
+{$0$ 到 $t$ 秒內物體的位移為 $\frac{1}{2}(v_1-v_2)t$。}
+{$0$ 到 $t$ 秒內物體的平均速度為 $\frac{1}{2}(v_1+v_2)$。}
+{$t$ 秒時，物體的瞬時加速度為 $a$。}
+{$0$ 到 $t$ 秒內物體的路徑長須將正、負速度區段面積分別取絕對值後相加。}
+{物體停下的那一瞬間，時間可由速度線性內插求得。}}{q21.png}{0.24}{n}
+
+\mchoices{下列關於基本交互作用的敘述，哪些正確？}{2}{v}
+{基本交互作用中，重力與電力皆與作用距離成反比。}
+{中子會藉由弱作用力衰變成一個質子、一個電子，加上其他物質。}
+{質子跟電子是因為強核力作用，而使電子圍繞原子核。}
+{強核力作用於整個原子，才使物質有氣、液、固三態。}
+{基本交互作用共有四種。}
+
+\mchoices{下列有關原子結構的發現，哪些描述正確？}{3}{v}
+{湯姆森透過化學反應分離正負離子，證實電子存在。}
+{拉塞福透過金箔散射實驗，藉由少數 $\alpha$ 粒子大角度偏折，推論原子內部有集中的正電核心。}
+{夸克是唯一的基本粒子。}
+{查兌克在粒子散射實驗中，發現原子核中還有質量幾乎與質子相同的中子。}
+{蓋爾曼提出夸克理論後，史丹福加速器以高速電子撞擊質子的實驗證實夸克存在。}
+
+\mchoices{下列有關電與磁的敘述，哪些正確？}{2}{v}
+{電力線與磁力線越密集的地方，該處的電場與磁場越大。}
+{電與磁相同，極性都可以單獨存在。}
+{自然界中存在孤立磁單極，且以單位磁荷的整數倍存在。}
+{可以利用變動的磁場來產生電流。}
+{電可生磁、磁可生電，所有導體都可以被磁化成永久磁鐵。}
+
+\mchoices{新竹地區是台灣半導體產業的起源之地。半導體當前多運用矽原料，矽在週期表上為 4A 族。請選出下列正確選項。}{2}{v}
+{按照拉塞福原子模型，矽原子核周圍會有 14 顆電子圍繞。}
+{通電後，半導體中流動的物質帶正電，因此定義其方向為電流方向。}
+{溶液中的正負離子，是因為弱交互作用而產生正負電性。}
+{進入無塵室前，地上貼有黏性膠布沾掉鞋底灰塵，其原理可歸為電磁交互作用。}
+{晶圓因地震摔碎，是受到強交互作用而破裂。}
+
+\vfill
+\begin{center}
+    \begin{tcolorbox}[colframe=lightgray, colback=white, halign=center, width=0.8\textwidth, arc=2mm]
+        \small \textbf{輕鬆一下} \\
+        為什麼在新竹要很小心走路？ \\
+        \textit{Ans: 因為新竹很多半導體。}
+    \end{tcolorbox}
+\end{center}
+\begin{center}
+    \large \textbf{--- 試卷結束，請檢查姓名座號與年級畫記 ---}
+\end{center}
+
+\label{EndOfExam}
+
+% --- 答案區 ---
+\newpage
+\section*{正確答案區}
+% --- type 1 ---
+\begin{center}
+\autoanswer[10]{
+B,E,D,C,A,B,C,A,D,C,
+A,B,A,C,A,C,D,B,AB,BDE,
+BDE,BE,BDE,AD,AD
+}
+\end{center}
+
+\end{document}

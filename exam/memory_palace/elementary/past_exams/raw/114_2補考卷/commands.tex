@@ -3,6 +3,8 @@
 \newtotcounter{sccount} \regtotcounter{sccount} 
 \newtotcounter{mccount} \regtotcounter{mccount} 
 \newtotcounter{wtscore} \regtotcounter{wtscore} % 非選題總分計數器
+\newcommand{\scscore}{3}
+\newcommand{\mcscore}{4}
 
 % --- 基礎縮排設定 ---
 \newcommand{\choiceindent}{0.85cm}
@@ -73,20 +75,6 @@
                 \end{enumerate}
             }
         }
-    \end{qblock}
-}
-
-% --- 不顯示應選幾項的複選題指令 ---
-% 第 2 參數保留為答案項數占位，題目不會顯示「應選幾項」。
-\newcommand{\mchoicesblind}[7]{%
-    \begin{qblock}
-        \stepcounter{qcount}\stepcounter{mccount}%
-        \begin{enumerate}[label=\textbf{\theqcount.}, leftmargin=\choiceindent, labelsep=0.2cm, nosep]
-            \item #1
-        \end{enumerate}\vspace{0.2em}
-        \begin{enumerate}[(A), topsep=0.3em, itemsep=0.5em, parsep=0pt, leftmargin=*, labelindent=\choiceindent, labelsep=0.25cm, align=left]
-            \item #3 \item #4 \item #5 \item #6 \item #7
-        \end{enumerate}
     \end{qblock}
 }
 
