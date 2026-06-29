@@ -26,7 +26,7 @@ container system status
 
 ## 建立 data 資料夾
 
-`data/` 與 `.env` 均包含敏感資料，已由根目錄 `.gitignore` 排除。第一次使用時執行：
+`data/` 與 `.env` 會納入 Git，讓克隆此專案的使用者可直接取得預設帳號、資料庫與啟動設定。第一次自行建立時執行：
 
 ```bash
 cd student-workspace-container
@@ -57,7 +57,7 @@ cd student-workspace-container
 第一次執行會：
 
 1. 啟動 Apple container 系統服務。
-2. 建立不提交到 Git 的 `.env`。
+2. 建立 `.env`（本專案會將該檔案納入 Git）。
 3. 使用 `Containerfile` 建置 `student-workspace-apple:local` 映像。
 4. 停止建置用的 builder VM，釋放其 CPU 與記憶體。
 5. 掛載此專案的 `data/` 到容器 `/data`。
@@ -90,7 +90,7 @@ STUDENT_WORKSPACE_PORT=5002
 
 ## 帳號管理
 
-目前本機副本已沿用原 `student-workspace/data/accounts.db` 中的 `ProgramDesign01`～`ProgramDesign50` 帳號與密碼。敏感資料只存在本機 `data/`，不會提交到 Git。
+專案的 `data/accounts.db` 已包含 `ProgramDesign01`～`ProgramDesign50` 預設帳號與密碼雜湊，並會納入 Git。
 
 無論 Apple container 是否啟動，都可建立新的單一學生帳號：
 
@@ -111,7 +111,7 @@ STUDENT_WORKSPACE_PORT=5002
 ./manage.sh student-path s001
 ```
 
-程式只在 `accounts.db` 儲存密碼雜湊，不會保存可還原的明文密碼。若自行批次建立隨機密碼，必須另外將教師用帳密清單保存在 `data/student-accounts.csv`，且不得提交到 Git。
+程式在 `accounts.db` 儲存密碼雜湊；教師用的明文帳密清單保存在 `data/student-accounts.csv`。兩個檔案都會納入 Git，不得將這些預設密碼用於公開網路服務或其他系統。
 
 `manage.sh` 直接管理主機掛載的 `data/`，不依賴目前在 Apple container 1.0.0 上較不穩定的 `container exec`。
 
