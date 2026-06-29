@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>方塊碰撞模擬（計算 π）</title>
+  <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../classroom.css?v=20260629">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>方塊碰撞模擬 (Calculating π)</h1>
+      <div class="stats">
+        <div class="stat-box">
+          <span class="label">碰撞次數</span>
+          <span class="value" id="collisions">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="label">π 的估算值</span>
+          <span class="value" id="pi">0</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <canvas id="canvas" width="800" height="300"></canvas>
+
+      <section id="controls">
+        <div class="control-group">
+          <label for="digits">位數精確度 (N)：</label>
+          <input id="digits" type="number" min="0" max="7" value="3">
+          <span class="hint">質量比 = 100<sup>N</sup></span>
+        </div>
+
+        <div class="buttons">
+          <button id="resetBtn" class="primary">重新開始</button>
+          <button id="toggleBtn">暫停</button>
+        </div>
+      </section>
+
+      <div class="description">
+        <p>當大方塊 (M = 100<sup>N</sup>) 撞擊小方塊 (m = 1) 時，總碰撞次數將會是 π 的前 N+1 位數。</p>
+        <p>程式會自動調整運算速度：N 越大，動畫中的碰撞處理速度越快。</p>
+      </div>
+    </main>
+  </div>
+  <script src="script.js"></script>
+    <script src="../classroom.js?v=20260629"></script>
+</body>
+</html>

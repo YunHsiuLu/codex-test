@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>物理教材：磁疇演化與剩磁</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="../classroom.css?v=20260629">
+</head>
+<body>
+
+<h1>物理教材：鐵磁材料微觀演化與向量場</h1>
+<a href="../index.html#MAGD" class="back-button">
+    <span class="arrow">←</span>
+</a>
+<div class="lab-bench">
+    <div class="stage-area">
+        <div class="section-label">實驗演示區</div>
+        <div class="stage" id="stage">
+            <div id="magnet">N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S</div>
+            <canvas id="domainCanvas"></canvas>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div>
+            <div class="section-label">狀態讀數</div>
+            <div style="font-size: 1.2rem; margin-bottom: 15px;">
+                外部磁場：<span class="readout-box" id="hFieldContainer">\(\vec{H}_{net}\)</span>
+            </div>
+            <div style="font-size: 1.2rem;">
+                材料磁性：<span class="readout-box" id="mFieldText">無磁性</span>
+            </div>
+        </div>
+
+        <button onclick="degauss()">打亂磁性 (消磁程序)</button>
+
+        <div class="info-box">
+            <strong>物理重點提醒：</strong><br>
+            • **剩磁（Remanence）**：磁鐵移開（\(H \approx 0\)）後，若材料磁性讀數仍不為零，即展現了磁滯現象中的剩磁。<br>
+            • **矯頑力（Coercivity）**：需反轉磁鐵方向靠近，才能使剩磁歸零。
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+    <script src="../classroom.js?v=20260629"></script>
+</body>
+</html>

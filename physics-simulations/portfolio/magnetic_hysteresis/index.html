@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>物理教學教材：磁滯現象</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../classroom.css?v=20260629">
+</head>
+<body>
+
+<h1>磁滯現象演示：磁疇、地磁與校準</h1>
+<a href="../index.html#MAGH" class="back-button">
+    <span class="arrow">←</span>
+</a>
+<div class="lab-bench">
+    <div class="viz-area">
+        <div>
+            <div class="section-label">微觀磁疇狀態 (Microscopic Magnetic Domains)</div>
+            <canvas id="domainCanvas" height="150"></canvas>
+        </div>
+
+        <div class="compact-row">
+            <div style="text-align:center; width: 220px;">
+                <div class="section-label">磁場檢測計</div>
+                <canvas id="detector" width="200" height="200"></canvas>
+                <div style="margin-top:15px; font-size: 1.2rem;">偏轉角 \(\theta\): <span class="readout-box" id="angleText">0°</span></div>
+            </div>
+            <div class="chart-container">
+                <div class="section-label">\(B-H\) 磁滯曲線回饋</div>
+                <canvas id="hChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div>
+            <div class="section-label">1. 儀器校準方位角 (\(\phi\))</div>
+            <input type="range" id="rotSlider" min="0" max="360" value="0">
+            <div style="text-align:right; margin-top:10px; font-size:1.2rem;">\(\phi = \) <span id="rotText">0</span>°</div>
+        </div>
+
+        <div>
+            <div class="section-label">2. 螺線管電流 \(I\) (\(H\) 場)</div>
+            <input type="range" id="fieldSlider" min="-100" max="100" value="0">
+            <div style="text-align:right; margin-top:10px; font-size:1.2rem;">\(H \approx \) <span class="readout-box" id="fieldVal">0</span></div>
+        </div>
+
+        <div>
+            <div class="section-label">3. 實驗材料設定</div>
+            <select id="matType">
+                <option value="soft">軟鐵 (Soft Iron)</option>
+                <option value="hard">鋼鐵 (Hard Steel)</option>
+            </select>
+        </div>
+
+        <button onclick="fullReset()">執行消磁程序並歸零</button>
+
+        <div class="pedagogy-tip">
+            <strong>演示引導：</strong><br>
+            • 點擊上方按鈕可模擬系統回復到<b>熱平衡隨機態</b>。<br>
+            • 此時電流 \(I=0\)，若指針仍有偏轉，即為地磁干擾，請調整旋鈕 \(\phi\) 校準。
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+    <script src="../classroom.js?v=20260629"></script>
+</body>
+</html>
