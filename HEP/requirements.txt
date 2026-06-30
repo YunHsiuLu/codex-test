@@ -1,0 +1,7 @@
+awkward>=2.9
+matplotlib>=3.10
+numpy>=2.0
+pandas>=2.2
+pyarrow>=24.0
+uproot>=5.7
+vector>=1.8

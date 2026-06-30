@@ -2,7 +2,7 @@
 
 import uproot
 
-from analysis import BRANCHES, DEFAULT_URL
+from data_config import BRANCHES, DEFAULT_URL
 
 
 with uproot.open(DEFAULT_URL, timeout=60) as root_file:
