@@ -1,4 +1,4 @@
-"""CMS Open Data 來源與本專案保存的 NanoAOD 欄位。"""
+"""CMS Open Data source and NanoAOD branches used by this project."""
 
 from pathlib import Path
 
