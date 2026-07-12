@@ -77,7 +77,25 @@ python3 class_search.py swaps --teacher 呂昀修 --day 三 --period 3 --limit 2
 ## 網頁介面
 
 ```bash
-python3 server.py
+./start.sh
 ```
 
 開啟 `http://127.0.0.1:8765`。
+
+停止服務：
+
+```bash
+./stop.sh
+```
+
+`start.sh` 會把背景服務的 PID 記在 `.class-search.pid`，log 記在 `.class-search.log`。如果要改連接埠：
+
+```bash
+PORT=8766 ./start.sh
+```
+
+這個網頁介面是用 Python 標準函式庫提供靜態檔案，不需要 Streamlit。若要手動啟動，也可以執行：
+
+```bash
+python3 server.py
+```
