@@ -9418,3 +9418,31 @@ Traceback (most recent call last):
     return self._sslobj.read(len, buffer)
            ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
 ssl.SSLError: [SSL: UNEXPECTED_EOF_WHILE_READING] unexpected eof while reading (_ssl.c:2711)
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+ * Serving Flask app 'server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on https://127.0.0.1:5001
+ * Running on https://192.168.1.120:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [12/Jul/2026 09:23:27] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:23:27] "GET /static/manifest.webmanifest HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:23:27] "GET /socket.io/?EIO=4&transport=polling&t=PzJx0y1 HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:23:27] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:23:27] "POST /socket.io/?EIO=4&transport=polling&t=PzJx0ya&sid=GK15LY6ScvVg4Lq7AAAA HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:23:27] "GET /socket.io/?EIO=4&transport=polling&t=PzJx0yb&sid=GK15LY6ScvVg4Lq7AAAA HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:23:27] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [12/Jul/2026 09:23:27] "GET /static/app-icon.svg HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:23:27] "GET /socket.io/?EIO=4&transport=polling&t=PzJx0yv&sid=GK15LY6ScvVg4Lq7AAAA HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:23:37] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:23:47] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:23:57] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:24:07] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:24:17] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:24:27] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:24:37] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:24:47] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:24:57] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:25:07] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jul/2026 09:25:17] "GET /health HTTP/1.1" 200 -
