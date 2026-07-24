@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="拖曳繩端產生脈衝波，或用連續簡諧振源觀察正弦波、反射波與穿透波。">
   <title>繩波傳播模擬</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260723">
   <link rel="stylesheet" href="../classroom.css?v=20260629">
 </head>
 <body>
@@ -25,6 +25,11 @@
           <span>波速 <strong id="speedReadout">1.00 m/s</strong></span>
           <span>時間 <strong id="timeReadout">0.0 s</strong></span>
         </div>
+      </div>
+
+      <div class="canvas-toolbar">
+        <button type="button" id="pauseButton" class="transport-button" aria-pressed="false" aria-keyshortcuts="Space">暫停</button>
+        <button type="button" id="frameStepButton" class="transport-button">單影格</button>
       </div>
 
       <div class="canvas-wrap">
@@ -103,7 +108,6 @@
       </section>
 
       <section class="control-group actions">
-        <button type="button" id="pauseButton">暫停</button>
         <button type="button" id="resetButton">重設繩子</button>
       </section>
     </aside>

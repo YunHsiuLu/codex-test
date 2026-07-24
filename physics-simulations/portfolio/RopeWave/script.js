@@ -14,6 +14,7 @@ const dampingSlider = document.getElementById('damping');
 const mediumSelect = document.getElementById('mediumMode');
 const boundaryGroup = document.getElementById('boundaryGroup');
 const pauseButton = document.getElementById('pauseButton');
+const frameStepButton = document.getElementById('frameStepButton');
 const resetButton = document.getElementById('resetButton');
 const amplitudeValue = document.getElementById('amplitudeValue');
 const frequencyValue = document.getElementById('frequencyValue');
@@ -313,7 +314,6 @@ function sendPulse(type) {
   state.pulseType = type;
   setActive(sourceButtons, sourceButtons.find((button) => button.dataset.source === 'pulse'));
   setActive(pulseButtons, pulseButtons.find((button) => button.dataset.pulse === type));
-  idealPulses.length = 0;
   state.manualTarget = 0;
   state.manualValue = 0;
 
@@ -601,9 +601,42 @@ applyHarmonicButton.addEventListener('click', () => applyHarmonicOrder());
 
 mediumSelect.addEventListener('change', updateMedium);
 resetButton.addEventListener('click', resetRope);
-pauseButton.addEventListener('click', () => {
-  state.paused = !state.paused;
+
+function setPaused(paused) {
+  state.paused = paused;
   pauseButton.textContent = state.paused ? '繼續' : '暫停';
+  pauseButton.setAttribute('aria-pressed', state.paused);
+}
+
+function togglePaused() {
+  setPaused(!state.paused);
+}
+
+function stepOneFrame() {
+  setPaused(true);
+  const frameDuration = 1 / 60;
+  step(frameDuration);
+  updateIdealPulses(frameDuration);
+  timeReadout.textContent = `${state.time.toFixed(1)} s`;
+  draw();
+}
+
+pauseButton.addEventListener('click', togglePaused);
+frameStepButton.addEventListener('click', stepOneFrame);
+
+window.addEventListener('keydown', (event) => {
+  if (event.code !== 'Space' || event.repeat) return;
+
+  const target = event.target;
+  const isFormControl = target instanceof HTMLInputElement
+    || target instanceof HTMLSelectElement
+    || target instanceof HTMLTextAreaElement
+    || target instanceof HTMLButtonElement
+    || target.isContentEditable;
+  if (isFormControl) return;
+
+  event.preventDefault();
+  togglePaused();
 });
 
 canvas.addEventListener('pointerdown', (event) => {
