@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Collaboration Console</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark">✦</span><span>COLLABORATION</span></div>
+        <button class="new-task" id="newTaskButton">＋　新增討論任務</button>
+        <div class="divider"></div>
+        <p class="section-label">任務工作階段</p>
+        <nav id="taskList" class="task-list"><p class="empty-list">尚未建立任務</p></nav>
+        <div class="safety-note"><span>協作模式</span><p>Codex 只在專屬專案資料夾實作；AGY 永遠維持唯讀審查。</p></div>
+      </aside>
+
+      <section class="content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">雙代理工作台</p>
+            <h1 id="taskTitle">建立一場討論</h1>
+          </div>
+          <div class="agent-status" id="agentStatus"><span class="status-dot"></span>正在檢查 CLI…</div>
+        </header>
+
+        <section class="workspace" id="emptyState">
+          <div class="welcome-copy">
+            <p class="terminal-prompt">$ collaboration new</p>
+            <h2>把一個想法交給兩位代理，<br />一起把專案做完。</h2>
+            <p>Codex 實作與驗證，AGY 唯讀審查。兩者會持續交換意見與修正，直到完成、受阻或你按下停止。</p>
+          </div>
+          <form id="taskForm" class="task-form">
+            <label for="goal">你要解決什麼？</label>
+            <textarea id="goal" required maxlength="8000" placeholder="例如：設計一個能讓學生登記借用器材的系統，先討論資料流程、權限與最小可行版本。"></textarea>
+            <label for="projectName">專案資料夾名稱</label>
+            <input id="projectName" value="my-project" maxlength="80" autocomplete="off" />
+            <p class="hint">系統會在 Collaboration 內建立此專屬子資料夾，代理不會寫入其他位置。</p>
+            <label for="roundLimit">本次最大協作循環</label>
+            <input id="roundLimit" type="number" min="1" max="16" value="8" />
+            <p class="hint">一個循環＝Codex 實作與驗證，再由 AGY 審查。達上限後可再繼續。</p>
+            <button class="primary" type="submit">建立並開始專案協作 <span>↗</span></button>
+          </form>
+        </section>
+
+        <section class="conversation hidden" id="conversation">
+          <div class="goal-card"><span>任務</span><p id="goalText"></p><code id="workspaceText"></code></div>
+          <div class="project-controls">
+            <div><span class="control-label" id="modeText">專案協作</span><p id="roundText">尚未開始</p></div>
+            <div class="control-actions"><button id="buildButton" class="primary" type="button">開始專案協作 <span>↗</span></button><button id="stopButton" class="stop" type="button">停止</button></div>
+          </div>
+          <div id="messages" class="messages" aria-live="polite"></div>
+          <form id="followUpForm" class="follow-up">
+            <textarea id="followUp" placeholder="補充條件，或要求兩位代理針對某個分歧再討論……" maxlength="8000"></textarea>
+            <button class="primary" type="submit">送出下一輪 <span>↗</span></button>
+          </form>
+        </section>
+      </section>
+    </main>
+    <template id="messageTemplate">
+      <article class="message"><div class="avatar"></div><div class="message-body"><div class="message-meta"><strong></strong><time></time></div><div class="message-content"></div></div></article>
+    </template>
+    <script src="app.js"></script>
+  </body>
+</html>

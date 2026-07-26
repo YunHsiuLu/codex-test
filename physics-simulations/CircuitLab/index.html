@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>電路模擬工具</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css?v=20260724-6" />
+    <script src="script.js?v=20260724-6" defer></script>
   </head>
   <body>
     <main class="app-shell">
@@ -60,33 +60,14 @@
         <section class="board-panel" aria-label="電路板">
           <div class="board-status">
             <span id="modeText">選取模式</span>
-            <span id="messageText">點選零件後，在格線上放置。</span>
+            <span id="messageText">支援 DC＋R、RC、LC、RLC 的單一閉合迴路。</span>
           </div>
           <svg id="circuitBoard" role="img" aria-label="可編輯電路圖" viewBox="0 0 980 640"></svg>
         </section>
 
-        <aside class="inspector" aria-label="屬性與示波器">
-          <section class="panel-block">
-            <h2>屬性</h2>
-            <div id="propertyPanel" class="property-panel">
-              <p>選取零件或導線端點後可調整數值。</p>
-            </div>
-          </section>
-
-          <section class="panel-block">
-            <div class="scope-header">
-              <h2>示波器</h2>
-              <label class="switch">
-                <input id="scopeToggle" type="checkbox" checked />
-                <span>顯示</span>
-              </label>
-            </div>
-            <canvas id="scopeCanvas" width="720" height="360"></canvas>
-            <div id="scopeLegend" class="scope-legend"></div>
-          </section>
-
-          <section class="panel-block compact-info">
-            <h2>模擬設定</h2>
+        <aside class="inspector" aria-label="示波器">
+          <section class="panel-block scope-settings">
+            <h2>時間尺度</h2>
             <label class="field-row">
               <span>時間</span>
               <input id="simTime" type="number" min="0.001" max="10" step="0.001" value="0.04" />
@@ -98,8 +79,29 @@
               <small>s</small>
             </label>
           </section>
+          <section class="panel-block scope-workspace">
+            <div class="scope-header">
+              <h2>示波器</h2>
+              <button id="addScopeBtn" type="button">＋新增示波器</button>
+            </div>
+            <p id="scopeEmpty" class="scope-empty">尚未新增示波器。</p>
+            <div id="scopePanels" class="scope-panels"></div>
+          </section>
         </aside>
       </section>
     </main>
+    <div id="propertyModal" class="modal" hidden>
+      <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="propertyModalTitle">
+        <div class="modal-header">
+          <h2 id="propertyModalTitle">元件屬性</h2>
+          <button id="closePropertyModal" class="icon-button" type="button" aria-label="關閉屬性視窗">×</button>
+        </div>
+        <div id="propertyPanel" class="property-panel"></div>
+      </section>
+    </div>
+    <div id="meterMenu" class="meter-menu" hidden>
+      <button type="button" data-meter-action="scope">顯示示波器</button>
+      <button type="button" data-meter-action="delete">刪除元件</button>
+    </div>
   </body>
 </html>
