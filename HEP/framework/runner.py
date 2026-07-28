@@ -5,6 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import awkward as ak
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import vector
@@ -17,6 +20,7 @@ from framework.model import Analysis
 def run_analysis(
     analysis: Analysis,
     source: str,
+    branches: tuple[str, ...],
     max_events: int,
     step_size: int,
     output: Path,
@@ -30,7 +34,7 @@ def run_analysis(
     print(f"Analysis: {analysis.slug} — {analysis.title}")
     print(f"Data source: {source}")
 
-    for events in iterate_events(source, analysis.branches, max_events, step_size):
+    for events in iterate_events(source, branches, max_events, step_size):
         result = analysis.process(events)
         masses.append(ak.to_numpy(result.masses))
         add_counts(cut_flow, result.cut_flow)

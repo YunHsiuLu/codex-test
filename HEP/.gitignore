@@ -1,7 +1,16 @@
+# Python environment and bytecode
 __pycache__/
 *.py[cod]
 .venv/
 .mplconfig/
+
+# Operating-system metadata
+.DS_Store
+
+# Generated analysis artifacts
 data/*.parquet
 data/.*.tmp
 outputs/
+
+# Large local input files; keep file-index JSON documents versionable
+data/raw/*.root

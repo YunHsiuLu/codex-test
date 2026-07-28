@@ -7,8 +7,6 @@ VENV_DIR="$PROJECT_DIR/.venv"
 PYTHON="$VENV_DIR/bin/python"
 REQUIREMENTS="$PROJECT_DIR/requirements.txt"
 REQUIREMENTS_STAMP="$VENV_DIR/.installed-requirements.txt"
-DEFAULT_CACHE="$PROJECT_DIR/data/dimuon_skim.parquet"
-PREPARE_DATASET="dimuon"
 MPLCONFIGDIR="$PROJECT_DIR/.mplconfig"
 
 cd "$PROJECT_DIR"
@@ -37,53 +35,19 @@ if [[ ! -f "$REQUIREMENTS_STAMP" ]] || ! cmp -s "$REQUIREMENTS" "$REQUIREMENTS_S
     cp "$REQUIREMENTS" "$REQUIREMENTS_STAMP"
 fi
 
-USE_DEFAULT_CACHE=true
-LIST_ONLY=false
-STATISTICS_LAB=false
-ANALYSIS_NAME="z_to_mumu"
-EXPECT_ANALYSIS_NAME=false
-LAB_ARGUMENTS=()
-for argument in "$@"; do
-    if [[ "$EXPECT_ANALYSIS_NAME" == true ]]; then
-        ANALYSIS_NAME="$argument"
-        EXPECT_ANALYSIS_NAME=false
-        continue
-    fi
-    if [[ "$argument" == "--analysis" ]]; then
-        EXPECT_ANALYSIS_NAME=true
-        continue
-    fi
-    if [[ "$argument" == --analysis=* ]]; then
-        ANALYSIS_NAME="${argument#--analysis=}"
-    fi
-    if [[ "$argument" == "--source" || "$argument" == --source=* ]]; then
-        USE_DEFAULT_CACHE=false
-    fi
-    if [[ "$argument" == "--list-analyses" ]]; then
-        LIST_ONLY=true
-    fi
-    if [[ "$argument" == "--statistics-lab" ]]; then
-        STATISTICS_LAB=true
-    else
-        LAB_ARGUMENTS+=("$argument")
-    fi
-done
-
-if [[ "$ANALYSIS_NAME" == "h_to_4l" ]]; then
-    DEFAULT_CACHE="$PROJECT_DIR/data/hzz4l_signal_skim.parquet"
-    PREPARE_DATASET="hzz4l_signal"
+if (( $# == 0 )); then
+    echo "Environment ready. Run ./start.sh --list-analyses to view available exercises."
+    exit 0
 fi
 
-if [[ "$STATISTICS_LAB" == true ]]; then
-    if (( ${#LAB_ARGUMENTS[@]} )); then
-        exec "$PYTHON" statistics_lab.py "${LAB_ARGUMENTS[@]}"
-    fi
-    exec "$PYTHON" statistics_lab.py
+if [[ "${1:-}" == "--statistics-lab" ]]; then
+    shift
+    exec "$PYTHON" statistics_lab.py "$@"
 fi
 
-if [[ "$LIST_ONLY" == false && "$USE_DEFAULT_CACHE" == true && ! -f "$DEFAULT_CACHE" ]]; then
-    echo "Local skim not found. Fetching ${HEP_CACHE_EVENTS:-100000} events from CERN..."
-    "$PYTHON" prepare_data.py --dataset "$PREPARE_DATASET" --max-events "${HEP_CACHE_EVENTS:-100000}"
+if [[ "${1:-}" == "--hgg-sideband-fit" ]]; then
+    shift
+    exec "$PYTHON" fit_hgg_background.py "$@"
 fi
 
 exec "$PYTHON" analysis.py "$@"

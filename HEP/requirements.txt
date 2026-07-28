@@ -7,3 +7,5 @@ pyarrow>=24.0
 requests>=2.32
 uproot>=5.7
 vector>=1.8
+XRootD>=6.1
+fsspec-xrootd>=0.5

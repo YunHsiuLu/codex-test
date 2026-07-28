@@ -1,0 +1,24 @@
+{
+  "availability": {
+    "online": 1
+  },
+  "bucket": "256d02b8-9f45-4629-b12e-bf8401b12acf",
+  "description": "DoubleEG NANOAOD dataset file index (2 of 3) for access to data via CMS virtual machine",
+  "files": [
+    {
+      "availability": "online",
+      "bucket": "256d02b8-9f45-4629-b12e-bf8401b12acf",
+      "checksum": "adler32:12150ec9",
+      "file_id": "d0c4f74a-fac2-459b-9d04-8b36fbc5b89b",
+      "filename": "DA14785B-FF37-EE46-954A-DDA928953ED8.root",
+      "key": "CMS_Run2016G_DoubleEG_NANOAOD_UL2016_MiniAODv2_NanoAODv9-v1_1010000_file_index.json_0",
+      "size": 30214402,
+      "tags": {},
+      "uri": "root://eospublic.cern.ch//eos/opendata/cms/Run2016G/DoubleEG/NANOAOD/UL2016_MiniAODv2_NanoAODv9-v1/1010000/DA14785B-FF37-EE46-954A-DDA928953ED8.root",
+      "version_id": "4e8e6dc9-a61e-4769-99f1-e0a7fec23655"
+    }
+  ],
+  "key": "CMS_Run2016G_DoubleEG_NANOAOD_UL2016_MiniAODv2_NanoAODv9-v1_1010000_file_index.json",
+  "number_files": 1,
+  "size": 30214402
+}

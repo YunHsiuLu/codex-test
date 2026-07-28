@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import argparse
+from math import ceil
 from pathlib import Path
+from time import sleep
 
 import awkward as ak
 import pyarrow.parquet as pq
@@ -13,7 +15,7 @@ from data_config import DATASETS
 
 
 def prepare(
-    source: str,
+    source: str | tuple[str, ...],
     output: Path,
     branches: tuple[str, ...],
     max_events: int,
@@ -24,28 +26,59 @@ def prepare(
     writer: pq.ParquetWriter | None = None
     processed = 0
 
-    print(f"Remote source: {source}")
+    sources = (source,) if isinstance(source, str) else source
+    print(f"Input sources: {len(sources)}")
     print(f"Local skim: {output}")
-    print("Streaming in batches with HTTP Range requests")
+    print("Reading events in batches")
 
     try:
-        with uproot.open(source, timeout=60) as root_file:
-            tree = root_file["Events"]
-            stop = tree.num_entries if max_events < 0 else min(max_events, tree.num_entries)
-            print(f"Remote entries: {tree.num_entries:,}; saving: {stop:,}")
+        for index, input_source in enumerate(sources, start=1):
+            if max_events >= 0 and processed >= max_events:
+                break
+            source_processed = 0
+            stop: int | None = None
+            for attempt in range(1, 4):
+                try:
+                    with uproot.open(input_source, timeout=60) as root_file:
+                        tree = root_file["Events"]
+                        if stop is None:
+                            if max_events < 0:
+                                remaining = tree.num_entries
+                            else:
+                                remaining_events = max_events - processed
+                                remaining_sources = len(sources) - index + 1
+                                remaining = ceil(remaining_events / remaining_sources)
+                            stop = min(remaining, tree.num_entries)
+                            print(
+                                f"Source {index}/{len(sources)}: {tree.num_entries:,} entries; "
+                                f"saving up to {stop:,}"
+                            )
 
-            for events in tree.iterate(
-                expressions=list(branches),
-                entry_stop=stop,
-                step_size=step_size,
-                library="ak",
-            ):
-                table = ak.to_arrow_table(events, extensionarray=False)
-                if writer is None:
-                    writer = pq.ParquetWriter(temporary, table.schema, compression="zstd")
-                writer.write_table(table)
-                processed += len(events)
-                print(f"Saved {processed:,}/{stop:,} events")
+                        for events in tree.iterate(
+                            expressions=list(branches),
+                            entry_start=source_processed,
+                            entry_stop=stop,
+                            step_size=step_size,
+                            library="ak",
+                        ):
+                            table = ak.to_arrow_table(events, extensionarray=False)
+                            if writer is None:
+                                writer = pq.ParquetWriter(temporary, table.schema, compression="zstd")
+                            writer.write_table(table)
+                            source_processed += len(events)
+                            processed += len(events)
+                            print(f"Saved {processed:,} events")
+                    break
+                except OSError as error:
+                    if attempt == 3:
+                        raise
+                    print(
+                        f"Source {index}/{len(sources)} connection failed ({error}). "
+                        f"Retrying from entry {source_processed:,} in {attempt * 5} seconds"
+                    )
+                    sleep(attempt * 5)
+            if index < len(sources) and (max_events < 0 or processed < max_events):
+                sleep(1)
 
         if writer is None:
             raise RuntimeError("The source contains no events to save")
@@ -66,7 +99,7 @@ def prepare(
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", choices=DATASETS, default="dimuon", help="Built-in dataset configuration")
-    parser.add_argument("--source", help="Override the CERN ROOT URL")
+    parser.add_argument("--source", help="Override the configured ROOT source")
     parser.add_argument("--output", type=Path, help="Override the local Parquet path")
     parser.add_argument("--max-events", type=int, default=100_000, help="Events to save; -1 saves all")
     parser.add_argument("--step-size", type=int, default=25_000, help="Events per streaming batch")

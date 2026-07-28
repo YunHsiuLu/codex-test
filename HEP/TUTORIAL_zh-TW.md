@@ -1,323 +1,276 @@
-# CMS Open Data 高能物理分析教學
+# CMS Open Data：從 H -> gamma gamma 到 sideband p-value
 
-這份教學的目標不是讓你一開始就重做完整的 CMS Higgs discovery analysis，而是建立一條可重複練習的路徑：先學會從重建粒子建立候選事件，再逐步學習如何用統計量判斷「這個 excess 是否只是背景波動」。
-
-程式碼、檔名與終端機輸出維持英文；本文件用中文說明物理意義與使用方式。
-
-## 0. 先知道這個專案在做什麼
-
-LHC 每次碰撞會產生大量粒子。偵測器與 reconstruction software 會把訊號整理成電子、渺子、jet、photon 等物件。分析者通常不會直接從原始訊號找 Higgs，而是依序做：
+本教學以目前專案中的 $H\to\gamma\gamma$ 練習為主線。目標不是重做 CMS 的正式 Higgs discovery analysis，而是理解一條可重現的分析鏈：
 
 \[
-\text{collision events}
+\text{NanoAOD events}
 \rightarrow
-\text{reconstructed objects}
+\text{photon objects}
 \rightarrow
-\text{event selection}
+\gamma\gamma\text{ candidates}
 \rightarrow
-\text{mass spectrum}
+m_{\gamma\gamma}\text{ spectrum}
 \rightarrow
-\text{statistical test}.
+\text{background estimate and }p\text{-value}.
 \]
 
-本專案目前有兩類資料：
+程式碼、檔名與 terminal output 維持英文；本文件用中文說明每一步該做什麼、資料在哪裡，以及結果可代表什麼。
 
-| 資料 | 用途 | 物件 |
-| --- | --- | --- |
-| CMS Run 2016H DoubleMuon data | 共振峰與 selection 練習 | 渺子 |
-| CMS `SMHiggsToZZTo4L` signal simulation | (H\to ZZ^{(*)}\to4\ell) reconstruction 練習 | 電子與渺子 |
+## 1. 先建立環境
 
-第二類是 signal simulation，不是實際 collision data。因此它適合用來學習如何重建 (4\ell) 候選，不適合直接宣稱觀測到 Higgs 或計算真實 observed-data p-value。
+在專案根目錄執行：
 
-## 1. 第一次執行
+```zsh
+./start.sh
+```
 
-在專案資料夾中執行：
+這個指令只做環境工作：建立 `.venv`、安裝 `requirements.txt` 中的套件、準備 Matplotlib 的本地設定。它不會自動下載資料，也不會開始任何分析。
+
+可用的分析清單：
 
 ```zsh
 ./start.sh --list-analyses
 ```
 
-`start.sh` 會自動：
+## 2. 專案檔案怎麼分工
 
-1. 建立專案內的 `.venv`。
-2. 安裝 Python 套件。
-3. 在缺少資料快取時，從 CERN 以 HTTP Range requests 串流需要的 branch。
-4. 將 branch 存成較小的 Parquet skim。
-5. 執行選定的 analysis。
+| 位置 | 用途 | 是否手動修改 |
+| --- | --- | --- |
+| `analyses/h_to_gammagamma.py` | H -> gamma gamma signal MC 的學生練習 | 是。你主要修改 selection。 |
+| `analyses/h_to_gammagamma_data.py` | DoubleEG collision data 的同一套 photon selection，加上 trigger | 可讀取、比較；不需要拿它取代學生作業。 |
+| `data_config.py` | 資料集來源、Parquet cache 路徑、要讀取的 NanoAOD branches | 新增 channel 或資料集時修改。 |
+| `prepare_data.py` | 從 ROOT／XRootD 讀取指定 branches，建立 local Parquet skim | 通常不修改。 |
+| `analysis.py` | 執行任一 reconstruction analysis，畫 mass plot 與輸出 cut flow | 通常不修改。 |
+| `fit_hgg_background.py` | 對 DoubleEG mass spectrum 做 sideband fit 與 p-value | 統計延伸練習。 |
+| `data/raw/` | 手動保留的 signal ROOT 與 CMS file-index JSON | 原始輸入。 |
+| `data/*.parquet` | 執行後建立的 local skim | 可重新建立，不提交 Git。 |
+| `outputs/` | 執行後建立的 PNG、CSV、JSON | 可重新建立，不提交 Git。 |
 
-第一次執行某種資料時需要網路；建立 skim 後，改 cut 值、重跑 cut flow、重畫圖都不需要重新連線 CERN。
+`common.py` 與 `framework/` 存放可被多個 channel 共用的程式。這不是因為 dimuon 比其他 channel 特別，而是把「所有 channel 都相同的工作」集中起來：讀檔、分批處理、cut-flow、畫圖與統計函式。每個 decay channel 只保留它自己的物件建立與 selection。
 
-## 2. 從 (Z\to\mu^+\mu^-) 開始
+## 3. 資料分成三種角色
 
-```zsh
-./start.sh --analysis z_to_mumu
-```
+| 資料 | 在本練習中的角色 | 可以回答的問題 |
+| --- | --- | --- |
+| `hgg_signal` | Higgs signal simulation | selection 能否重建 $m_{\gamma\gamma}\approx125\ \mathrm{GeV}$ 的訊號形狀？ |
+| `hgg_data_run_g_index` | Run2016G DoubleEG collision data 的 17 個遠端檔案 | collision data 中 selection 後的背景分布長什麼樣子？ |
+| `hgg_data_run_g_full` | 三份 JSON 合併後的 47 個遠端檔案 | 可選的全量延伸，不是本教學的預設步驟。 |
 
-這是最適合起點的分析。你會在 `outputs/` 看到：
+signal MC 的 peak 不代表觀測到 Higgs。它只表示「已知是 Higgs 的模擬事件」經過你的 selection 後，會留下合理的重建質量。是否有 excess 必須由 collision data 與背景模型判斷。
 
-- `z_to_mumu_mass.png`：雙渺子不變質量分布。
-- `z_to_mumu_cutflow.csv`：每一層 selection 的事件數與效率。
+## 4. 第一步：完成 H -> gamma gamma signal MC
 
-不變質量由兩個四動量相加得到：
+學生作業檔是 `analyses/h_to_gammagamma.py`。它需要完成五件事：
+
+1. 從 `Photon_pt`、`Photon_eta`、`Photon_phi`、`Photon_mass` 建立 photon four-vectors。
+2. 要求至少兩顆 photons，並保留 $p_T>25\ \mathrm{GeV}$、$|\eta|<2.5$ 的 photons。
+3. 要求 `Photon_cutBased >= 2` 與 `Photon_electronVeto`。
+4. 將通過 ID 的 photons 兩兩組合，要求 leading $p_T>35\ \mathrm{GeV}$、subleading $p_T>25\ \mathrm{GeV}$。
+5. 用四動量相加得到：
 
 \[
-m_{\mu\mu}^2=(p_{\mu^+}+p_{\mu^-})^2.
+m_{\gamma\gamma}^2=(p_{\gamma_1}+p_{\gamma_2})^2.
 \]
 
-若兩顆渺子來自同一顆 (Z) boson，分布會在 (m_Z\approx91.2\ \mathrm{GeV}) 附近累積。這就是 resonant particle analysis 最直觀的起點。
+執行：
 
-## 3. 怎麼讀 cut flow
+```zsh
+./start.sh --analysis h_to_gammagamma
+```
 
-終端機會顯示：
+輸出：
 
 ```text
-| condition                                         | events |
-|---------------------------------------------------|-------:|
-| All processed events                              | 10,000 |
-| N(mu) >= 2                                        |  7,555 |
-| N(mu: p_T > 10 GeV, |eta| < 2.4) >= 2             |  4,703 |
+outputs/h_to_gammagamma_mass.png
+outputs/h_to_gammagamma_cutflow.csv
 ```
 
-每一列都包含前面所有條件。例如：
+signal MC 的 $m_{\gamma\gamma}$ 在 125 GeV 附近有高峰是預期結果。這一步練習 reconstruction 與 signal efficiency，不做 observed-data p-value。
 
-\[
-N\left(\mu:p_T>10\ \mathrm{GeV},\ |\eta|<2.4\right)\ge2
-\]
+## 5. 第二步：建立 500,000 events 的 collision-data skim
 
-代表事件中至少有兩顆渺子通過動量與偵測器接受度要求。後續再加入：
-
-\[
-I_{\mathrm{rel}}(\Delta R=0.4)<0.15,
-\qquad
-q_1q_2<0,
-\qquad
-\max(p_{T,1},p_{T,2})>20\ \mathrm{GeV}.
-\]
-
-它們依序代表 isolation、異號配對，以及至少一顆較高 (p_T) 的渺子。
-
-CSV 另外有兩種效率：
-
-- `relative_efficiency`：相對前一層 selection 的保留比例。
-- `cumulative_efficiency`：相對所有初始事件的保留比例。
-
-請注意，cut flow 計數是事件數；一個事件可有多組合法配對，所以 mass plot 的 candidate 數可能較高。
-
-## 4. 第一個學生練習：只改一個 cut
-
-打開 [analyses/z_to_mumu.py](analyses/z_to_mumu.py)，你會看到：
-
-```python
-muon_pt=10
-leading_pt=20
-isolation=0.15
-```
-
-請一次只改一個數值，例如：
-
-```python
-leading_pt=25
-```
-
-然後重新執行：
-
-```zsh
-./start.sh --analysis z_to_mumu
-```
-
-請記錄：
-
-1. 最終事件數如何改變？
-2. 哪一層 cut 的 relative efficiency 改變最大？
-3. (Z) peak 是否仍然明顯？
-4. 背景是否比原本少？
-
-這就是研究分析最基本的技能：不是直接相信某個 cut，而是理解它同時改變 signal efficiency 與 background rejection。
-
-## 5. 三個共振峰練習的順序
-
-```zsh
-./start.sh --analysis jpsi_to_mumu
-./start.sh --analysis upsilon_to_mumu
-./start.sh --analysis z_to_mumu
-```
-
-這三個 target mass 由低到高：
-
-\[
-m_{J/\psi}\approx3.1\ \mathrm{GeV},
-\qquad
-m_{\Upsilon}\approx9.5\ \mathrm{GeV},
-\qquad
-m_Z\approx91.2\ \mathrm{GeV}.
-\]
-
-低質量共振的 daughter muons 通常較軟，因此若沿用 (Z) analysis 的高 (p_T) threshold，會失去大量候選。這是學生最容易從資料直接看出的 detector acceptance 與 kinematic selection 關係。
-
-## 6. (H\to\mu^+\mu^-)：為什麼看不到漂亮的 Higgs peak？
-
-```zsh
-./start.sh --analysis h_to_mumu
-```
-
-這個練習在 (m_{\mu\mu}\) 的 Higgs-like region 建立 selection。即使最後有候選，也不能宣稱發現 Higgs，原因包括：
-
-- 此處的 DoubleMuon data 量很小。
-- (H\to\mu\mu) branching ratio 很小。
-- Drell–Yan 等背景會產生同樣的雙渺子末態。
-- 真實分析還需要背景模型、simulation normalization、systematic uncertainties 與 likelihood fit。
-
-這個 module 的價值是學習「設計 signal region」，不是做 discovery claim。
-
-## 7. 正確的 (H\to ZZ^{(*)}\to4\ell)
-
-```zsh
-./start.sh --analysis h_to_4l
-```
-
-這個 channel 中：
-
-\[
-\ell=e\ \mathrm{or}\ \mu.
-\]
-
-因此完整末態必須包含：
-
-\[
-4e,\qquad4\mu,\qquad2e2\mu.
-\]
-
-第一次執行會建立獨立的 `data/hzz4l_signal_skim.parquet`，不會使用原本只有 `Muon_*` branch 的 dimuon skim。
-
-`h_to_4l` 的 selection 邏輯如下：
-
-1. 先選擇通過 (p_T)、(|\eta|)、isolation 的電子與渺子。
-2. 從所有 lepton 組合建立四 lepton candidate。
-3. 要求能配成兩組 same-flavour opposite-sign，簡稱 SFOS：
-
-\[
-e^+e^-\ \text{or}\ \mu^+\mu^-.
-\]
-
-4. 令最接近 (m_Z) 的 pair 為 (Z_1)，另一組為 (Z_2)。
-5. 套用：
-
-\[
-40<m_{Z_1}<120\ \mathrm{GeV},
-\qquad
-12<m_{Z_2}<120\ \mathrm{GeV},
-\qquad
-105<m_{4\ell}<140\ \mathrm{GeV}.
-\]
-
-這些數字是教學用的簡化 selection。真實 CMS analysis 會有更完整的 lepton ID、impact parameter、trigger、mass resolution、final-state radiation 與 systematic treatment。
-
-## 8. 篩選後的下一步：p-value 與 sigma
-
-看到 mass spectrum 有 peak，還不夠。真正的問題是：
-
-> 假如世界上只有已知背景，出現這麼大的 excess 的機率有多小？
-
-把「只有背景」稱為 null hypothesis (H_0)。若 signal region 預期背景為 (b)，觀測到 (n_{\mathrm{obs}}) 個事件，最簡單的 counting experiment 定義：
-
-\[
-p_0=P(N\ge n_{\mathrm{obs}}\mid N\sim\mathrm{Poisson}(b)).
-\]
-
-這個 (p_0) 不是「Higgs 存在的機率」，而是「如果只有背景，得到至少這麼大 excess 的機率」。
-
-高能物理常把它換成單尾 Gaussian-equivalent significance：
-
-\[
-Z=\Phi^{-1}(1-p_0).
-\]
-
-約略對照如下：
-
-| Local significance | One-sided p-value | 常見說法 |
-| --- | --- | --- |
-| (3\sigma) | 約 (1.35\times10^{-3}) | evidence |
-| (5\sigma) | 約 (2.87\times10^{-7}) | discovery threshold |
-
-## 9. 執行 (5\sigma) toy lab
-
-```zsh
-./start.sh --statistics-lab
-```
-
-預設輸入為：
-
-\[
-n_{\mathrm{obs}}=18,
-\qquad
-b=4.
-\]
-
-程式會給出約：
+DoubleEG collision data 的檔案清單在：
 
 ```text
-Local background-only p-value: 2.482e-07
-Local significance: 5.028 sigma
+data/raw/CMS_Run2016G_DoubleEG_NANOAOD_UL2016_MiniAODv2_NanoAODv9-v1_250000_file_index.json
 ```
 
-請嘗試：
+它列出 17 個可透過 XRootD 讀取的 ROOT 檔。不要下載完整 ROOT 檔；`prepare_data.py` 只讀取本分析需要的 photon、trigger、run 與 luminosity block branches，並寫成較小的 Parquet cache：
 
 ```zsh
-./start.sh --statistics-lab --observed 12 --background 4
-./start.sh --statistics-lab --observed 18 --background 8
-./start.sh --statistics-lab --observed 25 --background 10
+./.venv/bin/python prepare_data.py \
+  --dataset hgg_data_run_g_index \
+  --output data/hgg_data_run_g_index_500k_skim.parquet \
+  --max-events 500000
 ```
 
-學生應該能發現：
+`500000` 是所有 17 個來源合計的事件上限，不是每個 ROOT 檔各取 500,000。程式會分配讀取量，避免只使用第一個檔案。
 
-- 觀測事件數固定時，預期背景越高，significance 越低。
-- excess 是否「很大」不能只看 (n_{\mathrm{obs}}-b)，還要看 Poisson fluctuation。
-- (5\sigma) 是很嚴格的 threshold，但仍不是完整分析的終點。
+成功後產生：
 
-這個 lab 是 transparent toy model。真實 CMS result 會使用多個 mass bins、signal/background shapes、不同 channel、nuisance parameters、systematic uncertainties，以及 look-elsewhere effect；不能把各 channel 的 sigma 隨意相加。
+```text
+data/hgg_data_run_g_index_500k_skim.parquet
+```
 
-## 10. 2012 年 Higgs discovery 的正確歷史脈絡
+建立完成後，重跑 selection、改 cuts、畫圖與做 fit 都只讀取本地 Parquet，不會再連 CERN。
 
-2012 年 CMS 不是靠單一事件或一張圖宣布 discovery。當時的高解析度 channel 包括：
+## 6. 第三步：在 collision data 執行 selection
+
+collision-data module 是 `analyses/h_to_gammagamma_data.py`。它刻意重用 signal MC 的 `build_photons`，唯一關鍵差異是先要求 diphoton trigger：
+
+```python
+HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55
+```
+
+執行完整 500k cache：
+
+```zsh
+./start.sh --analysis h_to_gammagamma_data \
+  --source data/hgg_data_run_g_index_500k_skim.parquet \
+  --output outputs/h_to_gammagamma_data_index_500k_mass.png \
+  --cutflow-output outputs/h_to_gammagamma_data_index_500k_cutflow.csv
+```
+
+這一步產生：
+
+```text
+outputs/h_to_gammagamma_data_index_500k_mass.png
+outputs/h_to_gammagamma_data_index_500k_cutflow.csv
+```
+
+目前的 500k cut flow 重點數字如下：
+
+| 條件 | 事件數 |
+| --- | ---: |
+| All processed events | 500,000 |
+| Pass diphoton trigger | 83,554 |
+| Pass photon ID | 1,588 |
+| Pass diphoton pT pair | 1,233 |
+| At least one candidate in 100–180 GeV | 329 |
+| At least one candidate in 120–130 GeV | 42 |
+
+最後兩列是事件數。mass plot 則畫所有通過 pair selection 的 candidates；一個 event 可以有多組 photon pair，因此 mass plot 在同一區間可能有 330 個 candidates，而 cut-flow 記錄 329 個 events。這不是矛盾，而是 event count 與 candidate count 的定義不同。
+
+## 7. 第四步：先定義 signal window 與 sidebands
+
+本練習採用：
 
 \[
-H\to\gamma\gamma,
+100 < m_{\gamma\gamma} < 180\ \mathrm{GeV}
+\]
+
+作為畫圖與背景擬合範圍，並使用：
+
+\[
+120 < m_{\gamma\gamma} < 130\ \mathrm{GeV}
+\]
+
+作為 signal window。sidebands 是：
+
+\[
+100 < m_{\gamma\gamma} < 120\ \mathrm{GeV},
 \qquad
-H\to ZZ\to4\ell.
+130 < m_{\gamma\gamma} < 180\ \mathrm{GeV}.
 \]
 
-CMS 當時報告 (\gamma\gamma) 約 (4.1\sigma)、(ZZ\to4\ell) 約 (3.2\sigma)，五個 channel 合併約 (4.9\sigma)，兩個高解析度 channel 合併為 (5.0\sigma)。這個結果是完整 likelihood analysis 的產物，不是本專案 toy lab 的答案。
+plot range 只是直方圖顯示與背景建模的範圍。真正定義 candidate 是否進入 signal region 的條件，是 selection code 中的 mass cut；兩者不要混為一談。
 
-這份專案的理想學習感受是：
+## 8. 第五步：從 sideband 得到背景預期值
+
+執行：
+
+```zsh
+./start.sh --hgg-sideband-fit \
+  --source data/hgg_data_run_g_index_500k_skim.parquet \
+  --output outputs/h_to_gammagamma_data_index_500k_sideband_fit.png \
+  --summary-output outputs/h_to_gammagamma_data_index_500k_significance.json
+```
+
+程式會：
+
+1. 重新套用 collision-data selection，收集所有 $m_{\gamma\gamma}$ candidates。
+2. 遮罩 120–130 GeV，不使用 signal window 的資料決定背景。
+3. 對 sideband candidates 做 unbinned exponential fit：
 
 \[
-\text{"I can make a peak"}
-\rightarrow
-\text{"I can suppress backgrounds"}
-\rightarrow
-\text{"I can quantify how surprising an excess is"}.
+f(m)\propto e^{\lambda(m-m_0)}.
 \]
 
-## 11. 建議的教學節奏
+4. 將 fitted function 積分到 signal window，估計預期背景 $b$。
+5. 傳遞 sideband count 與 fitted slope 的統計不確定度。
+6. 以 background-only Poisson tail 計算 local p-value。
 
-| 課程 | 學生任務 | 核心概念 |
-| --- | --- | --- |
-| 1 | 跑 `z_to_mumu` | four-momentum 與 invariant mass |
-| 2 | 改一個 cut，讀 cut flow | signal efficiency 與 background rejection |
-| 3 | 比較 (J/\psi\)、(Upsilon)、(Z) | mass scale 與 (p_T) threshold |
-| 4 | 跑 `h_to_4l` | (4e/4\mu/2e2\mu)、SFOS、(Z_1/Z_2) |
-| 5 | 跑 statistics lab | null hypothesis、p-value、local significance |
-| 6 | 討論 2012 CMS 結果 | channel combination 與 discovery claim |
+## 9. 第六步：閱讀 500k 的統計結果
 
-## 12. 下一個可擴充的方向
+執行結果為：
 
-若要繼續接近真實 Higgs analysis，可以依序新增：
+```text
+Sideband candidates: 288
+Observed candidates in 120-130 GeV: 42
+Fitted exponential slope: -0.0311 +/- 0.0027 / GeV
+Expected background: 53.43 +/- 3.15
+With-background-uncertainty p-value: 9.381e-01
+Gaussian-equivalent Z: -1.539 sigma
+Local discovery significance: 0.000 sigma
+```
 
-1. (ZZ\to4\ell) background simulation 與 2012 collision data。
-2. event weights、cross sections 與 integrated luminosity。
-3. signal region 外的 sidebands。
-4. binned likelihood fit。
+對 discovery test，關心的是向上的 fluctuation：
+
+\[
+p_0=P(N\ge n_{\mathrm{obs}}\mid b).
+\]
+
+這份 sample 的 42 小於 fitted background 的 53.43，因此它是 deficit，不是 excess。把 p-value 轉成 Gaussian-equivalent 值時會得到負數；但 discovery significance 不把 deficit 當作「負向發現」，而是報為 $0\sigma$。
+
+輸出檔：
+
+```text
+outputs/h_to_gammagamma_data_index_500k_sideband_fit.png
+outputs/h_to_gammagamma_data_index_500k_significance.json
+```
+
+## 10. 為什麼這不是 CMS discovery result
+
+這個 p-value 是很好的統計練習，但不能作為 CMS result。缺少的項目包括：
+
+1. official good-luminosity mask。
+2. 更完整的 photon energy calibration、ID 與 isolation。
+3. event categories 與 per-event mass resolution。
+4. data-driven 與 simulated background 的交叉檢查。
 5. systematic uncertainties 與 nuisance parameters。
-6. (H\to\gamma\gamma) module：需要 Photon branches 與 photon-triggered data。
+6. signal-plus-background multi-bin likelihood fit。
+7. look-elsewhere effect 與更多 collision data。
 
-官方的 CMS Open Data (H\to ZZ\to4\ell) 教學 workflow 是很好的下一份參考資料：<https://opendata.cern.ch/record/12360>。
+因此這份練習的正確結論是：「在這 500,000 events 與簡化 selection 下，120–130 GeV 沒有顯著 excess。」
+
+## 11. 可選延伸：47 個 ROOT 檔的全量分析
+
+`data/raw/` 中其餘兩份 JSON 與目前使用的 JSON 合計描述 47 個不重複 ROOT 檔，原始資料量約 75 GB。專案保留了對應設定 `hgg_data_run_g_full`，但不會自動執行，因為遠端串流與 cache 建立是數小時等級工作。
+
+真正需要全量分析時，依序使用：
+
+```zsh
+./.venv/bin/python prepare_data.py --dataset hgg_data_run_g_full --max-events -1
+
+./start.sh --analysis h_to_gammagamma_data \
+  --source data/hgg_data_run_g_full_skim.parquet \
+  --output outputs/h_to_gammagamma_data_full_mass.png \
+  --cutflow-output outputs/h_to_gammagamma_data_full_cutflow.csv
+
+./start.sh --hgg-sideband-fit \
+  --source data/hgg_data_run_g_full_skim.parquet \
+  --output outputs/h_to_gammagamma_data_full_sideband_fit.png \
+  --summary-output outputs/h_to_gammagamma_data_full_significance.json
+```
+
+這只會降低統計誤差，不能取代第 10 節所列的正式分析要求。
+
+## 12. 接下來適合學生做的修改
+
+1. 改變 photon $p_T$ thresholds，比較 signal MC efficiency 與 collision-data background。
+2. 改變 signal window 寬度，例如 122–128 GeV，觀察 count 與背景預期如何改變。
+3. 比較 exponential fit 與其他合理的 background parameterization，討論 model dependence。
+4. 對 signal MC 與 data 使用相同 selection，區分「peak 的形狀」與「excess 的顯著性」。
+5. 將 `h_to_4l.py` 當作下一個獨立 channel 的參考，新增新的 object branches、selection 與資料集設定。
+
+重點不是追求在小 sample 中看到 $5\sigma$，而是能清楚說明每個 cut、每份資料、每個 candidate count 與每個 p-value 從何而來。

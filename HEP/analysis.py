@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
 
 from analyses.registry import ANALYSES
+from data_config import ANALYSIS_DATASETS, DATASETS
+from prepare_data import prepare
 from framework.runner import run_analysis
 
 
@@ -27,6 +30,19 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def default_source(analysis_slug: str) -> tuple[str, tuple[str, ...]]:
+    dataset_key = ANALYSIS_DATASETS[analysis_slug]
+    dataset = DATASETS[dataset_key]
+
+    if not dataset.cache.exists():
+        cache_events = int(os.environ.get("HEP_CACHE_EVENTS", "100000"))
+        source_count = 1 if isinstance(dataset.source, str) else len(dataset.source)
+        print(f"Local skim not found. Preparing {dataset_key} from {source_count} source(s)")
+        prepare(dataset.source, dataset.cache, dataset.branches, cache_events, 25_000)
+
+    return str(dataset.cache), dataset.branches
+
+
 if __name__ == "__main__":
     args = parse_args()
     if args.list_analyses:
@@ -36,5 +52,9 @@ if __name__ == "__main__":
     analysis = ANALYSES[args.analysis]
     output = args.output or Path("outputs") / f"{analysis.slug}_mass.png"
     cutflow_output = args.cutflow_output or Path("outputs") / f"{analysis.slug}_cutflow.csv"
-    source = args.source or str(analysis.default_source)
-    run_analysis(analysis, source, args.max_events, args.step_size, output, cutflow_output)
+    if args.source:
+        dataset = DATASETS[ANALYSIS_DATASETS[analysis.slug]]
+        source, branches = args.source, dataset.branches
+    else:
+        source, branches = default_source(analysis.slug)
+    run_analysis(analysis, source, branches, args.max_events, args.step_size, output, cutflow_output)
