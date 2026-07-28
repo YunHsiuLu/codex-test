@@ -1,7 +1,9 @@
 awkward>=2.9
+aiohttp>=3.10
 matplotlib>=3.10
 numpy>=2.0
 pandas>=2.2
 pyarrow>=24.0
+requests>=2.32
 uproot>=5.7
 vector>=1.8

@@ -1,29 +1,43 @@
-# CMS Open Data 分析練習
+# CMS Open Data HEP Analysis Classroom
 
-本專案採用兩階段工作流。第一次以 `uproot` 從 CERN NanoAOD 串流需要的物理量，建立較小的本機 Parquet skim；之後 `analysis.py` 只讀本機 skim，可以反覆修改 selection、cut flow 與圖表而不再連線 CERN。
+This project is a teaching framework for collider-data analysis. It separates the workflow into reconstruction, event selection, mass spectra, and a first statistical interpretation. All source code, command-line output, and cut-flow labels are in English.
 
-## 最簡單的執行方式
+Traditional Chinese tutorial: [TUTORIAL_zh-TW.md](TUTORIAL_zh-TW.md).
 
-```zsh
-./start.sh
-```
-
-`start.sh` 會自動完成：
-
-1. 在專案內建立 `.venv`。
-2. 依照 `requirements.txt` 安裝或更新套件。
-3. 若缺少本機 skim，從 CERN 建立前 １０ 萬筆事件的 `data/dimuon_skim.parquet`。
-4. 執行 `analysis.py`。
-
-使用者只需預先安裝 Python ３．１０ 或更新版本。`.venv` 不應直接交給其他使用者，因為虛擬環境包含作業系統、CPU 架構與絕對路徑資訊；應讓每位使用者第一次執行時自動重建。
-
-## 第一次使用：建立本機 skim
+## Start here
 
 ```zsh
-./.venv/bin/python prepare_data.py --max-events 100000
+./start.sh --list-analyses
+./start.sh --analysis z_to_mumu
+./start.sh --statistics-lab
 ```
 
-程式只會保存以下七個渺子欄位：
+`start.sh` creates a project-local `.venv`, installs the required packages, creates a compact local Parquet skim when needed, and runs the selected task. Python 3.10 or newer is required. Do not copy `.venv` between computers; each user should let the script create it locally.
+
+## Learning path
+
+| Command | Physics goal | What students change |
+| --- | --- | --- |
+| `./start.sh --analysis z_to_mumu` | $Z\to\mu^+\mu^-$ | Muon quality, isolation, charge, and leading-$p_T$ requirements |
+| `./start.sh --analysis jpsi_to_mumu` | $J/\psi\to\mu^+\mu^-$ | Low-$p_T$ thresholds and a narrow low-mass signal window |
+| `./start.sh --analysis upsilon_to_mumu` | $\Upsilon\to\mu^+\mu^-$ | Signal window and background comparison in another resonance region |
+| `./start.sh --analysis h_to_mumu` | $H\to\mu^+\mu^-$ search design | Higgs-like signal region and why a small data sample is background dominated |
+| `./start.sh --analysis h_to_4l` | $H\to ZZ^{(*)}\to4\ell$ | Electron-muon reconstruction, SFOS pairing, $Z_1/Z_2$, and $m_{4\ell}$ |
+
+Each analysis writes a mass spectrum and a CSV cut flow under `outputs/`, and prints an aligned terminal table:
+
+```text
+| condition                             | events |
+|---------------------------------------|-------:|
+| All processed events                  | 100,000 |
+| N(mu) >= 2                            |  78,454 |
+```
+
+Cut-flow entries count events. A mass plot can contain more candidates than events because one event may contain multiple valid combinations.
+
+## Data caches
+
+The dimuon exercises use a CMS Run 2016H DoubleMuon NanoAOD file. Their cache stores only the following muon branches:
 
 ```text
 Muon_pt
@@ -35,73 +49,108 @@ Muon_tightId
 Muon_pfRelIso04_all
 ```
 
-輸出位置為 `data/dimuon_skim.parquet`。建立完成後，修改上述物理量的 selection 不必重新連線。
+`h_to_4l` uses a different, dedicated CMS educational signal simulation, `SMHiggsToZZTo4L`. Its skim stores both electron and muon kinematics, charges, and isolation variables. This is necessary because
 
-若要保存遠端 ROOT 檔中的全部事件：
+\[
+\ell \in \{e,\mu\}, \qquad H\to ZZ^{(*)}\to4\ell
+\]
 
-```zsh
-./.venv/bin/python prepare_data.py --max-events -1
-```
-
-這仍只保存七個指定欄位，不會下載原始約 ２ GB 的完整 ROOT 檔。若日後要分析電子、jet、MET 或其他新欄位，需先修改 `data_config.py` 的 `BRANCHES`，再重新執行 `prepare_data.py`。
-
-## 執行分析
+contains the $4e$, $4\mu$, and $2e2\mu$ final states. The first `h_to_4l` run automatically creates `data/hzz4l_signal_skim.parquet`; it does not reuse the dimuon cache.
 
 ```zsh
-./start.sh
+./start.sh --analysis h_to_4l
+HEP_CACHE_EVENTS=200000 ./start.sh --analysis h_to_4l
 ```
 
-`analysis.py` 預設讀取 `data/dimuon_skim.parquet`，不會連線 CERN。也可以只分析 skim 的前一部分：
+Changing a threshold does not require a new skim. Adding a branch or changing the input dataset does.
+
+## The $H\to ZZ^{(*)}\to4\ell$ exercise
+
+`analyses/h_to_4l.py` applies a simplified, transparent version of the four-lepton logic:
+
+1. Keep reconstructed electrons and muons with kinematic and isolation requirements.
+2. Form every four-lepton candidate.
+3. Require a pairing into two same-flavour, opposite-sign pairs.
+4. Define $Z_1$ as the pair closer to $m_Z=91.1876\ \mathrm{GeV}$.
+5. Require $40 < m_{Z_1} < 120\ \mathrm{GeV}$, $12 < m_{Z_2} < 120\ \mathrm{GeV}$, and finally $105 < m_{4\ell} < 140\ \mathrm{GeV}$.
+
+The input is signal simulation, so this exercise teaches reconstruction and selection. It is not a discovery claim and must not be used to compute an observed-data p-value. A real measurement also needs collision data, simulated $ZZ\to4\ell$ background, minor backgrounds, event weights, detector/systematic uncertainties, and a likelihood fit.
+
+## From a mass peak to a discovery statement
+
+The next question after a cut flow is not “does the plot look peaked?” but:
+
+\[
+p_0 = P(N \ge n_{\mathrm{obs}} \mid H_0),
+\]
+
+where $H_0$ is the background-only hypothesis. A small local p-value can be expressed as a one-sided Gaussian-equivalent significance:
+
+\[
+Z = \Phi^{-1}(1-p_0).
+\]
+
+Run the statistics lesson with:
 
 ```zsh
-./start.sh --max-events 10000
+./start.sh --statistics-lab
+./start.sh --statistics-lab --observed 18 --background 4 --signal 14
 ```
 
-輸出包括：
+The default toy counting experiment gives a local significance just above $5\sigma$. It is intentionally chosen as a transparent classroom calculation, not fitted CMS data. Students can change `--observed` and `--background`, then observe how the p-value changes. The script also shows an Asimov expected significance and a simple independent-channel quadrature example.
 
-- `dimuon_mass.png`：雙渺子不變質量分布。
-- `cutflow.csv`：事件數、相對效率與累積效率。
-- 終端機：對齊的 `condition`／`events` cut flow 表格。
+For a real Higgs result, a collaboration uses a multi-bin likelihood, nuisance parameters for systematic effects, and a treatment of the look-elsewhere effect. Independent channel significances cannot generally be added by hand. The 2012 CMS announcement reported $4.1\sigma$ in $\gamma\gamma$, $3.2\sigma$ in $ZZ\to4\ell$, and $4.9\sigma$ in the combined five-channel fit; the two high-resolution channels together reached $5.0\sigma$. This is the historical excitement the lab is designed to reconstruct conceptually, without pretending that a toy calculation reproduces the collaboration result.
 
-若要明確使用其他本機 skim：
+## Suggested Higgs discovery lesson
 
-```zsh
-./start.sh --source data/other_skim.parquet
-```
+1. Run `h_to_4l` and inspect the $m_{4\ell}$ spectrum and cut flow.
+2. Ask students why all three flavour channels are needed and why $Z_1$ is defined by closeness to $m_Z$.
+3. Run `./start.sh --statistics-lab` and identify $H_0$, $p_0$, and $Z$.
+4. Change the observed and expected background counts. Have students explain why a fixed excess can become less convincing when the background uncertainty or expected background grows.
+5. Compare the toy result with the historical CMS channel combination. Discuss why a plot alone is not a discovery.
 
-仍可直接分析遠端 ROOT，但每次執行都會重新連線：
+For an optional visual finale, CMS Open Data provides real 2011 candidate event displays for both four-lepton and diphoton Higgs candidates. Those selected events are excellent for discussion but are not a statistically complete dataset.
 
-```zsh
-./start.sh --source "https://opendata.cern.ch/.../file.root"
-```
-
-## Cut flow
-
-終端機輸出格式：
+## Project structure
 
 ```text
-| condition                                  | events |
-|--------------------------------------------|-------:|
-| All processed events                       | 10,000 |
-| N(mu) >= 2                                 |  7,555 |
-| N(mu: p_T > 10 GeV, |eta| < 2.4) >= 2      |  4,703 |
+analysis.py             Command-line entry point for reconstruction exercises
+analyses/               Exercise-specific physics selections
+framework/              Shared loading, cut-flow, plotting, and statistics helpers
+statistics_lab.py       Transparent p-value and significance lesson
+prepare_data.py         Remote ROOT to local Parquet skim
+data_config.py           Dataset URLs, cache paths, and saved branches
+outputs/                Generated plots and cut flows
 ```
 
-完整 CSV 另外包含：
+The student-facing selection code is in:
 
-- 事件數：通過該條件的事件總數；同一事件即使有多組渺子對也只計一次。
-- 相對效率：相對於前一層條件保留下來的比例。
-- 累積效率：相對於全部已處理事件保留下來的比例。
+```text
+analyses/z_to_mumu.py
+analyses/jpsi_to_mumu.py
+analyses/upsilon_to_mumu.py
+analyses/h_to_mumu.py
+analyses/h_to_4l.py
+```
 
-篩選依序為：
+For the dimuon analyses, begin by changing one configuration value:
 
-1. 事件中至少有兩顆重建渺子：$N(\mu) \geq 2$。
-2. 至少兩顆渺子滿足 $p_T > 10\ \mathrm{GeV}$ 且 $|\eta| < 2.4$。
-3. 至少兩顆渺子通過 CMS `Tight Muon ID`。
-4. 至少兩顆渺子滿足 $I_{\mathrm{rel}}(\Delta R=0.4) < 0.15$。
-5. 至少存在一組異號渺子對：$q_1q_2 < 0$，即 $\mu^+\mu^-$。
-6. 該異號對滿足 $\max(p_{T,1},p_{T,2}) > 20\ \mathrm{GeV}$。
+```python
+muon_pt=10
+leading_pt=20
+isolation=0.15
+signal_window=(110, 140)
+```
 
-每一層都包含前面所有條件。最終候選對數可能高於最終事件數，因為單一事件可以產生多組有效配對。
+Then rerun the same command and compare the relative and cumulative efficiencies in the new CSV file.
 
-資料來源：[CMS Run 2016H DoubleMuon NanoAOD](https://opendata.cern.ch/docs/cms-getting-started-nanoaod)。
+## Further extensions
+
+A genuine $H\to\gamma\gamma$ exercise needs photon branches and a photon-triggered sample. A data-based $H\to ZZ^{(*)}\to4\ell$ significance exercise needs the official $ZZ\to4\ell$ background samples and 2012 collision data in addition to the signal sample. The official CMS educational workflow lists these datasets and provides a useful next reference.
+
+## Sources
+
+- [CMS Open Data: $H\to ZZ\to4\ell$ educational analysis](https://opendata.cern.ch/record/12360)
+- [CMS Open Data: SMHiggsToZZTo4L signal simulation](https://opendata.cern.ch/record/12361)
+- [CMS statement on the 2012 observation](https://cms.cern/physics/higgs-boson/observation-new-particle-mass-125-gev)
+- [CERN explanation of the five-sigma threshold](https://home.cern/science/physics/higgs-boson/how/)

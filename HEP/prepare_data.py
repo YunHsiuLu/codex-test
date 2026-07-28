@@ -9,10 +9,16 @@ import awkward as ak
 import pyarrow.parquet as pq
 import uproot
 
-from data_config import BRANCHES, DEFAULT_CACHE, DEFAULT_URL
+from data_config import DATASETS
 
 
-def prepare(source: str, output: Path, max_events: int, step_size: int) -> None:
+def prepare(
+    source: str,
+    output: Path,
+    branches: tuple[str, ...],
+    max_events: int,
+    step_size: int,
+) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_name(f".{output.name}.tmp")
     writer: pq.ParquetWriter | None = None
@@ -29,7 +35,7 @@ def prepare(source: str, output: Path, max_events: int, step_size: int) -> None:
             print(f"Remote entries: {tree.num_entries:,}; saving: {stop:,}")
 
             for events in tree.iterate(
-                expressions=BRANCHES,
+                expressions=list(branches),
                 entry_stop=stop,
                 step_size=step_size,
                 library="ak",
@@ -59,8 +65,9 @@ def prepare(source: str, output: Path, max_events: int, step_size: int) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", default=DEFAULT_URL, help="CERN ROOT URL")
-    parser.add_argument("--output", type=Path, default=DEFAULT_CACHE, help="Local Parquet path")
+    parser.add_argument("--dataset", choices=DATASETS, default="dimuon", help="Built-in dataset configuration")
+    parser.add_argument("--source", help="Override the CERN ROOT URL")
+    parser.add_argument("--output", type=Path, help="Override the local Parquet path")
     parser.add_argument("--max-events", type=int, default=100_000, help="Events to save; -1 saves all")
     parser.add_argument("--step-size", type=int, default=25_000, help="Events per streaming batch")
     return parser.parse_args()
@@ -68,4 +75,11 @@ def parse_args() -> argparse.Namespace:
 
 if __name__ == "__main__":
     args = parse_args()
-    prepare(args.source, args.output, args.max_events, args.step_size)
+    dataset = DATASETS[args.dataset]
+    prepare(
+        args.source or dataset.source,
+        args.output or dataset.cache,
+        dataset.branches,
+        args.max_events,
+        args.step_size,
+    )
