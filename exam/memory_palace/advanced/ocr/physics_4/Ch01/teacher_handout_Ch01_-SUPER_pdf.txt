@@ -1,0 +1,2762 @@
+                             V12V1V2Ed
+                         
+                                                                       Q
+
+ 1 
+
+    
+    
+    
+
+                           · ac · bc
+                              
+
+                                     kQq
+
+                           dV Ue  r  kQ
+                               q     q                                    r
+
+                            Ue kQq
+                                                               r
+
+                                              F
+                                     +q
+
+                                  r                                          
+
+                           +Q                                                
+
+                                kQ
+                           E 2
+
+                                 r
+
+                           
+
+                                                                             
+                                                                             
+                                                                             
+
+2
+                                                                                 1 
+
+  r Ö RjE0
+  rRjER 2 kQ
+* 
+                       R
+
+  r × RjEr r2 kQ
+
+  r Ö RjV kQR
+   rRjVR kQ
+*                      R
+
+                  r × RjVr kQr  ·e
+
+                       
+
+
+
+                                1  SI d Cf
+
+                                2  e1.61019 Cf
+
+                                     kq1q2
+
+                                     F r2
+
+    
+ 
+
+
+  
+
+                                
+       < <F
+        E
+              q
+
+  · ac Q         1  FyqE & ay Fy m  qEm
+     
+                 2 j*  x & xv0t & t x
+  · bc Q                                                               v0
+     
+                                         12                                qE 2
+                       y & y ayt  2 x
+                                         2                                 2mv0
+
+                       vxv0     qEx & tan  vy  2 qEx
+
+                 3 j*  vyay t        vx mv0
+
+                                mv0
+
+                                                                                 3
+         1-1                                                             PhET
+
+                                                                         
+                                                                         
+
+e
+
+1 
+
+1 d
+
+   dd
+
+   d ed
+
+   f
+
+2 dd
+
+   df
+
+   dd                                                                    ·e
+
+   f
+
+3    SI  d  Cfd                                                          e                    19  Cf
+
+                                                                            c1.c6c1c0 c
+
+ddd
+
+    e fdd
+
+   df
+
+2 
+
+1 ddf
+
+2 dd 5e d
+
+    2ed 3ed 5ef
+
+                                                                      ·
+
+4
+                    1 
+
+3 
+   1 d
+       d
+       ddf
+   2 d
+       df
+
+e
+
+1 1785 ddj <Fd
+
+j
+
+1 f
+
+2 f
+
+3 ddf
+
+2 dq1eq2 dr d
+
+   kq1q2  9  22  9
+ F ccc2ccdk  8.98710 Ngm /C  9.010 Ng
+   r
+
+m2/C2dfdd
+
+f
+
+3 ddd
+
+   dfdd 1.671027
+   d 1.601019 f 9.111031 d 1.61019 
+   f rd
+
+             kq1q2
+    Fe F  r   g Gm1m2 Gm1m2 6.6710111.6710279.111031 .2.310 2 kq1q2 9.01091.6010191.601019 39f
+
+               r2
+
+                                                                                                5
+   e
+
+   1 dfd
+
+      ddd
+
+      df
+
+      &  <F<Fif                  <<
+                              ccF1ccF2cf
+   2  dq                  <F
+
+   e
+
+                              
+   
+        1 f               1 f
+        2 f               2 f
+
+        F 2 kq1q2q1eq2 d  F 2 Gm1m2 m1em2 d
+               r                  r
+
+        r dk              r dG 
+
+      
+
+6
+                                                                                           1 
+
+ 1 
+
+ Q  1 Qdd
+                                                                     2
+
+ Ffd
+dk
+
+A 3 FcB 9 FcC 5 FcD 3 FcE 7 Ff                                                        109
+2         8  4     4        8
+
+ ccB c
+
+                                              kQ 12 Q kQ2
+ 1  r & F r2  2r2 f
+
+   2 d
+
+   &                              Q 1 Q
+       Q' 2  3 Q
+                      2     4
+
+                            k 34 Q 34 Q 9kQ2 9 kQ2 9
+   r 16r &  F' 2  2  8  2r2  8 Ff
+
+                                                                                kQ 2
+ 1  AeB  Q &  AeB  F 2 f
+
+                                                                                d
+       2 d
+
+      1  C  A  & QCQA Qf
+                                              2
+
+                         Q                       Q
+
+      2 C  B  & Q'CQB                            2 3Q
+                            2                       4
+
+        &  A  1 QiB  3 Q
+                2        4
+
+                        kQAQB k 12 Q 34 Q 3 kQ2 3
+        d d &  F' 2  2  8 d 2  8 Ff
+
+ 1
+
+ AeB  Cd AeB dd C 
+
+f AeB  d d Ff C  A
+
+d B df AeB 
+
+cc3cF cf                                                                              
+    8
+
+                                                                                           7
+                        °
+
+    
+
+    
+
+       B 1 dk
+                 A c
+                 B c
+                 C  SI c
+                 D c
+                 E f
+
+   1 B jdf
+
+      AB 2  eddk
+                 A 1.3ecB 2.9ecC 5ecD 5ecE 600ef
+
+   2 d e d AB f
+
+   3 1 5.01020  c80c f
+
+   2  6                           19  f
+
+           c3c.7c5c1c0 c
+
+   3 1 5.01020  5.010201.6101980Cf
+       2 n1.610196 & n3.751019f
+
+    
+
+       D 4 ddd
+                 dk
+                 A c
+                 B c
+                 C c
+                 D c
+                 E f
+
+   4 1 ddf
+       2 dd
+          dd
+          f
+
+8
+                                   1 
+
+ABD 5  AeBeCeD dd AeB i
+           AeC iBeD iCeD f AeBeCeD 
+           k
+
+     A    B        C   D
+                      
+A    
+
+B                     
+
+C                     
+
+D                     
+
+E                     
+
+5 f
+
+B 6 d AeB 
+         d
+         fk
+
+     A   B            AeB 
+                                 
+A                                
+                                 
+B                                
+
+C               
+
+D               
+
+6 f
+
+BE 7 f
+          df
+          dd
+          k
+
+                  
+
+A                 
+
+B                 
+
+C                 
+
+D                 
+
+E                 
+
+7 1 d & f
+    2  & f
+    3  & f BEf
+
+                                     9
+ 
+
+8 d Q1  Q2  d d
+    Ff 2Q1  2Q2d d2 d
+    c16Fcf
+
+8 f
+
+ 
+
+9 d 2dd
+   4Q  9Qfd q 
+   d kdj
+                                                                                5kQq
+   1  q dq  cccc2 ccf
+                                                                                 d
+   2  qd q d q  9Q  ccc6 dccf
+                                                                                                             5
+
+9 f
+
+0 d a  A  B d
+    Q d C  q f
+                                                                   3 kQq
+    kd q  cccc2 ccf
+                                                                     a
+
+0 f
+
+
+
+D 1 df
+
+ 4Q  x5ad Q
+
+ x9af Q d Q 
+
+k
+
+A 3acB 7acC 11acD 13acE 15af                                              d33
+
+1 f
+
+D 2  XeYeZ dZ
+
+ XeY  Ff X  Y d Z 
+
+d Z  XeY k
+
+A  cB cC  cD                  cE  f
+
+                                                                          103d54
+
+10 2 f
+                               1 
+
+AE 3 ddeed
+
+df ABE d
+
+dk 2 c
+
+A                    c
+
+B                    c
+
+C                    c
+
+D                    c
+
+E                    f      104d56
+
+3 f
+
+B 4 d Q  Q × 0dR d
+
+ddk
+
+A                cB     cC  c
+
+              D  cE     f
+4 f
+                                              109d51
+
+                     °
+
+ccccccccccccccccccccccccccccccccc
+
+ 
+
+1 A  B d r d 12 Nd r d
+    16 Nf A d AeB  QAjQB
+   c3j1cf
+
+1 f
+
+2 d a,0ea,0  Qd 0, y 
+    me q f kdj
+                                      2kQqy
+   1 q  ccc2 cc2 3c/2 cf
+                                   a y 
+   2  y%adq kf
+                                                                                ma3
+   3  2d q  cccccccf
+                                                                               2 2kQq
+
+2 f
+
+                                                                      11
+    
+
+    12 
+
+    df
+
+    d A  Bd
+
+     CdA d
+
+    Dfdfd
+
+    df
+
+    B 1 d C d
+
+    k
+
+    A d
+
+    B  A  B d A  B
+
+    C  Ad A  A d
+
+    D  Bd B  B df        d49
+
+    1 f
+
+        A 2  D dfd
+                  ddk
+                  A dd
+                  B dd
+                  C dd
+                  D ddf
+
+                                                                                                                              d47
+
+    2 dd
+         D fdf Af
+
+    1 1 dA  C  a f C
+            A  F1d A  F2f
+
+        2  C  A d A d F1 × F2d C  Ad
+            b fC  A ddf C  A  F3 
+           d Bf
+
+        3  B d C  B d c fdC 
+           f
+
+        4 C d 1 ä 3 d C  AeB d Bf
+
+         · a · b    · c
+
+12
+                                                    1 
+
+         1-2   PhET
+
+e
+
+1 
+
+dd
+
+f
+
+2 
+
+1 ddd SI 
+   c /  N/Ccf
+
+   & d q 
+
+      <                     <  <F
+     Fd E ccccf
+                               q
+
+      df
+   &  q  <F ccq<Eccf
+
+2  cc 
+
+   f
+
+e
+
+1 d
+
+d
+
+df
+
+2 dq  Q1  Q2 dq
+
+    <<
+ F1  F2 j
+                               << < <
+&  q                    <F  ccF1ccF2ccq Ec1cqcE2 c
+
+            <
+& <E ccFq cc<E1cc<E2cf
+
+e
+
+1 
+   1 ddd
+       f
+   2 ddd
+       f
+
+                                                    13
+    2 
+       1 dd
+           dd a f
+       2 ddf
+       3 dd b f
+       4 ddf
+
+    dd
+             df
+
+                              · ac  · bcd
+                                       
+    3 
+
+      · cc
+
+    · dc · ec · fc
+
+                                    
+
+14
+                     1 
+
+cccc °
+
+  ADE 1 dkc
+              A dc
+              B c
+              C 
+              D c
+              E f
+
+1 B jddf
+    C jdf
+
+B 2 dkc
+
+    A c
+
+    B c
+
+    C dc
+
+    D c
+
+    E f              
+
+2 Bjdd
+       df
+
+e
+
+1 
+
+ Qd r 
+
+qddQ 
+
+       kqQ
+
+    F r2 kQ
+E cccccccc2 c
+    q  q    r
+
+     1  Q f          · ac Q 
+
+& * 2  r f
+
+     3  r  q f
+
+2 
+   1  Q × 0d Q d af
+   2  Q Ö 0d Q d bf
+
+                     · bc Q 
+
+                                            15
+     1 
+
+    d¶ ABC  add
+    d qdd P  AB 
+    dO d
+    1 O  c0cf
+
+                                         4kq
+    2 P  ccc2ccf
+
+                                         3a
+
+     1  a 
+                               < <<<
+
+           & O  EOE1E2E30f
+
+       2  b d AeB  P 
+                     <<
+
+            E1eE2 
+                                < <<<
+
+           & P  ; EP;;E1E2E3;
+
+                                 <         kq  2 4kq f  · a       · b
+    ccccccccc; E3;                         3 a2 3a
+                                           2
+                                         
+
+    < < < kq                               kq  2kq
+     1 EOEqEq 2 ø 2 ø 2 øf
+           a                               a   a
+
+    2 d P   2 af
+                                               <<
+
+       q  q  P  E1eE2 
+
+     2 kq d y 
+           2 a
+
+    < kq       2 cos45cø                            2 kq cos45cø
+    &  EP                                           2 a
+            2 a
+                                                  
+
+    cccccc2 2a2 kq  22  2a2 2 kq øf
+
+     1
+
+    d x  xa  xa  qeq
+    fj
+
+                                                      2kq
+    1  O  ccc2ccf
+
+                                                       a
+    2  y  a  P 
+
+               2 kq
+       cccc2 ccf
+
+              2a
+
+16
+                                                                                                                       1 
+
+e
+
+1 
+   1 d
+       df
+   2 dd
+       d ccd
+        cc f
+       dd
+       df
+
+2 
+   1  a d Q dd
+       df
+       1 f
+       2  Q 
+          d b f
+                                                                            kQ
+          &  r  E ccc2 cf
+                                                                            r
+
+                                             Q
+
+· ac    · bc
+   
+
+2 d
+
+d c df
+
+3  d d R d
+
+         r Ö RjE c0c
+
+        kQ
+*  r j   rRjE ccc2 c
+        R                                 f
+
+                                      kQ
+         r × RjE ccc2 c
+
+                                       r
+
+· cc    · dc
+           
+
+                                                17
+    e
+
+    1  a d E d
+       dedf
+
+    2  E'd E'  E d
+       dd E'E d b f
+       d E'  E d
+       dd c f
+
+    3 ddd
+       d d ff
+
+    · ac    · bc    · cc            · dc
+        E                d   E  E'     
+                E'      d              
+                       
+
+     cccc °
+
+        D 3 ddkc
+                  A cB cC cD cE f
+
+    3 ddf
+
+      ACD 4 dkc
+                  A c
+                  B c
+                  C c
+                  D c
+                  E f
+
+    4 B jf
+        E jf
+
+18
+                                  1 
+
+ 2 
+
+e R1  R2d
+
+ q df kd
+
+ r  R1 Ö r Ö R2 k
+
+A 0cB 2 kqcC kqcD 2 4kq cE 2kq fr
+r          R1R2  R1R2
+
+ ccA c           107d46
+
+ df
+
+ ddd
+        f
+
+ 2
+
+dde r 
+2rd Qd 1.5r k
+A kQr cB 2kQ 3r cC 9r2 4kQ cD 4r2 kQ cE 0f
+ ccE c
+
+                                                                     19
+    e
+
+    1 ddd
+       df
+       1 dd a f
+       2 dd b f
+
+    · ac    · bc
+
+    2  c dfd
+        d j
+       1 dd ccf
+       2 dd cc
+           d cc  cc f
+
+    · cc    · dc
+
+    3       · ecdd
+       d       
+       f
+       d
+       d e
+       f
+       d
+       d
+       df
+
+20
+                                                            1 
+
+cccc °
+
+5 dd
+    Fd 3j1 d cFcf
+
+5  Ed q  F  qEd
+    f
+
+E 6 dkc
+
+   A c
+
+   B c
+
+   C c
+
+   D c
+
+   E f                                      · a        · b
+
+6 A j
+
+f
+
+B j a dd
+
+ddf
+
+C j b df                                    · c        · d
+D j c df
+
+E ´j d dddd
+
+df
+
+e
+
+d
+
+Ef md q d
+
+ v0 dd
+
+ y d y 
+
+j
+
+1     Fy  cqEc   & ay      Fy qE
+                       cccccc
+                       m m
+
+2  t j
+
+      x & x cvc0tc & t ccxcc
+                                       v0
+1 j*
+                              1 2 1 qE x 2       qE 2
+      y & y cccacyt cccccccc cc cc2cxcc
+                              2       2 m v0     2mv0
+
+      vx ccv0 c
+
+2 j*             qE qE x qEx
+      vy ccayctcctccccccccc
+                 m m v0 mv0
+
+                                  qEx
+
+                              vy mv0 qEx
+&  x  d tan  ccccccccc2 cf
+                              vx  v0   mv0
+
+                                                            21
+     3 
+
+     L d Ef
+     med v0 d
+    dfd
+    1 k
+    2 kk meEeLedev0 
+    3 dk meLedev0 
+
+     1 djLv0t & t L f
+                                                                                            v0
+
+    2 1 ddf
+
+    2  a F  qE
+                                              m m
+
+    1 2 1 qE L 2                2dmv02
+    & d at     & q 2 f
+    2  2 m           v0                            EL
+
+                        2dmv02                         2mv02d 2
+    3  WFSqEd 2 Ed 2 f
+                         EL                            L
+
+      v & *    jLvt & t Lv n1
+
+                                1 2 1 qE 2
+               jy 2 ay t  2 m t n2
+
+    & 1  2  y  1 qEL2
+
+               2 mv  2
+
+                             d 1 qEL2 d                          qE Lf
+    & d y Ö &                                          2 Ö &v ×  md
+                             2 2 mv 2
+
+     3
+
+    f Ed dd
+     Lf me qq × 0 d
+    ddf
+    dd
+
+           qE
+    cccccL cf
+
+           md
+
+22
+                                                                      1 
+
+                           °
+
+ 
+
+ 
+
+   CE 1 dk
+              A dc
+              B d
+              C 
+              D 
+              E  SI  N/Cf
+
+1 f
+
+2  Qd Q f Q  2 m  P
+    0.5 C  qf q  60 Ndj
+   1  Q  cc f
+   2 P  c120c N/Cf
+   3  q  2 Cd q  c240c Nf
+
+2 f
+
+3  Ed me qq × 0 d
+   v0 dddj
+                                        qE
+   1  ccccd ccf
+                                        m
+                                                                mv02
+   2  cccccf
+                                                                 2qE
+
+3 f
+
+4 dd
+   d me qq × 0dfd
+    gdj
+   1  cc f
+   2   cmgcf
+                                                          mg
+   3   ccccf
+                                                           q
+
+4 f
+
+                                                                      23
+     
+
+        D 5  AeBeC f A 
+                   3qd BeC kc
+                  A 8qe6qcB 4qe3qcC 4qe3qc
+                  D 4qe3qcE 3qe3qf
+
+    5 f
+
+     
+
+    6  x  x0  x3a dd
+       d kdj
+                                                      5kQ
+       1 A  xa  ccc2ccf
+                                                       4a
+                                                       15kQ
+       2 B  x4a  cccc2 cf
+                                                       16a
+
+    6 f
+
+     
+
+    7  QQ × 0 d Rd
+       d 1 ä 4 d1 d4  rf
+       dj
+                                                                     kQ
+       E1 c0ciE2 c0ciE3 c0ciE4 ccc2 cf
+                                                                      r
+
+    7 1  & E1E2E30f
+        2  4  r  & E4 2 kQ f
+                                                          r
+
+     
+
+    8  xy  E d
+
+     y f P  v  x
+
+    d Q d
+
+    df
+
+    dfj
+
+    1  cc f
+
+    2 d q 
+
+         q   3v2
+    m   cccccf
+         m   16Ed
+
+    8 f
+
+24
+                                                                 1 
+
+  BDE 9 d 11 p    24 Hed O 
+               x dd
+              kc
+              A dc
+              B c
+              C d x c
+              D d y c
+              E dd  f
+
+9 f
+
+0 d Ed
+   dd 11 p    24 He 
+   ddj
+   1  c1j2cf
+   2  c2j1cf
+   3  cc2cjc1cf
+   4  cc1jcc2 cf
+   5  c1cjc2 c2cf
+
+0 f
+
+
+
+1  d d qeqe2q  q
+
+                                                            6kq
+d O  ccc2 c qed 
+
+                                                             d
+
+ k f                       
+
+1 f
+
+B 2  QeQ  Q'Q  Q' 
+
+dfd
+
+Q'  Q kc
+
+A Q' 2 QcB Q'QcC Q' 32 Qc
+
+D Q' 3 QcE Q'2Qf           d60
+
+2 f
+
+                                                                 25
+    E 3  1 md P  2 Cd R 
+
+     2 C deeeed
+
+    k
+
+    A cB cC cD cE f           101d59
+
+    3 dd
+        dddf
+
+    C 4  P e R dj
+             z  q ix  2q ic  3q 
+             iv  4q f P 
+             dk
+
+    A ×××cB ×××cC ×  ×c
+
+    D ××  cE       f                     102d62
+
+    4 f
+
+    5 d
+
+     1.0 cm df
+     4.551019 J  45c dd
+
+    d 90cf
+     9.11031 kgd 1.61019 Cd
+
+    dj
+
+    1 k
+
+    2 kk
+
+    3 k                                       103
+
+    5 1  vd K 12 mv2 & 4.551019 12 9.11031v2 & v106m/sf
+        2 fd 45c d
+
+    ddd
+
+    df                        v02 sin 2
+
+    3  ad R
+         v02 sin 2 1062 sin245c 14 2 a
+    & a            2 10 m/s 
+         R    1.010
+
+              F ma 9.110311014 2
+    &  E                      19 .5.710 N/Cf
+              q e    1.610
+
+26
+                                                    1 
+
+                     °
+
+ccccccccccccccccccccccccccccccccc
+
+ 
+
+1 d Ed xd
+    Lf Ke qe m 
+   dd dd
+   dj
+                 qEL2
+   1 d cccccf
+                  4K
+
+   2  p    2j1 d
+        dpjd c1j4cf
+
+1 f
+
+2  xy dd 3a d 30c 
+    qdj
+   1 d c0cf
+   2  c0cf
+   3  z  P  4ad
+            48kq
+       cccc2 cf
+           125a
+
+2 f
+
+3 d me q d
+
+df
+
+d d gd
+
+j
+
+1  cc f
+
+2         mg                        ccmcg tcanc cf
+     cccccdq
+         cos 
+
+                           mg tan 
+3  ccccccf
+
+                               q
+
+3 f
+
+                                                    27
+    
+
+    D 1 d 4Q  Od
+
+     Q  C  x3ad
+
+    kc
+
+    A  A  xa  B  x2a 
+
+    c
+
+    B  xy d
+
+    c
+
+    C  C c
+
+    D  D  x6a dc
+
+    E  x f                               
+
+    1 f
+
+      ABD 2  m d ,                       
+                  fd
+                   Efd  d
+                   Td 
+                  dd O d
+                  dk
+                  A 
+                  B  q mgE tan dg 
+                  C  Tmg sin qE cos dg 
+                  D    60cd   30cc
+                  E  O df
+
+    2 f
+
+    BCE 3            x      d   E       x    d
+
+    Exxd 100 V/m2dx  mf 3104 kge
+
+    2106 Cd x4 m fdd
+
+    kc
+
+    A  x0 m cB d 4 mc
+
+    C  x1 m  2104 NcD  x4 m c
+
+    E  x4 m f                            d27
+
+    3  FqE2106100x2104xkxd x d
+        A jx0 df
+        B ´j x4 m d 4 mf
+        C ´jx1 m d F210412104Nf
+        D eE ´jx4 m def
+
+28
+                                                                1 
+
+    1-3 
+
+e
+
+1 
+   1  a d Md mdd
+
+ r d Ug ccGcMcmcÖc0cf
+                                                             r
+
+2 ddf
+
+2 
+
+ F 2 kQq  F 2 GMm ddf
+    r  r
+
+eddf
+
+dj
+
+1  b dQeq dd
+
+                        kQq
+ & Uer cccccÖc0 cdq  Q df
+
+                          r
+
+2  c d Qeq dd b 
+
+                                      kQq
+ & Uer cccc×c0ccdq  Q df
+
+                                        r
+
+· ac · bc · cc
+
+                                                                29
+                                                                               kQq
+    3 d Ue ccccf
+
+                                                                                 r
+
+     Q  q jUe kQq  kQq        r                                                        r
+
+    *&  Q  q jUe kQq  kQq f   r                                                     r
+
+     Q  q jUe kQq  kQq        r                                                     r
+
+    3 
+
+    1 d
+
+    d
+
+    f
+
+    2 d
+
+    Ue kQ1Q2  kQ2Q3  kQ3Q1 f
+    r12  r23  r31
+
+    4 
+
+    1 j
+
+    1 df
+
+    2 df
+
+    3  W  Ue djWUef
+
+    2 ddf
+
+    dd
+
+    f
+
+     cccc °
+
+        A 1 ddkc
+                  A dc
+                  B dc
+                  C ec
+                  D ec
+                  E ddf
+
+    1 ddd Af
+
+30
+ 1                                                                                                           1 
+
+ a d a                                                                                 · bcQ 
+ AeBeC d Q 
+f Q  C  AB d
+ b d
+
+2kQ 2                                        2kQ 2        · acQ 
+cccccd ccccccf
+a                                            a
+
+*  U kQQ  kQQ  kQQ  3kQ2aaa                         a
+
+  U' kQQ  kQQ  kQQ  5kQ2
+       a     a     a                                a
+
+             2     2
+
+1  W UU'U 5kQ2  3kQ2  2kQ2 f
+                a                            a         a
+
+2  W' U 2kQ2 f
+                                          a
+
+ *   U kQQ  kQ3Q  kQ3Q  kQ2
+          ,        ,                                      ,       ,
+
+     U'0000
+
+1  W UU'U0 kQ2  kQ2 f
+                                                ,      ,
+
+2  W' U kQ2 f
+                                         ,
+
+ 1
+
+d , d Qe
+
+                                                                                 kQ 2
+Qe3Q dd ccccd
+
+                                                                                  ,
+                                kQ 2
+ cccccf
+                                 ,
+
+                                                                                       31
+     2 
+
+    d me q   d
+     Q d P   
+    dP  df
+       2vd
+     vd   50 d  
+    df   d k
+     qeQemev  k 
+
+     d
+        & 12 m2v2 12 mv2k qQ d & d 3mv2 2kqQ f
+
+     j0 kQq  1 mv2 kQq  & 1 mv2 2kQq & v 4kQq f
+    r  2  3r  2  3r  3mr
+
+     2
+
+     Q d me q d Q
+     r f q d q  Q  3r dq 
+
+           4kQq
+    ccccccf
+
+            3mr
+
+32
+                                                                                                          1 
+
+e
+
+1 
+   1 dd
+       f
+   2 d Q  r  qd
+       U
+       &  Q  r  V ccUccf
+                                                                    q
+
+       &  q  V  U cqVcf
+
+2 
+   1 d c /  J/Ccd
+       cc voltd cVcdf
+   2  1  1 d 1 f
+
+e
+
+                                                                                                  kQq
+
+                                                                       Ue r kQ
+1 d Q  r  V ccccccccccf
+                                                                       q  q                            r
+
+1  a d Q ddd r 
+   f
+
+2  b d Q ddd r 
+   f
+
+· ac               · bc  · cc
+                      
+                      
+
+2 dd
+
+dd
+
+fd
+
+ Q1eQ2eQ3  P  r1er2er3
+
+d P 
+
+V kQ1  kQ2  kQ3 f
+r1  r2  r3
+
+                                                                                                          33
+     3 
+
+       d  x   xa  xa          
+    qeq f y  a  P 
+    j
+
+                                  2 kq
+    1  cccc2 ccf
+
+                                  2a
+    2  c0cf
+
+      P   2 ad
+                                                                                          <
+
+       1 ddq  q  P  E1
+               <
+
+            E2d y  E1yõE2yö0
+
+                  <  2 kq cos45c 2 2 kq f
+    &  ;EP;2          2 a         2a
+
+    2  &  VP kq  kq 0f
+                        2 a  2 a
+
+     1 V   kQ  kQ  kQ  kQ  kQ  kQ  4kQ f
+    a a a a a                     a        a
+
+    2  1  2e3  4d
+
+    
+
+    < kQ             kQ      2kQ
+    & E   2 ø 2 ø 2 øf
+    a                a       a
+
+     3
+
+    d ad Q d
+                                                                       4kQ
+
+     Q d cccccd
+                                                                         a
+
+                2kQ
+     ccc2ccf
+
+                 a
+
+34
+                                                                                                                       1 
+
+e
+
+1 dddfd
+   ddf
+
+2  UeqVd q df
+   ddd
+   d a fd b f
+
+3 ddf c 
+    V1eV2eV3eV4 f
+
+· ac  · bc  · cc
+               
+
+ cccc °
+
+   DE 2 dkc
+              A c
+              B dc
+              C dc
+              D d
+              E df
+
+2 Ajdf
+    Bjddf
+    CeD ´jddf
+    E´jdf
+
+3 d AeB 
+   EAeEBd VAeVBfjEA c×c EBdVA cÖc VB
+   ×e Öf
+
+3 1 A d EA × EBf
+    2 d
+       fd VA Ö VBf
+
+                                      35
+     e
+
+       1 
+          1 j
+              1  a d Fmg  m ddd
+                  ddf
+              2  b d FqE  q ddd
+                  ddf
+          2  V Uq d b  VA dVB j
+              1 d cc  cc f
+              2  cc d cc f
+
+       · ac · bc · cc
+
+       2 
+          1  AeB d AeB dd
+              f
+              & AeB   VAB ccVAcVcBc
+              &  q  AeB   UAB ccqVcAcqcVBcqcVcAcVcBccqcVcAB c
+          2 ddf
+               c ddd
+              j
+              1 j cc d cc 
+                              cc d cc  cc f
+              2 j cc d cc 
+                              cc d cc  cc f
+
+       3 
+          1  SI  Jdeed
+              f
+          2   Uq Vd            d      c    c   
+              ceVcf
+              & 1  1 d 1  1 eVf
+              & 1 eV cc1.6cc10c1c9 Ccc1cVc1c.6cc10c19cJ c
+
+36
+                                                                                                                       1 
+
+ cccc °
+
+    D 4 dkc
+              A ddc
+              B dc
+              C  Bdc
+              D dc
+              E df
+
+4 A jddf
+    BC jfj
+    c* j÷f
+         j÷f
+    E jddf
+    C 5  AeB d AeB 
+               EAeEBd VAeVBfk
+              A EA × EBcB  A  Bd A c
+              C VA × VBcD  A  Bd A c
+              E  A  B f
+
+5 Ajdd AeB f
+    Bj Ad FqEdf
+    C´jd VA × VBf
+    D jdUA × UBfddUA Ö UBf
+       df
+    Ej A dd B f
+       d B f
+    C 6 dd
+              df
+              d A  B d AB f
+              k
+              A c
+              B  A  B 
+              C  A  B 
+              D  A  B c
+              E  B  A f
+
+6 Aj A  B dd
+       f
+
+    BjddedB d
+       f
+
+    C´jd VA × VBf
+    D jd UA Ö UBf
+    EjB dd B  A f
+
+                                                                      37
+    e
+
+    1 dd
+        Ed dd
+        Vf
+
+    2  F d q 
+       j
+       1  WF cFdqEdcf
+
+                     U12 WF qEd
+    2   V12 cccccccccccEcd cf
+                    q  q q
+
+    3    2    E       V12        c  /    V/mcf
+                 cccccd
+                 d
+
+     cccc °
+
+       CD 7 d Vd
+                  Ed ed m d
+                  dk
+                  A  A  B c
+                  B  eV c
+                                                              m
+                  C  A  B c
+                  D  A  B c
+                  E d eVf
+
+    7 Ajd AeB f
+        Bja Fm  eEm f
+        C´jA dB d VA × VBf
+        D´jddd UA Ö UBf
+        Ejd eVdd eVf
+
+38
+                                      1 
+
+ 4 
+
+ Q  Q d
+ 25 V/mdf A  5 Vd
+1 B  c5c Vf
+2 C  c95c Vf
+
+ 1 AeB d AeB  & VBVA5Vf
+    2  VBCVBVCEd & 5VC254.0 & VC95Vf
+
+ A ´j E  V  1000 5000N/Cf
+                                           d 0.2
+
+        B jaeb  &  Vab0f
+        C jaebec  &  Vad VcdEd'50000.1500Vf
+        D ´jW UUdUaUdUcq Vdcq Vcd0.0350015Jf
+        E jaebec ddee  &  Vea Vdc
+
+           & W' U'UeUaq Veaq Vdc15Jf
+
+ 4
+
+d 1000 Vd 20 cmd
+kc
+A  5000 N/Cc
+B aeb   Vab200 Vc
+C aed   Vad400 Vc
+D  3102 C  a ÷ b ÷ dd
+
+    15 Jc
+E  Dd a ÷ ed 12 Jf
+ cAcDc
+
+                                                                     39
+    e
+
+    1 
+       dd
+       dd
+       df
+       1 d
+           d
+           d
+           df
+       2 ddd
+           ddd
+           f
+       3 dd
+           df
+
+    2 
+       d Re Q dj
+                                        kQ
+          r Ö Rj ccVcccc
+                                         R
+
+     * kQ
+          rRj ccVRcccc f
+                                        R
+
+                                        kQ
+          r × Rj ccVrcccc
+
+                                          r
+
+    3 
+        Q dj
+
+         r Ö RjE0
+    
+      *  rRjER 2 kQ
+                                 R
+         r × RjEr 2 kQ
+                                   r
+
+         r Ö RjV kQ
+                                  R
+
+    *    rRjVR kQ
+                                  R
+
+         r × RjVr kQ
+                                   r
+
+                                      ·e
+
+40
+                                                             1 
+
+cccc °
+
+CD 8 dkc
+
+A dc
+
+B c
+
+C  P  Q dd P c
+
+D c
+
+E f
+
+8 Ajdf
+
+ a dB  A d B 
+
+ A f
+
+Bjd
+
+f b dC  D d C 
+
+    D f         · a                                     · b
+Ej  Û 0f
+
+E 9 d
+
+kc
+
+A dc
+
+B c
+
+C dc
+
+D c
+
+E f
+
+9 E jdf
+
+  BDE 0 d Rd
+
+               3R  QQ × 0dAeBeCeD 
+
+              dO dEeF  R2 f VD  D
+              dEE  E dfd
+              kc
+
+              A VB × VCcB VBVCcC VE × VFcD EEEFcE EO0f
+0 j
+
+    1  & VAVBVCVDVOVEVFf
+    2  & EEEFEO0f
+     BDEf
+
+                                                             41
+     5 
+
+     10.0 cm dd
+
+    d 1.0103 Vf k9109 Ngm2/C2f
+
+    1  1.0 cm  V/m kc
+
+    A 0cB 1.0102cC 1.0103cD 1.0104cE 1.0105f        100d58
+     ccA c
+
+    2  C kc
+
+    A 1104cB 1105cC 1106cD 1107cE 1108f
+
+     ccE c                                          100d42
+
+     1 f
+       2  V kQR & Q VRk  9109 10 .1.110 C 30.1 8 f
+
+      V kQR & Q VRk  9109 610 .3.310 C 50.5 5 f
+
+     5
+
+     0.5 m ddd
+
+     60 dc
+
+    A 3.3105 CcB 1.3104 CcC 7.5104 CcD 3.0105 CcE 1.2106 Cf
+
+     ccA c                                                   
+
+42
+                                                                                                         1 
+
+ 6 
+
+dd Od
+2Re Qd Re 2Qf Ae
+BeC  O  1 Re 3 Re 5 Rd
+
+                                      2 2 2
+dj
+
+                                                      5kQ
+1 A  c0cd cccccf
+
+                                                       2R
+
+        8kQ               11kQ
+2 B  ccc2ccd cccccf
+        9R                 6R
+
+       12kQ                6kQ
+3 C  cccc2 cd cccccf
+        25R                                  5R
+
+                                             B   k2Q 0 2 8kQ
+* A  000                                                                              3 R2      9R
+                                                                                     2 f
+ 1 * A   k2Q  kQ  5kQ f 2                    B   k2Q  kQ  11kQ
+    R        2R 2R
+                                                                                  3R  2R        6R
+
+                                                                                  2
+
+* C   k2Q  kQ  2 12kQ
+                             5 R2  5 R2 25R
+ 3 2 2 f
+C   k2Q  kQ  6kQ
+    5R       5 R 5R
+    2        2
+
+ A ´j O jEO  E2q  O  Eq  O  000f
+
+B j r jVr  V2q  r  Vq  r   k2q r  kq 2r  3kq 2r f
+
+C ´j r jEr  E2q  r  Eq  r   2 k2q 0 2 2kq f
+                                                                               r            r
+
+D j 5r jV5r  V2q  5r  Vq  5r   k2q 5r  kq 5r  kq5r f
+
+E ´j 5r jE5r  E2q  5r  Eq  5r   2 k2q  2 kq  2 kq f
+                                                                                  5r        5r      25r
+
+ 6
+
+d r  A  2qi 2r  B
+ qdd kdkc
+
+A  O  0cB  r  2kq c
+                                                                            r
+
+C  r  2 2kq cD  5r  2 kq c
+             r                                   25r
+
+E  5r        kq f cAcCEc
+
+                  2
+             25r
+
+                                                                                                         43
+                                                                                °
+
+                                               · a                                      · b
+
+     
+
+    1  xy d Qd
+        a fd
+        Q  0, b d b
+                                         kQ 2
+       d ccccccf
+                                          b
+
+    1 f
+
+    2 dd k
+                                                                          kQ 2
+
+       d cccccf
+                                                                           2a
+
+    2 f
+
+       DE 3 dkc
+                  A  Q c
+                  B  Q c
+                  C d Q  r d
+                      kQ c
+                                 r
+                  D dc
+                  E  md q d E dd
+                      a mqE f
+
+    3 f
+
+     
+
+    4 d 3109 Cd
+       1  9 m  c3c Vf
+       2  9 m d d d 6 Vd
+            d c6c mf
+
+    4 f
+
+44
+                                                                                 1 
+
+5 d a  ABCd Od
+    PeQeRf ABC  qe
+   q  qq × 0dd O  VO
+
+      3 kq                        2 3 kq
+ccccccdP  VP ccccccdQ  VQ
+      a                             3a
+
+         2 3 kq
+    ccccccf
+
+            3a
+5 f
+
+6 d 3Q  x 2 a d
+
+ 4Q  x3a fd
+
+ y 7 a  A  VA c0cf
+
+6 VA     k4Q                   k3Q         0f
+                             
+                                2 a2 7 a2
+      3a2 7 a2
+
+7 d 2qq × 0df
+                                                                    2kq
+
+   d A  VA cccccd
+                                                                     r
+
+                    kq                     2kq
+B  VB ccccdC  VC cccccd
+                    r                          r
+
+                           kq
+D  VD ccccf
+
+                            r
+
+7  V kQ & VAVC k2q  2kq iVBVD k2q  kq frrr
+                                                  2r                     r
+
+8 d QQ × 0 dj
+                                                                            kQq
+
+   1  p1  A  Bd cccccf
+                                                                              r
+                                                                            kQq
+
+   2  p2  C  Dd cccccf
+                                                                              r
+
+8 f
+
+ 
+
+  BCE 9 d 2 mfd 10 V
+              dk
+              A  0 VcB c
+              C cD c
+              E  5 N/Cf
+
+9 f
+
+                                                                      45
+    B 0 d ad bd Qd
+
+    dd
+
+     r  Vdk
+
+    A                 cB      cC      cD      cE  f
+
+    0 f
+
+    q  Q d Rd
+
+    d 1 ä 4 d1 d4  rf
+
+    dj
+
+       kQ                 kQ      kQ
+    V1 ccccciV2 ccccciV3 ccccci
+       R                  R       R
+
+                 kQ
+    V4 cccccf
+
+                   r
+
+    q f
+
+    w d Re Me Qi re
+
+     me qfd
+
+    dj
+
+    1  V  V   c1cf
+
+    2  cccR ccQcqc ci cccr ccQcqc cf
+                      Rr                  Rr
+
+    w f
+
+     
+
+      ACD e ddA  10 VdB 
+                   20 Vdk
+                  A  A  B  30 eVc
+                  B  A  B d 30 eVc
+                  C  B  A  30 eVc
+                  D  B  A  30 eVc
+                  E  B  A  30 eVf
+
+    e f
+
+46
+                                                                                                                       1 
+
+  ADE r  A  B  100 eVd
+              k
+              A A dB cB  A  B c
+              C  B  AcD d 100 eVc
+              E d A  B  100 eVf
+
+r f
+
+ 
+
+t dd
+   6 cmdd 1 cmd
+   1  c24c Vf
+   2  c400c V/mf
+   3  A  c8c Vf
+
+t f
+
+y d E d ABeBCeCA 
+    d1ed2ed3d BC d AeB 
+   VAVBccEcd2cf
+
+y 1 AeC d AeC d VAVCf
+    2 ÷d VB × VAVCf
+    3 VAVBVCVBEd2f
+
+u d dd me q 
+   d v0 dd
+   dd
+                                              mv02
+   1  VBVA cccccf
+                                               2q
+
+                                        mv02
+   2  cccccd cBc  cAcf
+
+                                        2qd
+
+u f
+
+ 
+
+1 ed m1em2d q1eq2d x d
+   dfdd
+
+             2kq1q2m1                               
+   cccccccccf
+
+          dm1m2m2
+1 f
+
+                                                      47
+       CD 2  Le qq × 0df                              
+                   A  2L,0eB  L, LeC  0, LeD  L,0eE 
+                  L,0.5L dd
+                  kc
+                  A A  B cB B  C c
+                  C B  D cD B  E c
+                  E E  D f
+
+    2 f
+
+    3 dd dd
+
+     Lfd
+
+    E Vd dV df
+     v0 dd
+
+     D f e d m dff
+
+    1  D  Kf mdedv0  V 
+
+    2  v0 ddk edmd
+
+    Ldd  V                                            
+
+    3 f
+
+    D 4 dddf
+
+     1.2 cm d 25 kV/mf
+
+    d 2.0 cm d
+
+    kc
+
+    A 30 kV/mcB 24 kV/mcC 18 kV/mc
+
+    D 15 kV/mcE 10 kV/mf                              d66
+
+    4   VEd 
+        & 251.2102E'2.0102 & E'15kV/mf
+
+    A 5 dd
+
+    k
+
+    A c
+
+    B c
+
+    C dc
+
+    D c
+
+    E d
+
+    f                                                 103d64
+
+    5 f
+
+48
+                                              1 
+
+E 6  0.50 m0.50 m d 1.0 mmd
+
+ 100 Vf 1.61019 C d
+
+ N k                                 104d47
+
+A 0cB 1.61017cC 4.01016cD 3.21015cE 1.61014f
+
+6 f
+
+7 edf a d
+
+H2O  qdq × 0 d q d
+
+ rdf qr  pd
+ <pq<r d <r f
+
+ 6.31030 Cgmf
+
+1  b d qrd R 
+
+    Nd k dd N f
+2  c d <E d <P  <E 
+
+ fa  pE sin fb  E5.0104 N/Cd30c
+
+dk
+
+3 d GHzd
+
+df                                            107
+
+                           · a  · b  · c
+7 f
+
+BD 8 d
+
+fdd
+
+eddi
+
+fd
+
+ 30 kV/cm df 5 mm 
+
+dfd
+
+k                                    108d45
+
+A  30 kVcB 
+
+cC 
+
+cD d
+
+ddcE 
+
+ddf
+
+8 f
+
+                                                                      49
+                         °
+
+    ccccccccccccccccccccccccccccccccc
+
+     
+
+    1 dd Qf
+        Rdj
+       1  x  P k
+       2  1d x&Rdk
+       3 k
+
+    1 f
+
+    2 d me q d 8 R d
+                                                4kQq
+
+        ccccccf
+                                                 3mR
+
+    2 f
+
+    BE 3             d       Q
+               Qd 2ddf L1 
+              dL2  Q dd f
+               kdd
+
+          k
+
+          A L1 c
+          B L1 c
+          C L2 c
+
+          D L2  2kQ 3d c
+
+          E L2   2kQ 3d f
+
+    3 A B ´j L1  rd a d
+
+       VVQVQ kQ r  kQ r 0f
+    CD eE ´j L2  Q  rd b d
+
+    cV'VQVQ kQ r  kQ d  kQr  kQd f
+             b  A  rd 
+
+    * c&  V'max0
+           b  B  r3d  f
+
+                   kQ kQ 2kQ
+          V'min 3d  d  3d
+
+                                    · a  · b
+
+50
+                                                                                                        1 
+
+    E 1 d q  qd 4af                                                               d23
+               S d O  2a  P 
+              k
+
+              A 0cB kq cC kq cD kq cE 2kq f 2 a 2 2 a 2 a 3a
+1 f
+
+2  Q  QQ × 0 dQ 
+
+dQ  md Q  bfQ
+
+f
+
+j
+
+1  Q  v d Q  b 
+
+   d a d k 1                                           · a                               · b
+                                                40
+
+   d vf
+2  Q  v0 dd
+
+   b f Q  Q  A d A
+
+ Q  ad Q  Q d
+
+f
+
+3  2 d v0   3kQ 2
+   b f             d Q  A  v0  a 
+
+            2mb
+
+                                                                                                        
+
+                                                                         kQ2 mv2b kQ2 f
+2 1  Q  & 2  & v                                                                  mb
+                           b
+
+2 1 Q  Q dd Q 
+
+   df
+
+2 Lrmv sin bmv0 sin 90cbmv0d
+   f
+
+3  A  vAdj
+
+jbmv0amvAn1
+* j 1 mv 2 kQ2 0   1 mv 2 kQ2 A  n2
+         2         b 2     a
+
+ 12  v0     2akQ2    3kQ2
+
+            mbab     2mb
+
+& a3bd 1  bmv03bmvA & vA 13 v0f
+
+                                                                                                          51
+           
+
+           
+
+    1j
+
+    e
+
+    dddf
+
+    e
+
+    A.
+
+        
+
+        1
+
+        2
+
+        2
+
+        1
+
+        1
+
+        1
+
+        
+
+        
+
+    Ï
+       df
+
+    B.
+
+        
+
+        1
+
+        2
+
+        2
+
+        1
+
+        1
+
+        
+
+52
+            1 
+
+e
+
+1 
+   1 d a f
+   2 d b f
+
+· ac  · bc
+         
+
+2 
+   1 ded
+       dd
+       f
+
+2 df N1  N2 d N1eN2 
+   d A i N1eN2 d A 
+   df
+
+                                                                    53
+    e
+
+    A.
+    1 
+
+       1 dd
+           d 1-1 f
+
+       2 dd
+           f
+
+       3  1-2 dd
+           f
+
+    1-1  1-2
+
+    2 e
+       1 d 2-1 dd 2 
+           f
+       2 df
+       3 ddef
+       4  2 f
+
+                                      2-1
+
+54
+              1 
+
+B.
+1 
+
+   1 d 1-1 f
+
+        1-1
+
+2 e
+   1 dd 2-1 dd
+       df
+   2 df
+   3 ddef
+   4 f
+
+                                  2-1
+
+                                       55
+      cccc °
+
+      BDE 1 dkc
+                  A dc
+                  B didc
+                  C ddc
+                  D c
+                  E f
+
+    1 f
+
+    2 df
+
+    1 d
+
+     X1  X2 k
+
+    2 d
+
+    k
+
+    3 f
+
+    4 d
+
+    f    
+
+    2 f
+
+        E 3 d
+                  Q  Q fX 
+                  d X feee
+                   X d
+                   X k
+                  A ecB ecC ec
+                  D ecE ef 101d85
+
+    3 f
+
+    4 d a d
+       fj
+       1 dfd
+           f
+       2 ddd 1 
+           f
+           1  P1 dd
+                                                                                                       df
+
+56
+                  1 
+
+2  P1 d 1df
+
+3  2df
+
+3  b dde
+
+eeedeee
+
+f                 104
+
+     · a     · b
+
+4 f
+
+5 d
+
+d 3  3 cme 5 cme1 
+
+ee 30 cme3 cme5 cme2 e1  0 ä 15 Ve
+
+edf
+
+1 ddk
+
+f
+
+2 dd
+
+f
+
+3  20 cmded
+
+ a d
+
+df
+
+4 d
+
+ 20 cmde
+
+dd b f            109
+
+     · a     · b
+
+5 f                                57
+                
+
+             ddf
+        1988 dd
+       fdf
+
+             ddd
+       f 2000 V ä 3000 V d
+       f
+
+             dd
+       ed
+       i
+       f
+
+             d (Arc)df
+       d
+       dddd
+       dddf
+       d 30 kV/cm dfdd
+       f
+
+             d  Vd de
+        Edj V=Edf 3000 Vd
+        d.5 mmddddf
+       ddd
+       ddfd
+       f
+
+             dfd
+       ddf
+
+             dj
+
+58
+     1 
+
+    A 1 d 3000 Vdd
+               mm dk
+              A 1cB 2cC 3cD 4cE 5f
+
+1   VEd & d  V E  3000 30103 0.1cm1mmf
+
+   BD 2  5 mmd
+              fdk
+              A  30 kVc
+              B c
+              C ddc
+              D ddc
+              E dd
+                 f
+
+2 f
+
+3 dek
+   k
+
+e  
+
+     VEd &  d öd E õd
+       d             
+   d E × 30 kV/cm 
+   dl
+
+2 A j  VEd &  V Ö 30kV/cm0.5cm15kVd
+        30 kVf
+
+    B ´jf
+    C jdf
+    D ´jdf
+
+    E jddd
+       ddf
+
+                                        59
+

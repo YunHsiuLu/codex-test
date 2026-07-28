@@ -1,0 +1,2021 @@
+       1  f       
+
+        2  q   d
+
+1         Uqf
+
+        1 jR L d f 
+
+ 2 jR VAf I
+
+
+                              d I  V  
+
+  & VI R df 
+
+        jII1I2
+
+                                                             
+                                                             
+                                                             
+                                                             
+
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+        j V1 V20 
+                                                             
+                                                             
+                                                             
+                                                             
+
+                                                                                                                 
+                                                                                                                 
+                                                                                                                 
+                                                                                                                 
+                                                                                                                 
+                                                                                                                 
+
+2
+                         1 
+
+        
+
+           PI
+
+        
+
+        
+        
+          PIVI 2R V 2 R
+
+        
+          UPtIVtI 2Rt V t2
+  
+                                                     R
+
+        
+        
+         1  1  h  3.6106 J
+        
+
+        
+
+          
+
+                                                        3
+   1-1 
+
+   e
+
+   1 
+
+                      
+
+            1 ddf
+    2 d
+
+                df
+
+            1 dd
+                f
+
+            2 d
+    d
+
+                ddf
+            3 
+
+                dd f
+                df
+
+   2 
+
+   1 d                d  d
+
+     Vdf
+
+   &    f
+
+   2 ddd
+
+   fddd
+
+    V fd 1-2 f
+
+   3 d  dd
+
+   df
+
+   &  q d  U          f
+
+   4  SI d  voltd Vf
+
+4
+                                                                                                                     1 
+
+cccc °
+
+         1 dk
+            A dcB d
+            dcC 
+            cD dcE f
+
+e
+
+1 
+
+1  a dd 
+
+     f
+
+2 f
+
+2                  · ac
+
+1  b dd
+
+ f
+
+2 f
+
+                   · bc
+
+cccc °
+
+  2 d 1.5 V  3 Ve5 W 
+
+  dk               
+
+  A     cB  cC  c
+
+  D     cE
+
+                         5
+   e
+
+   1              · ac
+      1 df
+      2 d
+          dd a
+          f
+      3 ddf
+          dd
+          df
+           V  I 
+          d R j
+
+   &  R cccd     d  f
+
+   4 j
+
+   1 j   f
+
+   2 j        f
+
+   2 
+
+   1 eef
+
+   dd R 
+
+    L d A d
+
+    b f
+
+   &  R ccccd    · bc
+
+         dg gmf
+   2 ddf
+
+      ddd
+      df
+
+6
+                                                                                                                       1 
+
+e
+
+1 dd I 
+    V d R 
+   dj
+
+   & d ccccccccdf
+
+2 dd
+   d IV  a f
+
+3 dedd
+   f IV d b f
+
+4 d R VI df
+   R VI ddfd
+    R VI  dfd
+   f
+
+· acdd      · bcd
+   dR1R2R3     dR4 Û R5 Û R6
+
+cccc °
+
+         3 dk
+            A dcB d
+            ecC de
+            cD cE d
+            df
+
+                              7
+    1 
+
+    ae b de I  V f
+   j
+
+               · a  · b
+
+   1  2 V d         d    f
+
+   2  4 V d         d    f
+
+   3 d         f
+
+   
+
+   
+
+    1
+
+   d V 
+
+   I f
+
+   1  R        f
+
+   2  R        f
+
+   3 ed
+
+        ccccf
+     
+
+8
+                   1 
+
+°        
+
+ 
+
+ 
+          1 k
+             A dcB 
+             cC dcD
+             cE dd
+             f
+
+ 
+
+2 d 5108 m2e 2 md 1108 gmf
+
+ 4 V dj
+
+1        f
+
+2           Af
+
+3  R1dd n d
+   R2d R2 R  f 1
+
+ 
+
+4  AeB  I  V dj
+
+1 A      dB     f
+
+2  Cd 1.5 dee
+
+      f
+
+                            9
+                                                     106 d 48
+
+            5 
+                f 50  
+                df
+                d
+                k 1 ns109 sc
+                A 107cB 109cC 1011cD 1013cE 1015cCf
+
+    6 d
+
+    dd
+
+    dk
+
+    A cB cC 
+
+    cD cE 
+
+    df                                               106 d 78
+
+    7 eee               
+       f
+       dd             m                              40 20 10
+       dd
+       k         mm2 0.5 1.0 1.0
+
+                      A                              0.5 1.0 1.0
+
+    A ××cB ××c
+
+    C ××cD ××cE ××f                                  108 d 56
+
+    8 d d                                            111 d 43
+        d d
+        B dd
+       k
+       A j×
+       B  B j  
+       C e B j×
+       D  B j×
+       E  B j×f
+
+10
+                     1 
+
+                   
+                   
+
+°
+
+
+
+1  100 We200 V d 0 
+
+200 V fdd
+
+ I  V k
+
+A  cB  cC  cD  cE
+
+                     11
+             1-2   PhET
+
+    e
+
+    1 dddd
+       dddf
+
+    2 ded
+       df
+
+        ·
+
+    3 dddf
+
+                                                          À
+
+                                                             
+
+              
+
+              
+
+              
+
+    4 df
+
+    e
+
+    1 dd  d                                                  
+
+      d       d a f
+
+    2 dd  d                                                  
+
+      d       d b f
+
+      · ac  · bc
+
+12
+ee                                                                  1 
+                                                        
+                                                      
+
+                                                        I ccc
+
+                                                        I
+
+                                                        I1
+                                                        I2
+
+                                                        I1 ccc
+                                                        I2
+
+e
+
+1 
+
+1 dd
+
+f
+
+2 dd r f r0
+
+f
+
+3 f
+
+2 
+
+1 ddd
+
+fd I  r d
+
+ Irf&  V  f
+
+2  I  d
+
+f
+
+                                                                13
+     1 
+
+     10 Ve 5  d 20  d
+
+     Sdf
+
+    1 d          Vf
+
+    2 d I  Ad                 Vf
+
+    
+
+    
+
+     1
+
+     a d
+
+    d
+
+     d rd
+
+     Rf
+
+    d
+
+    VR  R d b f      · a          · b
+
+     r     d              Vf
+
+14
+                                                     1 
+
+e
+
+1 
+
+1  a d
+
+df
+
+2  b d R1eR2 d
+    R df
+
+ RR1R2f                                        · ac  · bc
+
+ 1  & II1I2f
+
+  2 VV1V2 &/I R/I1 R1/I2 R2 & RR1R2f
+
+3 ddn 
+
+                                                                                        n
+
+    R jRR1R2nRni1Rij
+
+1        f
+
+2 n  R j R'                                       f
+
+2 
+
+d R1eR2 j
+
+1 R1eR2  V1eV2  V1  /I1 R1  R1 df
+                               V2 /I2 R2 R2
+
+         V1 cccccc
+
+2  Vdj*                                        f
+
+         V2 cccccc
+
+e
+
+1                                              · ac  · bc
+   1  a dd
+       df
+   2  b d R1eR2 d
+        R  1  1  1 f
+                                      R R1 R2
+    1  & VV1V2f
+
+    2 II1I2 & V/  V/ 1  V/ 2 & 1  1  1 f
+
+                         R R1 R2 R R1 R2
+
+& R1  R2  R ccccccf
+
+3 ddn 
+
+ R j 1R  1R  1 n 1  1 R2 Rn i1 n 1Ri
+
+&        f
+
+& n  R j R' ccccf
+
+                                                                                           15
+    2 
+
+       d R1eR2 j
+
+                                                             V
+       &  R1eR2  I1eI2  I1  R1  R2 df
+
+                                                      I2 V R1
+                                                             R2
+
+                 I1 cccccc
+
+    &  Idj*                              f
+
+                 I2 cccccc
+
+    e
+
+     1 e2 e3 e6   10 V
+    dj
+    1 
+
+       1 CD 
+
+           & RCD cccccccf
+
+    2 j 1 e2 e2  
+
+    &  R         f
+
+    2 
+
+    1  I ccccccccccccf
+
+    2  1     2                                f
+    3 df
+
+    &  3   I1 cccccccccf
+
+           &  6   I2 cccccccccf
+
+    3 
+                            VAB
+
+     * 1  VIR & VBC f
+                            VCD ccccccc
+
+    2 VABVBCVCD      f
+
+16
+cccc °                        1 
+
+         1 dd          
+             2 d 3 dk
+            A c
+            B c
+            C c
+            D c
+            E f
+
+2 de d                 
+   dk
+   A    c
+   B  d c
+   C  d c
+   D  d c
+   E  d f
+
+e
+
+j
+
+1 
+
+1  a dd
+
+f
+
+& I  f
+
+2         de
+
+f
+
+3 dj
+
+& I  I f
+
+                         17
+2 
+
+1  b ddf
+
+  &  V1 V20   V1 V2f
+
+2         d Idd
+
+   Id R1  IV1 d R2  IV2 f
+  ddj
+
+   & II V1I V2 &  V1 V2   V1 V20f
+j PI Vf
+
+      f
+
+3 d
+
+  j
+
+  &  V0f
+
+    · acjII1I2        · bcj V1 V20
+
+3 
+
+d 54 Vd
+
+ 10 Ad 4   6 AdPeQ f
+
+d I1                  AiI2  Ai
+
+R1  iR2   f
+
+
+
+       cccc °
+
+                  3  1   8 V 
+                     dk
+                     A  E  I4I2I3c
+                     B  C  I5I1I4c
+                     C  BCDEB  2I1I22I380
+                     D  BCEB  2I2I3I180
+                     E  ABEDA  I2I380f
+
+18
+                     1 
+
+ 2 
+
+d 22 V  2 VdX 
+
+2  dY  1  dZ  2  dj
+
+1  X         Af
+
+2  Y         Af
+
+3  Z         Af
+
+
+
+
+
+
+
+ 2
+
+d 6 V  9 Vd
+
+ 2 e1   4 d
+
+1  2         Af
+
+2  1         Af
+
+3  4         Af
+
+                     19
+     3 
+
+    d 3 A  A d B d
+
+    j
+
+    1 aeb   Vf
+
+    2 AeB   f
+
+    3 AeB   Vf
+
+    4  1        Ad 4                            Af
+
+    
+
+    
+
+     3
+
+    d S d Io d
+
+     Ic fd Io
+
+     Ic k
+
+    A Io8 AiIc9 AcB Io6 AiIc8 AcC Io8 AiIc6 Ac
+
+    D Io9 AiIc6 AcE Io9 AiIc10 Af  d 52
+
+     ccc
+
+20
+                          1 
+
+ 4 
+
+d80 Vd
+
+1 XeY          Vf
+
+2  100             Ai R 
+
+  Af
+
+3 XeY  R       f
+
+
+
+
+
+ 4
+
+dd 40  
+
+           Af      
+
+                          21
+     5 
+
+    d R  2 d 2 Ad
+
+            Vf
+
+    
+
+    
+
+     5
+
+    dR11 eR23 eR36 d 6 V
+    fj
+
+    1  R1       Ai       d
+
+        Af
+
+    2  R2       Ad R3    Af
+                  VdR3       Vf
+    3 R2 
+
+22
+                               1 
+
+ 6 
+
+d S d 12 Vf
+
+j
+
+1 20        Vf
+
+2       Af
+
+
+
+
+
+ 6
+
+eedf
+
+R14 eR24 eR36 eR412 d   12 Vd
+dd
+
+1     Ad R1     Ad R2 
+
+  Af
+
+2       Af
+
+3  R3   Af
+
+4       Vf
+
+                               23
+    °        
+
+    
+
+     
+
+    1 d 0.1 Ad 30 Vd
+
+     3000 d
+
+    1 d R1                    f
+
+    2  R1  ccccc f
+
+     
+
+    2  e r d
+
+    d a f
+
+     V  I  b d
+
+        Vd r 
+
+    f
+
+    3  a            · a       · b
+                    · a         · b
+    dj
+
+    1   f
+
+    2  5 d
+
+    14  d b d 14 
+
+        Vf
+
+    4 d M  N d N 
+       dkc
+       A  M cB c  d cC c  d 
+       cD c  d cE c  d 
+       df
+
+24
+                                                                                                                      1 
+
+ 
+          5 dk
+             A dcB 
+             dcC d
+             cD d
+             cE d 2 f
+
+6  6 V e 1  
+
+df
+
+1  S1 d             d
+            Af
+
+2  S1eS2 d          d       Af
+3  S1eS2eS3 d            d     Af
+
+7 ed I  V dj
+   1 ed cccc f
+
+   2 ed cccc f
+
+ 
+
+8   d
+
+fdj
+
+1  aebed         f
+
+2  aebed   c  f
+
+9 df
+
+ I1jI2jI3       f
+
+                                   25
+    0 AeBeC     d  e     i        rAjrBj
+
+    rC1j2j3ff
+
+    1  RAjRBjRC          f
+
+    2  IAjIBjIC       f
+
+    q  ae b e I  V fe c
+
+    d 0.3 Ad                    Vf
+
+    · a           · b           · c
+
+    w ed a f
+
+    b  c d
+
+    1  b d        f
+
+    2  c d        f
+
+                                    
+
+    · a           · b           · c
+
+     
+
+    e d
+
+    1  A   Ai B             Af
+
+    2 BeA  VBVA   Vf
+
+26
+                                       1 
+
+r d
+
+1       Af
+
+2 3               Vf
+
+3  3              Af
+
+t dj
+
+1           f
+
+2     Af
+
+3 2         Vd               Af
+
+y  9 Vd r0.5 d R1eR2eR3eR4d
+   dj
+
+1  R1       Af
+2  R4         Af
+
+ 
+
+u d 200 V d
+
+1  S d a                 Af
+
+2  S d a                 Af
+
+ 
+
+i  ad XeYeZ 
+
+dd
+
+df
+
+  d
+
+ b d                         · a  · b
+
+1  d        d                    f
+
+2  X                  f
+
+                                       27
+    o d 2  d
+       1  3   ccc Af
+
+    2  R   f
+
+    p ddj
+
+    1  I   Af
+
+    2  R       f
+
+    3          Vf
+
+                                          
+
+            a dd f
+                d aeb 
+                 Vd R1  Idf R3 
+                d I  V kc
+                A I dV cB I dV cC I dV c
+                D I dV cE I dV f
+
+    s  R  IV f                            d 60
+       dXeY  Z kc
+       A XjiYjiZjc
+       B XjiYjiZjc
+       C XjiYjiZjc
+       D XjiYjiZjc
+       E XjiYjiZjf
+
+    d dAB  100 cm fV1
+
+     V2 f AC
+
+     60 cm dV1  2.5 Vd V2  V kc
+
+    A 0cB 0.5cC 1.0cD 1.5cE 2.0f  
+
+28
+f d 9.0 VdR1  R2                                                  1 
+
+dOeP  Xd R1  R2                             d 58
+
+I1  I2f R1 R  1 dkc 2 2
+
+A X4.5 VcB X6.0 VcC X7.5 Vc
+
+D I1 2cE I1 1f
+I2        I2
+
+g  2.0 V e 2.5  d
+
+dd 1.5 V d
+
+Ak
+
+A 3.0cB 2.0cC 1.4cD 0.20cE 0f               104 d 59
+
+h deeef
+   ddk
+
+A ×××cB ×××cC ×××c
+
+D ×××cE ×××f                                105 d 90
+
+j 
+
+f
+
+d
+
+ d rd
+ N1 d N2 
+f
+
+d Rd
+
+ R k
+
+A N1 N2  cB N1 N2  cC N2  cD N1  cE N2  f
+N1 rN2 R      N1 RN2 r  N1 RN2 r  N1 rN2 R  N1rR
+
+                                            107 d 45
+
+                                                      29
+                           
+                           
+
+    °
+
+    
+
+    1 d
+
+    1  2     Af
+
+    2 b  c   Vf
+
+    2 d 28 Vi
+
+    ddf
+
+    df
+
+    d 14 A i
+
+    dd 10 Af
+
+     50 Ad
+
+    1            Vf
+
+    2                d  f
+
+    3 d R d aebece
+       d fj
+       1 bc  ccccf
+
+       2 ac  ccccf
+
+30
+                                               1 
+
+
+
+4 f
+
+      R1eR2      Vin        d  
+   R175   Vin100 Vd RL  Vout  25 Vd
+    RL  900 mAd R2 k
+   A 25 cB 75 cC 100 cD 175 cE 250 f
+
+                                      109 d 43
+
+5 dd
+
+ ABCD d 1.0T m2/s
+
+dAB  CD 
+
+ 0.6 k  0.4 kf V1  V2 
+Ð AeD dÑ
+
+ BeC d V1  V2f I 
+dk
+
+A I1 mAcB I1 AcC V1V20.6 VcD V10.6 VdV20.4 Vc
+
+E V10.6 VdV20.4 Vf                    111 d 46
+
+                                                31
+                                            
+
+                                            
+
+    1j
+
+    e
+
+    1 ddf
+    2 f
+
+    e
+
+    1 
+
+    1 
+
+     a ddj
+
+    1  Idf
+
+    2  Vd rA 
+       & VIRIrAf
+
+    3 jR' VI  IRIrA I RrA × Rf
+
+    &  R&rA dR'.Rd
+       f
+
+    2 
+
+     b ddj
+
+    1  Vdf
+
+    2  Id rV 
+
+    & IIRIV V  V f
+                      R rV
+
+    3 jR' V  V  RrV  R Ö Rf
+                            I V  V RrV 1 R
+                            R rV  rV
+
+    &  R%rV dR'.Rd
+       f
+
+        · ac                      · bc
+
+32
+                                                                                                                       1 
+
+2 
+   1 
+       1 e  dde
+          df
+       2  a d^d COM ^
+          dV ^emA ^e10 A ^
+          f
+   2 
+       1 df
+       2 edd
+          df
+       3 ddf
+       4 d OFFidf
+       5 df
+       6 df
+       7 df
+
+· ac  · bcd
+
+3  DCV  ACV 
+   1  DCV  ACV f
+   2  V d COM f
+   3 dd b f
+
+4  DCA 
+   1  DCA f
+   2  10 A d COM f
+   3 dd c f
+   4  0.2 Ad mA df
+
+                    33
+    5 
+       1   f
+       2  V d COM f
+       3 dd
+            d f
+       jdf
+             dd 1d
+             fd
+             df
+
+    · ccd                                    · dc
+
+    e
+
+                                                        
+                         1
+                                                        1
+                         1
+                         5                              1
+    
+                                                        1
+
+                   a        b             c       d     e
+
+                                                        
+
+     mm            0.28     0.14          0.28    0.14  0.14
+
+     m             10       10            20      20    10
+
+    20cC  gm                      1.7108                1.5106
+
+34
+          1 
+
+e
+
+1 
+   1 ed 1-1 f
+   2 ee
+       d 1-2 f
+   3 edf
+
+1-1  1-2
+
+2 j
+   dj
+   1 ee bed 2-1
+       f
+   2 d 0 df
+   3 dd
+        IV f
+   4  ae ed 1 ä 3f
+   5  ae be e f
+
+        2-1
+
+                    35
+       3 j
+          dj
+          1 ee bed 3-1
+              f
+          2 d 0 df
+          3 dd
+               IV f
+          4  ae ed 1 ä 3f
+          5  ae be e f
+               3-1
+
+36
+cccc °                                                               1 
+
+1 dd                                          
+                                               cE
+d      f
+
+A      cB          cC             cD
+
+   2 dR 
+      dS dkc
+      A  R dS  a c
+      B  R dS  b c
+      C S  b dc
+      D S  a dc
+      E  S  a  b df
+
+3 dd
+   ddj
+
+       1     2     3        4     5     6
+
+    V  0.40  0.80  1.20     1.60  2.00  2.40
+
+ mA    40    81    118      160   202   238
+
+1  X                     f
+
+2 ddd  f
+3  2ddf ccccccccf
+
+4                  f
+
+                                              37
+    4   RAe 
+        RV Ed
+        R d R 
+
+      f
+
+    dj
+
+    1 e R d
+
+    f
+
+     cccccccccccf
+
+    2 dk
+
+    k
+
+     cccccccccccccccccccccccf
+
+    3 kd
+
+    f
+
+     ccccccccccccccccccf       
+
+    5  110 Vd100 dk
+
+    A dcB dc
+
+    C dcD df                   
+
+    6 dd
+
+    ddk
+
+    A ddd
+
+    cB ddcC
+
+    ddcD 
+
+    dcE d
+
+    df                         109 d 36
+
+38
+                                                   1 
+
+1-3 
+
+e
+
+1 
+
+d df
+
+  t d  Q dj
+1  I  Q f
+
+               t
+2  U Q f
+
+   3 jP U   Q  If
+                                        t t
+
+2 
+
+  t d  Q d If
+ Vdj
+
+1  U' QVf
+2  P' U'   QV IVf
+
+                                           t t
+3   
+
+& IIV & V
+
+3 
+
+1                                               f
+
+2          & 1 kW1000 W1000 J/sf
+
+e
+
+1 
+   dd
+   f
+
+2 
+   ddd
+   fdd
+   dddf
+
+3 
+   deedd
+   fddd
+   fedf
+
+                                                   39
+e
+
+1  I  R d R  Vd
+   PIVI 2R V 2 f
+                      R
+
+          VIR   P                       f
+          I VR
+ PIV & *        P cccccccf
+
+2 df
+
+3 d P d P V I R 2 2 dd
+                                                                            R
+
+   df
+
+e
+
+    UPtIVtI 2Rt V 2 tf
+1
+
+                                     R
+
+2  Jddj
+
+&  1                                     & 1                               f
+
+& jU0.24Pt0.24IVt0.24I 2Rt0.24 V t2
+                                                                        R
+
+e
+
+1 ddf
+
+2 df
+
+& 1  1   
+
+&  1000 W  1 
+
+& 1                                                                           f
+
+e
+
+1 ddf
+2 ddd
+
+   fdf
+   ddd
+   df
+
+        ·d      ·                          ·d
+                   d                          d
+                   
+
+40
+                                                                         1 
+
+e
+
+1 ddd
+
+f
+
+2 ddd
+
+df
+
+3 dj
+
+P  IV    & I P  f
+                                  V 
+
+& j
+
+2 P  2 P  2R 1                                       ·
+P  I R       R      2 ?
+        V       V                     V    2
+
+&  P  R d P 
+    V f
+
+& df
+
+4 d P V 2 dd V
+                                                R
+
+VabIRd Vacj
+
+                    V 2 V ab 2 IR2 2 P  2 P  2R 1
+& jP                                             I R  R      2 ?
+                                      R R     R  V       V        V   2
+
+cccc °
+
+1 d V d I df
+
+ Rd P k
+
+A PIVcB PIRcC P V 2 R cD PI 2Rf                      d 36
+
+                                                                         41
+ 1 
+
+d R11 dR22 dR33 dR44 d
+
+R55 dfj
+
+1                Wf
+
+2  R1            Wd R3 
+             Wf
+
+
+
+1
+2
+
+       1
+
+          12 Vd r1 d R1eR2e
+         R3  R4 d R2 
+
+                 Wf
+
+42
+ 2                               1 
+                      
+ 5 ddf
+
+dj
+
+1          d        
+
+          f
+
+2    f
+
+3      f
+
+4  peq d        d
+
+  f
+
+
+
+ 2
+
+dee
+ 1e2e3fd
+d
+Vdd Rdj
+1 
+
+   ccccd ccccf
+
+2  ccccd ccccf
+
+3  1  ccccd23                    d
+
+   ccccf
+
+4 eedd          f
+5 eed                         f
+
+                                    43
+     3 
+
+     220 V  1 d
+    fdkc
+    A 88000cB 220cC 88cD 2.2cE 1.5f d 37
+     ccc
+
+     
+
+    
+
+     3
+
+    dd
+
+    2000 Wdd 500 Wf°d
+    d
+
+    f 1 d  f
+
+44
+                                            1 
+
+°   
+
+
+
+ 
+
+1 d 12.0 Vdd
+
+ 6.0 Ad 10.0 s j
+
+1   Jf
+
+2   Jf
+
+ 
+
+2 d 3 Vdd 10 f
+
+j
+
+1                 Wf
+
+2 20 d                Jf
+
+3 d 10 Vd 1 d
+
+ 9 d                  Wf
+
+4  R
+
+da 
+
+db                        · a         · b 
+d
+
+f a  90 Wd b                    Wf
+
+   5 d O dd
+       AeB f 90c d ACB 
+       ADB c
+      A 1j1cB 3j1cC 1j3cD 1j9cE 9j1f
+
+                                            45
+      6 d 10 V f
+          2 C d
+          18 Jdkc
+         A  20 JcB  2 Jc
+         C  4 AcD  1 Cc
+         E  0.5 f
+
+    7 d R1 Ö R2 Ö R3 Ö R4 Ö
+
+    R5fj
+
+    1              d  f
+
+    2           f
+
+    3        f
+
+    4        f
+
+    8  15 Ve9 W d 12 V
+
+    d 4 Wd
+
+          f
+
+     
+
+    9  2000 Wd 30  450 d
+
+     3 d           f
+
+     
+
+              0 dfe
+                 dkc
+                 A cB c
+                 C cD c
+                 E f
+
+46
+                                   1 
+
+
+
+q  110 Ve60 W d 10 d
+
+kc
+
+A 1.1cB 0.6cC 1100cD 600f          
+
+w  110 Ve1000 We 110 Ve100 We 110 Ve200 Wf
+
+ddkc
+
+A  110110110Vc
+
+B  1000100200Wc
+
+C   1000 110  100 110  200 110 Ac  
+D df
+
+e d R1 d
+
+B1 d R1 e B2 
+
+kd                         
+
+   1        R1                2 
+
+A      D                   G 
+B      E                   H 
+C      F                   I 
+
+r d 60 W d 100 W d
+
+dkc
+
+A cB c
+
+C cD c
+
+E f                                
+
+t  6.3 Vdf 0.6 Ad
+
+ 3.6 Wd                    f       
+
+                                            47
+    y d a  b                                
+       dkc
+       A cB c
+       C cD ec
+       E f
+
+    u  50 V d 2 Af 49 d
+
+    d 1 kg  4 m k
+
+     9.8 m/s2c
+
+    A 100cB 750cC 4900cD 7500cE 9800f       d 57
+
+    i  110 Ve900 Wdd
+
+     A dk
+
+    A 1cB 5cC 10cD 50f                      d 59
+
+    o  0.40 m/s e30 d
+
+    220 V fd
+
+    d 55 kgd 10 m/s2d
+
+    d A k
+
+    A 0.10cB 0.30cC 0.50cD 0.70cE 0.90f     105 d 54
+
+    2021 
+
+    d 110 Vf
+
+    100 Ad 5.0105 Td 04107 Tgm/Af
+              p ~ 300 dd
+
+    k
+
+    A 10cB 26cC 35cD 48cE 60f               106 d 44
+
+    a d
+
+    k
+
+    A 50 mcB 35 mcC 10 mcD 2.5 mcE 0.40 mf  106 d 54
+
+48
+                                  1 
+
+                             
+                             
+
+°
+
+
+
+1 ee 4 d
+
+ 40 Wd
+
+f
+
+1  a                · a      · b
+
+d                        Wf
+
+2  b d
+
+Wf
+
+2  aebecedee  1 
+   1  ccc f
+
+2  V d aebecedee d  f
+
+3  A  100 Wd110 V  B  200 Wd110 Vd
+   dkc
+
+   A A  B  2 c
+   B dd B c
+   C dd B c
+   D dd B c
+   E d A  A 
+
+       f
+
+                                    49
+    
+
+    4 d R3 dkc
+
+    A aeb c
+
+    B   c
+
+    C  R1 c
+
+    D  R2 c
+
+    E  R3 f                      
+
+    5  90 W 90 Wdf
+
+    dd 90
+
+    Wfd 90 W  15 d
+
+    d 135 fd
+
+     W kc
+
+    A 10cB 30cC 90cD 270cE 810f    d 27
+
+    67                                  109 
+    f
+    dd
+    5 fde
+    df
+     R00.5 /md n 
+     rn2n1r1cn1~5d r11.0 cmf
+      B 100 sin t V/m2d dt df
+
+        t
+              6  r4  A k
+                  A 7cB 6cC 5cD 3cE 1f
+
+    7  n  Pn  rn  Pn ? rnad a k
+
+    A 1cB 3/2cC 2cD 5/2cE 3f            109 
+
+50
+                                1 
+
+8 d m  , d
+
+d
+
+f Be
+
+ d R d
+
+f vd
+ t0.69  d v2 d  f
+jdd
+
+ddd R
+
+f d  k
+
+    mR m2R mB mB2 ,2B2          109 
+A 2 2 cB 2 cC 2 cD 2 cE 2 f
+,B  ,B  ,R  ,R              mR
+
+9  720 kg  20 m/s f
+
+1200 V d 100d
+
+dd 600 N df
+
+ 120 sd 200 md A
+
+k g10 m/s2
+
+A 5.0cB 10cC 15cD 20cE 25f      114 
+
+0 ed 1.0 Ld 1500 Wd
+
+ 1.5 Ld 1000 Wf
+
+dd 20cC  90cCd
+
+ 100dk
+
+A d 3j2
+
+B d
+
+C  500 mL d
+
+D  500 mL d
+
+E  900 mL  600 mL df            114 
+
+                                      51
+           
+
+    ddd
+
+    fded
+
+    eef
+
+    dfd
+
+     1 f
+
+       À 1c           À 2c
+
+                       mA 60 Hzc mA
+
+    dd 500,000                     
+
+    dd 125,000    1  5.2 3.5  1.1  0.7
+
+    dd 40,000     2   9  6    1.8  1.2
+
+       d  20,000  3   62 41   9    6
+
+    d     1,000   4  76 51    16   10.5
+
+    d     500     5   90 60   23   15
+
+    d     100     6   500 500 100  100
+
+    ddd
+
+     6 j
+
+    1 jf
+
+    2 jf
+
+    3 jdf
+
+    4 jdf
+
+    5 jdf
+
+    6 jddd
+
+    f
+
+    d 60 Hz  2
+
+    f
+
+     2  60 Hz k
+
+    df
+
+     1 d
+
+    i                 · 1c
+    f                    
+
+52
+                      1 
+
+dj    
+
+1  110 Ve60 Hz d 5 k 
+   dd mA k
+   A 2cB 12cC 22cD 32cE 42f
+
+2 d 1 dk
+   A dc
+   B  1 dc
+   C  110 Ve60 Hz dc
+   D  100 Hz ddc
+   E  100 Hz ddf
+
+3 ddkd
+   df
+
+    
+
+                             53
+

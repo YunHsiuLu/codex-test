@@ -1,0 +1,77 @@
+\documentclass[10pt,a4paper]{article}
+\input{../../../考卷template/preamble}
+\input{../../../考卷template/commands}
+
+\newcommand{\examheader}{
+    \begin{center}
+        \section*{Ch1至Ch5模擬考 小考（A卷）}
+    \end{center}
+}
+
+\newcommand{\examinfo}{
+\noindent \hspace*{\fill} \large 班級：\underline{\hspace{1.5cm}} 座號：\underline{\hspace{1cm}} 姓名：\underline{\hspace{2.5cm}}
+\vspace{0.8em}
+
+\begin{tcolorbox}[colframe=black, colback=white, arc=2mm]
+\small
+本卷共 100 分。基礎題 10 題，每題 7 分；進階題 4 題，每題 5 分；混合題共 10 分。
+單選題每題只有一個最適當選項。多選題每錯一個選項扣該題分數的 $2/5$，扣至該題 0 分為止。
+\end{tcolorbox}
+}
+
+\begin{document}
+\examheader
+\examinfo
+
+\subsection*{一、基礎題（每題 7 分，共 70 分）}
+
+\schoices{下列何者最符合科學態度？}{v}{遇到權威說法時不需檢驗}{只挑選支持自己想法的資料}{以觀察、實驗與理性推論檢驗想法}{一次實驗成功即可成為永遠不變的定律}{無法測量的說法一定是科學}
+
+\schoices{$4.0\ \mathrm{cm}$ 等於多少公尺？}{h}{$4.0\times10^{-4}\ \mathrm{m}$}{$4.0\times10^{-3}\ \mathrm{m}$}{$4.0\times10^{-2}\ \mathrm{m}$}{$4.0\times10^2\ \mathrm{m}$}{$4.0\times10^4\ \mathrm{m}$}
+
+\schoices{原子的典型尺度約為 $10^{-10}\ \mathrm{m}$，原子核典型尺度約為 $10^{-15}\ \mathrm{m}$。下列敘述何者正確？}{v}{原子核與原子差不多大}{原子大部分空間是空的}{原子質量主要來自電子}{一般光學顯微鏡可直接看見原子核}{原子核帶負電}
+
+\schoices{日常接觸力如正向力、彈力與摩擦力，其微觀來源多與下列何者有關？}{h}{重力}{電磁力}{弱交互作用}{強交互作用}{核融合}
+
+\schoices{位置－時間圖的斜率代表下列何者？}{h}{位置}{速度}{加速度}{力}{功率}
+
+\schoices{質量 $3\ \mathrm{kg}$ 的物體受合力 $12\ \mathrm{N}$，加速度大小為何？}{h}{$2\ \mathrm{m/s^2}$}{$3\ \mathrm{m/s^2}$}{$4\ \mathrm{m/s^2}$}{$12\ \mathrm{m/s^2}$}{$36\ \mathrm{m/s^2}$}
+
+\schoices{發現電流會產生磁效應，建立電與磁連結的科學家是誰？}{h}{牛頓}{克卜勒}{厄斯特}{法拉第}{普朗克}
+
+\schoices{電磁感應產生感應電流的關鍵是什麼？}{v}{線圈內有穩定不變的磁場}{磁通量隨時間改變}{導線顏色改變}{電阻一定為零}{光強度變大}
+
+\mchoices{關於波動，下列哪些敘述正確？}{3}{v}{波速滿足 $v=f\lambda$}{頻率 $f=1/T$}{波傳遞能量與擾動，不長距離搬運介質本身}{所有波都必須在真空中傳播}{干涉只會發生在粒子碰撞中}
+
+\mchoices{關於功與能量，下列哪些敘述正確？}{3}{v}{功可表示能量轉移}{力與位移垂直時不做功}{合力做功等於動能改變}{有摩擦時總能量守恆必定失效}{功率表示能量大小而非快慢}
+
+\subsection*{二、進階題（每題 5 分，共 20 分）}
+
+\schoices{一波頻率為 $8\ \mathrm{Hz}$，波長為 $0.25\ \mathrm{m}$，波速為何？}{h}{$0.031\ \mathrm{m/s}$}{$2.0\ \mathrm{m/s}$}{$8.25\ \mathrm{m/s}$}{$32\ \mathrm{m/s}$}{$200\ \mathrm{m/s}$}
+
+\schoices{水平力 $20\ \mathrm{N}$ 推物體前進 $5\ \mathrm{m}$，力與位移同向，做功為何？}{h}{$4\ \mathrm{J}$}{$25\ \mathrm{J}$}{$100\ \mathrm{J}$}{$200\ \mathrm{J}$}{$0\ \mathrm{J}$}
+
+\mchoices{關於電磁感應與能量守恆，下列哪些敘述正確？}{3}{v}{發電機輸出的電能來自外界做功或其他能量轉換}{感應電流方向符合冷次定律，會反抗造成磁通量改變的原因}{只要有磁場就一定有感應電流}{磁通量改變是產生感應電動勢的關鍵}{電磁感應可無中生有產生能量}
+
+\mchoices{關於核能，下列哪些敘述正確？}{3}{v}{核分裂可由重原子核分裂成較小原子核並釋放能量}{核融合是恆星能量來源的重要機制之一}{質量虧損可用 $E=mc^2$ 連結能量釋放}{核能與原子核尺度無關}{核反應一定不遵守能量守恆}
+
+\subsection*{三、混合題（共 10 分）}
+
+\writings{10}{一個 $2\ \mathrm{kg}$ 物體由靜止開始，受到合力做功 $36\ \mathrm{J}$，忽略摩擦。}{
+\subq{4}{求物體動能增加量。}
+\subq{3}{求物體末速率。}
+\subq{3}{說明此題使用的物理定理。}
+}
+
+\newpage
+\section*{正確答案與參考}
+\begin{center}
+\autoanswer[10]{
+C, C, B, B, B, C, C, B, ABC, ABC, B, C, ABD, ABC
+}
+\end{center}
+
+\subsection*{混合題參考}
+依功能定理，合力做功等於動能改變，因此動能增加 $36\ \mathrm{J}$。由 $K=\frac{1}{2}mv^2$，$36=\frac{1}{2}(2)v^2$，得 $v=6\ \mathrm{m/s}$。此題使用功能定理，將力造成的運動改變轉換成能量觀點分析。
+
+\end{document}

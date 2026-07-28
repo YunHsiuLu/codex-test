@@ -3,24 +3,23 @@
 ---
 level: advanced
 course: 選修物理 V
+grade_scope: 高三
 exam_use:
   - elective
   - high2_high3
+exclude_from:
+  - high1_foundation_exam
 ---
 
-本冊已納入 advanced memory palace，共 6 份來源、284 頁 OCR。
+本冊屬於 高三 範圍。出題前必須再核對指定章節；不可因同屬 advanced 就跨冊混入未指定章節。
 
-## 來源
+## 章節入口
 
-- Ch01 電路學 `textbook`：38 頁，OCR `memory_palace/advanced/ocr/physics_5/Ch01_電路學_textbook`
-- Ch01 電路學 `super_teacher`：52 頁，OCR `memory_palace/advanced/ocr/physics_5/Ch01_電路學_super_teacher`
-- Ch02 量子現象 `textbook`：46 頁，OCR `memory_palace/advanced/ocr/physics_5/Ch02_量子現象_textbook`
-- Ch02 量子現象 `super_teacher`：60 頁，OCR `memory_palace/advanced/ocr/physics_5/Ch02_量子現象_super_teacher`
-- Ch03 原子結構 `textbook`：38 頁，OCR `memory_palace/advanced/ocr/physics_5/Ch03_原子結構_textbook`
-- Ch03 原子結構 `super_teacher`：50 頁，OCR `memory_palace/advanced/ocr/physics_5/Ch03_原子結構_super_teacher`
+- [Ch01 電路學](./Ch01/index.md)
+- [Ch02 量子現象](./Ch02/index.md)
+- [Ch03 原子結構](./Ch03/index.md)
 
-## 使用方式
+## 年級邊界
 
-- 出本冊考卷時，先查本索引，再查 `../global/` 的跨冊 chunk。
-- 需要逐頁追溯時，查 `../source_map.md` 或對應 OCR 目錄。
-- 若題目只限高一，不使用本冊內容；若做銜接題，需標明 advanced_extension 或 bridge_foundation_to_advanced。
+- 本冊歸入 `exam/高三範圍/`。
+- 不得用於高一考卷。

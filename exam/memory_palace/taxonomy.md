@@ -10,7 +10,9 @@
 出題時的預設規則：
 
 - 若考卷指定「高一」、「高一物理」、「基礎」、「物理（全）」、「Ch1-Ch6」，只查 `elementary`。
-- 若考卷指定「選修物理」、「高二」、「高三」、「物理 I-V」，優先查 `advanced`；需要補前置觀念時才查 `elementary`。
+- 若考卷指定「高二」、「選修物理 1」、「選修物理 2」，只查 `advanced/physics_1/` 與 `advanced/physics_2/` 中指定範圍；需要補前置觀念時才查 `elementary`。
+- 若考卷指定「高三」、「選修物理 3」、「選修物理 4」、「選修物理 5」，只查 `advanced/physics_3/`、`advanced/physics_4/`、`advanced/physics_5/` 中指定範圍；需要補前置觀念時才查 `elementary`。
+- 若考卷只指定「選修物理」或「分科測驗」但沒有冊別，先查 `advanced/global/`，再要求或推定冊別範圍，不可自行把 I-V 全部混入單份段考。
 - 若題目要求銜接、複習、素養或跨冊整合，才同時查兩個層級。
 
 ## 目前資料夾對應
@@ -28,6 +30,12 @@ Advanced：
 - `advanced/physics_1/` 到 `advanced/physics_5/`：選修各冊索引。
 - `advanced/ocr/physics_1/` 到 `advanced/ocr/physics_5/`：選修 OCR 原始文字。
 - `advanced/answer_reference/`：解答本參考，不混入概念主索引。
+
+考卷輸出資料夾：
+
+- `高一範圍/`：高一物理（全）、基礎物理、Ch1-Ch6。
+- `高二範圍/`：選修物理 1、選修物理 2。
+- `高三範圍/`：選修物理 3、選修物理 4、選修物理 5。
 
 ## 標籤格式
 
@@ -124,4 +132,3 @@ exam_use:
 3. 查相關 `advanced/global/chunks/`。
 4. 需要來源時查 `advanced/source_map.md` 與 `advanced/ocr/`。
 5. 若需要前置概念，再回查 `elementary/global/` 的高一基礎。
-

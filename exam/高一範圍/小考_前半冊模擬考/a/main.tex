@@ -1,0 +1,77 @@
+\documentclass[10pt,a4paper]{article}
+\input{../../../考卷template/preamble}
+\input{../../../考卷template/commands}
+
+\newcommand{\examheader}{
+    \begin{center}
+        \section*{前半冊模擬考 小考（A卷）}
+    \end{center}
+}
+
+\newcommand{\examinfo}{
+\noindent \hspace*{\fill} \large 班級：\underline{\hspace{1.5cm}} 座號：\underline{\hspace{1cm}} 姓名：\underline{\hspace{2.5cm}}
+\vspace{0.8em}
+
+\begin{tcolorbox}[colframe=black, colback=white, arc=2mm]
+\small
+本卷共 100 分。基礎題 10 題，每題 7 分；進階題 4 題，每題 5 分；混合題共 10 分。
+單選題每題只有一個最適當選項。多選題每錯一個選項扣該題分數的 $2/5$，扣至該題 0 分為止。
+\end{tcolorbox}
+}
+
+\begin{document}
+\examheader
+\examinfo
+
+\subsection*{一、基礎題（每題 7 分，共 70 分）}
+
+\schoices{下列何者最符合科學方法中的「假設」？}{v}{已經不能再被修正的結論}{對問題提出可檢驗的暫時性解釋}{只憑直覺決定的答案}{只要符合權威說法即可成立}{不需要觀察或實驗支持的想法}
+
+\schoices{下列物理量的表示，何者最完整？}{h}{$5$}{$5\ \mathrm{m}$}{$\mathrm{m}$}{很長}{向東}
+
+\schoices{下列何者為 SI 基本量？}{h}{力}{能量}{功率}{電流}{速度}
+
+\schoices{原子半徑的典型數量級約為何？}{h}{$10^{-15}\ \mathrm{m}$}{$10^{-12}\ \mathrm{m}$}{$10^{-10}\ \mathrm{m}$}{$10^{-6}\ \mathrm{m}$}{$10^{-3}\ \mathrm{m}$}
+
+\schoices{拉塞福金箔散射實驗中，多數 $\alpha$ 粒子幾乎直進，少數發生大角度偏折。此結果最支持下列何者？}{v}{原子內部大部分是空的，正電荷集中在很小的原子核}{電子均勻嵌在整個原子內，原子沒有核心}{原子核半徑與原子半徑相同}{原子完全不可分割}{光的頻率決定光子能量}
+
+\schoices{日常生活中的正向力與摩擦力，其微觀來源多與哪一種基本交互作用有關？}{h}{重力}{電磁力}{弱交互作用}{強交互作用}{萬有引力以外的新基本力}
+
+\schoices{某人向東走 $8\ \mathrm{m}$，再向西走 $3\ \mathrm{m}$。若向東為正，位移為何？}{h}{$+11\ \mathrm{m}$}{$+5\ \mathrm{m}$}{$-5\ \mathrm{m}$}{$-11\ \mathrm{m}$}{$0\ \mathrm{m}$}
+
+\schoices{速度－時間圖中，圖線斜率代表下列何者？}{h}{位移}{位置}{速度}{加速度}{路徑長}
+
+\mchoices{下列哪些敘述正確？}{3}{v}{位置－時間圖的斜率代表速度}{速度－時間圖與時間軸所圍有號面積代表位移}{路徑長是向量}{平均速度等於位移除以時間}{速率可以是負值}
+
+\mchoices{關於牛頓運動定律，下列哪些敘述正確？}{3}{v}{合力為零時，物體可保持等速直線運動}{合力造成加速度}{作用力與反作用力作用在不同物體上}{作用力與反作用力會因大小相等而抵消}{物體只要正在運動，就一定受到與速度同方向的合力}
+
+\subsection*{二、進階題（每題 5 分，共 20 分）}
+
+\schoices{壓力單位 $\mathrm{Pa}$ 以 SI 基本單位表示為何？}{h}{$\mathrm{kg\,m^{-1}\,s^{-2}}$}{$\mathrm{kg\,m\,s^{-2}}$}{$\mathrm{kg\,m^2\,s^{-2}}$}{$\mathrm{kg\,s^{-1}}$}{$\mathrm{m\,s^{-1}}$}
+
+\schoices{原子半徑約 $10^{-10}\ \mathrm{m}$，原子核半徑約 $10^{-15}\ \mathrm{m}$。原子半徑約為原子核半徑的幾倍？}{h}{$10^3$}{$10^4$}{$10^5$}{$10^{10}$}{$10^{15}$}
+
+\schoices{某物體速度由 $-2\ \mathrm{m/s}$ 變為 $+10\ \mathrm{m/s}$，歷時 $4\ \mathrm{s}$，平均加速度為何？}{h}{$-3\ \mathrm{m/s^2}$}{$+2\ \mathrm{m/s^2}$}{$+3\ \mathrm{m/s^2}$}{$+8\ \mathrm{m/s^2}$}{$+12\ \mathrm{m/s^2}$}
+
+\mchoices{關於天體運動，下列哪些敘述正確？}{3}{v}{克卜勒第一定律指出行星軌道為橢圓，太陽在一焦點}{克卜勒第二定律指出相等時間掃過相等面積}{繞同一中心天體時，週期平方與半長軸三次方成正比}{牛頓萬有引力與兩物體距離平方成正比}{萬有引力只作用在行星與太陽之間}
+
+\subsection*{三、混合題（共 10 分）}
+
+\writings{10}{一物體沿直線運動，0 至 2 秒速度為 $+6\ \mathrm{m/s}$，2 至 5 秒速度為 $-2\ \mathrm{m/s}$。}{
+\subq{4}{求 0 至 5 秒的總位移。}
+\subq{3}{求 0 至 5 秒的路徑長。}
+\subq{3}{說明此題中平均速度與平均速率為何不同。}
+}
+
+\newpage
+\section*{正確答案與參考}
+\begin{center}
+\autoanswer[10]{
+B, B, D, C, A, B, B, D, ABD, ABC, A, C, C, ABC
+}
+\end{center}
+
+\subsection*{混合題參考}
+0 至 2 秒位移為 $+6\times2=+12\ \mathrm{m}$，2 至 5 秒位移為 $-2\times3=-6\ \mathrm{m}$，總位移為 $+6\ \mathrm{m}$。路徑長為 $12+6=18\ \mathrm{m}$。平均速度為 $+6/5=+1.2\ \mathrm{m/s}$，平均速率為 $18/5=3.6\ \mathrm{m/s}$。平均速度用位移，保留方向；平均速率用路徑長，只累計實際走過距離。
+
+\end{document}

@@ -3,28 +3,25 @@
 ---
 level: advanced
 course: 選修物理 II
+grade_scope: 高二
 exam_use:
   - elective
   - high2_high3
+exclude_from:
+  - high1_foundation_exam
 ---
 
-本冊已納入 advanced memory palace，共 10 份來源、404 頁 OCR。
+本冊屬於 高二 範圍。出題前必須再核對指定章節；不可因同屬 advanced 就跨冊混入未指定章節。
 
-## 來源
+## 章節入口
 
-- Ch01 靜力平衡 `textbook`：30 頁，OCR `memory_palace/advanced/ocr/physics_2/Ch01_靜力平衡_textbook`
-- Ch01 靜力平衡 `super_teacher`：40 頁，OCR `memory_palace/advanced/ocr/physics_2/Ch01_靜力平衡_super_teacher`
-- Ch02 動量與角動量 `textbook`：52 頁，OCR `memory_palace/advanced/ocr/physics_2/Ch02_動量與角動量_textbook`
-- Ch02 動量與角動量 `super_teacher`：54 頁，OCR `memory_palace/advanced/ocr/physics_2/Ch02_動量與角動量_super_teacher`
-- Ch03 功與能量 `textbook`：52 頁，OCR `memory_palace/advanced/ocr/physics_2/Ch03_功與能量_textbook`
-- Ch03 功與能量 `super_student_fallback`：63 頁，OCR `memory_palace/advanced/ocr/physics_2/Ch03_功與能量_super_student_fallback`
-- Ch04 碰撞 `textbook`：24 頁，OCR `memory_palace/advanced/ocr/physics_2/Ch04_碰撞_textbook`
-- Ch04 碰撞 `super_teacher`：26 頁，OCR `memory_palace/advanced/ocr/physics_2/Ch04_碰撞_super_teacher`
-- Ch05 熱學 `textbook`：27 頁，OCR `memory_palace/advanced/ocr/physics_2/Ch05_熱學_textbook`
-- Ch05 熱學 `super_teacher`：36 頁，OCR `memory_palace/advanced/ocr/physics_2/Ch05_熱學_super_teacher`
+- [Ch01 靜力平衡](./Ch01/index.md)
+- [Ch02 動量與角動量](./Ch02/index.md)
+- [Ch03 功與能量](./Ch03/index.md)
+- [Ch04 碰撞](./Ch04/index.md)
+- [Ch05 熱學](./Ch05/index.md)
 
-## 使用方式
+## 年級邊界
 
-- 出本冊考卷時，先查本索引，再查 `../global/` 的跨冊 chunk。
-- 需要逐頁追溯時，查 `../source_map.md` 或對應 OCR 目錄。
-- 若題目只限高一，不使用本冊內容；若做銜接題，需標明 advanced_extension 或 bridge_foundation_to_advanced。
+- 本冊歸入 `exam/高二範圍/`。
+- 不得用於高一考卷。

@@ -3,24 +3,23 @@
 ---
 level: advanced
 course: 選修物理 IV
+grade_scope: 高三
 exam_use:
   - elective
   - high2_high3
+exclude_from:
+  - high1_foundation_exam
 ---
 
-本冊已納入 advanced memory palace，共 6 份來源、338 頁 OCR。
+本冊屬於 高三 範圍。出題前必須再核對指定章節；不可因同屬 advanced 就跨冊混入未指定章節。
 
-## 來源
+## 章節入口
 
-- Ch01 靜電學 `textbook`：56 頁，OCR `memory_palace/advanced/ocr/physics_4/Ch01_靜電學_textbook`
-- Ch01 靜電學 `super_teacher`：58 頁，OCR `memory_palace/advanced/ocr/physics_4/Ch01_靜電學_super_teacher`
-- Ch02 電流的磁效應 `textbook`：52 頁，OCR `memory_palace/advanced/ocr/physics_4/Ch02_電流的磁效應_textbook`
-- Ch02 電流的磁效應 `super_teacher`：64 頁，OCR `memory_palace/advanced/ocr/physics_4/Ch02_電流的磁效應_super_teacher`
-- Ch03 電磁感應 `textbook`：49 頁，OCR `memory_palace/advanced/ocr/physics_4/Ch03_電磁感應_textbook`
-- Ch03 電磁感應 `super_teacher`：59 頁，OCR `memory_palace/advanced/ocr/physics_4/Ch03_電磁感應_super_teacher`
+- [Ch01 靜電學](./Ch01/index.md)
+- [Ch02 電流的磁效應](./Ch02/index.md)
+- [Ch03 電磁感應](./Ch03/index.md)
 
-## 使用方式
+## 年級邊界
 
-- 出本冊考卷時，先查本索引，再查 `../global/` 的跨冊 chunk。
-- 需要逐頁追溯時，查 `../source_map.md` 或對應 OCR 目錄。
-- 若題目只限高一，不使用本冊內容；若做銜接題，需標明 advanced_extension 或 bridge_foundation_to_advanced。
+- 本冊歸入 `exam/高三範圍/`。
+- 不得用於高一考卷。

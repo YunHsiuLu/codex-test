@@ -12,6 +12,7 @@
 
 - 跨冊索引：`global/README.md`
 - 跨冊概念圖：`global/concept_map.md`
+- 冊別與章節範圍邊界：`scope_boundaries.md`
 - 來源對照：`source_map.md`
 - 出題設計矩陣：`global/question_design_matrix.md`
 
@@ -21,6 +22,12 @@
 - 渲染影像：`ppm/physics_1/` 到 `ppm/physics_5/`
 - 每冊索引：`physics_1/index.md` 到 `physics_5/index.md`
 - 答案參考：`answer_reference/index.md`
+
+年級對應：
+
+- 高二範圍：選修物理 I、II，考卷放在 `exam/高二範圍/`。
+- 高三範圍：選修物理 III、IV、V，考卷放在 `exam/高三範圍/`。
+- 高一範圍不可使用 advanced 內容，避免超綱。
 
 來源策略：
 

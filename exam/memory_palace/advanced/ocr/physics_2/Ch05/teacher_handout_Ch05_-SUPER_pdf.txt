@@ -1,0 +1,1609 @@
+                           j
+                           1df
+                           2d
+
+ 5                            f
+
+    
+    
+
+                           · acd      · bcd
+                               P  V      
+
+                           · acd      · bcd
+                                         
+
+                           · acd      · bcd
+                                         
+
+                           j V1  n1
+                                                                   V2 n2
+
+184
+                                                                                                                    5 
+  
+  
+  
+  
+
+                  
+                  
+                   PV 13 Nmv2 23 N K
+
+                  
+                  
+        PVnRT      2  K 3 kT
+
+                  
+                    U  K
+                   N K 32 NkT 32 nRT 32 PV
+
+  
+
+                  
+                  
+                   vrms 3kT  3RT
+
+                    m         M
+
+       
+
+   PVNkT
+
+                
+                
+                
+                
+                
+                
+                
+                
+
+
+
+
+
+
+
+
+                                                                 185
+         5-1 
+
+e
+
+1 df
+   d cc  cc f
+
+2 dd
+   dddf
+
+                                            ·d
+
+e
+
+1 
+   f& a d A  Fd
+    P ccFA cd Pad cccc/ cc2cNc/mc2cf
+
+2 
+   f
+   &dfd
+      ddd b f
+
+3 
+   d c f
+
+                · ac  · bc  · cc
+
+186
+                                                                                                                         5 
+
+4 
+    1  1 atmd1 
+   j
+   1 atm c76c cm-Hg c760c mm-Hg
+    c1033.6c gw/cm2  c1c.0c13c1c05c N/m2
+    c1c.0c13c1c05c  Pa c1013c  hPa
+
+e
+
+1 ddf
+   ddf
+
+2 j
+   1 df
+   2df
+   &d cc 
+      ddf
+       cc  cc 
+      f
+
+3 d
+   e
+   j
+   &ccPVccnRcTc d P eV 
+      en eR eT 
+      df
+
+4 d
+   f
+   d
+   df
+
+ cccc °
+
+  ACE 1 kc
+              A cB cC c
+              D edc
+              E edf
+
+1 Bjf
+    Djeddd
+       df
+
+                                                                     187
+e
+
+1 e
+   1 dd T d
+        P  V dd P-V  a j
+       &cPcVcccc cPc1Vc1cPc2Vc2 f
+   2dd b f
+
+· acd           · bcd
+    P  V           
+
+2 e
+   1 d V ddd
+       f
+   2 P  tcC dd
+       dfdd
+        273.15cCdd a fdd
+       f
+   3273.15cC d1848 d
+       dd cKc f
+       & t dT d Tcctc27c3.c15c d b f
+   4 d c dd
+       j
+       1 ddf
+       2 d T1  P1i T2  P2d
+               P1 P2
+          ccccccf
+               T1 T2
+
+         · acd  · bc  · ccd
+            d            d
+
+188
+                                                                                                                     5 
+
+5 dj
+   j T1 d
+               d Sf
+   j T2 dd
+               f
+   jdd
+                h dd
+                T2f
+   cccc& P0  P0h  cm-Hg 
+                   273.15T1 273.15T2
+
+                                                     ·
+
+3 e
+   1 d P ddd
+       f
+       1 ddd a f
+       2 d T1  V1i T2  V2d
+               V1 V2
+          ccccccf
+               T1 T2
+   2 dd b f
+
+· acd  · bcd
+          
+
+                                                        189
+     4 
+
+     1 1811 dedd
+        df
+
+     2 ddd
+
+     f&PeT     d    V1 n1      f
+                  ccccc
+                  V2 n2
+
+     5 
+
+          neT jPV 
+
+     1 j* neV j P           T         & PV   R& cPcVcncRTcf
+
+          neP j V   nT
+                  T
+
+          PeT j Vn  
+
+     2 d R d R c0.082c atmgL/
+
+     molgK c8.31c J/molgKf
+
+       STPd 0cCe1atmd1 mol  22.4L 
+
+     &R PV nT  1atm22.4L 1mol273.15K .0.082 atmgL/molgK
+
+                  1.013101mol273.15K .8.31 J/mol 5N/m222.4103m3 gK
+     3  R8.31 J/molgKd R0.082 atmgL/molgKd
+
+        dj
+
+                  
+
+                            SI                              SI 
+                                                                      atm
+               P                  N/m2                                 L
+                                                                      mol
+               V m3
+                                                         0.082 atmgL/molgK
+               n                  mol                                  K
+                                                                       g
+     1         R            8.31 J/molgK
+
+               T                  K
+
+               M                  kg
+
+190
+                                             5 
+
+cccc °
+
+BCE 1 d
+
+P d V d 1e2e
+
+3 df n1en2en3
+ T1eT2eT3 
+ddkc
+
+A  T1T2T3d n1<n2<n3c
+B  T1T2T3d n1>n2>n3c
+C  n1n2n3d T1>T2>T3c
+D  n1n2n3d T1<T2<T3c
+E dd P  V f
+
+                                     100d80
+
+1  PVnRT&PnRT 1V d P 1V  nRTf
+    A eB ´j T d & n d n1 × n2 × n3f
+    C ´eDj n d & T d T1 × T2 × T3f
+    E ´jf
+
+AE 2 dfd
+
+fkc
+
+A cB c
+
+C cD c
+
+E f
+
+2 A ´eBCjd PVnRT & PV  & P ödV õf
+    D eE ´j PVnRT & VT  & T ödV öf
+
+B 3 dd
+
+ P  T f
+
+df
+
+dd
+
+k
+
+A cB cC cD cE f
+
+3  PVnRT & P nRV T & PT d nRV f
+    dPT ddf
+
+                                             191
+     1 
+
+         d 27cCe1.00 atm d
+         dqep d p f
+         dqep  19 cmd
+          c102c cCf 0cC273 K
+
+            tcCd P2761995cm-Hg 9576 atm1.25atmf
+              j P1  P2 & 1.00  1.25 &t102cCf
+                                       T1 T2 27327 273t
+
+            87cC  hd
+                  P1  P2 & 7510  75h &h27cmf
+                  T1 T2 27327 27387
+
+       1
+
+         d 27cC dAeB d
+          10 cmf 75 cm-Hgd
+          87cC dAeB              c27c cmf 
+         0cC273 K
+
+192
+                                                                             5 
+
+ 2 
+
+d 10 L d 12 atm 
+
+d 300 Ke 10 atm fd
+
+d°dddd
+
+d 12 atme 400 Kf 0.082
+
+atmgL/molgKd mol k
+
+A1.3cB0.41cC0.23cD0.11cE0.051f ccB c            108d66
+
+  PVnRT&n PV RT &nn' PV RT  P'V RT'  1010 0.082300  1210 0.082400 .0.41molf
+
+ 1  PVnRT& n PV RT f
+       2 d
+
+     n' P0Vf
+        RT
+3  t&n'nrt& P0V  PV rt&t VPP0 f
+                  RT RT                    rRT
+
+ 2
+
+ V  P d T f
+ P0 fd
+ Rd rd Td
+k
+
+A VP cB rP0 cC VRPP0cD TPP0 cE VPP0f
+rRT     RV    rT  rRV                 rRT
+
+ ccE c                                          103d75
+
+                                                                             193
+     °  
+
+     
+
+      
+
+     1 eefdddd
+        ee t et et  ctc >ct c>ct cf
+
+     1j( d &t × t  &t × t × t f
+                                            d &t × t 
+
+      
+
+         C 2 d P1eP2eP3 d
+                   kc
+                   A273KcB173KcC273cCcD100cCcE0cCf
+
+     2d t  273.15cCdf
+
+         A 3  PV  f
+                    a ÷ b ÷ c ÷ ad
+                   kc
+                   A a cB c c
+                   C cD c
+                   Eb ÷ c d f
+
+     3 f
+
+     4 d PT  d a 
+        f ab  cdd ab 
+        f aebeced  VaeVbeVceVd 
+        ccVacVcb c×cVdc×cVcc cf
+
+     41 PVnRT &P nRV T
+            &PT d  nRV d neR 
+            &df
+
+         2d 123 d aebeced  4
+            fj 1 × 2 × 3 &VaVb × Vd × Vcf
+
+194
+                          5 
+
+ 
+
+5 fd 1 atm d
+    h  38 cmd Vfd
+    h  19 cmd c1.2c Vf
+
+5 PVP' V'
+    &7638V7619V'&V'1.2Vf
+
+ 
+
+6 dd 0cC  U 
+   d 50cC d 14 cmdd 28
+   cm d c100c cCf
+
+6 P1  P2 &  P1   P2 & 14  28 &T100cCf
+                             T1 T2  T1  T2 500 T0
+
+ 
+
+7  205 m3 d 23cCd 1 atmdd
+   d c10000c mol  f R0.082 atmgL/molg
+   Kd0cC273K
+
+7205 m3205103 Ld PVnRT
+    &1205103n0.08223273
+    &n10000molf
+
+8  1 mol d 100 Ld 100cCd cc3.1c0c1c04 c
+   N/m2f R8.31 J/molgKd0cC273K
+
+8 f
+
+9 dd 1 atmd 27cCd
+
+   dd 1 fd
+                                                            4
+
+    c127c cCf 0cC273 K
+9ed PVnRT
+
+    &nT  &n27327 34 nT'&T'400K127cCf
+
+    B 0  He dd
+              fd 0.1 m3d
+              1.0107 N/m2f 1.0102 m3d 1.2105 N/m2f
+              dkc
+
+              A940cB820cC600cD480cE260f
+0 f
+
+                                                               195
+     q df
+
+     d V1e N1d
+
+     V2e N2dde
+
+     T1  V1N2
+          ccccf
+     T2  V2N1     qdP  P d V1
+                       PVnRT &T? V ? V & T1  N1  V1N2 f
+                                               n N T2 V2 V2N1
+                                                                    N2
+
+     w  27cC d
+        d V dd
+        df 127cCd
+         27cCdj 0cC273K
+
+     1 cc1cVcf
+                                               7
+
+     2  cc7cc f
+                                                   6
+
+     w f
+
+     e dd
+         V  AeB df A  3m g  4Hed
+        B  5m g  20Nedf
+         Rd Tdj
+        1A  B  c3j1cf
+        2ddd
+            dAeB  c3j1cf
+        3d c3j1c f
+
+        4d ccmRcTcf
+                                                                              2V
+
+     e f
+
+     r  Pd 27cC  77cC dd
+        27cCidd P' 
+
+      P  P'  cc6ccf 0cC273 K
+               P  7
+
+     r 77cC  Pd PVnRT &P?T& P'P  T'T  27327 27377  67 f
+
+196
+                                                        5 
+
+
+
+C t  27cC  2 atmdd 2.5 atmf
+
+d cC kc
+
+A34cB68cC102cD375f 0cC273 K                       
+
+t  PVnRT& neV dP?Td tcC
+
+& t273 27273  2.52 &t102cCf
+C y  3 mol dd
+
+ 300 Kd 0.45 m3d 1 mol d
+
+ 250 Kfdd
+
+ m3 kc
+
+A0.30cB0.40cC0.50cD0.60cE0.75f                    
+
+y f
+
+BD u ddd
+
+ P  1V f
+
+ P atm 0.10  0.30  0.50         0.70  1.00  1.50  2.00
+
+ V cm3 150.2 50.1  30.0         21.5  15.0  7.0   3.0
+
+dkc
+
+A dcBP  1V 
+
+ P  V cC 
+
+d P0.2 atm d 100.0 cm3cD d
+
+ 1 cm3cE d
+
+df                                          d48
+
+u f
+
+BC i  2 kg  3 kg df
+
+ 2 kg ddk
+
+ 2 c
+
+A dcB c
+
+C dcD d
+
+df                                                
+
+ided BC d
+    AD f
+
+                                                        197
+     BC o df
+
+          °dddf
+
+          dd
+
+          dk 2 c
+
+          A cB dc
+
+          C dcD d
+
+          f                                    d50
+
+     o f
+
+     2021 
+      25cCe1 atm d 0.5 L ddPV
+     f
+
+     P atm 1.00  1.11  1.25  1.43  1.67  1.99  2.50  5.00
+
+     V L  0.50   0.45  0.40  0.35  0.30  0.25  0.20  0.10
+
+     deeeefd
+
+     f
+
+     AD p d 2 kc
+
+          A cB cC cD cE f                      d41
+
+     p f
+
+     D a d 0.5 atm dkc
+
+          A cB cC cD cE f                      d22
+
+     addd
+
+      0.5 atm df
+
+198
+                                                            5 
+
+C s  2 atmd 10 m3  5
+
+   m3d 313cC  20cCd
+
+    atm k 0cC273 Kc
+
+   A8cB4cC2cD1cE0.25f                        102d77
+
+s PVnRT&nR PVT  f P & 210 273313  P5 273 & 20 P2atm
+
+                                             
+                                             
+
+°
+
+ 
+
+    D 1 eed
+              ddkc
+              A cB 
+              cC cD 
+              cE  273.15cCf
+
+1 f
+
+C 2 dd 27cCd
+
+    B  A  52 cmf 76
+
+   cm-Hgddd
+
+       77cCd        A     k 
+
+   0cC273 Kc
+
+   A  4 cmcB  4 cmcC  2 cmc
+
+              D  2 cmcE f
+
+2  P765224cm-Hgd PVnRT & P'P  T'T d P'24 27377 27327  76 d
+
+     P'28cm-Hgdð  PP'P28244cm-Hg & A  42 2cmf
+3  U dd 1 atm d
+
+d 21 cmf
+
+d 7 cm d
+
+f 0cCd U dj
+
+1                                  5  N/m2f
+
+              c3c.0c1c0 c
+
+2                                  5  N/m2f
+
+              c3c.4c1c0 c
+
+31 P1V1P2V2&121P7
+       &P3atm31.013105N/m2.3.0105N/m2f
+
+    2d 14 cmd 28 cmf
+
+       & P'P28cm-Hg3105 2876 1.013105
+           .3.4105N/m2f
+
+                                                            199
+     
+
+     A 4 dd Vd
+              ed
+              dfd
+               Td
+               2  3 fd
+              ddkc
+
+     A  67 VcB  T c
+     C  2 cD  32 c
+
+     E  6 f                                     d42
+
+     4 f
+
+     C 5  a df
+
+      a dd
+
+     fd T0f
+      Tdd xd
+
+      xT  b keede
+
+     c
+
+     A cB cC cD cE f                            99d35
+
+                                      · a  · b
+     5 f
+
+     A 6 fd
+
+     dd
+
+     f 6.0102 kg
+
+     fd 3.0103 m3dd
+
+     d
+
+     cC k 22 cCd 1.2 kg/m3de
+
+     def
+
+     A 81cB 72cC 57cD 42cE 22f                  110d22
+
+     6 f
+
+200
+                                                                            5 
+
+5-2                                                                   PhET
+
+                                                                      
+                                                                      
+
+e
+
+1 deef
+2 dfd
+
+   j
+   1 f
+
+       df
+   2 fdf
+
+       dddf
+   3 ddf
+
+e
+
+ L  VL3d N  m 
+f
+
+1 df
+          <
+
+    vvx ,vy ,vzj
+   1 dj pmvxmvx2mvxf
+   2 dfee
+
+edvx d x f
+
+ x j t  2Lf
+                                                        vx
+
+& jF  p  2mvx mvx2f
+                                                             t 2L  L
+
+                                                            vx
+
+& dj
+
+F'F mvx2f
+               L
+
+                                                                            201
+2              i1d2dndNd                             i                    <      ,viy  ,vizd  x  
+                                                                          vivix
+
+                                      2 1N 2
+
+   jvx   vix j
+
+                                           N i1
+
+               N mvix2 m N 2 mN 1 N 2 N 2
+   1 jFx    vix                                                          vix  mvx f
+               i1 L                                  L i1        L     N i1      L
+
+                                                            Fx 1 N 2 Nmvx2 N 2
+   &jP  2 mvx  3  mvx f
+                                                     AL L                 L      V
+
+   2  i vi2vix2viy2viz2d
+
+   2 vi2 vix2viy2viz2 vix2 viy2 viz2                          2     2  2
+   v              vx vy vz f
+   N        N  N N N
+
+   3 dd vx2vy2vz2 & vx2 13 v2
+
+   &P N mvx2 N m 1 v2 1 N mv2&cPcVcc1 cNmcv2cc2cNcc1 cmvc2c2cNcKcf
+      V  V     3 3V                                        3           3 2             3
+
+e
+
+1  N  n jn N NA6.0210231/mold
+                                                                   NA
+
+   
+
+   & cPcVcncRTccNccRcTccNccR ccTcNckTcf
+                                                 NA           NA
+
+    k RN  8.31 J/m A 6.021023olgK 1/mol 1.381023 J/Kdf
+
+2 j$ j PVNkT 1 Nmv2 2 j PVnRT NK
+                                                                 3        3
+
+   &jNkT 2 NK & ccKcc3 kcTcf
+            3  2
+
+3  K                                                       ·f
+    Tfd
+   dd
+   fdd
+   df
+
+4 d
+   d
+   d
+   f
+
+e
+
+       1  cc  cc
+          df
+
+       2 ddf
+          f
+          & UKN KcNcc3ckTcc3cNckTcc3cnRcTcc3 cPVcf
+
+202 2 2 2 2
+                                                                       5 
+
+3 dd
+   dd
+   f
+
+e
+
+1  K 1 mv2 3 kTd v2  3kT  3 R  T  3RT dm i
+  2          2            m          NA     m       M
+
+M iNA f
+
+2  v2 vrmsdroot-mean-square speeddee
+
+
+
+         2 v12v22nvN2           3kT 3RT
+c &vrms  v                cccccccc
+                 N              m        M
+
+± jdm  ccdM  ccf
+3  20cC f
+
+             H2     He          H2O            N2        O2   CO2
+
+vrmsm/s  1902       1352        637            511       478  408
+
+e
+
+                                                              
+                                     
+                                     
+
+                          PVnRT                    PVNkT
+
+                    nmol                       N              n N
+                                                                   NA
+
+                 R8.31 J/molgK              k1.381023 J/K     k R
+                                                                  NA
+
+                 M                          m                 m M
+                                                                   NA
+
+                    3RT                             3kT
+                                                     m
+                    M
+
+              mol                    
+              32 RT                   32 kT
+   
+                             32 nRT                  32 NkT
+
+                                                                       203
+     cccc °
+
+     E 1  T df
+                                                                                             <
+
+              dkjvx  v  x
+                                                     <
+
+              d v| v |d vrms d
+
+     vx vx dfk dm 
+
+     fc
+     Avx0cBvÛ 0cCvx2 13 v2c
+
+     Dv rms 2 v2cEvrms 3kT 2m f  d31
+
+     1 A ´jd x vxf
+                                     <
+
+         B ´j v| v | dv
+
+         C ´jdvx2vy2vz2 13 v2
+         D ´jvrms v2&v rms 2 v2f
+
+      E jvrms 3kT m f
+     ADE 2 dd
+
+     kc
+
+     A c
+
+     B c
+
+     C dc
+
+     D d
+
+     c
+
+     E edf
+
+     2 A ´jPV 23 N K&P 2N 3V  K? Kf
+         Bjdd
+
+        f     3kT ? 1 f
+     C jvrms   m m
+
+     D´jdf
+
+     E ´jf
+
+204
+                                                            5 
+
+e
+
+1             ·
+   d
+   f
+
+2 
+   d
+   d
+   dd
+   f
+
+3 d
+   d
+   f
+
+e
+
+1 d cc  cc
+   f
+
+2 edj
+
+1 n'n1n2f
+
+* 1  & 2 PVnRT&n PV & P'V'  P1V1  P2V2 & P'V'  P1V1  P2V2f
+           RT RT' RT1 RT2 T'                 T1  T2
+
+   ±  & P'V'P1V1P2V2f
+
+1 n1 32 RT1n2 32 RT2n1n2 32 RT '&n1T1n2T2n1n2T'f
+2 2  &* 3 P1V1 3 P2V2 3 P'V'& P1V1P2V2P'V'f
+2  2       2
+
+                                                            205
+      1 
+
+     d 2 
+
+     X  1  Yf Y  X  2 dkc
+
+     A cB cC X 
+
+      Y  1 cD X  Y  2 cE X 
+                           2
+
+      Y  2 f ccD c                                  108d39
+
+      A jf                                          3kT m ? 1 & m vX Û vYf
+        Bjd&vrms
+        CjPVnRT&P? n&PX2PYf
+
+     D´j KN K3 nRT? n&KX2KYf
+                                                 2
+
+     Ej K3 kTddf
+                                                2
+
+      A jPVnRT&P? nT & neV ddf
+                                            V
+
+            Bj AdP? nT & neT ddf
+                                      V
+
+         2  PV
+     Cj PV N K&K? & NeV ddf
+         3  N
+
+     D j N K3 nRT? nT& T ddf
+                                2
+
+     E´ j vrms 3RT M ? T &df
+
+      1
+
+     dd
+
+     dk
+
+     A dcB dcC d
+
+     cD dcE 
+
+     df ccE c                                       107d68
+
+206
+                                               5 
+
+ 2 
+
+dd
+
+df
+
+d Td
+ 3j1d 2j1fd
+d
+
+k
+
+ATcB3T4 cC2T3 cDT2 cET3 f ccB c        104d65
+
+          PV V T  V  n  21       2&T   T   Tf2
+ 1  PVnRT&T ? &             
+          nR n T  V  n  13       3     3
+
+2  T 'djn   32 RT  n   32 RT 
+   n  n   3 RT '
+                        2
+
+&n  T  n  T  n  n  T '
+
+&T' n  T  n  T  3  32 T1T  3 Tf
+   n  n   31                4
+
+  n dd
+       d Pfd
+        n1en2df
+
+        PVnRT&n PV RT d
+       &nnn1n2
+
+& 1V  1V  P V                     P V
+R27327 R27327 R273127 R27373
+
+& 2300  3P 400 & P 89 atmf
+
+ 2
+
+d V d
+d 1 atmd27cC f
+ 127cCd 73cCd
+ cc8 c atmf 0cC273 K
+
+                   9
+
+                                               207
+°     
+
+
+
+ 
+
+BDE 1 ddkc
+
+A dc
+
+B  Ad 0c
+C dc
+
+D c
+
+E df
+
+1 AjfB ´jd 0f
+
+Cjvrms 3RT M ? 1M df
+
+D´j K 3 kT?TfE ´j NK3 PV &P?Kf
+   2  2
+
+ 
+
+   DE 2 ddkc
+              A cB cC c
+              D cE f
+
+2 f
+
+            A 3  Ve Pe Tdc
+                     A 32 PVcB 32 PTcC 23 VTcD 23 PVcE 23 PTf
+
+       3d    32 PVf
+
+       4  2.00 mol d 127cCddj
+            k1.381023 J/Kd R8.31 J/molgK
+
+                                                                                                21
+
+           1  c8c.28cc10cc Jf
+           2  c9c.97cc10c3 Jd c9c.97cc10c3 Jf
+       41K 32 kT 32 1.3810232731278.281021Jf
+           2 U
+
+                 KNK 32 nRT 32 2.008.31273127.9.97103 Jf
+       5 d 5.00 atme 2.00 Le 300 Kf
+
+           1 atm1.013105 N/m2d c1c.52cc10c3 Jd c1c.52cc10c3 Jf
+       5 U  K
+
+208 NK 32 PV 32 5.001.0131052.00103.1.52103Jf
+                                      5 
+
+  ACE 6  VT T 
+              d a  b  c fkc
+              A a  b cB  b  a  4 c
+              Cb  c cDc  b  0.5 c
+              E c  b  2 f
+
+6 f
+
+   AE 7  n d PVnRT dkc
+              A dc
+
+              B dc
+
+              C dc
+
+              D dc
+
+              EnRT  23 f
+7A ´jneT dPVnRT df
+
+    BjneV dP?Tdf
+    CjfDjneP dV?Tdf
+  E´ jUKNK 32 nRT&nRT 23 Uf
+
+8 fd 3 f
+
+dj
+
+1  c9c f
+
+2  c9c f
+
+81 vrms 3kT m &T?v2rms& 9 f
+
+    2 PVNkT &P NkT V ?T?v2rms& 9 f
+9  1 mol d vdd
+
+ 1 mol ded
+
+ 2 d cc2 vcf
+
+91dd vf
+
+2 vrms 3kT dkeT d v'  m   2 &v' 2 vf
+m   v     m  1
+
+BD 0  1 mol d 300 K  600 Kf
+
+dkc
+
+              A  2 cB  2 c
+              C  2 cD  2 c
+              E  2 f
+0Aj mV dm dV df
+    B´ jPVnRT  VeneR d P?T &P'2Pf
+
+Cjvrms 3kT m ? T &v'rms 2 vrmsf
+D´jK 32 kT?T&K'2KfE jf
+
+                                      209
+ 
+
+B q  1 mol d
+
+ff^d
+
+ mol kc
+
+A 1 cB 2 cC 3 cD 5 cE 7 f
+4    3  4  8  8
+
+q f
+
+    D w d A  B  T0e P0 
+              dVB2VAdd
+               A d B d
+               2P0d B kc
+              AT0cB2T0cC3T0cD4T0cE5T0f
+
+w f
+
+  BCE e d
+              5Ve2V ef 300 K 
+               4Hed 600 K  20Ned
+              fkc
+
+              A e 5j2c
+              B e 1j1c
+              C e 5 j 2 c
+              D e 5j2c
+              E d 350 Kf
+e f
+
+         
+
+           DE r 
+                     feee
+                     f
+                     kc
+                     A c
+                     B c
+                     C c
+                     D c
+                     E eeef
+
+       rABC D ´jdd
+              ÖÖÖf
+
+210 E´jdeeedf
+                                                                            5 
+
+
+
+t d 1 me 27cCe 1 atmf
+
+d                       4  sf                         R8.31  J/molgK     
+
+     c7c.3c1c0 c
+
+t f
+
+B y dd Vd
+
+150 Kd 2Vd 450 Kfd
+
+ K kc
+
+A200cB270cC300cD350cE375f                                                
+
+y f
+
+B u H2300 K 2000 m/sdO2
+
+ 1200 K  m/s kc
+
+A500cB1000cC2000cD4000cE8000f                                            
+
+u f
+
+C i dd
+
+fdd
+
+d atm kc
+
+A1cB1.5cC2cD2.5cE3f                                   
+
+i f
+
+ACDE o dd 2 fd
+
+kc
+
+A  12 cB  2 cC c
+
+D  2 cE  2 f                                                             
+
+o f
+
+p edf
+
+ Vd nd Ti 2Vd 2nd
+
+ 2Tfded
+
+                                                   5                     
+ cccc f
+
+                                                   3
+
+     nRT  PL nRT V
+p1 PVnRT &P V  &j*                                                       f
+                            PR 2nR2T  2nRT
+                                                             2V       V
+
+2 P'dj 32 PLV 32 PR2V 32 P'V2V                                              211
+   &PL2PR3P' &nRT V 2 2nRT V 3P' &P' 5nRT 3V  53 PLf
+     C a e 3 mol  1 mol dd
+
+      300 Kd 450 Kd
+
+      2 fk 4d
+
+      40c
+
+     A cB c
+
+     C cD c
+
+     E f                                  d52
+
+     a f
+
+     CE s  P  V d T1  T2  PV
+               f T1  27cCdk
+               R8.31 J/molgKd1 atm1.01105 N/m2d0cC273 Kc
+
+                   A  T1  T2 cB  27 molc
+                   C  2.4 molcDT2  400cCcET2  127cCf d51
+     s f
+
+     E d edd 20 L 
+
+      3.0 atm d 40 L  6.0 atm d
+
+      300 Kfd 420
+
+     Kfd
+
+     atm kc
+
+     A3.0cB4.0cC5.0cD6.0cE7.0f            101d30
+
+     d f
+
+     C f d 10 L df
+
+          3 atmf             300 Kd       
+
+     k1.381023 J/Kd1 atm1.013105 N/m2dk
+
+      1 atmc
+
+     A 1010cB 1020cC 1024cD 1028cE 1030f  101d51
+
+     f PVnRTNkT&311.01310510103N1.381023300 &N.1024f
+
+212
+                   5 
+
+C g df 5 mol  100cC 
+
+dd
+
+ 400 m/s 
+
+dfd
+
+fd
+
+dk 4d 28c
+
+A cB cC c
+
+D cE f     103d55
+
+g f
+
+   AD h  P e V d
+               1 mol  300 K 
+               PV f X 
+               1 mold 600 K 
+              d Y  2 mole
+               300 K dkc
+              AXeY cB X dY 
+              cCX dY cD  X  Y 
+              2 j1c E  X  Y  2j1f 105d68
+
+h f
+
+  ABD j  P  T 
+              dP  T  5 dd
+              fkc
+              A cB 
+              cC dc
+              D  T  2T d 2 c
+              E  T  2T d 2 f
+
+                                                                                                                      106d76
+
+j f
+
+   AD k ddf
+              ddk 2
+              
+              A dcB dc
+              C dcD d
+              cE df 108d65
+
+k f
+
+                                                                     213
+     C l d V0e
+               T0 d v0fd
+
+              V0 2 e 4T0dk
+
+             A v0 2 cB v0cC 2v0cD 4v0cE 8v0f       109d69
+
+     l vrms  3kT ?  T & v'rms   4T0 2 & v'rms2v0f
+              m            v0   T0
+
+                                                   
+                                                   
+
+     °
+
+      
+
+        CE 1 d
+                   ed 1j2 
+                   f 3j
+                   1d vfee
+                   edkc
+                   A e 3j1 c
+                   B e 1j2de 1j1c
+                   C e 3j1dc
+                   D ede 1j2c
+                   E ede 3j2f
+
+     1 f
+
+     2 d k d Te Pe
+          j
+                                                   3P
+        1 ccc cf
+
+                                               kT
+        2  ccccf
+
+                                                P
+        3 d
+
+                       3
+            cc2kTccccf
+
+                        P
+     2 f
+
+214
+                                               5 
+
+ACD 3  aebec f  dT                    
+            idkc
+            A  b  c c
+            B  a  b  2 c
+            C  a  b  2 c
+            D  b  c  2 c
+            E  a  c f
+
+B 4 dkc
+         A c
+
+B c
+
+C dc
+
+D dc
+
+E df
+
+                             102d35
+
+3 A´jbec d &f
+    Bjda  b  2  &a  b f
+
+C´j PVnRT Nm M RT
+   &PM NmV RTRT M d d aeb  MeT 
+   &P? &a  b  2 f
+
+D´j CdPMRTd bec  Me  &P?T &b  c  2 f
+
+    Ej K 32 kT?Td a  c  2 f
+4Ajdd N d
+
+       df
+
+B´j PV 23 NK &P 2NK 3V ?NKd
+   df
+
+C jddf
+
+Dj PVnRT &P nRT V ?Tdddf
+
+Ej |<p |d
+
+|<p |  |<p |
+       F  t |<p | <
+F d             ?| p |f
+t      A A A t
+
+ |<p |df
+
+                                      215
+                  
+
+dd
+
+fdd N2d 500 m/sd
+ 1.5 ddkd
+
+f
+
+ Eed
+
+vefdd
+
+Ee Ð (Ñ  GMm     GMm GM
+              ) = 0&Ee =  =  2 ÒRÒm = mgRd
+         R       RR
+
+dm eM dG dg f
+
+ddf
+
+dfd
+
+ N2eO2eH2  He d !  25cC d
+df
+
+dj                                          
+
+B 1 d N2 d
+
+d 10 m/s2d N2 
+
+ km kc
+
+A 3cB 13cC 23cD 33cE 43f
+
+1 j 1 mv2mgh &h v  12500m.13km 2 5002 f
+              2  2g 210
+
+            B 2 d 5.01025 Nd 6.4106 md
+                     d K k
+                      k1.381023J/Kc
+                     A 3.0106cB 1.5105cC 3.0104cD 4.5103cE 7.7102f
+
+       2K 32 kT &mgR 32 kT &T 2mgR 3k  31.381023 25.010 1.510 K 256.4106 5 f
+
+216
+               5 
+
+3 dd N2eO2eH2  Hef
+   ddd
+   dkk
+
+  
+
+  N2  O2 dd
+  idH2  He dd
+  f
+
+                    217
+

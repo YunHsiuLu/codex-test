@@ -1,0 +1,954 @@
+5-1  162
+                 172
+5-2 
+
+         ccd     kd
+         d       fd
+         jd      d
+         d 75%   df
+         dk      dd
+         j 13 f  fd
+         jl      el
+
+160
+        
+    13  
+f       k
+
+                         161
+
+
+          
+
+      5-1cf   
+
+                   °dd
+              fd
+             5-1 ddd
+             d 
+             thermal equilibriumf
+
+                   d 
+                  d        thermometerf  d
+             dd
+              fd
+              fd
+             j 0 °Cd 100 °Cd 100 
+             d fd
+             d f
+
+162
+                                                                                                                                                                 
+
+ 
+
+      d x , y , z 
+ fd
+k fd 1 
+d NA  6 .022 140 76 Ò 1023 NA d
+d fd
+d f
+PeVeTd f
+
+               d     d       k  
+pressurej
+
+   5.1 P  F
+                     A
+
+ /  2N/m2f 5-2 d A 
+dd F d
+ P  F fdf
+
+                           A
+eed
+df
+
+    5-2cf
+
+                                                                      163
+      
+
+            
+
+              
+               df 1 d RaineFair 
+               ddfd
+               d 2f
+
+               j
+               1 1 atm  76 cm - Hg  760 mm - Hg
+
+                           1033.6 cm - H2O  1033.6 gw/cm2f
+               2  P  hdgd SI j
+
+                   1 atm  0.76 m  13.6  103 kg / m3  9.8 m/s2
+                           1.013  105 N/m2
+                           1.013  105 Pa
+                           1013 hPaf
+
+164
+                                        
+
+                                           5-3cd
+                                          f
+          d 
+ f                                             
+d     d                                  R
+  d          d   e                      1  0°C  1 d 22.4
+ f                                      dj
+d ideal gas                             R  PV  1 atm  22.4 L
+dj
+1 df                                          nT 1 mol  273 K
+2 df                                      0.082 atm · L / mol · K
+
+       5- 3 d d                               1.013  105 N / m2  22.4  10-3 m3
+d f                                      
+       d         d
+ fd                                                           1 mol  273 K
+d                                         8.31 J / mol · K
+d f
+  d                                                                     165
+ej
+
+   5.2 PV  nRT
+
+            ideal gas
+equation of stated n 
+d R  8.314 462 618 153 24 J /  mol · K
+gas constantf
+d
+d
+fd
+d
+f
+
+
+          
+
+               d f
+d        dee
+d         fd f
+         1 
+k
+               dRobert Boyled1627 - 1691d
+         dd V  P 
+         dj
+
+            5.3 PV  
+         2 
+
+               d Joseph Louis Gay - Lussacd
+         1778 - 1850dd f
+         dd f
+          5- 4 dd -273 . 15 °C 
+         d f
+
+          5-4cf
+
+166
+                                                     
+
+       1848 d d  -273.15°C   5-5c      
+d f 5- 5                    f
+dj
+
+   5.4 K  °C  273.15
+
+d Kf
+ddf
+0 Kd 100 nK
+10 -7 Kdl
+
+      d
+jd P 
+ T j
+
+   5.5 P ? T
+
+ 
+
+
+dkj
+dddd
+fdf
+
+                                                  f
+
+                                                     167
+
+
+        KEY                     3 
+                                                  d   Jacques
+      KA
+       °C  273.15F              Charlesd1746 - 1823dd
+     F                          d V  T j
+        jPV  F
+     D                             5.6 V?T
+     Fj V1  V2
+     F          T1      T2      4 
+     F                                deed
+     Gj P1  P2
+                    T1      T2  jdPV 
+                                d PeV  T  fj
+      j V1  n1
+                    V2      n2     5.7 PV  c
+                                                T
+     &  PV  nT
+                                 c  PeVeT d
+     & j                        efd
+                                d N  n 
+      PV  nRTf                  dd c  N 
+                                 n d c  nRfAmedeo Carlo
+                                Avogadrod1776 - 1856dj
+                                d PeVeT df
+                                d R j
+
+                                   5.8 PV  R
+                                               nT
+
+                                      d
+                                d R  f
+                                 5.8) d 5.2 
+                                 f 5-2 d
+                                d f
+                                d f
+
+168
+                                                                                                                                                               
+
+ 5-6c
+
+                                                                     169
+
+
+     5-1 
+
+        
+         0.1 cm2 30.0 cm 15.0
+        cm3 27 °C 
+         °C  0 °C  273 K
+
+     1  27 °C d # d
+        f
+
+     2 d P d
+        f
+
+     3  Pen  & T  Vf
+
+      t °Cd
+
+      PV  nRT &  Pen dT  V & 273  27   15  & t  87 °Cf
+
+             273  t 15  0.1  30
+
+      5-2 
+
+      75 cm-Hg 
+      U  27°C U 
+      25 cm t °C
+      P 
+      35 cm t  0°C  273 K
+
+     1  P dd
+        f
+
+     2  Ven  & P  Tf
+
+     d PV  nRT & P  T & 75  25  273  27 & t  57 °Cf
+                                                        P' T' 75  35 273  t
+
+170
+                                                                                                                                                            
+
+ 5-3 
+
+
+ P  V 
+P - V  P - V 
+ 1 mol 300 K P - V 
+
+1  2 mol 300 K P - V 
+
+    
+2  1 mol T K P - V  T 
+
+1  4 d PV f
+2 PV  nTf
+
+d4 j
+
+ V0 , 1 P0 & P  V   1 P0  V0  1 P0V0
+    2              2               2
+
+ V0 , P0 & P  V   P0V0
+
+ 2V0 , P0 & P  V   P0  2V0  2P0V0
+
+ 2V0 , 3 P0 & P  V   3 P0  2V0  3P0V0
+    2                   2
+
+ PV  nRT & PV  nT
+
+1 P  V   P0V0  1  300 & PV  2P0V0 & f
+PV  PV 2  300
+
+2 1  300  P  V   P0V0 & T  900 Kf
+      1  T P  V  3P0V0
+
+                                       171
+
+
+          
+
+          5-7c   
+         d
+         f            kinetic theory of gas
+                dd
+172             deen f
+                dk 1738 d
+                d
+                d  f  5- 7 d 
+                d
+                f
+
+                      d 
+                dd
+                d f 19 
+                ddd
+                 f1859 
+                d f 1871 d
+                dd
+                d f
+
+                      d  f 
+                dj
+                1 f
+
+                   d
+                   f
+                2 f
+                   dfd
+                   ddf
+                                
+
+3 ddf
+      d 5- 8 d L V 
+
+L3d md Nf
+d f
+
+       v  vx , vy , vzd 5- 8 d
+dvx  vy evz dj
+
+5.9 px  2mvx
+
+df
+eeedvx d x 
+f x j
+
+5.10  t  2L
+              vx
+
+dd
+j
+
+5.11         px 2mvx mvx2
+      fx   t  2 L  L
+
+                         vx
+
+ 5-8cf
+
+                                173
+                         i  1 , 2 , ... , Nd  i       
+        vi  vix , viy , viz fd
+174     dj
+
+                      N mv ix2     m  N
+
+        5.12  Fx                         vi x2
+
+                    i1 L           L i1
+
+        ddx j
+
+        5.13  vx2   1  N  vi x  2
+
+                    N i1
+
+        df 5.12
+        dj
+
+        5.14  Fx  N mvx2
+                     L
+
+        j
+
+        5.15  P  Fx  N mvx2
+                     AV
+
+        {dd
+        f
+
+               v2  vx2  vy2  vz2 dj
+          5.16 v 2  vx2 vy2 vz2
+        dd vx2 vy2 vz2f
+         5.16 j
+          5.17 v 2  3vx2
+         5.15 dj
+
+        5.18  P  1 N mv 2
+                    3V
+
+        df
+        dd5.18 
+        f
+                                                                
+
+ 
+
+       N  n jN  nNAd
+j
+
+5.19  PV  nRT  c N l RT  N c R l T  NkT
+              NA        NA
+
+      SI  d           NAd     
+NA  6.022 140 76Ò10 231/moli          kd      
+k  1.380 649Ò10-23 J / Kf Rd
+
+5.20 R  NA k                                                           
+                                                                 300 K 
+ 5.18  PV  NkTdj                                                 400 K 
+                                                                
+5.21  1 Nmv 2  PV  NkT                                          d
+      3                                                         
+                                                                k
+ Nd 3 d
+                                                             2
+
+j
+
+5.22  K  1 mv 2  3 kT
+      2       2
+
+ K Tf
+ 5-9 dddf
+dddf
+
+ 5-9cf
+
+                             
+
+                                                                175
+
+
+     5-4 PV  NkT
+
+        d 10 L df 4 atme
+         300 Kd k .1.38  1023 J / Kdk
+
+              PV  NkTf
+
+              PV  NkT
+             & 4  1.013  105  10  103  N  1.38  1023  300
+             & N.1024f
+
+                      d 
+      5         root - mean - square speedvrmsd  5 . 22  j
+     d    
+      1e2e3e4e  5.23  vrms   v2  v12  v22  n  vN2  3kT 3RT
+     5d /                                   N       m M
+     d
+                 M  NAm fd
+     k          df 5 - 1 d
+                dd
+176             f
+
+                 5 - 1c 20°C f
+
+                                 1 g               m/s
+
+                      H2         2.02              1902
+
+                      He         4.00              1352
+
+                      H2O        18.0              637
+
+                      N2         28.0              511
+
+                      O2         32.0              478
+
+                      CO2        44.0              408
+         d                                                                                                 
+d           
+ fd                                         5-10c
+d                                          f
+ fd
+d 5- 10 d
+    d     
+Maxwell speed distributionf
+d           
+d        d  
+ 5 . 23  f
+
+ 5-5 
+
+ T M R
+1  3RT
+
+                                                      M
+2  27 °C O2  32
+
+     m/s  R  8.31 J / molK0 °C  273 K
+
+                         3
+ K  kT  R  NAkd NA f
+
+                         2
+
+1  K  1 mv2  3 kT & v2  3kT &  vrms        v2   3kT d
+         2     2      m                          m
+
+e NA
+
+& vrms      3kT  NA   3NAkT d NAm  MeNAk  Rd
+ vrms        m  NA      NAm
+
+            3RT f
+             M
+
+2 vrms   3RT   3  8.31  273  27  483 m/sf
+          M              0.032
+
+                                                         177
+
+
+                   dd
+             k 3 dd
+             dj
+
+             5.24  1 mv2  0  0  mgH
+                   2
+
+             j
+
+             5.25        v2
+                   H  2g
+
+              g  9.8  /  2d 20 °C 
+
+             d 511  / d H 
+
+              13 fd
+
+             df
+
+             ddeee
+
+             ndd
+
+             fd
+
+             ddf
+
+             dinternal energyfd
+
+             d
+     
+     d       d fdd
+     
+             d U j
+     k
+             5.26              N
+178
+                             12
+
+                   U   mvi  NK
+
+                        i1 2
+
+              5.22  K  T d U 
+             j
+
+             5.27 U  3 NkT  3 nRT  3 PV
+                   2         2       2
+
+             dfd
+             dd
+             d 5.27 
+             f
+                                                                                                                                                              
+
+       
+
+ Q d Wd
+  UdjQ   U  Wf
+
+KEY
+
+1  PV  nRT  NkTd k  1.38  10-23 J / Kf
+
+2  vrms   v2   v12  v22  ...  vN2   3kT   3RT f
+                         N           m     M
+
+     cc K  3 kT
+               2
+3  (           cccccccccccccc
+               3  3                 3
+     cc NK  NkT  nRT  PV  U
+               2  2                 2
+
+ 
+
+
+Hed
+ 24%f 1868 
+df
+
+dd
+ 5fd 
+dd
+d°e
+MRI
+df
+ddd
+dd
+f
+
+                                                 179
+
+
+      5-6 
+
+      5.00 atm 2.00 L 400 K
+      k  1.38  10-23 J/K
+     1  J 2  J 
+
+      K  3 kTd NK  3 NkT  3 PVf
+     2              2        2
+
+     1  K  3 kT  3  1.38  10-23  400  8.28  10-21 Jf
+        2     2
+
+     2  NK  3 NkT  3 PV  3  5.00  1.013  105  2.00  10-3  1.52  103 Jf
+        2     2     2
+
+      5-7 
+
+     
+
+     
+
+      T
+
+      31 21
+
+                                      104 
+
+     1  T 
+
+     2  T 
+
+     1 df
+     2 df
+
+     1 dedf
+
+                    12
+
+      PV  NkT & T  PV dT   3 & T   2 T   2 Tf
+              N T 11            3            3
+
+                       1
+
+     2 d & f
+
+      T d N   3 kT   N   3 kT   N   3 kT 
+                 2        2                  2
+
+     & N  T  3N   2 T  N  3N  T  & T   3 Tf
+           3                       4
+
+180
+ 
+
+                      K  °C  273.15
+                    
+
+                           PV  
+
+                           P  T
+
+                           V  T
+
+  PV  nRT
+
+                           PeVeT d n 
+
+                      PV  NkTdk  1.38Ò10-23 J / K
+
+                           vrms      v2  3kT  3RT
+                                                         m     M
+
+                                                         K  1 mv2  3 kT
+                                                            2     2
+
+                                                               3     3   3
+                                                         NK  NkT  nRT  PV
+                                                               2     2   2
+
+5 - 1                   5 - 2 
+
+ 1 K  °C  273.15f          1 jPV  NkTd
+ 2 jneT dPV  f                k  1.38Ò10-23 J/Kf
+ 3 jVen dP  Tf
+ 4 jPen dV  Tf             2 j
+ 5 jd PeVe
+                           vrms      v2  3kT  3RTf
+    T df                                           m        M
+ 6 jPV  nRTd
+                           3 j
+     R  8.31 J/molgKf
+                           K  1 mv2  3 kTf
+                           2                       2
+
+                           4 j
+
+                           NK  3 NkT  3 nRT  3 PVf
+                                  2                   2        2
+
+                                                                            181
+     
+
+       
+
+                                         4 d
+                                              3V  2V  AeB
+     5 - 1                                    d    f   A    60 g 
+                                              He  4dB    100 g   
+     1  10 mol d                             Ne  20df
+             27 °Ce    1.5  105 Pad           AeB dA  B
+          m3 k                               j
+         R  8.31 J/(mol · K)                 A 1j1cB 2j1cC 3j1c
+         A 0.09cB 0.12cC 0.17c               D 4j1cE 5j1f
+         D 0.22cE 0.35f
+                                         5 
+     2  3.6 mol d
+          27 °Cf                         d V 
+          127 °C dd
+          mol kc                         dd
+         A 0.1cB 0.3cC 0.5cD 0.6cE 0.9f
+                                          27 °Cdf
+     3 d
+           27 °C dA          B                  227 °Cd      
+          14 cmf
+          76 cm-Hgd                      27 °Cdd
+          77 °C dAeB 
+          cm k
+         A 26cB 27cC 28cD 29cE 30f
+
+                                         j
+
+                                         A V cB V cC V cD V cE V f
+                                         4  5  6  7  8
+
+182
+                                      
+
+5 - 2                                 9  27 °C 
+                                          df
+6 d                                        m/s k
+    f 2 Ld
+      300 Ke    5 atmd                    A 400cB 480cC 560cD 820cE 1280f
+    k1.3810-23 J/Kd                   0 e 2 mole300 K 
+    dk
+                                           3 mole200 K d
+A2.45 1023cB3.62 1024cC5.88 1025c          10 de
+    D 6.25  1026cE 7.46  1027f            k
+                                          A 1j3cB 3j1cC 2j3c
+7 ee 12                                   D 3j2cE 1j1f
+    me10 me5 m d
+     100 m3 f                          
+    dd                                5 - 1 
+     1.0  105 Pad
+     J k                              1 df
+    A 2.5  105cB 5.0  106cC 7.5  107      e 1j2d
+    D 8.0  108cE 9.5  109f                d
+                                          T  2Tfd 5
+8                                         mol dd
+                                          d
+d                                          mol k
+                                          A 1cB 2cC 3cD 4cE 5f
+dd
+                                                                       183
+k
+
+A d
+
+B d
+
+C d
+
+
+
+D d
+
+
+
+E d
+
+f  107 
+     
+
+     2 d 10 L d                          5 d V 
+                                              T d a ÷ b ÷ c ÷ dd
+      12 atm                                 f ab  cdd ab
+                                             f aebe
+     d 300 Ke                                ced d P j
+                                             A  acB  bcC  cc
+      10 atm fd                              D  dcE f
+
+     d°d
+
+     dd
+
+     dd
+
+      12 atme 400 Kf
+
+      0.082 atm · L / (mol · K)d
+
+      mol k
+
+     A 1.3cB 0.41cC 0.23c
+
+     D 0.11cE 0.051f       108 
+
+     3  60 Ld                            5 - 2 
+         d
+          30 atmfd                       6 
+          2 Ld 3 atmf
+         dj                              d 2 mol 
+         k
+         A 70cB 125cC 170c D 270cE 470f
+
+     4                                    X  1 mol  Yf Y 
+           d         f   
+                  0.4 cm2e    50          X  2 d
+         cmf 0 °C  100 °C d
+         e                               k
+         df
+         d                               A 
+          cm3 k
+         A 54.6cB 68.9cC 75.2c           B 
+         D 80.5cE 92.3f                  C X  Y  1 
+
+                                                                                      2
+
+                                         D X  Y 
+
+                                         2
+
+                                         E X  Y 
+
+                                          2 f    108 
+
+184
+                        
+
+7  P        8 ed
+
+ T dP  T     1 mol  2 mol f
+
+ 5 d         v  2vd
+
+df          d
+
+k     106   j
+
+A           A 3 vcB 5 vcC 3 vcD 5 vcE 3 vf
+
+B           2  3  2  3
+
+            9 d
+                 1j2 d 1 atme
+C d              300 K d 2 atme
+                600 K f
+                d K k
+                A 360cB 400cC 450cD 500cE 560f
+D  T  2T d
+
+ 2 
+
+E  T  2T d
+
+ 2 f
+
+
+
+1 dfj
+     1 mol ded
+    dk
+    1 kk
+
+            
+
+½     
+½
+½
+
+2 d 1.0  106 Pae 87.9°Ce
+    10 cm  10 cm  30 cmd J k
+   R  8.31 J/(mol · K)
+   A 1500cB 3000cC 4500cD 6000cE 7500f
+
+                                                185
+     
+
+                   
+
+     ccdfd
+     deenf
+     dddf
+     dd
+     dfd
+     20 °C dfdd
+     l
+
+             H2    He    H2O   N2    O2    CO2
+
+      g/mol  2.02  4.00  18.0  28.0  32.0  44.0
+
+      m/s 1902     1352  637   511   478   408
+
+     ccdd
+
+     fdd
+
+     dj 343 m/sd
+
+     fdjd
+
+     df                                    
+
+     1 d
+         fd
+         df
+         dk
+         A d
+            
+         B d
+         C d
+         D d
+         E df
+
+     2 d NA  6.0Ò10231 / mold
+         dk
+
+         d
+
+186
+

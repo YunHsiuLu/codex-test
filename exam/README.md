@@ -96,12 +96,20 @@ LaTeX 共用模板。
 ```text
 高一範圍/
 ├── 小考_第一次段考複習卷/
-│   ├── main.tex
-│   └── 小考_第一次段考複習卷.pdf
+│   ├── a/
+│   │   ├── main.tex
+│   │   └── a.pdf
+│   ├── b/
+│   │   ├── main.tex
+│   │   └── b.pdf
+│   └── c/
+│       ├── main.tex
+│       └── c.pdf
 └── 段考_第三次段考4-5至6-4/
-    ├── main.tex
-    ├── q1.png
-    └── 段考_第三次段考4-5至6-4.pdf
+    └── a/
+        ├── main.tex
+        ├── q1.png
+        └── a.pdf
 ```
 
 ## 安裝 LaTeX 編譯環境
@@ -300,25 +308,36 @@ memory_palace/<指定層級>/global/chunks/
 
 ### ５．編譯 PDF
 
-進入考卷資料夾後執行：
+進入含有 `main.tex` 的版本資料夾後，執行：
 
 ```zsh
-xelatex -interaction=nonstopmode main.tex
-xelatex -interaction=nonstopmode main.tex
+exam_compile
 ```
 
-第二次編譯是為了讓總題數、總分、頁碼等交叉參照正確。
+此指令會自動進行兩次編譯，讓總題數、總分、頁碼等交叉參照正確，並清除 LaTeX 中間檔。
+
+若目前位於某份考卷的範圍資料夾，可批次編譯存在的 `a`、`b`、`c` 版本：
+
+```zsh
+exam_compile all
+```
+
+也可只編譯指定版本：
+
+```zsh
+exam_compile a c
+```
 
 PDF 輸出規則：
 
 - `tex` 檔可以維持 `main.tex`。
-- PDF 必須改成與資料夾範圍同名。
+- PDF 以實際編譯所在的資料夾命名；例如在 `c/` 資料夾執行，輸出為 `c.pdf`。
 
 範例：
 
 ```text
-小考_第一次段考複習卷/main.tex
-小考_第一次段考複習卷/小考_第一次段考複習卷.pdf
+小考_第一次段考複習卷/c/main.tex
+小考_第一次段考複習卷/c/c.pdf
 ```
 
 ### ６．清除編譯暫存檔

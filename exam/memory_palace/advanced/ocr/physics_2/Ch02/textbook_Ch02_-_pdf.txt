@@ -1,0 +1,1630 @@
+          34
+
+          45
+
+     53
+     63
+
+    ccdd  d
+    fdj   dfd
+    k     fjd
+    dj    dk
+    dfk   dk
+    dl    e
+    jd    l
+    dl
+
+32
+
+k
+
+    k
+         
+   l
+
+                  33
+    
+
+      
+
+     
+
+          Isaac Newtond1643 - 1727dd
+    dquantity of motiond
+    momentumd m  v j
+
+       2.1 p  mv
+
+    ddd   / kgm/s
+      Nsfd v d p 
+    f 2-1 dd
+     v fdd
+    fdd
+    df
+
+        2-1cdf
+
+        ddf
+        df
+
+34
+                                                        
+
+ 2-1 
+
+
+Anaheim--
+
+ 40 m/s 
+ 40 m/s  150 g
+
+
+A  6.0 kgm/s
+B  -6.0 kg  m/s
+C  6000 kg m/s
+D  0
+E  -12 kg  m/s
+
+    1 jp  mvdf
+    2   p  p  -p f
+
+    A  B ´jd
+        p   mv   0.15-40  -6.0 kg  m/s  6.0 kg  m/sdf
+
+    C jd
+        p   mv   0.1540  6.0 kg  m/s d 6.0 kg  m/sf
+
+    D E jd
+         p  p  -p   6.0--6.0  12 kg  m/s  12 kg  m/sdf
+
+                                                          35
+    
+
+       
+
+            dimpulse
+      F   t dj
+
+         2.2 J  F  t
+
+          d       F  d        
+      Nsd   / kgm/sd
+      f
+
+              p  J  f 2-2
+      d F  m d
+       fd
+       a  F f v0d  t d
+
+                m
+       vdj
+
+         2.3 v - v0  a  t  F  t
+                                           m
+
+          2-2cf
+
+36
+                                                    
+
+j
+   2.4 F  t  m v - m v0   p
+
+ J  F  tdd
+j
+
+   2.5 J   p
+
+{impulse - momentum theoremf
+ddf
+
+ 2-2 {
+
+ 2 kg  6 m/s  10 N 
+ 4 s
+1  kg m/s 
+2  N s 
+3  N s 
+4  4 s  m / s 
+
+        1  J  F  t f
+        2 {f
+        3 ddef
+
+        j
+        1  p   mv   2-6  -12 kg  m/sd 12 kg  m/sdf
+        2  J  F  t  104  40 N  sdf
+        3    p   J  40 N  sdf
+        4 J  p p - p
+         & p   J  p  & -12  40  2  v 
+         & v   14 m/sdf
+
+
+
+                                                      37
+                      d       d          
+        d{ fd
+38       f d 
+         2-3(1) d t1  F d t2  f
+        (2.2) d J  Ft2 - t1d 2-3(1) 
+         f
+
+              dd 2-3(2) d
+         t2 - t1d   tf 
+        dd f
+        dj
+
+           2.6 J . F1  t  F2  t  F3  t  n . A
+
+          t df
+              { F - t j
+
+         fd
+         -Fd -F  td F - t 
+        d fd
+        dd
+         f
+
+              d  2-3(3) d
+        p0  0d F - t 
+         fdd
+        F - t  fd -pd
+        d  p  -p - p0  -p 0d
+        Ñd f F - t 
+        ddd
+         f
+
+                p 0d F - t 
+        df
+      
+
+ 2-3
+
+        39
+      
+
+               KEY
+
+             1 d & J  F  t   pf
+             2 jdJ  F - t f
+
+        2-3 F - t 
+
+               20 kg 5 m/s 
+              
+              1 0 s  8 s  Ns 
+              2  8 s  m/s 
+
+                   1  F - t f
+                   2 {f
+                   1 J Ø F - t   3  8Ò40  220 N  sdf
+
+                                                                      2
+                   2 p Jp
+
+                       &20Ò5  220  20  v  & v   16 m / sdf
+
+40
+                                      
+
+ 
+
+      d F - t d
+ fd
+dk  t d
+ J  F  tf{ J   pd
+j
+
+   2.7 F  lim J  lim  p
+                    t ÷0  t  t ÷0  t
+
+d
+jf
+d
+f
+
+      d(2.7) 
+  p  m  vdj
+
+2.8 F  lim  p  m lim  v  ma
+ t ÷0  t   t ÷0  t
+
+fd
+
+ed2.8 f
+
+                                        41
+
+
+               d(2.7)   t  f
+d        2-4(1) dd
+d        d fd
+dk         t d Fav d
+          f
+         dj
+
+         2.9   p  Fav  t
+
+         d
+         ddf
+
+               °dd
+          f 2-4(2) dd
+         ddd
+          F - t  f
+         ddid
+         d f
+         ddd
+          f
+
+               dd
+         d f
+         dd
+         d fd
+         dd f
+
+                                               KEY
+
+                                                              j
+                                                              d & F  lim  p
+
+                                                                                                                                  t ÷0  t
+
+42
+      
+
+ 2-4
+
+        43
+
+
+ 2-4        Fav   p
+                     t
+
+ 1.0 kg 
+ 10 m/s2
+
+1  s 
+2  kg m/s 
+3  N 
+4  t  0.2 s  t  0.6 s
+
+    
+
+1 {f
+2  Fav   p d  p d  t d Fav f
+
+                          t
+
+1 a   v  [-6.0 - -4.0]  -10 m/s2  gd 0 s ä 0.2 s df
+  t         0.2 - 0
+
+  d0.2 s ä 0.4 s d
+
+  0.2 sf
+
+2  p  p ' - p  1.00 - 1.0-6.0  6.0 kg  m/sdf
+
+3 Fav   p  6.0  30 Ndf
+              t 0.4 - 0.2
+
+  ' p       6.0            1
+4 Fav                     15 Nd &  f
+           t' 0.6 - 0.2    2
+
+            
+
+              
+               d Fd  t 
+                 p fd
+               df
+               ddd
+               di
+               ddf
+               e
+               ddf
+
+44
+                                    
+
+
+
+ 
+
+       (2.7) d f
+dj
+
+  2.10  p  0
+ddd
+ law of conservation of momentumfd
+{
+f
+
+          d                   
+ f 2-5 ddd
+ fd
+ fdd
+d f
+
+    2-5cdf
+
+                                      45
+    
+
+     2-6cd   
+    
+    f             d
+             fdk
+            dd
+             fd
+            d f
+
+                  d
+            d fd
+            dd
+             fd 2-6
+            d d 
+            j
+
+            2.11  lim  p1  F1  f21
+                   t ÷0  t
+
+              t fdF1
+            d f21 
+            fdj
+
+            2.12  lim  p2  F2  f12
+                   t ÷0  t
+
+             F2  f 12 f
+                                   d
+
+            p  p1  p2dj
+
+            2.13  lim  p  lim  p1  lim  p2
+                   t ÷0  t  t ÷0  t  t ÷0  t
+
+                             F1  F2   f21  f12
+
+            d
+            dj
+
+46
+                                  
+
+f (2.13) dd                              
+dj                                d
+                                  f
+2.14  lim  p  F1  F2              
+       t ÷0  t                    dk
+                                  k
+d
+f
+
+       f
+d
+d fd
+dd
+fd
+dd
+ f
+
+      d F1  F2  0d (2.14) 
+dd
+j
+
+2.15 p1  p2  m1v1  m2 v2  
+
+fd
+dd
+fd
+dd
+fd N 
+fd
+ p  0j
+
+2.16 p  m1 v1  m2 v2  n  mN vN  
+
+f
+
+                                           47
+      
+
+               KEY
+
+             d & p   p f
+             jef
+
+                   
+            
+             ddf
+             eddf
+             df
+             fdddf
+
+48
+                             
+
+ 
+
+      dd                            
+d fd                         
+d 2-7 dd                     
+d f                          d
+d°dd                         e
+jd f                         d
+                             k
+      d f
+ m1em2d f
+dd
+dd f
+dd f
+d pd -pd
+ fj
+
+2.17          p
+2.18  v1'  m
+
+                      1
+
+                p
+      v2'  - m
+
+                          2
+
+ 2-7
+
+                                      49
+    
+
+                   ddm1 . m2f
+    d        dd f°
+             ddm2 . 2 m1d
+    d        l (2.17)  (2.18) d
+             dd
+    d         f
+    
+    k              d f
+             2-8(1) dd pd
+             d p1ep2ep3ep4  f
+                   d        d             d 
+             dd p  p1  p2  p3  p4f
+             2-8(2) ddd
+             dd f
+
+     2-5 
+
+     60 kg  35 kg
+     5.0 kg 
+    
+     0.1 m/s 
+    
+    1  m/s 
+    2  m/s 
+
+    df
+
+    f
+    1 d vd
+
+        & 0  5.0Òv  60Ò-0.1 & v  1.2 m / s &  1.2 m / sf
+    2  v'd
+
+        &5.0Ò1.2  35  5.0v' & v'  0.15 m / s &  0.15 m / sf
+
+50
+       
+
+ 2-8c
+
+         51
+    
+
+     2-6 Ñ
+
+     7 kg  2 kg  8 m/s 
+     1 kg  12 m/s 
+    1  m/s 
+    2  kg m/s 
+
+        1 df2 df
+
+        1  7 - 2 - 1  4 kgd
+            vxe vyd
+           d & d
+           cj0  1Ò-12  4Òvx&vx  3 m / s
+            )
+           cj0  2Ò-8  4Òvy&vy  4 m / s
+
+         &  v3  32  42  5 m / sd 53°f
+        2 j & p   p   0f
+
+     2-7 {
+
+     m  v 2m 
+    1  v 
+
+                                                    2
+    2 
+    3  v 
+
+         2
+
+    ddf
+
+    eded
+     & f
+
+    1  v1 & mv  0  m v   2m v1 & v1  1 vfc
+      2     4
+
+    2  v2 & mv  0  m  2m v2 & v2  1 vf
+                                                                          3
+
+    3  v3 & mv  0  m- v   2m v3 & v3  3 vf
+         2                                                                   4
+
+52
+                                                                                                                      
+
+      
+
+                                               2-9c      
+                                              f
+      dd
+d f                                            2-10c
+dd                                            d
+d f                                           f
+ d           k      d   
+ f                                                                53
+
+      d center
+of gravity  f  2-9 d 
+d W 1  W2d x1  x2f
+ xG j O 
+ xG  f
+dW1 x 1  W 2 x 2  W 1  W 2 xGd 
+j
+
+2.19  xG  W1 x1  W2 x2  d W1 n x1  d W2 n x2
+      W1  W2  W1  W2  W1  W2
+
+d xG 
+dd
+f
+
+      dd
+ f
+        d             
+d f 2-10
+dd
+    
+
+             dd f
+    d              d
+     1  2 d
+    f         gdj
+
+             2.20  xG  W1 x1  W2 x2  m1g x1  m2g x2  m1x1  m2 x2
+                        W1  W2  m1g  m2g          m1  m2
+
+             dd
+             fd
+             ddcenter of
+             massj ri  mi 
+             d rCj
+
+                        m1r1  m2r2  n  mN rN 1 N
+             2.21  rC                    mi ri
+                        m1  m2  n  mN  M i1
+
+              M f 2-11 d
+             dd
+             d
+             df
+
+       2-11cf
+
+54
+                                                   
+
+       
+
+ddd
+f
+fdd
+df
+
+ 2-8 
+
+
+ 60 cm 30 cm
+
+1  R  V  4 R3
+
+                                                3
+2  cm 
+
+    1 f
+    2 rC  m1 r1  m2 r2 f
+
+                 m1  m2
+
+    1 e d
+        M  V  Ò 4 R3R3
+                                                3
+       &M jM Ø 603j303 Ø 8j1f
+
+    2 e 8m  md
+        y  30 cm d 8m e
+        y  75 cm d m 
+       &yC  8 mÒ30  mÒ75Ø 35 cmf
+                       8m  m
+
+                                                     55
+    
+
+      d f
+
+      d  t   rCd (2.21) 
+
+        ri j
+
+                   m1  r1  m2  r2  n  mN  rN 1 N
+      2.22    rC                             mi  ri
+                   m1  m2  n  mN           M i1
+
+        td  t dj
+
+                 m1v1  m2v2  n  mNvN 1 N
+      2.23  vC                      mi vi
+                   m1  m2  n  mN  M i1
+
+      ddf
+      dd
+      j
+
+                 m1a1  m2a2  n  mN aN 1 N
+      2.24  aC                      mi ai
+                   m1  m2  n  mN  M i1
+
+            d f
+      (2.23) d p  Md
+      j
+
+      2.25             N
+
+            p   mi vi  M vC  pC
+
+                     i1
+
+       p d 2.25 d
+       M  vC f
+       pC  M vC dd
+      f
+      d
+      f
+
+56
+                                                   
+
+      KEY
+
+1 jxG  W1 x1  W2 x2  n  WN xN f
+                                    W1  W2  n  WN
+
+     j rC  m1 r1  m2 r2  n  mN rN
+                                m1  m2  n  mN
+
+*2 jvC  m1v1  m2v2  n  mNvN f
+                                m1  m2  n  mN
+     j aC  m1 a1  m2 a2  n  mN aN
+                                    m1  m2  n  mN
+3 Ø & p  p1  p2  npN  pC  M vCf
+
+ 2-9 e
+
+ 3 kg  A  12 m/s  5 kg  B 
+4 m/s  AB 
+1  m/s 
+2  kg m/s 
+3  kg m/s 
+
+1 jvC  m1v1  m2v2 f
+                            m1  m2
+
+2 Øf
+
+
+
+1 vC  m1v1  m2v2 & vC  3Ò12  5Ò-4  2 m / sdf
+m1  m2                              35
+
+2  pC  M vC  3  5Ò2  16 kg  m / sdf
+
+3  p  m1 v1  m2 v2  3Ò12  5Ò-4  16 kg  m / sdf
+
+                                                     57
+    
+
+       
+
+            d
+      d (2.21)  f
+      dd f
+      d f
+      d (2.14) d
+       f N 
+      dj
+
+      2.26  lim  pC  F1  F2  n  FN
+             t ÷0  t
+
+       M  vC d
+      j
+
+      2.27  lim  pC  M lim  vC  M aC
+             t ÷0  t   t ÷0  t
+
+       2.26 dj
+
+      2.28 F1  F2  n  FN  M aC
+
+      d
+      df
+      dd
+      f
+
+58
+                                                                     
+
+ 2-10 
+
+ 3 kg  100 m/se 37° dd 2j
+1 dd g  10 m/s 2dj
+1 d m/s 2 k
+2 d m k
+
+                                                   j
+
+1 ej * jf
+
+                                                   j
+
+2 df
+
+1 d 10 m/s 2 
+
+ & aC  m1a1  m2a2  1Ò-10  2Ò-10  -10  10 m / s2df
+m1  m2  12
+
+2 edj
+
+0  1Ò0  2Òvy & vy  0
+& 
+
+& 
+
+& 
+
+   x
+
+& x  v0 cos ÒT  v0 cos Òe 2v0 sin  o  100Òcos 37°Òe 2Ò100Òsin 37° o  80Ò12  960 md
+        g                                                        10
+
+d 960  480 m d
+                                                              2
+
+ d m  & 960  1Ò480  2Òd& d  1200 mf
+                                                          12
+
+                                                                                    59
+    
+
+                    f 2-12(1) d
+             dd f
+             d f 2-12(2)
+    d        dddd
+    d        l
+    d
+                   d
+    d         fdd
+    k         f M  vC d
+             dj
+
+             2.29 p  M vC  
+
+             dj
+             
+
+                   d 2-12(3) dd
+             d f
+             d f
+             d xC dd
+               xC  0f
+
+                          Ld          m 1em 2d      
+              x1  L - xe  x2  -xf (2.22) d
+             j
+
+               2.30 m1ÒL - x  m2Ò-x  0
+              xdj
+
+             2.31   x2  -x  - m1 L
+                                     m1  m2
+
+             2.32   x1  L - x  m2 L
+                                      m1  m2
+
+60
+       
+
+ 2-12
+
+         61
+    
+
+      KEY                 d L d
+                          d  x1  Lf
+                          dd
+    dj                    l
+
+    1  &                        d° f
+       & pC  M vC  f      dd
+                           fdd
+    2                     d fd
+                          dd
+    & F1  F2  n  FN        f
+
+     lim  pC  M lim  vC
+       t ÷0  t   t ÷0  t
+
+     M aCf
+
+     2-11 
+
+     180 kg 
+     12 m 60 kg 
+    1  m 
+    2  m 
+
+                 d        d        d      
+     xC  0f
+
+     x md
+     12 - x m
+    1  xC  m1  x1  m2  x2  0
+
+                     m1  m2
+        & 180Òx  60 [-12 - x]  0
+        &  x  3 mf
+    2   12 - x  12 - 3  9 mf
+
+62
+                                     
+
+      
+
+ 
+
+      ddd
+k 2-13  r d
+ m  f Fn  Ftd
+j
+
+2.33                 mv2
+      Fn  man  r
+
+2.34  Ft  mat  m lim  v
+                       t ÷0  t
+
+ Fn  Ft dv 
+d  v fd v
+d Ft fd
+Fn  Ft f
+
+       O d Fn d f
+ 2-13 d rç rdj
+
+2.35    rçFt  rçm lim  v  lim  rçmv
+       t ÷0  t  t ÷0            t
+
+ 2-13cf
+
+                                       63
+    
+
+      ddf
+       2.35 dangular momentumd
+      j
+
+        2.36 L  rç p  rçmv
+
+       p d rç
+      d   2 / kgm2/sf
+
+            d fd
+      d fd
+      d fd L  r 
+       p d 2-14 dj
+
+      2.37 L  r Ò p
+
+       2.35 e2.36  2.37 d  
+      L j
+
+      2.38    lim  L
+                 t ÷0  t
+
+       2-14c L  r  p f
+
+64
+                                 
+
+      d                                KEY
+ f 2-15 °d
+d rç                             jL  r Ò p
+ p dL  rç p  r sin  p  rp sin f  | L |  rç p  rpç
+ rd pç
+p'd L  rpç rp sin d f                  rp sin  rmv sin
+d
+d L  rp sin f
+d f
+
+      dd
+ fd 2-1 
+ fd
+d f
+
+ 2-15c
+
+                                                        65
+    
+
+       2-1cf                                 
+                                             
+                                           
+                          d       | L |  rç p  rpç
+                          v        |  |  rç F  rFç
+                          p             
+                           F             lim  L
+                                            t÷0  t
+                    F  lim  p
+                         t÷0  t
+
+           
+    
+
+    d e e L d
+    f 1 d x e
+    y  z dd 2 ddd
+    fdeed
+    edi
+    eeddf
+
+66
+ 2-12                                                                     
+
+ m  10 kg O  8 m                                                                  67
+ 5 m/s   37 ° m  O 
+1  kg m2/s 
+2 
+
+    j| L |  | r Ò p |  rmv sinf
+
+    1  L  rmv sin  8Ò10Ò5Òsin37 °  240 kgm2 / sf
+    2 df
+
+ 2-13 
+
+ m  O  v R
+
+
+1 
+2 
+3 
+
+                                                                     99 
+
+    1 df
+    2 d rçdf
+    3 Øf
+
+    1 L   rç p  rç mv  2Rmv  2Rmvf
+    2 L   rç p  rç mv  Rmvf
+    3 d Fd
+
+                                     rç' ÒF  0ÒF  0
+       j' cccccccccccc &    
+
+                                     rç' ÒF  RÒF  RF
+        L Ø 
+        & df
+    
+
+       
+
+             (2.38) dd
+       fd  L  0j
+
+        2.39 L  rç p  rç mv  
+
+      law of conservation of angular momentumf
+      2-16 dd v1d O  r1 
+      fd r2 d
+       v2f O dd
+      df
+
+            d (2.39) d ri  vi 
+      j
+
+        2.40 r1 v1  r2 v2
+
+          2-16cdd
+                    f
+
+68
+                                                                                            
+
+jdf
+ v  rdj
+
+  2.41 r121  r222
+
+dd 1 d
+                                                                                         2
+
+ 4 f
+
+ 2-14 
+
+ m 
+ M  R v
+ M'
+ R 
+
+                         3
+1  m  v 
+2  m  vR 
+3  M'  M 
+
+dd m d
+f
+
+1 d &  & d
+
+ L   L  & Rmv   R mv' & v'  3vd 3 f
+                               3
+
+2  v  r & '  v'  3v  9v f
+                           r' R R
+
+          3
+
+             32
+
+             1
+             
+v2 v2 F'     3                     M'g
+3  F  m ? &  2  27                      & M '  27MdM'  M  27 f
+rr F         1                     Mg
+
+             1
+
+                                                                                              69
+    
+
+                          d           
+       f 2-17 dd
+      ddd
+       fd
+      dd f
+      d f
+
+            d f
+      2-18 d O d rç
+      dj
+
+        2.42 L  rç p  rçmv
+
+       2-17cf
+
+70
+                         
+
+d rç                        2-18c
+dd                         f
+dldj
+ddd                             
+f                        °
+                         d
+      d d                k
+k f O'                   k
+d 2-18 dd
+ f O' d
+dd
+ fdd
+d f
+
+       f 2-18
+d  t  v  t d O
+j
+
+2.43          1
+       A  2 rç v  t
+
+d  t d
+df
+  A j
+
+ t
+
+2.44   A  1 rç v  L
+      t 2            2m
+
+dd
+df
+
+                                   71
+                     f 
+              2-19 d°dd
+       2-20c  dd f
+      d       d  t d
+      k       d  A  1 rçv  tf°d
+
+                                                             2
+               (2.44) dd
+               f
+
+                    d d 
+               fd
+              ed 2-20 d
+              d fd
+                    d             d  
+               fdd
+                 d         d          
+              l
+
+                  2-19cd
+                 f
+
+72
+           
+
+      KEY
+
+d
+& L   L f
+
+  
+
+ 
+ df
+ ddd
+ fdd
+ dfd
+ MEMSede
+ ddd
+ fdf
+
+             73
+                         F   F  lim  p
+                          p        t ÷0  t
+     
+                          J    JFt p
+                         Ñ
+                             j          
+                                            
+     
+                             j   e       
+                                      
+     
+                              rC  m1 r1  m2 r2  n  mN rN
+                                                     m1  m2  n  mN
+                    
+                              vC            m1v1  m2v2  n  mN vN
+                                               m1  m2  n  mN
+                         
+
+                              aC  m1 a1  m2 a2  n  mN aN
+                                                         m1  m2  n  mN
+
+                             
+
+                               lim  L
+                          L       t ÷0  t
+
+                             j
+
+                             j°e
+                             f
+                             
+
+74
+                                                 
+
+2 - 1                                            2 - 4 
+
+ 1 jp  mvdSI g / f                                1 j|L|  | r Ò p |  rç p  rpç rmv sinf
+ 2 jJ  F  tdSI gf
+ 3 Ñjd                                            2             L    j
+                                                       lim  L f
+    jJ  F  t   pf                                         t ÷0  t
+ 4 jJ  F - t f
+ 5 jd                                             3 j
+                                                     df
+    jF  lim  p f
+                                     t ÷0  t
+
+2 - 2 
+
+ 1 j
+    df
+
+2 - 3 
+
+1 jxG  W1 x1  W2 x2  n  WN xN
+                              W1  W2  n  WN
+
+2 jrC  m1 r1  m2 r2  n  mN rN
+                             m1  m2  n  mN
+
+3 jvC   m1v1  m2v2  n  mN vN
+           m1  m2  n  mN
+
+4 jaC  m1 a1  m2 a2  n  mN aN
+                                 m1  m2  n  mN
+
+5 di
+
+j
+
+F1  F2  n  FN  lim  pC
+                           t ÷0  t
+
+         lim  M  vC                  M lim   vC
+
+         t ÷0  t                     t ÷0  t
+
+         M aCf
+
+6 f
+
+                                                                                         75
+    
+
+      
+
+                                      5 d 72 km 
+
+      2 - 1                           dd
+
+      1  2 kg  10                     d 108 kmf
+           m/s d 6 N 
+            5 sd                       50 gdd
+           Ngs k
+          A 10cB 20cC 30cD 40cE 50f    0.10 sd
+
+      2 d 6 N  5 s d                  d
+           m/s k
+          A 5cB 10cC 15cD 20cE 25f     N k   105 
+
+    3 d                               A 50cB 40cC 35cD 30cE 25f
+          k
+                                       2 - 2 
+      A c
+          B c                           6 d
+          C c                                200 kgd 5
+          D c                               m/s f
+          E                                 d 4 m/s
+              f                              d 20 kg d
+                                              m/s k
+      4  20 kg                               A 6cB 7cC 8cD 9cE 10f
+           d F f
+          F  t df                     7 d
+          6 s  kg  m/s k                      1j2  AeB d
+          A 0cB 40cC 80cD 120cE 160f         A f AeB d
+                                             k
+
+                                         AdA  B 
+                                                c
+
+                                             B dA  B 
+                                                 2 c
+
+                                            C dA  B 
+                                                 1 c
+                                                                 2
+
+                                            D dA  B  1j2c
+                                            E dA  B  2j1f
+
+76
+                                                                          
+
+8  90 kg  110 kg                            w d 7 
+    df 50 kg 
+     3 m/s                                  d 20 cmd
+    dd
+    d                                        cm k
+    m/s k
+    A 0.6cB 1.2cC 1.5cD 1.8cE 2.4f          A  120 , 200 cB  150 , 220 c
+                                            77              77
+
+                                            C  160 , 80 c D  250 , 190 c
+                                            77              77
+
+9  m  vd                                    E  320 , 240 f
+                                                   77
+
+ 4m f
+d v d
+
+                                         8
+
+
+dk
+
+A vcB v cC v cD v cE v f                    e d
+
+2  3  4  5                                  d
+
+                                            fd
+
+2 - 3                                       k                106 
+
+0 d                                         A d
+     8 d        1 mf   30
+    kgw e 40 kgw                            c
+    e 60 kgw 
+    d                                       B d
+    k
+    A cB cC cD cE f                         c
+
+                                            C d
+
+                                            c
+
+                                            D d
+
+                                            c
+
+                                            E d
+
+                                            f
+
+q  2 kg  A  20 m/s e
+    3 kg  B  5 m/s d AeB 
+     m/s kc
+    A 1cB 2cC 3cD 4cE 5f
+
+                                                                            77
+    
+
+    r  75 kg d                        i d
+        d 10 mf 50 kg                       dd
+                                            k
+        d m k
+        A 1cB 2cC 3cD 4cE 5f            A c
+                                            B c
+    2 - 4                                   C c
+                                            D c
+    t d m  5 kgd 8 m/s                      E f
+           y    d  A     
+        6 md  m  A                      
+        kg  m2/s k
+        A 30cB 90cC 150cD 240cE 300f    2 - 1 
+
+    y dm  A k                           1 d
+        A  xcB  ycC      cD                  5 d
+        cE f                                 20 gd 40 m/sd
+                                             10 m/sd
+    u dd                                      N k
+        k                                    A 1cB 2cC 3cD 4cE 5f
+
+    A c                                 2  5 kg 
+        B c                                 dd
+        C c                                 df 6 s 
+        D c                                  m/s k
+        E f                                 A - 2cB 0cC 2cD 4cE 6f
+
+78
+                                              
+
+3 d                          2 - 2 
+    f
+    d                        6 d 10 kg 
+     v m/sd                      12 m/s dd
+    f m                           5 kgd 8 m/s 
+    kgd 0.1 sf                   d 3 kgd
+    dd                           20 m/s d
+     N k                          m/s k
+                                 A 10cB 20cC 30cD 40cE 50f
+A 8mvcB 12mvc C 16mvcD 20mv
+    E 32mvf                  7 d 0.5 kg 
+                                  20 m  10 m/s 
+4 d                              d 0.3 kge
+                                 40 m/s f
+    d                            f
+    kge v mf
+    d                            g  10 m/s2d
+     N kc                         m k
+    A vcB 2vcC 3vcD 2 vc         A 5cB 15cC 25cD 35cE 45f
+    E 3 vf
+                             8 d M 
+5  2 kg  1.8 m                    m f
+    d                             v d
+     0.2 m f                     k
+     0.1 sd 10 m/ s 2d
+    j                        A m vcB 2m vcC M vcD 2M v
+    1 d                      M       M  m  m
+        N k
+    2  d                     E M vf
+        N k                     2m
+
+                             9 d 240 kg 
+                                  60 kg 
+                                 d 4 m/s 
+                                 d m/s k
+                                 A 0.2cB 0.4cC 0.6cD 0.8cE 1.0f
+
+                                                                 79
+    
+
+    0  7m d                         e dd
+                                         1200 kgd 10 m/s 
+     v f                                i 1800 kgd 5 m/s 
+                                        f
+     2m i                                m/s k
+                                        A 5cB 6cC 7cD 8cE 9f
+    ^^f
+
+    d 2m d
+
+    k
+
+    A 1 vcB 5 vcC 7 vcD vc E 4 v f
+    3  9      9  3
+
+    2 - 3                           r d 37°e 4m 
+                                        d m 
+    q  8.0 kg  30                       f
+                                         L  50 cm d
+    m d                                 d
+                                         cm k
+    df                                  A 2cB 4cC 6cD 8cE 10f
+
+    2.0 s dd                        t  50 m/s d 37° 
+                                        dd
+     16 m f                              1j2fd
+                                        d
+    d                                    150 md
+                                         g  10 m/s2d
+     kg k                                m k
+                                        A 210cB 280cC 350cD 420cE 490f
+     10 m/s2     107 
+
+    A 7.0cB 6.0cC 5.0cD 4.0cE 3.0f
+
+    w  20 me 80 kg 
+        d 80 kg 
+        40 kgdf
+        df
+        d
+         m k
+        A 2cB 4cC 6cD 8cE 10f
+
+80
+2 - 4                        
+
+y kc                                 81
+A cB 
+
+    ecC 
+    °d
+    cD 
+    cE 
+    df
+
+u dd e
+
+ md 53°d
+
+ v f
+
+ O d
+
+ L1i A d
+
+ L2d L1  k
+                         L2
+
+A 3 cB 4 cC 5 cD 5 cE 1f
+5  5    3  4
+
+i  1 kg  50 m/se 53° 
+      fd
+       10 m/s2dd
+      j
+
+  A  1200 N  m
+  B  2400 N  m
+  C  1200 kg  m2/s
+  D  2400 kg  m2/s
+  E f
+    
+
+    
+
+    1 d
+        dfd
+        fdd
+         m  1 kg d Re v 
+        fe
+        Tfddf
+        dfee
+        j
+        j 10 cm d 10 Nf
+        jd R
+                     T df
+
+       m         R              T             v
+          1 kg       10.0 cm        10 N  v1  ccc m/s
+          1 kg        5.0 cm        80 N  v2  ccc m/s
+          1 kg        2.5 cm       640 N  v3  ccc m/s
+          1 kg        2.0 cm              v4  ccc m/s
+          1 kg                    1250 N   
+                   2.0 cm     
+
+    1 d R  T k
+
+      R  T                    R cc T cccc
+
+    2  d v1  v4 df
+    3   v dd R 
+
+       d v k Rmv kk
+       k
+
+     R dv k                   ½v c½v c½v 
+
+     R dRmv k ½Rmv c½Rmv c½Rmv 
+
+    k                         ccccccccc 
+
+    k                         j
+
+82
+                             
+
+           
+
+ccboladd m
+
+d l dYd
+
+fddd
+
+fdd
+
+f
+
+ccdd
+
+ddfdd
+
+v0dfdd
+fdYd
+
+  f                          
+
+1 dk
+
+A 0cB v0 cC v0 cD 2v0cE v0f
+  3  2  3
+
+2 dYd  k
+     mel  L 
+
+                               83
+
