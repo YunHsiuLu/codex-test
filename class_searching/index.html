@@ -12,34 +12,48 @@
         <div>
           <h1>全校課表查詢</h1>
           <p id="sourceLabel"></p>
+          <p id="appStatus" class="app-status" role="status" aria-live="polite">正在準備課表資料……</p>
         </div>
         <div class="top-controls">
           <label class="field compact" for="semesterSelect">
             <span>學期</span>
-            <select id="semesterSelect"></select>
+            <select id="semesterSelect" disabled></select>
+          </label>
+          <label class="field compact" for="scheduleDate">
+            <span>查詢日期</span>
+            <input id="scheduleDate" type="date" disabled />
           </label>
           <label class="field" for="teacherSelect">
             <span>查詢老師</span>
-            <select id="teacherSelect"></select>
+            <select id="teacherSelect" disabled></select>
           </label>
           <label class="field compact" for="domainFilter">
             <span>代課領域</span>
-            <select id="domainFilter"></select>
+            <select id="domainFilter" disabled></select>
           </label>
           <div class="segmented" role="group" aria-label="查詢模式">
-            <button id="modeSub" type="button" class="active">代課</button>
-            <button id="modeSwap" type="button">調課</button>
+            <button id="modeSub" type="button" class="active" aria-pressed="true" disabled>代課</button>
+            <button id="modeSwap" type="button" aria-pressed="false" disabled>調課</button>
           </div>
         </div>
       </section>
 
-      <section class="layout">
+      <div class="page-tabs" role="tablist" aria-label="調代課頁面">
+        <button id="tabAnnouncements" class="page-tab active" type="button" role="tab" aria-selected="true" aria-controls="announcementPanel">
+          調代課公告
+        </button>
+        <button id="tabAdjustments" class="page-tab" type="button" role="tab" aria-selected="false" aria-controls="adjustmentWorkspace">
+          調代課狀態
+        </button>
+      </div>
+
+      <section id="adjustmentWorkspace" class="layout" role="tabpanel" aria-labelledby="tabAdjustments" hidden>
         <article class="panel timetable-panel">
           <div class="panel-head">
             <h2 id="teacherTitle"></h2>
             <div id="stats" class="stats"></div>
           </div>
-          <div id="timetable" class="timetable"></div>
+          <div id="timetable" class="timetable" aria-busy="true"></div>
         </article>
 
         <aside class="panel result-panel">
@@ -50,8 +64,19 @@
             </div>
           </div>
           <div id="selectedLesson" class="selected-lesson"></div>
+          <div id="quickActions" class="quick-actions"></div>
           <div id="results" class="results"></div>
         </aside>
+      </section>
+
+      <section id="announcementPanel" class="panel announcement-panel" role="tabpanel" aria-labelledby="tabAnnouncements">
+        <div class="panel-head">
+          <div>
+            <h2>調代課公告</h2>
+            <p class="muted">列出今天以後已登記的調代課。</p>
+          </div>
+        </div>
+        <div id="announcements" class="announcements"></div>
       </section>
     </main>
 

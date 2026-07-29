@@ -32,7 +32,7 @@ if lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then
 fi
 
 cd "$ROOT_DIR"
-CLASS_SEARCH_HOST="$BIND_HOST" PORT="$PORT" "$PYTHON" server.py >"$LOG_FILE" 2>&1 &
+nohup env CLASS_SEARCH_HOST="$BIND_HOST" PORT="$PORT" "$PYTHON" server.py >"$LOG_FILE" 2>&1 </dev/null &
 PID="$!"
 echo "$PID" >"$PID_FILE"
 

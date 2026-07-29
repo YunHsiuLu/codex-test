@@ -1,0 +1,237 @@
+{
+  "adjustments": [
+    {
+      "id": "0f0ff4722f184cb0b25467ac6b418e95",
+      "type": "swap",
+      "semester_id": "114-2",
+      "database": "114-2.json",
+      "date": "2026-08-05",
+      "day_key": "wed",
+      "day": "三",
+      "period": 4,
+      "time": "11:10-12:00",
+      "applicant": "呂昀修",
+      "lesson": {
+        "subject": "物理",
+        "class": "高一7班",
+        "class_normalized": "高一7班",
+        "teacher": "呂昀修",
+        "location": "",
+        "tags": [],
+        "raw": "物理 高一7班",
+        "lines": [
+          "物理",
+          "高一7班"
+        ]
+      },
+      "note": "",
+      "status": "active",
+      "created_at": "2026-07-29T11:19:06",
+      "swap_date": "2026-08-03",
+      "swap_day_key": "mon",
+      "swap_day": "一",
+      "swap_period": 1,
+      "swap_time": "08:10-09:00",
+      "swap_teacher": "龔珮瑄",
+      "swap_lesson": {
+        "subject": "國文",
+        "class": "高一7班",
+        "class_normalized": "高一7班",
+        "teacher": "龔珮瑄",
+        "location": "",
+        "tags": [],
+        "raw": "國文 高一7班",
+        "lines": [
+          "國文",
+          "高一7班"
+        ]
+      }
+    },
+    {
+      "id": "1e0a319376ef4decaec944bd5e13a60e",
+      "type": "substitute",
+      "semester_id": "114-2",
+      "database": "114-2.json",
+      "date": "2026-08-03",
+      "day_key": "mon",
+      "day": "一",
+      "period": 2,
+      "time": "09:10-10:00",
+      "applicant": "呂昀修",
+      "lesson": {
+        "subject": "物理充實增廣",
+        "class": "高二充實",
+        "class_normalized": "高二充實",
+        "teacher": "呂昀修",
+        "location": "",
+        "tags": [],
+        "raw": "物理充實增廣 高二充實",
+        "lines": [
+          "物理充實增廣",
+          "高二充實"
+        ]
+      },
+      "note": "",
+      "status": "active",
+      "created_at": "2026-07-29T11:19:26",
+      "substitute_teacher": "粘佳懿",
+      "class": "高二充實"
+    },
+    {
+      "id": "e2c7d8de31d74be28374bb5c47824f27",
+      "type": "substitute",
+      "semester_id": "114-2",
+      "database": "114-2.json",
+      "date": "2026-08-06",
+      "day_key": "thu",
+      "day": "四",
+      "period": 1,
+      "time": "08:10-09:00",
+      "applicant": "呂昀修",
+      "lesson": {
+        "subject": "物理",
+        "class": "高一6班",
+        "class_normalized": "高一6班",
+        "teacher": "呂昀修",
+        "location": "",
+        "tags": [],
+        "raw": "物理 高一6班",
+        "lines": [
+          "物理",
+          "高一6班"
+        ]
+      },
+      "note": "",
+      "status": "cancelled",
+      "created_at": "2026-07-29T11:19:45",
+      "substitute_teacher": "粘佳懿",
+      "class": "高一6班",
+      "cancelled_at": "2026-07-29T11:22:13"
+    },
+    {
+      "id": "0257aab1ee974c87ae1e7545e9f18cf9",
+      "type": "substitute",
+      "semester_id": "114-2",
+      "database": "114-2.json",
+      "date": "2026-08-06",
+      "day_key": "thu",
+      "day": "四",
+      "period": 1,
+      "time": "08:10-09:00",
+      "applicant": "呂昀修",
+      "lesson": {
+        "subject": "物理",
+        "class": "高一6班",
+        "class_normalized": "高一6班",
+        "teacher": "呂昀修",
+        "location": "",
+        "tags": [],
+        "raw": "物理 高一6班",
+        "lines": [
+          "物理",
+          "高一6班"
+        ]
+      },
+      "note": "",
+      "status": "cancelled",
+      "created_at": "2026-07-29T11:22:33",
+      "substitute_teacher": "粘佳懿",
+      "class": "高一6班",
+      "cancelled_at": "2026-07-29T12:54:52"
+    },
+    {
+      "id": "bf89dc6e644d4a29b132ea41c93abb29",
+      "type": "swap",
+      "semester_id": "114-2",
+      "database": "114-2.json",
+      "date": "2026-08-03",
+      "day_key": "mon",
+      "day": "一",
+      "period": 1,
+      "time": "08:10-09:00",
+      "applicant": "呂昀修",
+      "lesson": {
+        "subject": "物理",
+        "class": "高一7班",
+        "class_normalized": "高一7班",
+        "teacher": "呂昀修",
+        "location": "",
+        "tags": [],
+        "raw": "物理 呂昀修 高一7班",
+        "lines": [
+          "物理",
+          "高一7班"
+        ]
+      },
+      "note": "",
+      "status": "cancelled",
+      "created_at": "2026-07-29T13:10:07",
+      "swap_date": "2026-08-10",
+      "swap_day_key": "mon",
+      "swap_day": "一",
+      "swap_period": 1,
+      "swap_time": "08:10-09:00",
+      "swap_teacher": "龔珮瑄",
+      "swap_lesson": {
+        "subject": "國文",
+        "teacher": "龔珮瑄",
+        "location": "",
+        "raw": "國文 龔珮瑄",
+        "lines": [
+          "國文",
+          "龔珮瑄"
+        ],
+        "class": "高一7班",
+        "class_normalized": "高一7班"
+      },
+      "cancelled_at": "2026-07-29T13:10:30"
+    },
+    {
+      "id": "d71bbf81025e4799bef19f34341c5485",
+      "type": "swap",
+      "semester_id": "114-2",
+      "database": "114-2.json",
+      "date": "2026-08-03",
+      "day_key": "mon",
+      "day": "一",
+      "period": 3,
+      "time": "10:10-11:00",
+      "applicant": "呂昀修",
+      "lesson": {
+        "subject": "物理",
+        "class": "高一9班",
+        "class_normalized": "高一9班",
+        "teacher": "呂昀修",
+        "location": "",
+        "tags": [],
+        "raw": "物理 高一9班",
+        "lines": [
+          "物理",
+          "高一9班"
+        ]
+      },
+      "note": "",
+      "status": "cancelled",
+      "created_at": "2026-07-29T13:12:29",
+      "swap_date": "2026-08-10",
+      "swap_day_key": "mon",
+      "swap_day": "一",
+      "swap_period": 1,
+      "swap_time": "08:10-09:00",
+      "swap_teacher": "曾楚婷",
+      "swap_lesson": {
+        "subject": "地理",
+        "teacher": "曾楚婷",
+        "location": "",
+        "raw": "地理 曾楚婷",
+        "lines": [
+          "地理",
+          "曾楚婷"
+        ],
+        "class": "高一9班",
+        "class_normalized": "高一9班"
+      },
+      "cancelled_at": "2026-07-29T13:12:54"
+    }
+  ]
+}
