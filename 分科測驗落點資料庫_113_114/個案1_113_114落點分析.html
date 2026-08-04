@@ -35,8 +35,21 @@
     .compact th, .compact td { padding:8px 10px; font-size:13px; }
     .cross-pool td:last-child { font-size:0; color:transparent; }
     .cross-pool td:last-child::after { content:"僅作跨年篩除，不列入四區主表"; color:var(--muted); font-size:13px; }
+    .summary-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:14px 0; }
+    .summary-box { background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px; }
+    .summary-box .count { display:block; font-size:22px; font-weight:800; }
+    .filters { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .filters button { border:1px solid #b9c7d8; background:#fff; color:var(--ink); border-radius:999px; padding:7px 12px; cursor:pointer; }
+    .filters button.active { color:#fff; background:var(--blue); border-color:var(--blue); }
+    .filters .table-action { border-style:dashed; }
+    .school-row td { background:#eaf1f8; color:#173b5d; font-weight:800; }
+    .school-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .school-toggle { border:1px solid #8ca5bd; background:#fff; color:#173b5d; border-radius:999px; padding:4px 12px; cursor:pointer; font:inherit; font-size:13px; font-weight:700; }
+    .school-toggle:hover, .school-toggle:focus-visible { background:#dce9f5; outline:2px solid transparent; }
+    .criteria { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:12px 0 18px; }
+    .criteria div { background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
     a { color:#075ea8; }
-    @media (max-width:700px) { main { width:min(100% - 20px,1180px); margin-top:10px; } header { padding:24px 20px; border-radius:10px; } .grid { grid-template-columns:1fr; } }
+    @media (max-width:700px) { main { width:min(100% - 20px,1180px); margin-top:10px; } header { padding:24px 20px; border-radius:10px; } .grid,.summary-grid,.criteria { grid-template-columns:1fr; } }
     @media print { body { background:#fff; } main { width:100%; margin:0; } header { box-shadow:none; border-radius:0; } .card,.table-wrap { box-shadow:none; } }
   </style>
 </head>
@@ -44,18 +57,18 @@
 <main>
   <header>
     <h1>個案１｜113、114學年度分科落點分析</h1>
-    <p class="sub">範圍：全台公立、工程與基礎科學。分析日期：2026-08-03。</p>
+    <p class="sub">範圍：指定14校、理工與相關生命科學。分析日期：2026-08-04。</p>
   </header>
 
   <section class="notice">
-    <strong>判讀重點：</strong>113僅有數甲，個案以數甲22回測；114雖新增數乙48，但本頁逐列核對的工程與基礎科學校系仍採數甲。兩者採計組合不同，不能把113、114的加權總分直接排序。本頁的「保底」是歷年門檻風險較低，不代表錄取保證。
+    <strong>判讀重點：</strong>主表逐列依114採計式代入個案成績，並用113同系或同類採計結果校正風險。多數工程系仍採數甲22；少數生命科學系可由物理、化學、生物與國英形成較有利路徑。不同採計總分不可互相比大小；本頁的「保底」也不代表錄取保證。
   </section>
 
   <h2>一、個案輸入與可用性</h2>
   <div class="grid">
     <article class="card"><div class="label">科目表現</div><div class="metric">數乙48</div><div>物理45、化學44、生物33</div></article>
     <article class="card"><div class="label">共同採計科目</div><div class="metric">國57、英48</div><div>英聽Ｂ；未提供數Ａ、數Ｂ、社會、自然</div></article>
-    <article class="card"><div class="label">主要限制</div><div class="metric">數甲22</div><div>本頁核對的理工校系皆採數甲；數乙48未能直接補足此限制</div></article>
+    <article class="card"><div class="label">主要限制</div><div class="metric">數甲22</div><div>工程與電資多採數甲；生命科學類另依物、化、生與國英計算</div></article>
   </div>
 
   <h2>二、113、114年度判讀</h2>
@@ -69,6 +82,63 @@
     </table>
   </div>
 
+  <h2>三、指定14校理工落點分類｜163個可完整計算系組</h2>
+  <p class="foot">指定學校依序為：臺大、清大、陽明交大、成大、中央、中興、中正、中山、臺師大、彰師大、海大、北大、長庚、中原。下表只納入個案已提供全部採計科目的系組；需數Ａ、數Ｂ、自然或未考社會科者不硬算。差距率＝（個案加權－114最低錄取）÷114最低錄取。</p>
+
+  <div class="criteria">
+    <div><span class="tag dream">夢幻</span><br>差距率低於或等於－20％</div>
+    <div><span class="tag challenge">挑戰</span><br>高於－20％、低於或等於0％</div>
+    <div><span class="tag steady">穩健</span><br>高於0％、低於＋8％</div>
+    <div><span class="tag safe">保底</span><br>差距率達＋8％以上</div>
+  </div>
+
+  <div class="summary-grid" id="category-summary"></div>
+  <div class="filters" aria-label="表格篩選">
+    <button type="button" class="active" data-filter="all">全部</button>
+    <button type="button" data-filter="dream">夢幻</button>
+    <button type="button" data-filter="challenge">挑戰</button>
+    <button type="button" data-filter="steady">穩健</button>
+    <button type="button" data-filter="safe">保底</button>
+    <button type="button" class="table-action" data-action="collapse-all">全部收合</button>
+    <button type="button" class="table-action" data-action="expand-all">全部展開</button>
+  </div>
+  <div class="table-wrap">
+    <table id="program-table">
+      <thead><tr><th>區域</th><th>校系代碼／校系</th><th>114採計式</th><th>個案加權</th><th>114最低</th><th>差距</th><th>差距率</th></tr></thead>
+      <tbody id="program-body"></tbody>
+    </table>
+  </div>
+  <noscript><p class="notice">此完整表格使用內嵌 JavaScript 計算，請啟用 JavaScript 開啟報告。</p></noscript>
+
+  <h2>四、113／114跨年校正樣本｜14校均有檢核</h2>
+  <p class="foot">挑選同名且採計式相同或高度近似的代表系組，檢查114門檻相較113的移動。主分類不會因單一年度上升或下降就跨越兩個區域。</p>
+  <div class="table-wrap compact">
+    <table>
+      <thead><tr><th>學校／代表系組</th><th>113最低</th><th>114最低</th><th>變動</th><th>跨年解讀</th></tr></thead>
+      <tbody>
+        <tr><td>臺大｜化學系</td><td>250.00</td><td>254.00</td><td class="negative">＋4.00</td><td>採計一致，列入指定校高風險比較。</td></tr>
+        <tr><td>清華｜材料科學工程學系乙組</td><td>203.00</td><td>209.00</td><td class="negative">＋6.00</td><td>採計一致，數甲弱勢持續存在。</td></tr>
+        <tr><td>陽明交大｜生物科技學系乙組</td><td>217.25</td><td>225.50</td><td class="negative">＋8.25</td><td>採計一致，門檻上升。</td></tr>
+        <tr><td>成功｜電機工程學系</td><td>209.00</td><td>214.00</td><td class="negative">＋5.00</td><td>採計一致，維持高風險。</td></tr>
+        <tr><td>中央｜電機工程學系</td><td>199.00</td><td>205.00</td><td class="negative">＋6.00</td><td>採計一致，維持夢幻。</td></tr>
+        <tr><td>中興｜電機工程學系甲組</td><td>252.00</td><td>257.00</td><td class="negative">＋5.00</td><td>兩年均高於個案加權。</td></tr>
+        <tr><td>中興｜生物產業機電工程學系</td><td>208.00</td><td>214.00</td><td class="negative">＋6.00</td><td>個案加權216分，兩年皆高於門檻，列穩健。</td></tr>
+        <tr><td>中正｜物理學系</td><td>259.75</td><td>272.50</td><td class="negative">＋12.75</td><td>門檻上升且差距率仍為負，列挑戰。</td></tr>
+        <tr><td>中山｜材料與光電科學學系甲組</td><td>230.00</td><td>240.00</td><td class="negative">＋10.00</td><td>採計一致，維持夢幻。</td></tr>
+        <tr><td>臺灣師大｜物理學系</td><td>163.50</td><td>177.50</td><td class="negative">＋14.00</td><td>門檻上升，114分類不下修。</td></tr>
+        <tr><td>彰化師大｜資訊工程學系</td><td>194.00</td><td>200.50</td><td class="negative">＋6.50</td><td>兩年門檻上升，列挑戰。</td></tr>
+        <tr><td>臺灣海洋｜資訊工程學系</td><td>168.00</td><td>171.00</td><td class="negative">＋3.00</td><td>個案仍略高於114門檻，列穩健。</td></tr>
+        <tr><td>臺北大學｜電機工程學系</td><td>224.00</td><td>228.00</td><td class="negative">＋4.00</td><td>採計一致但差距率仍為負，列挑戰。</td></tr>
+        <tr><td>長庚｜電機工程學系</td><td>208.50</td><td>165.00</td><td class="positive">－43.50</td><td>114門檻下降，仍依114差距率分類。</td></tr>
+        <tr><td>中原｜電子工程學系</td><td>154.00</td><td>162.00</td><td class="negative">＋8.00</td><td>門檻上升，維持跨年風險校正。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>五、不可直接計算的指定校理工系組</h2>
+  <p class="foot">臺大數學系、材料科學與工程學系等需數Ａ；中原土木工程學系需數Ａ；彰化師大物理兩組與化學系需數Ａ；臺灣師大生命科學系、營養科學學程需數Ａ；中興機械乙組需數Ａ；成功土木與工資管需數Ａ；陽明交大材料兩組與中央工學院學士班需自然；臺灣海洋通訊與導航需數Ａ。這些不是被漏列，而是個案輸入不足，故不放入四區。</p>
+
+  <div hidden aria-hidden="true">
   <h2>三、指定11校理工落點分類</h2>
   <p class="foot">以清大、陽明交大、成大、中央、海大、中正、中興、中山、北大、彰師大、師大為範圍。每個系組將以113、114採計式計算個案加權成績與門檻差距，並分入夢幻、挑戰、穩健或保底；不適用者會另列，不強行分類。</p>
   <div class="table-wrap">
@@ -239,8 +309,272 @@
     </table>
   </div>
 
+  </div>
+
   <h2>資料與限制</h2>
   <p class="foot">來源：本專案的<a href="官方原始資料/113_各系組最低錄取分數及錄取人數.pdf">113各系組最低錄取分數及錄取人數</a>、<a href="官方原始資料/114_各系組最低錄取分數及錄取人數.pdf">114各系組最低錄取分數及錄取人數</a>，以及<a href="個案1.csv">個案１輸入</a>。最低錄取成績是該年度最後錄取者的加權成績；其受名額、選填與分布影響。本報告不是115錄取保證，正式選填前必須以115招生名額、分則、英聽與學測檢定逐系重算。</p>
+  <script>
+  (() => {
+    const scores = { 國:57, 英:48, 甲:22, 乙:48, 物:45, 化:44, 生:33 };
+    const labels = { 國:"國文", 英:"英文", 甲:"數甲", 乙:"數乙", 物:"物理", 化:"化學", 生:"生物" };
+    const programs = [
+      ["國立臺灣大學","0013","物理學系",280,{物:1.5,甲:1.5,英:1,化:1}],
+      ["國立臺灣大學","0014","化學系",254,{化:1,英:1,甲:1,物:1,國:1}],
+      ["國立臺灣大學","0015","地質科學系",236,{甲:1,英:1,化:1,物:1,國:1}],
+      ["國立臺灣大學","0017","地理環境資源學系Ａ組",143,{甲:1,物:1,化:1}],
+      ["國立臺灣大學","0021","大氣科學系",274.5,{甲:1.25,物:1.25,化:1.25,英:1,國:1}],
+      ["國立臺灣大學","0035","醫學檢驗暨生物技術學系",255,{化:1,生:1,英:1,甲:1,國:1}],
+      ["國立臺灣大學","0041","土木工程學系",243,{甲:1,物:1,英:1,國:1,化:1}],
+      ["國立臺灣大學","0042","機械工程學系",259,{物:1,甲:1,化:1,英:1,國:1}],
+      ["國立臺灣大學","0043","化學工程學系",247.5,{甲:1.25,物:1.25,化:1.25,英:1}],
+      ["國立臺灣大學","0044","工程科學及海洋工程學系",312,{甲:2,物:2,英:1,化:1}],
+      ["國立臺灣大學","0046","醫學工程學系",256,{甲:1,物:1,化:1,英:1,國:1}],
+      ["國立臺灣大學","0050","生物環境系統工程學系",242,{甲:1,物:1,化:1,英:1,國:1}],
+      ["國立臺灣大學","0052","森林環境暨資源學系",266,{生:2,甲:1,化:1.5,物:1.5}],
+      ["國立臺灣大學","0053","動物科學技術學系",192,{生:1,化:1,英:1,甲:1}],
+      ["國立臺灣大學","0060","生物機電工程學系",253,{甲:1,物:1,化:1,英:1,國:1}],
+      ["國立臺灣大學","0061","昆蟲學系",285.5,{生:2,化:1.5,英:1,甲:1,物:1}],
+      ["國立臺灣大學","0062","植物病理與微生物學系",240,{生:1,化:1,甲:1,英:1,國:1}],
+      ["國立臺灣大學","0072","資訊管理學系",240.5,{甲:1.5,英:1,物:1,化:1}],
+      ["國立臺灣大學","0075","電機工程學系",229,{甲:1,物:1,化:1,英:1}],
+      ["國立臺灣大學","0076","資訊工程學系",240.5,{甲:1.25,物:1,化:1,英:1}],
+      ["國立臺灣大學","0102","生命科學系",246,{生:1,英:1,化:1,甲:1,物:1}],
+      ["國立臺灣大學","0103","生化科技學系",247,{化:1,物:1,生:1,英:1,甲:1}],
+
+      ["國立臺灣師範大學","0124","數學系",165,{甲:2,英:1,物:1}],
+      ["國立臺灣師範大學","0125","物理學系",177.5,{物:1.5,甲:1.25,英:1}],
+      ["國立臺灣師範大學","0127","化學系",245,{化:1.75,物:1.5,甲:1.25,英:1}],
+      ["國立臺灣師範大學","0131","地球科學系",272,{甲:2,物:2,化:1.5,英:1}],
+      ["國立臺灣師範大學","0132","資訊工程學系",280,{甲:1.5,英:1.5,物:1,國:1,化:1}],
+      ["國立臺灣師範大學","0134","科技應用與人力資源發展學系",230.25,{甲:1.25,英:1.25,物:1,化:1,國:1}],
+      ["國立臺灣師範大學","0136","機電工程學系",333.5,{甲:2,物:2,英:1.5,化:1,國:1}],
+      ["國立臺灣師範大學","0137","電機工程學系",242,{甲:1,物:1,英:1,化:1,國:1}],
+      ["國立臺灣師範大學","0140","車輛與能源工程學士學位學程",217.5,{甲:1.5,物:1.5,英:1,國:1}],
+
+      ["國立中興大學","0167","化學系",331,{化:2,甲:2,英:1.5,物:1,國:1}],
+      ["國立中興大學","0170","物理學系一般物理組",291,{物:1.5,甲:1.5,英:1.5,化:1,國:1}],
+      ["國立中興大學","0171","物理學系光電物理組",296.5,{物:1.5,甲:1.5,英:1.5,化:1,國:1}],
+      ["國立中興大學","0172","應用數學系應用數學組",291.5,{甲:2,英:1.5,物:1.5,國:1,化:1}],
+      ["國立中興大學","0173","應用數學系數據科學與計算組",294.5,{甲:2,英:1.5,物:1.5,國:1,化:1}],
+      ["國立中興大學","0174","機械工程學系甲組",329,{甲:2,物:2,英:1.5,化:1,國:1}],
+      ["國立中興大學","0176","土木工程學系",270.5,{甲:2,物:2,英:1.5,國:1}],
+      ["國立中興大學","0177","環境工程學系",275,{化:1.5,甲:1.5,物:1.5,英:1,國:1}],
+      ["國立中興大學","0200","化學工程學系",228,{物:1,化:1,甲:1,英:1,國:1}],
+      ["國立中興大學","0201","材料科學與工程學系",235,{物:1,化:1,英:1,甲:1,國:1}],
+      ["國立中興大學","0202","智慧創意工程學士學位學程",243,{甲:1.5,英:1,物:1,國:1,化:1}],
+      ["國立中興大學","0203","電機工程學系甲組",257,{甲:1,物:1,英:1,化:1,國:1}],
+      ["國立中興大學","0205","資訊工程學系",195,{甲:1,物:1,英:1,化:1}],
+      ["國立中興大學","0206","電機資訊學院學士班",244,{甲:1,物:1,英:1,化:1,國:1}],
+      ["國立中興大學","0207","生物產業機電工程學系",214,{甲:1,物:1,化:1,英:1,國:1}],
+      ["國立中興大學","0210","水土保持學系",257,{甲:2,物:2,英:1.5,國:1}],
+      ["國立中興大學","0211","食品暨應用生物科技學系",239,{英:1.5,化:1.5,生:1.5,國:1}],
+      ["國立中興大學","0212","農藝學系",218,{英:1.5,生:1.5,化:1.5,國:1}],
+      ["國立中興大學","0217","昆蟲學系",219,{生:1.5,化:1.5,英:1.5,國:1}],
+      ["國立中興大學","0221","土壤環境科學系",259,{英:2,化:2,生:2,物:1}],
+      ["國立中興大學","0222","生物科技學士學位學程",249,{英:1.5,化:1.5,生:1.5,國:1}],
+      ["國立中興大學","0225","生命科學系",200.5,{生:1.75,化:1.75,英:1}],
+
+      ["國立成功大學","0234","物理學系",200,{物:1,甲:1,英:1,化:1}],
+      ["國立成功大學","0235","化學系",286.5,{化:1.5,物:1.25,甲:1.25,英:1,國:1}],
+      ["國立成功大學","0236","地球科學系",221,{甲:1,物:1,化:1,英:1,國:1}],
+      ["國立成功大學","0237","光電科學與工程學系",245,{物:1,甲:1,英:1,化:1,國:1}],
+      ["國立成功大學","0240","機械工程學系",241,{甲:2,物:2,英:1}],
+      ["國立成功大學","0242","化學工程學系",276.5,{甲:1.25,化:1.25,物:1.25,英:1,國:1}],
+      ["國立成功大學","0243","材料科學及工程學系",202,{物:1.5,化:1.5,甲:1}],
+      ["國立成功大學","0244","資源工程學系",228,{甲:1,物:1,英:1,化:1,國:1}],
+      ["國立成功大學","0246","水利及海洋工程學系",245.25,{甲:1.75,物:1.5,英:1.25,國:1}],
+      ["國立成功大學","0247","工程科學系",248,{甲:1,物:1,英:1,化:1,國:1}],
+      ["國立成功大學","0250","系統及船舶機電工程學系",235,{甲:1,物:1,英:1,化:1,國:1}],
+      ["國立成功大學","0251","航空太空工程學系",193,{甲:1,物:1,英:1,國:1}],
+      ["國立成功大學","0252","環境工程學系",224,{甲:1,物:1,化:1,英:1,國:1}],
+      ["國立成功大學","0253","測量及空間資訊學系",313,{甲:2,物:2,英:2,國:1}],
+      ["國立成功大學","0254","生物醫學工程學系",239,{甲:1,物:1,英:1,化:1,國:1}],
+      ["國立成功大學","0276","電機工程學系",214,{甲:1,物:1,英:1,化:1}],
+      ["國立成功大學","0300","資訊工程學系",257,{甲:1,物:1,英:1,化:1,國:1}],
+
+      ["國立清華大學","0614","物理學系物理組甲組",303,{物:1.5,甲:1.5,英:1,化:1,國:1}],
+      ["國立清華大學","0617","化學系",248,{化:1,物:1,甲:1,英:1,國:1}],
+      ["國立清華大學","0621","生醫工程與環境科學系",240,{英:1,甲:1,物:1,化:1,國:1}],
+      ["國立清華大學","0622","工程與系統科學系甲組",252,{英:1,物:1,甲:1,化:1,國:1}],
+      ["國立清華大學","0624","原子科學院學士班",251,{英:1,甲:1,物:1,化:1,國:1}],
+      ["國立清華大學","0625","化學工程學系",253,{甲:1,物:1,化:1,英:1,國:1}],
+      ["國立清華大學","0626","動力機械工程學系甲組",258,{甲:1,物:1,英:1,化:1,國:1}],
+      ["國立清華大學","0630","材料科學工程學系甲組",217,{物:1,化:1,英:1,甲:1}],
+      ["國立清華大學","0634","電機工程學系甲組",227,{英:1,甲:1,物:1,化:1}],
+      ["國立清華大學","0636","資訊工程學系甲組",270,{甲:1,英:1,物:1,國:1,化:1}],
+
+      ["國立陽明交通大學","0672","電機工程學系甲組",286,{甲:1,物:1,化:1,英:2}],
+      ["國立陽明交通大學","0675","光電工程學系",317,{物:1.5,化:1.5,甲:1,英:2}],
+      ["國立陽明交通大學","0676","資訊工程學系甲組",277,{甲:1,英:1,物:1,化:1,國:1}],
+      ["國立陽明交通大學","0700","半導體工程學系固態電子組",266.5,{甲:1.5,物:1.5,化:1,英:1}],
+      ["國立陽明交通大學","0704","機械工程學系",200,{甲:1,物:1,英:1,化:1}],
+      ["國立陽明交通大學","0705","土木工程學系",184,{甲:1,物:1,英:1,化:1}],
+      ["國立陽明交通大學","0706","理學院科學學士學位學程甲組",206,{物:1,甲:1,化:1,英:1}],
+      ["國立陽明交通大學","0707","電子物理學系光電與奈米科學組",241,{物:1.5,甲:1,化:1,英:1}],
+
+      ["國立中央大學","1102","數學系計算與資料科學組",233.5,{甲:1.5,英:1.5,物:1.25,國:1}],
+      ["國立中央大學","1104","物理學系",235,{物:1.5,甲:1.5,英:1,國:1}],
+      ["國立中央大學","1105","化學學系",231,{化:1,英:1,甲:1,物:1,國:1}],
+      ["國立中央大學","1106","光電科學與工程學系",191,{甲:1,物:1,英:1,化:1}],
+      ["國立中央大學","1110","土木工程學系",314,{甲:2,物:2,英:1.5,國:1,化:1}],
+      ["國立中央大學","1114","化學工程與材料工程學系",238,{甲:1,英:1,物:1,化:1,國:1}],
+      ["國立中央大學","1122","電機工程學系",205,{甲:1,物:1,英:1,化:1}],
+      ["國立中央大學","1123","資訊工程學系",199,{甲:1,物:1,英:1,化:1}],
+
+      ["國立臺灣海洋大學","1433","水產養殖學系",179.5,{生:2,英:1.5,化:1.5,國:1}],
+      ["國立臺灣海洋大學","1434","生命科學暨生物科技學系",207,{生:2,英:1,化:1,國:1.5}],
+      ["國立臺灣海洋大學","1435","海洋生物科技學士學位學程",190,{生:1.5,英:1.5,化:1.5,國:1}],
+      ["國立臺灣海洋大學","1436","環境生物與漁業科學學系",148,{英:2,生:1.5,國:1}],
+      ["國立臺灣海洋大學","1437","海洋環境資訊系",226.5,{英:1.5,甲:1.5,物:1.5,化:1,國:1}],
+      ["國立臺灣海洋大學","1440","機械與機電工程學系",259,{甲:1.5,物:1.5,英:1.5,化:1,國:1}],
+      ["國立臺灣海洋大學","1441","系統工程暨造船學系",147.25,{甲:1.75,物:1.5,英:1}],
+      ["國立臺灣海洋大學","1442","河海工程學系",190.25,{甲:1.5,物:1.25,英:1,化:1,國:1}],
+      ["國立臺灣海洋大學","1443","海洋工程科技學士學位學程",209,{甲:1.5,物:1.5,英:1.5,國:1}],
+      ["國立臺灣海洋大學","1444","電機工程學系",219,{甲:1,英:1,物:1,國:1,化:1}],
+      ["國立臺灣海洋大學","1445","資訊工程學系",171,{甲:1,英:1,物:1,國:1}],
+      ["國立臺灣海洋大學","1447","光電與材料科技學系",215.75,{甲:1.5,物:1.5,英:1.25,化:1}],
+
+      ["國立彰化師範大學","1505","生物學系",250.25,{生:2,英:1.75,化:1.5,國:1}],
+      ["國立彰化師範大學","1514","機電工程學系",320,{甲:2,物:2,英:2,化:1,國:1}],
+      ["國立彰化師範大學","1515","電機工程學系",210,{甲:2,物:2,英:1}],
+      ["國立彰化師範大學","1516","電子工程學系",336,{物:2,甲:2,英:2,化:1,國:1}],
+      ["國立彰化師範大學","1517","資訊工程學系",200.5,{甲:2,英:1.5,物:1.5}],
+
+      ["國立中山大學","1562","生物科學系",254.5,{生:1.5,化:1.25,英:1.25,甲:1,國:1}],
+      ["國立中山大學","1563","生物科學系英語組",263.25,{生:1.5,化:1.25,英:1.5,甲:1,國:1}],
+      ["國立中山大學","1564","化學系",271,{化:2,物:1,甲:1,英:1,國:1}],
+      ["國立中山大學","1566","物理學系",315.25,{物:1.5,甲:1.75,英:1.75,化:1,國:1}],
+      ["國立中山大學","1570","應用數學系",189.5,{甲:2,英:1,物:1.5}],
+      ["國立中山大學","1572","電機工程學系",202,{甲:1,英:1,物:1,化:1}],
+      ["國立中山大學","1574","機械與機電工程學系",211,{物:2,甲:1.5,國:1}],
+      ["國立中山大學","1576","資訊工程學系",263.5,{甲:2,英:1,物:1.5,國:1}],
+      ["國立中山大學","1600","光電工程學系",280,{甲:2,物:2,英:1,化:1}],
+      ["國立中山大學","1602","材料與光電科學學系甲組",240,{甲:2,物:2,英:1}],
+      ["國立中山大學","1603","材料與光電科學學系乙組",259,{物:2,化:2,甲:1}],
+
+      ["國立中正大學","2236","數學系",173.75,{甲:2,英:1.25,物:1}],
+      ["國立中正大學","2237","物理學系",272.5,{物:1.5,甲:1.5,英:1.25,化:1,國:1}],
+      ["國立中正大學","2240","化學暨生物化學系",284,{化:2,物:1,甲:1.25,英:1.25,國:1}],
+      ["國立中正大學","2241","地球與環境科學系",261.5,{甲:1.5,物:1.5,化:1.5,英:1,國:1}],
+      ["國立中正大學","2242","資訊工程學系",265,{甲:1.25,英:1.5,物:1,化:1,國:1}],
+      ["國立中正大學","2244","電機工程學系乙組",240,{甲:1,物:1,英:1,化:1,國:1}],
+      ["國立中正大學","2250","化學工程學系",222,{甲:1,物:1,化:1,英:1,國:1}],
+
+      ["國立臺北大學","3030","資訊工程學系",264,{甲:1.5,英:1.25,物:1.25,化:1,國:1}],
+      ["國立臺北大學","3031","通訊工程學系",134,{甲:1,物:1,英:1}],
+      ["國立臺北大學","3032","電機工程學系",228,{甲:1,物:1,英:1,化:1,國:1}],
+
+      ["長庚大學","1627","醫學生物技術暨檢驗學系",184,{生:1.5,化:1.5,英:1}],
+      ["長庚大學","1630","醫學影像暨放射科學系",222,{物:1.25,英:1.25,甲:1.25,生:1,化:1}],
+      ["長庚大學","1633","生物醫學系",293,{化:2,生:2,英:2,甲:1,物:1}],
+      ["長庚大學","1635","電機工程學系",165,{物:1,甲:1,英:1,國:1}],
+      ["長庚大學","1636","機械工程學系",116,{物:1.25,甲:1,英:1}],
+      ["長庚大學","1637","化工與材料工程學系（化學工程組）",193,{甲:1,英:1,化:1,物:1,國:1}],
+      ["長庚大學","1640","化工與材料工程學系（材料工程組）",193,{甲:1,英:1,化:1,物:1,國:1}],
+      ["長庚大學","1641","電子工程學系",150,{物:1,甲:1,化:1,英:1}],
+      ["長庚大學","1642","資訊工程學系",159,{甲:1,物:1,英:1,國:1}],
+      ["長庚大學","1643","生物醫學工程學系",163.75,{甲:1.25,物:1,化:1,英:1}],
+      ["長庚大學","1644","人工智慧學系",134,{甲:1.5,英:1,國:1}],
+
+      ["中原大學","0445","應用數學系",143.75,{甲:2,國:1.25,英:1}],
+      ["中原大學","0446","物理學系物理組",168,{物:2,甲:1.5,英:1}],
+      ["中原大學","0447","物理學系光電與材料科學組",171.5,{物:2,甲:1.5,英:1}],
+      ["中原大學","0450","化學系化學組",182,{化:2,甲:1,英:1,物:1}],
+      ["中原大學","0451","化學系材料化學組",189,{化:2,英:1,甲:1,物:1}],
+      ["中原大學","0453","生物科技學系",170,{生:2,化:1.5,英:1.5}],
+      ["中原大學","0454","化學工程學系綠能製程組",188,{物:1,甲:1,英:1,化:1,國:1}],
+      ["中原大學","0455","化學工程學系生化工程組",194,{物:1,甲:1,英:1,化:1,國:1}],
+      ["中原大學","0456","化學工程學系材料工程組",198,{物:1,甲:1,英:1,化:1,國:1}],
+      ["中原大學","0460","機械工程學系",155,{甲:1,物:1,國:2}],
+      ["中原大學","0461","生物醫學工程學系",183,{國:2,甲:1,物:1,化:1}],
+      ["中原大學","0462","環境工程學系",194,{化:2,國:2,英:1}],
+      ["中原大學","0463","電機資訊學院學士班",221,{甲:1,英:2,國:2}],
+      ["中原大學","0464","工業與系統工程學系工程組",111,{甲:1,英:1,國:1}],
+      ["中原大學","0466","電子工程學系",162,{物:1,甲:1,英:1,國:1}],
+      ["中原大學","0467","資訊工程學系",222,{甲:1,英:2,國:2}],
+      ["中原大學","0470","電機工程學系",167,{甲:1,英:1,物:1,國:1}],
+      ["中原大學","0471","電機資訊學院智慧運算與大數據學士班",123,{甲:1,英:1,國:1}]
+    ];
+
+    const category = rate => rate <= -0.20 ? ["dream","夢幻"] : rate <= 0 ? ["challenge","挑戰"] : rate < 0.08 ? ["steady","穩健"] : ["safe","保底"];
+    const signed = value => `${value >= 0 ? "＋" : "－"}${Math.abs(value).toFixed(1)}`;
+    const formula = weights => Object.entries(weights).map(([subject, weight]) => `${labels[subject]}×${Number(weight).toFixed(weight % 1 ? 2 : 0)}`).join("＋");
+    const schoolOrder = [
+      "國立臺灣大學", "國立清華大學", "國立陽明交通大學", "國立成功大學", "國立中央大學",
+      "國立中興大學", "國立中正大學", "國立中山大學", "國立臺灣師範大學", "國立彰化師範大學",
+      "國立臺灣海洋大學", "國立臺北大學", "長庚大學", "中原大學"
+    ];
+    const schoolRank = new Map(schoolOrder.map((school, index) => [school, index]));
+    const rows = programs.map(([school, code, name, cutoff, weights]) => {
+      const score = Object.entries(weights).reduce((sum,[subject,weight]) => sum + scores[subject] * weight, 0);
+      const gap = score - cutoff;
+      const rate = gap / cutoff;
+      const [key,label] = category(rate);
+      return { school, code, name, cutoff, weights, score, gap, rate, key, label };
+    }).sort((a, b) => schoolRank.get(a.school) - schoolRank.get(b.school) || a.code.localeCompare(b.code, "zh-Hant"));
+
+    const counts = Object.fromEntries(["dream","challenge","steady","safe"].map(key => [key, rows.filter(row => row.key === key).length]));
+    const names = { dream:"夢幻", challenge:"挑戰", steady:"穩健", safe:"保底" };
+    document.querySelector("#category-summary").innerHTML = `
+      <div class="summary-box"><span class="label">完成計算</span><span class="count">${rows.length}</span><span class="foot">${new Set(rows.map(row => row.school)).size}校系組</span></div>
+      ${["dream","challenge","steady","safe"].map(key => `<div class="summary-box"><span class="tag ${key}">${names[key]}</span><span class="count">${counts[key]}</span><span class="foot">占${(counts[key]/rows.length*100).toFixed(1)}％</span></div>`).join("")}`;
+
+    const body = document.querySelector("#program-body");
+    let lastSchool = "";
+    body.innerHTML = rows.map(row => {
+      const schoolHeader = row.school !== lastSchool ? `<tr class="school-row" data-school="${row.school}"><td colspan="7"><div class="school-heading"><span>${row.school}｜${rows.filter(item => item.school === row.school).length}個可計算系組</span><button type="button" class="school-toggle" aria-expanded="true">收合</button></div></td></tr>` : "";
+      lastSchool = row.school;
+      return `${schoolHeader}<tr data-category="${row.key}" data-school="${row.school}">
+        <td><span class="tag ${row.key}">${row.label}</span></td>
+        <td><span class="foot">${row.code}</span><br>${row.name}</td>
+        <td class="formula">${formula(row.weights)}</td>
+        <td class="score">${row.score.toFixed(2)}</td>
+        <td class="score">${row.cutoff.toFixed(2)}</td>
+        <td class="score ${row.gap >= 0 ? "positive" : "negative"}">${signed(row.gap)}</td>
+        <td class="score ${row.rate >= 0 ? "positive" : "negative"}">${signed(row.rate*100)}％</td>
+      </tr>`;
+    }).join("");
+
+    let activeFilter = "all";
+    const collapsedSchools = new Set();
+    const dataRows = [...document.querySelectorAll("#program-body tr[data-category]")];
+    const schoolHeaders = [...document.querySelectorAll("#program-body .school-row")];
+    const updateVisibility = () => {
+      dataRows.forEach(row => {
+        const matchesFilter = activeFilter === "all" || row.dataset.category === activeFilter;
+        row.hidden = !matchesFilter || collapsedSchools.has(row.dataset.school);
+      });
+      schoolHeaders.forEach(header => {
+        const school = header.dataset.school;
+        const hasMatch = dataRows.some(row => row.dataset.school === school && (activeFilter === "all" || row.dataset.category === activeFilter));
+        const collapsed = collapsedSchools.has(school);
+        header.hidden = !hasMatch;
+        const toggle = header.querySelector(".school-toggle");
+        toggle.textContent = collapsed ? "展開" : "收合";
+        toggle.setAttribute("aria-expanded", String(!collapsed));
+      });
+    };
+
+    document.querySelectorAll(".filters button[data-filter]").forEach(button => button.addEventListener("click", () => {
+      document.querySelectorAll(".filters button[data-filter]").forEach(item => item.classList.toggle("active", item === button));
+      activeFilter = button.dataset.filter;
+      updateVisibility();
+    }));
+    schoolHeaders.forEach(header => header.querySelector(".school-toggle").addEventListener("click", () => {
+      const school = header.dataset.school;
+      collapsedSchools.has(school) ? collapsedSchools.delete(school) : collapsedSchools.add(school);
+      updateVisibility();
+    }));
+    document.querySelector('[data-action="collapse-all"]').addEventListener("click", () => {
+      schoolOrder.forEach(school => collapsedSchools.add(school));
+      updateVisibility();
+    });
+    document.querySelector('[data-action="expand-all"]').addEventListener("click", () => {
+      collapsedSchools.clear();
+      updateVisibility();
+    });
+  })();
+  </script>
 </main>
 </body>
 </html>
