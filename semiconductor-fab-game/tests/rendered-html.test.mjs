@@ -25,7 +25,7 @@ test("server renders the semiconductor factory game", async () => {
   assert.match(html, /訂單市場/);
   assert.match(html, /物件資料庫/);
   assert.match(html, /營運與警報紀錄/);
-  assert.match(html, /V0\.9 LOCAL/);
+  assert.match(html, /V1\.0 LOCAL/);
   assert.match(html, /aria-label="開啟玩家製造指南"/);
 });
 
@@ -37,13 +37,13 @@ test("new game starts with only SOURCE and generation-one procurement", async ()
   assert.match(html, /購入 SOURCE/);
   assert.match(html, /購買 LV1 濕式清洗槽/);
   assert.match(html, /研發下一代 濕式清洗槽/);
-  assert.match(html, /可同時承接多筆訂單/);
+  assert.match(html, /市場升級後，才會出現對應難度以下的訂單/);
   assert.doesNotMatch(html, /aria-label="折價出售 equipment-/);
 });
 
 test("initial market exposes low-tier permanent and short-term orders only", async () => {
   const html = await (await render()).text();
-  assert.match(html, /市場等級 <!-- -->1/);
+  assert.match(html, /市場 <!-- -->1<!-- -->／<!-- -->5/);
   assert.match(html, /永久・每單 2 LOTS/);
   assert.match(html, /剩餘 3 單・每單 2 LOTS/);
   assert.match(html, /高良率型/);

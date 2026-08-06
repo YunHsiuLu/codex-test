@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.vinext/
+.wrangler/
+.game-server.log
+.game-server.pid

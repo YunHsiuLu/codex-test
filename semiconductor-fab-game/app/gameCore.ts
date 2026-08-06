@@ -22,7 +22,7 @@ export type Product = {
   contractType: ContractType;
   requiredLots: number;
   contractRuns?: number;
-  marketTier: 1 | 2 | 3 | 4;
+  marketTier: 1 | 2 | 3 | 4 | 5;
 };
 
 export type MarketOrder = Product & {
@@ -115,6 +115,7 @@ export const equipmentDefinitions: EquipmentDefinition[] = [
 export const products = orderCatalog;
 export const maxEquipmentLevel = 7;
 export const maxSourceLevel = 10;
+export const maxMarketTier = 5;
 
 export const initialEquipment: Record<EquipmentKey, number> = {
   clean: 0, furnace: 0, aligner: 0, etch: 0, deposition: 0, implant: 0, package: 0, test: 0, stepper: 0,
@@ -278,6 +279,11 @@ export function createInitialMarket(catalog: Product[] = products, count = 6) {
 
 export function marketRefreshCost(refreshCount: number) {
   return 150 * Math.pow(refreshCount + 1, 2);
+}
+
+export function marketUpgradePrice(currentTier: number) {
+  if (currentTier >= maxMarketTier) return 0;
+  return [650, 1800, 4800, 11000][Math.max(0, Math.min(maxMarketTier - 2, Math.floor(currentTier) - 1))] ?? 0;
 }
 
 export function planProduction(lots: ProductionLot[], units: EquipmentUnit[], catalog: Product[] = products) {

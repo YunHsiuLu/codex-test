@@ -18,6 +18,8 @@ import {
   initialTechnology,
   lotRevenue,
   marketRefreshCost,
+  marketUpgradePrice,
+  maxMarketTier,
   planProduction,
   productionOutputSlot,
   purchasableEquipmentLevels,
@@ -76,15 +78,15 @@ test("order outputs accept the declared result instead of raw silicon wafer", ()
   });
 });
 
-test("advanced catalog includes repeated process loops and package-test end stages", () => {
+test("advanced catalog includes repeated process loops and varied shipment stages", () => {
   const repeated = products.filter((product) => new Set(product.recipe).size < product.recipe.length);
-  assert.ok(repeated.length >= 3);
-  repeated.forEach((product) => {
-    assert.deepEqual(product.recipe.slice(-2), ["package", "test"]);
-    assert.equal(processObjects[product.objects.at(-1)!].category, "product");
-  });
-  assert.ok(products.some((product) => product.id === "logic-dual-layer"));
-  assert.ok(products.some((product) => product.id === "analog-dual-layer"));
+  assert.ok(repeated.length >= 7);
+  assert.ok(repeated.some((product) => product.recipe.at(-1) === "etch"));
+  assert.ok(repeated.some((product) => product.recipe.at(-1) === "package"));
+  assert.ok(repeated.some((product) => product.recipe.at(-1) === "test"));
+  repeated.forEach((product) => assert.ok(processObjects[product.objects.at(-1)!]));
+  assert.ok(products.some((product) => product.id === "loop-tested-logic"));
+  assert.ok(products.some((product) => product.id === "loop-analog-tested"));
   assert.ok(products.some((product) => product.id === "mcu-triple-layer"));
 });
 
@@ -209,6 +211,17 @@ test("market tier grows from basic cleaning toward advanced product families", (
   const basic: EquipmentUnit[] = basicKeys.map((key, index) => ({ id: `basic-${index}`, key, level: 1, purchaseCost: 1000 }));
   assert.equal(factoryMarketTier(basic), 2);
   assert.equal(factoryMarketTier([...basic, { id: "deposition", key: "deposition", level: 2, purchaseCost: 6500 }, { id: "implant", key: "implant", level: 2, purchaseCost: 8200 }]), 3);
+});
+
+test("market upgrades are paid and catalog advances through five staged markets", () => {
+  assert.equal(maxMarketTier, 5);
+  assert.deepEqual([1, 2, 3, 4, 5].map((tier) => products.filter((product) => product.marketTier === tier).length), [6, 6, 6, 6, 8]);
+  assert.equal(marketUpgradePrice(1), 650);
+  assert.equal(marketUpgradePrice(2), 1800);
+  assert.equal(marketUpgradePrice(5), 0);
+  assert.ok(products.some((product) => product.marketTier === 2 && product.recipe.at(-1) === "furnace"));
+  assert.ok(products.some((product) => product.marketTier === 2 && product.recipe.at(-1) === "aligner"));
+  assert.ok(products.some((product) => product.marketTier === 4 && product.recipe.at(-1) === "package"));
 });
 
 test("old equipment sells below its original purchase price", () => {

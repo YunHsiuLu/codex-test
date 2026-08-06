@@ -19,11 +19,12 @@ import {
   equipmentResearchPrice,
   equipmentResaleValue,
   fleetBestLevels,
-  factoryMarketTier,
   initialTechnology,
   lotRevenue,
   marketRefreshCost,
+  marketUpgradePrice,
   maxEquipmentLevel,
+  maxMarketTier,
   maxSourceLevel,
   missingRequirements,
   planProduction,
@@ -61,6 +62,7 @@ const nodeWidth = 165;
 const nodeHeight = 122;
 const canvasWidth = 1400;
 const canvasHeight = 820;
+const productionQuality = 58;
 
 const initialNodes: FactoryNode[] = [
   { id: "source-1", kind: "source", sourceLevel: 1, x: 48, y: 354 },
@@ -74,7 +76,7 @@ export default function Home() {
   const [finished, setFinished] = useState(0);
   const [technology, setTechnology] = useState(initialTechnology);
   const [purchaseLevels, setPurchaseLevels] = useState(initialTechnology);
-  const [quality, setQuality] = useState(58);
+  const [marketTier, setMarketTier] = useState<Product["marketTier"]>(1);
   const [marketOrders, setMarketOrders] = useState<MarketOrder[]>(initialMarket);
   const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
   const [activeOfferIds, setActiveOfferIds] = useState<string[]>([]);
@@ -87,7 +89,8 @@ export default function Home() {
   const [pendingPort, setPendingPort] = useState<PortRef | null>(null);
   const [layoutChecked, setLayoutChecked] = useState(false);
   const [log, setLog] = useState<LogEntry[]>([{ id: 1, type: "info", message: "新廠啟用：工作區目前只有矽晶圓 SOURCE。" }]);
-  const [workspaceExpanded, setWorkspaceExpanded] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarTab, setSidebarTab] = useState<"equipment" | "market" | "objects" | "alarms">("equipment");
   const [guideOpen, setGuideOpen] = useState(false);
   const [toast, setToast] = useState("");
   const [lastSettlement, setLastSettlement] = useState<Settlement | null>(null);
@@ -100,19 +103,17 @@ export default function Home() {
   const sourceScheduleRef = useRef<Record<string, number>>({});
   const sourceNodesRef = useRef<FactoryNode[]>(initialNodes);
   const sourceRoundRobinRef = useRef(0);
-  const stateRef = useRef<{ cash: number; lots: Lot[]; units: EquipmentUnit[]; quality: number; strikes: Record<string, number> }>({ cash, lots, units: [], quality, strikes });
+  const stateRef = useRef<{ cash: number; lots: Lot[]; units: EquipmentUnit[]; quality: number; strikes: Record<string, number> }>({ cash, lots, units: [], quality: productionQuality, strikes });
   const marketRef = useRef(marketOrders);
+  const marketTierRef = useRef<Product["marketTier"]>(marketTier);
   const deliveryRef = useRef(deliveryBuffers);
   const catalogCursor = useRef(0);
   const nextOffer = useRef(7);
-  const marketTierRef = useRef(1);
 
   const fleetUnits = useMemo<EquipmentUnit[]>(() => nodes.flatMap((node) => node.kind === "equipment" && node.equipmentKey && node.equipmentLevel && node.purchaseCost ? [{ id: node.id, key: node.equipmentKey, level: node.equipmentLevel, purchaseCost: node.purchaseCost }] : []), [nodes]);
   const selectedProduct = selectedOfferId ? marketOrders.find((item) => item.offerId === selectedOfferId) ?? null : null;
   const activeOrders = marketOrders.filter((order) => activeOfferIds.includes(order.offerId));
   const sourceNodes = nodes.filter((node) => node.kind === "source");
-  const marketTier = factoryMarketTier(fleetUnits);
-  const eligibleProducts = useMemo(() => products.filter((product) => product.marketTier <= marketTier), [marketTier]);
   function routeForOrder(product: MarketOrder, output: FactoryNode) {
     const follow = (currentId: string, step: number, used: Set<string>): EquipmentUnit[] | null => {
       const outgoing = connections.filter((connection) => connection.from.nodeId === currentId && connection.from.port === "out");
@@ -144,12 +145,16 @@ export default function Home() {
   const bestEquipment = fleetBestLevels(configuredUnits);
 
   useEffect(() => {
-    stateRef.current = { cash, lots, units: routedUnits, quality, strikes };
-  }, [cash, lots, routedUnits, quality, strikes]);
+    stateRef.current = { cash, lots, units: routedUnits, quality: productionQuality, strikes };
+  }, [cash, lots, routedUnits, strikes]);
 
   useEffect(() => {
     marketRef.current = marketOrders;
   }, [marketOrders]);
+
+  useEffect(() => {
+    marketTierRef.current = marketTier;
+  }, [marketTier]);
 
   useEffect(() => {
     deliveryRef.current = deliveryBuffers;
@@ -161,7 +166,7 @@ export default function Home() {
     sourceScheduleRef.current = Object.fromEntries(Object.entries(sourceScheduleRef.current).filter(([id]) => activeIds.has(id)));
   }, [sourceNodes]);
 
-  const predicted = selectedProduct ? projectedYield(selectedProduct, configuredUnits, quality) : 0;
+  const predicted = selectedProduct ? projectedYield(selectedProduct, configuredUnits, productionQuality) : 0;
 
   function note(message: string, type: LogEntry["type"] = "info") {
     setLog((items) => items[0]?.message === message && items[0]?.type === type ? items : [{ id: Date.now() + Math.random(), type, message }, ...items].slice(0, 8));
@@ -245,7 +250,7 @@ export default function Home() {
     let operating = 0;
     selectedProduct.recipe.forEach((key, step) => {
       const level = Math.max(1, bestEquipment[key]);
-      const speed = productionSpeed(key, level, quality);
+      const speed = productionSpeed(key, level, productionQuality);
       const estimateLot: Lot = { id: step + 1, offerId: selectedProduct.offerId, step, productId: selectedProduct.id, progress: 0, yield: 99.5, targetYield: predicted, spent: 0 };
       operating += activeDayCost([estimateLot], configuredUnits) * Math.ceil(100 / speed);
     });
@@ -417,7 +422,7 @@ export default function Home() {
     note(`購入 ${id.toUpperCase()}，初始 LV1・1 OUT・每 5 秒自動供料，支出 ${money(price)}。`);
   }
 
-  function pullMarketOrders(targetCount = 6, replaceCount = 0) {
+  function pullMarketOrders(targetCount = 6, replaceCount = 0, availableTier = marketTier) {
     let current = marketRef.current;
     if (replaceCount > 0) {
       const replaceable = current.filter((order) => !activeOfferIds.includes(order.offerId)).slice(-replaceCount);
@@ -430,7 +435,7 @@ export default function Home() {
       const product = products[catalogCursor.current % products.length];
       catalogCursor.current += 1;
       attempts += 1;
-      if (!eligibleProducts.some((item) => item.id === product.id)) continue;
+      if (product.marketTier > availableTier) continue;
       if ([...current, ...added].some((order) => order.id === product.id)) continue;
       added.push(createMarketOrder(product, nextOffer.current++));
     }
@@ -448,6 +453,18 @@ export default function Home() {
     setCash((value) => value - price);
     setRefreshCount((value) => value + 1);
     note(`市場已付費刷新，支出 ${money(price)}；載入 ${added.length} 筆新訂單。`);
+  }
+
+  function upgradeMarket() {
+    if (marketTier >= maxMarketTier) return flash("訂單市場已達最高等級");
+    const price = marketUpgradePrice(marketTier);
+    if (cash < price) return raiseAlarm(`資金不足，市場升級需要 ${money(price)}`);
+    const nextTier = (marketTier + 1) as Product["marketTier"];
+    setCash((value) => value - price);
+    setMarketTier(nextTier);
+    const added = pullMarketOrders(6, marketRef.current.length >= 6 ? 2 : 0, nextTier);
+    note(`訂單市場升級至市場 ${nextTier}，支出 ${money(price)}；新增 ${added.length} 筆可承接的進階訂單。`);
+    flash(`市場 ${nextTier} 已解鎖`);
   }
 
   function addWaferFromSource(sourceId: string, automatic = false) {
@@ -476,7 +493,7 @@ export default function Home() {
       sourceRoundRobinRef.current += 1;
       const id = nextLot.current++;
       const processVariation = ((id * 37) % 25) / 10 - 1.2;
-      const target = product.baseYield + (quality - 50) * 0.055 + processVariation;
+      const target = product.baseYield + (productionQuality - 50) * 0.055 + processVariation;
       staged.push({ id, offerId: product.offerId, productId: product.id, step: 0, progress: 0, yield: 99.5, targetYield: Math.max(52, Math.min(99, target)), spent: product.materialCost });
       reserved[product.offerId] = (reserved[product.offerId] ?? 0) + 1;
       availableCash -= product.materialCost;
@@ -567,22 +584,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (marketTier <= marketTierRef.current) return;
-    marketTierRef.current = marketTier;
-    const timer = window.setTimeout(() => {
-      const added = pullMarketOrders(6, 2);
-      if (added.length) note(`工廠成熟度提升至市場等級 ${marketTier}；市場已輪替 ${added.length} 筆更高階訂單。`);
-    }, 0);
-    return () => window.clearTimeout(timer);
-    // The market rotation is triggered only when the derived market tier rises.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [marketTier, eligibleProducts]);
-
-  useEffect(() => {
     const timer = window.setInterval(() => {
       setMarketCountdown((value) => {
         if (value > 1) return value - 1;
-        const added = marketRef.current.length < 6 ? pullMarketOrders(6) : [];
+        const added = marketRef.current.length < 6 ? pullMarketOrders(6, 0, marketTierRef.current) : [];
         if (added.length) note(`後台訂單服務載入 ${added.length} 筆新訂單。`);
         return 15;
       });
@@ -639,8 +644,17 @@ export default function Home() {
       <div className="runButton autoRun"><span className="livePulse" />產線自動運轉</div>
     </header>
 
-    <section className={`gameGrid layoutGameGrid ${workspaceExpanded ? "workspaceExpanded" : ""}`}>
-      <aside className="leftPanel panel">
+    <section className={`gameGrid layoutGameGrid ${sidebarOpen ? "" : "sidebarCollapsed"}`}>
+      <aside className={`sidebar panel ${sidebarOpen ? "" : "collapsed"}`}>
+        <nav className="sidebarTabs" aria-label="左側功能選單">
+          <button aria-label="開啟設備採購" className={sidebarTab === "equipment" ? "active" : ""} onClick={() => { setSidebarTab("equipment"); setSidebarOpen(true); }}>設</button>
+          <button aria-label="開啟訂單市場" className={sidebarTab === "market" ? "active" : ""} onClick={() => { setSidebarTab("market"); setSidebarOpen(true); }}>市</button>
+          <button aria-label="開啟物件資料庫" className={sidebarTab === "objects" ? "active" : ""} onClick={() => { setSidebarTab("objects"); setSidebarOpen(true); }}>物</button>
+          <button aria-label="開啟營運與警報紀錄" className={sidebarTab === "alarms" ? "active" : ""} onClick={() => { setSidebarTab("alarms"); setSidebarOpen(true); }}>警</button>
+          <button aria-label={sidebarOpen ? "收合左側功能欄" : "展開左側功能欄"} className="collapseSidebar" onClick={() => setSidebarOpen((value) => !value)}>{sidebarOpen ? "‹" : "›"}</button>
+        </nav>
+        <div className="sidebarContent">
+        <section className={`sidebarSection equipmentPane ${sidebarTab === "equipment" ? "active" : ""}`}>
         <div className="sectionTitle"><span>01</span><div><b>設備採購</b><small>FACILITY PROCUREMENT</small></div></div>
         <p className="helper starterHint">新廠沒有任何機台。購買後設備會放入工作區，再由玩家配置位置與接線。</p>
         <div className="levelLegend" aria-label="設備等級顏色"><span className="level-1">1</span><span className="level-2">2</span><span className="level-3">3</span><span className="level-4">4</span><span className="level-5">5</span><span className="level-6">6</span><span className="level-max">MAX</span></div>
@@ -652,11 +666,27 @@ export default function Home() {
           const installed = fleetUnits.filter((unit) => unit.key === item.key).length;
           return <div className={`equipment generationCard ${equipmentLevelClass(selectedLevel)} ${installed ? "" : "notInstalled"}`} key={item.key}><div className="equipIcon"><span>{item.short}</span></div><div className="equipInfo"><b>{item.name}</b><small>{equipmentModeName(selectedProfile.mode)}・容量 {selectedProfile.capacity}・速度 {Math.round(selectedProfile.speed)}</small><span className="portSummary">上限 {equipmentLevelName(technologyLevel)}・已持有 {installed} 台・運轉 ${Math.round(item.upkeep * selectedProfile.upkeepMultiplier)}／日</span></div><div className="equipmentActions"><span className={`levelSwatch ${equipmentLevelClass(selectedLevel)}`} title={equipmentLevelName(selectedLevel)} /><select aria-label={`選擇 ${item.name} 購買等級`} value={selectedLevel} onChange={(event) => setPurchaseLevels((levels) => ({ ...levels, [item.key]: Number(event.target.value) }))}>{purchasableEquipmentLevels(technologyLevel).map((level) => <option key={level} value={level}>{equipmentLevelName(level)}</option>)}</select><button aria-label={`購買 ${equipmentLevelName(selectedLevel)} ${item.name}`} onClick={() => purchaseEquipment(item.key)}>購買 {money(equipmentPurchasePrice(item, selectedLevel))}</button><button aria-label={`研發下一代 ${item.name}`} disabled={atMax} onClick={() => researchEquipment(item.key)}>{atMax ? "上限 MAX" : `研發上限 ${money(equipmentResearchPrice(item, technologyLevel))}`}</button></div></div>;
         })}</div>
+        </section>
+        <section className={`sidebarSection contracts ${sidebarTab === "market" ? "active" : ""}`}>
+          <div className="sectionTitle"><span>02</span><div><b>訂單市場</b><small>CONTRACT & OUTPUT</small></div></div>
+          <p className="helper">市場升級後，才會出現對應難度以下的訂單。點擊訂單會建立專屬 OUTPUT；退出則在 OUTPUT 支付違約金。</p>
+          <div className="marketControls"><span>市場 {marketTier}／{maxMarketTier}・進行中 {activeOrders.length} 筆・目前 {marketOrders.length}／6 筆・同步 {marketCountdown}s</span><div><button onClick={upgradeMarket} disabled={marketTier >= maxMarketTier}>{marketTier >= maxMarketTier ? "市場已達 MAX" : `升級市場 ${money(marketUpgradePrice(marketTier))}`}</button><button onClick={refreshMarket}>刷新 {money(marketRefreshCost(refreshCount))}</button></div></div>
+          <div className="customerList">{marketOrders.map((product) => {
+            const productMissing = missingRequirements(product, fleetUnits);
+            const profile = product.requiredLots >= 5 ? "量產型" : product.minYield >= 90 ? "高良率型" : "平衡型";
+            const active = activeOfferIds.includes(product.offerId);
+            return <button className={`customer ${active ? "selected" : ""}`} key={product.offerId} onClick={() => selectOrder(product)}><span className="customerLogo" style={{ background: product.color }}>{product.name.slice(0, 1)}</span><span className="customerText"><b>{product.name}</b><small>{product.description}｜{product.customer}</small></span><span className="customerTerms"><b>目標良率 {product.minYield}%</b><small>${product.unitPrice}／單位</small></span><span className={`contractBadge ${product.contractType}`}>{active ? "進行中・OUTPUT 已建立" : product.contractType === "permanent" ? `永久・每單 ${product.requiredLots} LOTS` : `剩餘 ${product.contractsRemaining} 單・每單 ${product.requiredLots} LOTS`}</span><span className="requirementLine">{profile}｜{productMissing.length ? `待建置：${productMissing.map((item) => `${getDefinition(item.key).name} Lv.${item.level}`).join("、")}` : `交貨槽 ${deliveryBuffers[product.offerId]?.length ?? 0}／${product.requiredLots} LOTS`}</span></button>;
+          })}{!marketOrders.length && <div className="emptyMarket">目前沒有可承接的訂單，請等待後台同步或付費刷新。</div>}</div>
+          {selectedProduct && estimate && <div className="economyCard"><div><span>整單材料</span><b>-{money(estimate.material)}</b></div><div><span>整單營運</span><b>-{money(estimate.operating)}</b></div><div><span>預估付款</span><b className="income">+{money(estimate.revenue)}</b></div><div><span>良率係數</span><b className={estimate.multiplier >= 1 ? "income" : "danger"}>{estimate.multiplier.toFixed(2)}×</b></div><div className="profitRow"><span>湊齊 {selectedProduct.requiredLots} LOTS 後付款</span><b className="income">預估損益 {money(estimate.revenue - estimate.total)}</b></div></div>}
+        </section>
+        <section className={`sidebarSection objectPanel ${sidebarTab === "objects" ? "active" : ""}`}><div className="sectionTitle"><span>03</span><div><b>物件資料庫</b><small>PROCESS OBJECT DATA</small></div></div>{selectedProduct ? <div className="objectFlow">{selectedProduct.objects.map((key, index) => <div key={`${key}-${index}`}><span>{index === 0 ? "SOURCE" : index === selectedProduct.objects.length - 1 ? "OUTPUT" : String(index).padStart(2, "0")}</span><b>{processObjects[key].name}</b><small>{processObjects[key].code}</small></div>)}</div> : <p className="helper">選擇訂單後顯示各站 INPUT／OUTPUT 物件。</p>}</section>
+        <section className={`sidebarSection activity ${sidebarTab === "alarms" ? "active" : ""}`}><div className="sectionTitle"><span>04</span><div><b>營運與警報紀錄</b><small>FAB ACTIVITY / ALARM</small></div>{log.some((item) => item.type === "alarm") && <em className="alarmCount">ALARM {log.filter((item) => item.type === "alarm").length}</em>}</div>{lastSettlement && <div className="lastResult"><span>最近訂單付款・{lastSettlement.lots} LOTS</span><b>{lastSettlement.product}・平均良率 {lastSettlement.yield}%</b><div><small>價格係數 {lastSettlement.multiplier.toFixed(2)}×・付款 {money(lastSettlement.payout)}</small><strong className={lastSettlement.profit >= 0 ? "income" : "danger"}>損益 {money(lastSettlement.profit)}</strong></div></div>}<div className="logList">{log.map((item, index) => <div className={item.type === "alarm" ? "alarmLog" : ""} key={item.id}><span>{item.type === "alarm" ? "ALARM" : index ? `-${index}` : "NOW"}</span><p>{item.message}</p></div>)}</div></section>
+        </div>
       </aside>
 
       <section className="fabArea layoutFabArea">
         <div className="workspaceHeader"><div><p className="eyebrow">FAB LAYOUT / ROUTING CONSOLE</p><h1>製程佈局工作區</h1><p>可同時承接多筆訂單；每個接線正確的 SOURCE 都會依自身等級自動平均補料。</p></div><div className={`layoutStatus ${layoutValidation.valid ? "valid" : layoutChecked ? "invalid" : ""}`}><span>{layoutValidation.valid ? "PRODUCTION READY" : "LAYOUT CHECK"}</span><b>{layoutValidation.message}</b></div></div>
-        <div className="workspaceToolbar"><span>接線狀態：{pendingPort ? `已選擇 ${pendingPort.port.toUpperCase()}，請選擇第二個接口` : "等待選擇接口"}</span><div><button onClick={purchaseSource} disabled={!canPurchaseSource(sourceNodes.map((node) => node.sourceLevel ?? 1))}>購入 SOURCE {money(sourcePurchasePrice(sourceNodes.length))}</button><button onClick={() => setWorkspaceExpanded((value) => !value)}>{workspaceExpanded ? "顯示側欄" : "擴大工作區"}</button><button onClick={checkLayout}>檢查設備佈局</button><button onClick={clearWiring}>清除接線</button></div></div>
+        <div className="workspaceToolbar"><span>接線狀態：{pendingPort ? `已選擇 ${pendingPort.port.toUpperCase()}，請選擇第二個接口` : "等待選擇接口"}</span><div><button onClick={purchaseSource} disabled={!canPurchaseSource(sourceNodes.map((node) => node.sourceLevel ?? 1))}>購入 SOURCE {money(sourcePurchasePrice(sourceNodes.length))}</button><button onClick={() => setSidebarOpen((value) => !value)}>{sidebarOpen ? "收合側欄" : "展開側欄"}</button><button onClick={checkLayout}>檢查設備佈局</button><button onClick={clearWiring}>清除接線</button></div></div>
         <div className="layoutViewport"><div className="layoutCanvas" style={{ width: canvasWidth, height: canvasHeight }}>
           <div className="pcbGrid" />
           {connections.map((connection) => {
@@ -693,10 +723,9 @@ export default function Home() {
             </div>;
           })}
         </div></div>
-        <div className="controlDeck layoutControls"><div className="recipe"><div><b>製程策略</b><span>{quality >= 72 ? "良率優先" : quality >= 45 ? "平衡生產" : "速度優先"}</span></div><input aria-label="製程品質與速度平衡" type="range" min="20" max="90" value={quality} onChange={(event) => setQuality(Number(event.target.value))} /><div className="rangeLabels"><small>速度優先</small><small>良率優先</small></div></div><div className="actionButtons"><button className="secondary" onClick={advance}>立即推進一日<small>{lots.length ? `預計支出 ${money(activeDayCost(lots, routedUnits))}` : "產線持續待命"}</small></button></div></div>
       </section>
 
-      <aside className="rightPanel">
+      <aside className="rightPanel" aria-hidden="true">
         <section className="panel contracts"><div className="sectionTitle"><span>02</span><div><b>訂單市場</b><small>CONTRACT & OUTPUT</small></div></div><p className="helper">可同時承接多筆訂單；點擊訂單即在工作區建立專屬 OUTPUT。若要退出，可在該 OUTPUT 支付違約金。</p><div className="marketControls"><span>市場等級 {marketTier}・進行中 {activeOrders.length} 筆・目前 {marketOrders.length}／6 筆・下次同步 {marketCountdown}s</span><button onClick={refreshMarket}>立即刷新 {money(marketRefreshCost(refreshCount))}</button></div><div className="customerList">{marketOrders.map((product) => {
           const productMissing = missingRequirements(product, fleetUnits);
           const profile = product.requiredLots >= 5 ? "量產型" : product.minYield >= 90 ? "高良率型" : "平衡型";
@@ -707,8 +736,8 @@ export default function Home() {
         <section className="panel activity"><div className="sectionTitle"><span>04</span><div><b>營運與警報紀錄</b><small>FAB ACTIVITY / ALARM</small></div>{log.some((item) => item.type === "alarm") && <em className="alarmCount">ALARM {log.filter((item) => item.type === "alarm").length}</em>}</div>{lastSettlement && <div className="lastResult"><span>最近訂單付款・{lastSettlement.lots} LOTS</span><b>{lastSettlement.product}・平均良率 {lastSettlement.yield}%</b><div><small>價格係數 {lastSettlement.multiplier.toFixed(2)}×・付款 {money(lastSettlement.payout)}</small><strong className={lastSettlement.profit >= 0 ? "income" : "danger"}>損益 {money(lastSettlement.profit)}</strong></div></div>}<div className="logList">{log.map((item, index) => <div className={item.type === "alarm" ? "alarmLog" : ""} key={item.id}><span>{item.type === "alarm" ? "ALARM" : index ? `-${index}` : "NOW"}</span><p>{item.message}</p></div>)}</div></section>
       </aside>
     </section>
-    <footer><span>FAB STATUS: <b className="online">AUTO RUN / {lots.length ? "PROCESSING" : "IDLE"}</b></span><span>承接多筆訂單 → 自動分流補料 → 湊齊 LOTS → 依平均良率付款</span><span>V0.9 LOCAL</span></footer>
+    <footer><span>FAB STATUS: <b className="online">AUTO RUN / {lots.length ? "PROCESSING" : "IDLE"}</b></span><span>承接多筆訂單 → 自動分流補料 → 湊齊 LOTS → 依平均良率付款</span><span>V1.0 LOCAL</span></footer>
     {toast && <div className="toast">{toast}</div>}
-    {guideOpen && <div className="guideOverlay" role="presentation" onClick={() => setGuideOpen(false)}><section className="guidePanel" role="dialog" aria-modal="true" aria-label="玩家製造指南" onClick={(event) => event.stopPropagation()}><button className="guideClose" aria-label="關閉玩家製造指南" onClick={() => setGuideOpen(false)}>×</button><p className="eyebrow">PLAYER RECIPE GUIDE</p><h2>產品製造指南</h2><p>先承接訂單，再依配方購買設備並由 SOURCE 的 OUT 依序接到每一站，最後接入該訂單 OUTPUT。未接好的訂單會顯示 ALARM，但不會停止其他已完成的產線。</p><div className="guideProducts">{products.map((product) => <article key={product.id}><div><span style={{ background: product.color }}>市場 {product.marketTier}</span><b>{product.name}</b><small>{product.customer}・{product.contractType === "permanent" ? "永久訂單" : "短期訂單"}</small></div><p>需求設備：{product.recipe.map((key, index) => `${index + 1}.${getDefinition(key).short}`).join(" → ")}</p><small>設備門檻：{Object.entries(product.requirements).map(([key, level]) => `${getDefinition(key as EquipmentKey).name} LV${level}`).join("、")}</small></article>)}</div><p className="guideNote">含有重複步驟的配方，需在工作區建立對應的連續設備節點與接線；所有成品訂單的最後兩站均為「封裝 → 測試」。</p></section></div>}
+    {guideOpen && <div className="guideOverlay" role="presentation" onClick={() => setGuideOpen(false)}><section className="guidePanel" role="dialog" aria-modal="true" aria-label="玩家製造指南" onClick={(event) => event.stopPropagation()}><button className="guideClose" aria-label="關閉玩家製造指南" onClick={() => setGuideOpen(false)}>×</button><p className="eyebrow">PLAYER RECIPE GUIDE</p><h2>產品製造指南</h2><p>訂單由單站清洗開始，逐步發展到擴散、光罩、蝕刻、封裝與測試。先承接訂單，再將 SOURCE 的 OUT 依配方順序接入機台，最後接到該訂單 OUTPUT；未接好的訂單會顯示 ALARM，但不會停止其他產線。</p><div className="guideMarkets">{Array.from({ length: maxMarketTier }, (_, index) => (index + 1) as Product["marketTier"]).map((tier) => <section key={tier}><h3>市場 {tier}<small>{tier === 1 ? "起步：清洗成品" : tier === 2 ? "基礎：擴散與光罩" : tier === 3 ? "中階：蝕刻圖形" : tier === 4 ? "進階：封裝與測試" : "高階：多層循環製程"}</small></h3><div className="guideProducts">{products.filter((product) => product.marketTier === tier).map((product) => <article key={product.id}><div><span style={{ background: product.color }}>{product.contractType === "permanent" ? "永久" : "短期"}</span><b>{product.name}</b><small>{product.customer}・{product.requiredLots} LOTS</small></div><p>製程：{product.recipe.map((key, index) => `${index + 1}.${getDefinition(key).short}`).join(" → ")}</p><small>設備門檻：{Object.entries(product.requirements).map(([key, level]) => `${getDefinition(key as EquipmentKey).name} LV${level}`).join("、")}</small></article>)}</div></section>)}</div><p className="guideNote">市場 5 的配方含有多次「清洗 → 擴散／光罩 → 蝕刻」循環。每次重複都需要在工作區建立獨立機台與正確接線；封裝品可直接交付，不一定需要測試。</p></section></div>}
   </main>;
 }
