@@ -90,26 +90,29 @@ export type EquipmentDefinition = {
   outputPorts: number;
   mode: EquipmentMode;
   baseCapacity: number;
+  baseYield: number;
+  yieldSigma: number;
 };
 
 export type EquipmentLevelProfile = {
   mode: EquipmentMode;
   capacity: number;
   speed: number;
-  yieldBonus: number;
+  nominalYield: number;
+  yieldSigma: number;
   upkeepMultiplier: number;
 };
 
 export const equipmentDefinitions: EquipmentDefinition[] = [
-  { key: "clean", short: "洗", name: "濕式清洗槽", sub: "去除晶圓污染", baseCost: 1200, upkeep: 12, tier: 1, inputPorts: 1, outputPorts: 1, mode: "batch", baseCapacity: 2 },
-  { key: "furnace", short: "爐", name: "擴散爐", sub: "氧化與摻雜", baseCost: 1600, upkeep: 18, tier: 1, inputPorts: 2, outputPorts: 1, mode: "batch", baseCapacity: 3 },
-  { key: "aligner", short: "光", name: "光罩對準機", sub: "基礎圖形轉印", baseCost: 1800, upkeep: 16, tier: 1, inputPorts: 1, outputPorts: 1, mode: "serial", baseCapacity: 1 },
-  { key: "etch", short: "蝕", name: "濕式蝕刻槽", sub: "移除指定薄膜", baseCost: 1400, upkeep: 14, tier: 1, inputPorts: 2, outputPorts: 1, mode: "batch", baseCapacity: 2 },
-  { key: "package", short: "封", name: "打線封裝機", sub: "切割、打線與封裝", baseCost: 1200, upkeep: 12, tier: 1, inputPorts: 1, outputPorts: 2, mode: "parallel", baseCapacity: 2 },
-  { key: "test", short: "測", name: "基礎測試機", sub: "電性測試與分級", baseCost: 900, upkeep: 10, tier: 1, inputPorts: 2, outputPorts: 2, mode: "parallel", baseCapacity: 2 },
-  { key: "deposition", short: "鍍", name: "薄膜沉積機", sub: "精密介電與金屬薄膜", baseCost: 6500, upkeep: 42, tier: 2, inputPorts: 2, outputPorts: 1, mode: "serial", baseCapacity: 1 },
-  { key: "implant", short: "植", name: "離子佈植機", sub: "精準控制元件電性", baseCost: 8200, upkeep: 55, tier: 2, inputPorts: 1, outputPorts: 1, mode: "serial", baseCapacity: 1 },
-  { key: "stepper", short: "曝", name: "精密步進曝光機", sub: "多層積體電路微影", baseCost: 24000, upkeep: 125, tier: 3, inputPorts: 2, outputPorts: 2, mode: "serial", baseCapacity: 1 },
+  { key: "clean", short: "洗", name: "濕式清洗槽", sub: "去除晶圓污染", baseCost: 1200, upkeep: 12, tier: 1, inputPorts: 1, outputPorts: 1, mode: "batch", baseCapacity: 2, baseYield: 96, yieldSigma: 1.5 },
+  { key: "furnace", short: "爐", name: "擴散爐", sub: "氧化與摻雜", baseCost: 1600, upkeep: 18, tier: 1, inputPorts: 2, outputPorts: 1, mode: "batch", baseCapacity: 3, baseYield: 92, yieldSigma: 3.5 },
+  { key: "aligner", short: "光", name: "光罩對準機", sub: "基礎圖形轉印", baseCost: 1800, upkeep: 16, tier: 1, inputPorts: 1, outputPorts: 1, mode: "serial", baseCapacity: 1, baseYield: 86, yieldSigma: 5.5 },
+  { key: "etch", short: "蝕", name: "濕式蝕刻槽", sub: "移除指定薄膜", baseCost: 1400, upkeep: 14, tier: 1, inputPorts: 2, outputPorts: 1, mode: "batch", baseCapacity: 2, baseYield: 90, yieldSigma: 4 },
+  { key: "package", short: "封", name: "打線封裝機", sub: "切割、打線與封裝", baseCost: 1200, upkeep: 12, tier: 1, inputPorts: 1, outputPorts: 2, mode: "parallel", baseCapacity: 2, baseYield: 94, yieldSigma: 2.5 },
+  { key: "test", short: "測", name: "基礎測試機", sub: "電性測試與分級", baseCost: 900, upkeep: 10, tier: 1, inputPorts: 2, outputPorts: 2, mode: "parallel", baseCapacity: 2, baseYield: 93, yieldSigma: 3 },
+  { key: "deposition", short: "鍍", name: "薄膜沉積機", sub: "精密介電與金屬薄膜", baseCost: 6500, upkeep: 42, tier: 2, inputPorts: 2, outputPorts: 1, mode: "serial", baseCapacity: 1, baseYield: 88, yieldSigma: 4.5 },
+  { key: "implant", short: "植", name: "離子佈植機", sub: "精準控制元件電性", baseCost: 8200, upkeep: 55, tier: 2, inputPorts: 1, outputPorts: 1, mode: "serial", baseCapacity: 1, baseYield: 87, yieldSigma: 5 },
+  { key: "stepper", short: "曝", name: "精密步進曝光機", sub: "多層積體電路微影", baseCost: 24000, upkeep: 125, tier: 3, inputPorts: 2, outputPorts: 2, mode: "serial", baseCapacity: 1, baseYield: 84, yieldSigma: 6 },
 ];
 
 export const products = orderCatalog;
@@ -205,15 +208,18 @@ function modeForLevel(key: EquipmentKey, level: number): EquipmentMode {
 }
 
 export function equipmentLevelProfile(definition: EquipmentDefinition, level: number): EquipmentLevelProfile {
-  if (level <= 0) return { mode: "serial", capacity: 0, speed: 0, yieldBonus: 0, upkeepMultiplier: 0 };
+  if (level <= 0) return { mode: "serial", capacity: 0, speed: 0, nominalYield: 0, yieldSigma: 0, upkeepMultiplier: 0 };
   const normalized = Math.max(1, Math.min(maxEquipmentLevel, level));
   const baseSpeed = definition.mode === "batch" ? 31 : definition.mode === "parallel" ? 34 : 29;
-  const precisionBonus = definition.key === "stepper" || definition.key === "implant" ? 0.18 : 0;
+  const precisionSpeedBonus = definition.key === "stepper" || definition.key === "implant" ? 0.18 : 0;
+  const levelYieldBonus = [0, 1.5, 3, 4.5, 6, 7.5, 9];
+  const sigmaMultiplier = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4];
   return {
     mode: modeForLevel(definition.key, normalized),
     capacity: capacityByLevel[definition.key][normalized - 1],
-    speed: baseSpeed + (normalized - 1) * (5.2 + precisionBonus * 10),
-    yieldBonus: (normalized - 1) * (0.68 + precisionBonus),
+    speed: baseSpeed + (normalized - 1) * (5.2 + precisionSpeedBonus * 10),
+    nominalYield: Math.min(99.2, definition.baseYield + levelYieldBonus[normalized - 1]),
+    yieldSigma: definition.yieldSigma * sigmaMultiplier[normalized - 1],
     upkeepMultiplier: 0.68 + (normalized - 1) * 0.19,
   };
 }
@@ -248,10 +254,13 @@ export function missingRequirements(product: Product, equipment: Record<Equipmen
 }
 
 export function projectedYield(product: Product, equipment: Record<EquipmentKey, number> | EquipmentUnit[], quality: number) {
+  void quality;
   const levels = Array.isArray(equipment) ? fleetBestLevels(equipment) : equipment;
-  const yieldBonus = product.recipe.reduce((sum, key) => sum + equipmentLevelProfile(equipmentDefinitions.find((item) => item.key === key)!, levels[key]).yieldBonus, 0) / product.recipe.length;
-  const value = product.baseYield + (quality - 50) * 0.055 + yieldBonus;
-  return Math.max(55, Math.min(98.8, value));
+  const expected = product.recipe.reduce((value, key) => {
+    const level = Math.max(levels[key], product.requirements[key] ?? 1);
+    return value * equipmentLevelProfile(equipmentDefinitions.find((item) => item.key === key)!, level).nominalYield / 100;
+  }, 100);
+  return Number(expected.toFixed(1));
 }
 
 export function factoryMarketTier(units: EquipmentUnit[]) {
@@ -284,6 +293,11 @@ export function marketRefreshCost(refreshCount: number) {
 export function marketUpgradePrice(currentTier: number) {
   if (currentTier >= maxMarketTier) return 0;
   return [650, 1800, 4800, 11000][Math.max(0, Math.min(maxMarketTier - 2, Math.floor(currentTier) - 1))] ?? 0;
+}
+
+export function canStageOrderLot(order: MarketOrder, bufferedLots: number, inFlightLots: number) {
+  if (order.contractsRemaining === 0) return false;
+  return bufferedLots + inFlightLots < order.requiredLots;
 }
 
 export function planProduction(lots: ProductionLot[], units: EquipmentUnit[], catalog: Product[] = products) {
@@ -324,6 +338,14 @@ export function productionSpeed(key: EquipmentKey, level: number, quality: numbe
   return Math.max(18, equipmentLevelProfile(definition, level).speed - quality * 0.11);
 }
 
+export function sampleEquipmentYield(definition: EquipmentDefinition, level: number, random: () => number = Math.random) {
+  const profile = equipmentLevelProfile(definition, level);
+  const u1 = Math.max(Number.EPSILON, Math.min(1 - Number.EPSILON, random()));
+  const u2 = Math.max(Number.EPSILON, Math.min(1 - Number.EPSILON, random()));
+  const standardNormal = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  return Math.max(45, Math.min(99.5, profile.nominalYield + standardNormal * profile.yieldSigma));
+}
+
 export function activeDayCost(lots: ProductionLot[], units: EquipmentUnit[], catalog: Product[] = products) {
   const plan = planProduction(lots, units, catalog);
   if (!plan.activeIds.length) return 0;
@@ -349,10 +371,9 @@ export function advanceProductionDay(lots: ProductionLot[], units: EquipmentUnit
     const progress = lot.progress + productionSpeed(assignment.key, assignment.level, quality);
     const spent = lot.spent + perActiveLotCost;
     if (progress < 100) return [{ ...lot, progress, spent, machineId: assignment.unitId, machineLevel: assignment.level }];
-    const remainingSteps = product.recipe.length - lot.step;
     const definition = equipmentDefinitions.find((item) => item.key === assignment.key)!;
-    const effectiveTarget = Math.min(99.2, lot.targetYield + equipmentLevelProfile(definition, assignment.level).yieldBonus);
-    const nextYield = Math.max(45, lot.yield - Math.max(0.03, (lot.yield - effectiveTarget) / remainingSteps) - random() * 0.14);
+    const stationYield = sampleEquipmentYield(definition, assignment.level, random);
+    const nextYield = lot.step === 0 ? stationYield : lot.yield * stationYield / 100;
     const outputSlot = productionOutputSlot(lot.id, equipmentOutputCount(definition, assignment.level));
     if (lot.step < product.recipe.length - 1) return [{ ...lot, step: lot.step + 1, progress: 0, yield: nextYield, spent, machineId: undefined, machineLevel: undefined, outputSlot }];
     completed.push({ ...lot, progress: 100, yield: nextYield, spent, machineId: assignment.unitId, machineLevel: assignment.level, outputSlot });
@@ -368,12 +389,13 @@ export function lotRevenue(product: Product, finalYield: number) {
 }
 
 export function yieldPriceMultiplier(averageYield: number, targetYield: number) {
-  return Math.max(0.55, Math.min(1.35, 1 + (averageYield - targetYield) * 0.035));
+  return Math.max(0, 1 + (averageYield - targetYield) / 100);
 }
 
 export function calculateOrderPayment(product: Product, deliveredLots: DeliveredLot[]) {
   const averageYield = deliveredLots.reduce((sum, lot) => sum + lot.yield, 0) / deliveredLots.length;
-  const baseRevenue = deliveredLots.reduce((sum, lot) => sum + lot.baseRevenue, 0);
+  const standardLotRevenue = Math.round(product.diesPerLot * product.unitPrice * product.minYield / 100);
+  const baseRevenue = standardLotRevenue * deliveredLots.length;
   const totalSpent = deliveredLots.reduce((sum, lot) => sum + lot.spent, 0);
   const multiplier = yieldPriceMultiplier(averageYield, product.minYield);
   const payout = Math.round(baseRevenue * multiplier);

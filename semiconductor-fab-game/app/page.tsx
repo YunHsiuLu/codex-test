@@ -6,6 +6,7 @@ import {
   activeDayCost,
   canPurchaseSource,
   calculateOrderPayment,
+  canStageOrderLot,
   createInitialMarket,
   createMarketOrder,
   equipmentCapacity,
@@ -89,7 +90,7 @@ export default function Home() {
   const [pendingPort, setPendingPort] = useState<PortRef | null>(null);
   const [layoutChecked, setLayoutChecked] = useState(false);
   const [log, setLog] = useState<LogEntry[]>([{ id: 1, type: "info", message: "新廠啟用：工作區目前只有矽晶圓 SOURCE。" }]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<"equipment" | "market" | "objects" | "alarms">("equipment");
   const [guideOpen, setGuideOpen] = useState(false);
   const [toast, setToast] = useState("");
@@ -107,7 +108,7 @@ export default function Home() {
   const marketRef = useRef(marketOrders);
   const marketTierRef = useRef<Product["marketTier"]>(marketTier);
   const deliveryRef = useRef(deliveryBuffers);
-  const catalogCursor = useRef(0);
+  const catalogCursor = useRef(initialMarket.length);
   const nextOffer = useRef(7);
 
   const fleetUnits = useMemo<EquipmentUnit[]>(() => nodes.flatMap((node) => node.kind === "equipment" && node.equipmentKey && node.equipmentLevel && node.purchaseCost ? [{ id: node.id, key: node.equipmentKey, level: node.equipmentLevel, purchaseCost: node.purchaseCost }] : []), [nodes]);
@@ -141,8 +142,7 @@ export default function Home() {
     return route ? [[order.offerId, route] as const] : [];
   }));
   const routedUnits = Array.from(new Map(Array.from(routesByOffer.values()).flat().map((unit) => [unit.id, unit])).values());
-  const configuredUnits = routedUnits.length ? routedUnits : fleetUnits;
-  const bestEquipment = fleetBestLevels(configuredUnits);
+  const bestEquipment = fleetBestLevels(fleetUnits);
 
   useEffect(() => {
     stateRef.current = { cash, lots, units: routedUnits, quality: productionQuality, strikes };
@@ -166,7 +166,7 @@ export default function Home() {
     sourceScheduleRef.current = Object.fromEntries(Object.entries(sourceScheduleRef.current).filter(([id]) => activeIds.has(id)));
   }, [sourceNodes]);
 
-  const predicted = selectedProduct ? projectedYield(selectedProduct, configuredUnits, productionQuality) : 0;
+  const predicted = selectedProduct ? projectedYield(selectedProduct, fleetUnits, productionQuality) : 0;
 
   function note(message: string, type: LogEntry["type"] = "info") {
     setLog((items) => items[0]?.message === message && items[0]?.type === type ? items : [{ id: Date.now() + Math.random(), type, message }, ...items].slice(0, 8));
@@ -247,12 +247,18 @@ export default function Home() {
 
   const estimate = (() => {
     if (!selectedProduct) return null;
+    const estimateUnits = selectedProduct.recipe.map((key, step) => {
+      const installed = fleetUnits.filter((unit) => unit.key === key).sort((a, b) => b.level - a.level)[0];
+      const requiredLevel = selectedProduct.requirements[key] ?? 1;
+      const level = Math.max(installed?.level ?? 0, requiredLevel);
+      return installed && installed.level >= requiredLevel ? installed : { id: `estimate-${key}-${step}`, key, level, purchaseCost: 0 };
+    });
     let operating = 0;
     selectedProduct.recipe.forEach((key, step) => {
-      const level = Math.max(1, bestEquipment[key]);
+      const level = Math.max(1, bestEquipment[key], selectedProduct.requirements[key] ?? 1);
       const speed = productionSpeed(key, level, productionQuality);
       const estimateLot: Lot = { id: step + 1, offerId: selectedProduct.offerId, step, productId: selectedProduct.id, progress: 0, yield: 99.5, targetYield: predicted, spent: 0 };
-      operating += activeDayCost([estimateLot], configuredUnits) * Math.ceil(100 / speed);
+      operating += activeDayCost([estimateLot], estimateUnits) * Math.ceil(100 / speed);
     });
     const { goodDies, revenue } = lotRevenue(selectedProduct, predicted);
     const totalOperating = operating * selectedProduct.requiredLots;
@@ -462,9 +468,11 @@ export default function Home() {
     const nextTier = (marketTier + 1) as Product["marketTier"];
     setCash((value) => value - price);
     setMarketTier(nextTier);
-    const added = pullMarketOrders(6, marketRef.current.length >= 6 ? 2 : 0, nextTier);
-    note(`訂單市場升級至市場 ${nextTier}，支出 ${money(price)}；新增 ${added.length} 筆可承接的進階訂單。`);
-    flash(`市場 ${nextTier} 已解鎖`);
+    const replaceCount = marketRef.current.filter((order) => !activeOfferIds.includes(order.offerId)).length;
+    const added = pullMarketOrders(6, replaceCount, nextTier);
+    setMarketCountdown(15);
+    note(`訂單市場升級至市場 ${nextTier}，支出 ${money(price)}；已免費刷新並載入 ${added.length} 筆市場 ${nextTier} 以下訂單。`);
+    flash(`市場 ${nextTier} 已解鎖・免費刷新完成`);
   }
 
   function addWaferFromSource(sourceId: string, automatic = false) {
@@ -484,9 +492,8 @@ export default function Home() {
     const lanes = sourceOutputCount(source.sourceLevel ?? 1);
     for (let lane = 0; lane < lanes; lane += 1) {
       const candidates = routable.filter((order) => {
-        if (order.contractsRemaining === null) return availableCash >= order.materialCost;
-        const used = (deliveryRef.current[order.offerId]?.length ?? 0) + (reserved[order.offerId] ?? 0);
-        return used < order.contractsRemaining * order.requiredLots && availableCash >= order.materialCost;
+        return canStageOrderLot(order, deliveryRef.current[order.offerId]?.length ?? 0, reserved[order.offerId] ?? 0)
+          && availableCash >= order.materialCost;
       });
       if (!candidates.length) continue;
       const product = candidates[sourceRoundRobinRef.current % candidates.length];
@@ -664,13 +671,13 @@ export default function Home() {
           const selectedProfile = equipmentLevelProfile(item, selectedLevel);
           const atMax = technologyLevel >= maxEquipmentLevel;
           const installed = fleetUnits.filter((unit) => unit.key === item.key).length;
-          return <div className={`equipment generationCard ${equipmentLevelClass(selectedLevel)} ${installed ? "" : "notInstalled"}`} key={item.key}><div className="equipIcon"><span>{item.short}</span></div><div className="equipInfo"><b>{item.name}</b><small>{equipmentModeName(selectedProfile.mode)}・容量 {selectedProfile.capacity}・速度 {Math.round(selectedProfile.speed)}</small><span className="portSummary">上限 {equipmentLevelName(technologyLevel)}・已持有 {installed} 台・運轉 ${Math.round(item.upkeep * selectedProfile.upkeepMultiplier)}／日</span></div><div className="equipmentActions"><span className={`levelSwatch ${equipmentLevelClass(selectedLevel)}`} title={equipmentLevelName(selectedLevel)} /><select aria-label={`選擇 ${item.name} 購買等級`} value={selectedLevel} onChange={(event) => setPurchaseLevels((levels) => ({ ...levels, [item.key]: Number(event.target.value) }))}>{purchasableEquipmentLevels(technologyLevel).map((level) => <option key={level} value={level}>{equipmentLevelName(level)}</option>)}</select><button aria-label={`購買 ${equipmentLevelName(selectedLevel)} ${item.name}`} onClick={() => purchaseEquipment(item.key)}>購買 {money(equipmentPurchasePrice(item, selectedLevel))}</button><button aria-label={`研發下一代 ${item.name}`} disabled={atMax} onClick={() => researchEquipment(item.key)}>{atMax ? "上限 MAX" : `研發上限 ${money(equipmentResearchPrice(item, technologyLevel))}`}</button></div></div>;
+          return <div className={`equipment generationCard ${equipmentLevelClass(selectedLevel)} ${installed ? "" : "notInstalled"}`} key={item.key}><div className="equipIcon"><span>{item.short}</span></div><div className="equipInfo"><b>{item.name}</b><small>{equipmentModeName(selectedProfile.mode)}・容量 {selectedProfile.capacity}・速度 {Math.round(selectedProfile.speed)}</small><span className="portSummary">良率中心 {selectedProfile.nominalYield.toFixed(1)}%・σ {selectedProfile.yieldSigma.toFixed(1)}%｜上限 {equipmentLevelName(technologyLevel)}・已持有 {installed} 台・運轉 ${Math.round(item.upkeep * selectedProfile.upkeepMultiplier)}／日</span></div><div className="equipmentActions"><span className={`levelSwatch ${equipmentLevelClass(selectedLevel)}`} title={equipmentLevelName(selectedLevel)} /><select aria-label={`選擇 ${item.name} 購買等級`} value={selectedLevel} onChange={(event) => setPurchaseLevels((levels) => ({ ...levels, [item.key]: Number(event.target.value) }))}>{purchasableEquipmentLevels(technologyLevel).map((level) => <option key={level} value={level}>{equipmentLevelName(level)}</option>)}</select><button aria-label={`購買 ${equipmentLevelName(selectedLevel)} ${item.name}`} onClick={() => purchaseEquipment(item.key)}>購買 {money(equipmentPurchasePrice(item, selectedLevel))}</button><button aria-label={`研發下一代 ${item.name}`} disabled={atMax} onClick={() => researchEquipment(item.key)}>{atMax ? "上限 MAX" : `研發上限 ${money(equipmentResearchPrice(item, technologyLevel))}`}</button></div></div>;
         })}</div>
         </section>
         <section className={`sidebarSection contracts ${sidebarTab === "market" ? "active" : ""}`}>
           <div className="sectionTitle"><span>02</span><div><b>訂單市場</b><small>CONTRACT & OUTPUT</small></div></div>
-          <p className="helper">市場升級後，才會出現對應難度以下的訂單。點擊訂單會建立專屬 OUTPUT；退出則在 OUTPUT 支付違約金。</p>
-          <div className="marketControls"><span>市場 {marketTier}／{maxMarketTier}・進行中 {activeOrders.length} 筆・目前 {marketOrders.length}／6 筆・同步 {marketCountdown}s</span><div><button onClick={upgradeMarket} disabled={marketTier >= maxMarketTier}>{marketTier >= maxMarketTier ? "市場已達 MAX" : `升級市場 ${money(marketUpgradePrice(marketTier))}`}</button><button onClick={refreshMarket}>刷新 {money(marketRefreshCost(refreshCount))}</button></div></div>
+          <p className="helper">市場升級會免費刷新一次，並提供不高於目前市場等級的訂單。付款係數＝1＋平均良率－訂單要求良率；每差 1 個百分點，付款增減 1%。</p>
+          <div className="marketControls"><span>市場 {marketTier}／{maxMarketTier}・進行中 {activeOrders.length} 筆・目前 {marketOrders.length}／6 筆・同步 {marketCountdown}s</span><div><button onClick={upgradeMarket} disabled={marketTier >= maxMarketTier}>{marketTier >= maxMarketTier ? "市場已達 MAX" : `升級並免費刷新 ${money(marketUpgradePrice(marketTier))}`}</button><button onClick={refreshMarket}>刷新 {money(marketRefreshCost(refreshCount))}</button></div></div>
           <div className="customerList">{marketOrders.map((product) => {
             const productMissing = missingRequirements(product, fleetUnits);
             const profile = product.requiredLots >= 5 ? "量產型" : product.minYield >= 90 ? "高良率型" : "平衡型";
@@ -709,7 +716,7 @@ export default function Home() {
             const outputIncoming = node.kind === "output" ? connections.filter((item) => item.to.nodeId === node.id) : [];
             const outputConnectionErrors = outputIncoming.map((item) => connectionError(item)).filter(Boolean);
             const outputError = node.kind === "output" ? (!outputIncoming.length ? "等待產線接入" : outputConnectionErrors.find((message) => message!.includes("方向錯誤") || message!.includes("物件錯誤")) ?? outputConnectionErrors[0] ?? null) : null;
-            return <div aria-label={node.kind === "equipment" ? `${definition!.name} ${equipmentLevelName(level)}` : node.kind === "source" ? `${node.id.toUpperCase()} ${sourceLevelName(nodeSourceLevel)}` : undefined} title={node.kind === "equipment" ? `${definition!.name}｜${equipmentModeName(equipmentLevelProfile(definition!, level).mode)}｜容量 ${equipmentCapacity(definition!, level)}｜速度 ${Math.round(equipmentLevelProfile(definition!, level).speed)}` : undefined} className={`factoryNode ${node.kind} ${node.kind === "equipment" ? equipmentLevelClass(level) : node.kind === "source" ? sourceLevelClass(nodeSourceLevel) : ""} ${isActive ? "nodeActive" : ""}`} style={{ left: node.x, top: node.y }} key={node.id} onPointerDown={(event) => startDrag(event, node.id)} onClick={node.kind === "source" ? () => addWaferFromSource(node.id) : undefined}>
+            return <div aria-label={node.kind === "equipment" ? `${definition!.name} ${equipmentLevelName(level)}` : node.kind === "source" ? `${node.id.toUpperCase()} ${sourceLevelName(nodeSourceLevel)}` : undefined} title={node.kind === "equipment" ? `${definition!.name}｜${equipmentModeName(equipmentLevelProfile(definition!, level).mode)}｜容量 ${equipmentCapacity(definition!, level)}｜速度 ${Math.round(equipmentLevelProfile(definition!, level).speed)}｜良率中心 ${equipmentLevelProfile(definition!, level).nominalYield.toFixed(1)}%` : undefined} className={`factoryNode ${node.kind} ${node.kind === "equipment" ? equipmentLevelClass(level) : node.kind === "source" ? sourceLevelClass(nodeSourceLevel) : ""} ${isActive ? "nodeActive" : ""}`} style={{ left: node.x, top: node.y }} key={node.id} onPointerDown={(event) => startDrag(event, node.id)} onClick={node.kind === "source" ? () => addWaferFromSource(node.id) : undefined}>
               <div className="nodeHead"><span>{node.kind === "source" ? "SOURCE" : node.kind === "output" ? "ORDER OUTPUT" : "EQUIPMENT"}</span><i /></div>
               <strong>{node.kind === "source" ? node.id.toUpperCase() : node.kind === "output" ? outputProduct?.customer ?? "等待訂單" : definition!.short}</strong>
               <small>{node.kind === "source" ? `${sourceLevelName(nodeSourceLevel)}・OUT × ${sourceOutputCount(nodeSourceLevel)}・每 ${sourceSupplyIntervalMs(nodeSourceLevel) / 1000} 秒` : node.kind === "output" ? outputProduct?.name ?? "未指定產品" : stationLots.length ? `RUN ${activeHere.length}・WAIT ${queuedHere.length}` : "IDLE"}</small>

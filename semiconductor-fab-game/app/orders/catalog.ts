@@ -4,7 +4,28 @@ type MarketTier = Product["marketTier"];
 type OrderSeed = Omit<Product, "requirements"> & { requirements?: Partial<Record<EquipmentKey, number>> };
 
 const requirementsFor = (recipe: EquipmentKey[], overrides: Partial<Record<EquipmentKey, number>> = {}) => recipe.reduce<Partial<Record<EquipmentKey, number>>>((requirements, key) => ({ ...requirements, [key]: Math.max(requirements[key] ?? 0, overrides[key] ?? 1) }), {});
-const order = (seed: OrderSeed): Product => ({ ...seed, requirements: requirementsFor(seed.recipe, seed.requirements) });
+const baseEquipmentYield: Record<EquipmentKey, number> = {
+  clean: 96, furnace: 92, aligner: 86, etch: 90, deposition: 88, implant: 87, package: 94, test: 93, stepper: 84,
+};
+
+const balancedTarget = (seed: OrderSeed, requirements: Partial<Record<EquipmentKey, number>>) => {
+  const expectedYield = seed.recipe.reduce((value, key) => {
+    const requiredLevel = requirements[key] ?? 1;
+    const equipmentYield = Math.min(99.2, baseEquipmentYield[key] + (requiredLevel - 1) * 1.5);
+    return value * equipmentYield / 100;
+  }, 100);
+  const processTolerance = Math.max(0.78, 0.96 - Math.max(0, seed.recipe.length - 1) * 0.025);
+  const shortRunBonus = seed.contractType === "limited" ? 2 : 0;
+  const smallLotBonus = seed.requiredLots <= 2 ? 1 : 0;
+  const volumeDiscount = seed.requiredLots >= 5 ? 3 : 0;
+  return Math.max(12, Math.round(expectedYield * processTolerance + shortRunBonus + smallLotBonus - volumeDiscount));
+};
+
+const order = (seed: OrderSeed): Product => {
+  const requirements = requirementsFor(seed.recipe, seed.requirements);
+  const expectedYield = seed.recipe.reduce((value, key) => value * Math.min(99.2, baseEquipmentYield[key] + ((requirements[key] ?? 1) - 1) * 1.5) / 100, 100);
+  return { ...seed, minYield: balancedTarget(seed, requirements), baseYield: Number(expectedYield.toFixed(1)), requirements };
+};
 
 const clean = ["silicon-wafer", "clean-wafer"] as ProcessObjectKey[];
 const diffuse = [...clean, "doped-wafer"] as ProcessObjectKey[];

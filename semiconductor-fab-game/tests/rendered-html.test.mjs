@@ -37,8 +37,21 @@ test("new game starts with only SOURCE and generation-one procurement", async ()
   assert.match(html, /購入 SOURCE/);
   assert.match(html, /購買 LV1 濕式清洗槽/);
   assert.match(html, /研發下一代 濕式清洗槽/);
-  assert.match(html, /市場升級後，才會出現對應難度以下的訂單/);
+  assert.match(html, /市場升級會免費刷新一次/);
+  assert.match(html, /升級並免費刷新 \$650/);
+  assert.match(html, /付款係數＝1＋平均良率－訂單要求良率/);
+  assert.match(html, /良率中心 (?:<!-- -->)?96\.0(?:<!-- -->)?%・σ (?:<!-- -->)?1\.5(?:<!-- -->)?%/);
   assert.doesNotMatch(html, /aria-label="折價出售 equipment-/);
+});
+
+test("factory floor starts full-width with a collapsed drawer sidebar", async () => {
+  const html = await (await render()).text();
+  assert.match(html, /class="sidebar panel collapsed"/);
+  assert.match(html, /aria-label="展開左側功能欄"/);
+  assert.match(html, /aria-label="開啟設備採購"/);
+  assert.match(html, /aria-label="開啟訂單市場"/);
+  assert.match(html, /aria-label="開啟物件資料庫"/);
+  assert.match(html, /aria-label="開啟營運與警報紀錄"/);
 });
 
 test("initial market exposes low-tier permanent and short-term orders only", async () => {

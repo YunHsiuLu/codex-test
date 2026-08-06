@@ -4,6 +4,7 @@ import {
   activeDayCost,
   advanceProductionDay,
   calculateOrderPayment,
+  canStageOrderLot,
   createInitialMarket,
   equipmentLevelClass,
   equipmentPurchasePrice,
@@ -30,6 +31,7 @@ import {
   sourceLevelName,
   sourcePurchasePrice,
   sourceSupplyIntervalMs,
+  sampleEquipmentYield,
   canPurchaseSource,
   orderTerminationFee,
   yieldPriceMultiplier,
@@ -125,6 +127,15 @@ test("market starts with six low-tier orders and supports permanent and limited 
   assert.ok(marketRefreshCost(2) > marketRefreshCost(1));
 });
 
+test("automatic supply stages at most one order payment at a time", () => {
+  const permanent = createInitialMarket(products.filter((product) => product.contractType === "permanent"), 1)[0];
+  const limited = createInitialMarket(products.filter((product) => product.contractType === "limited"), 1)[0];
+  assert.equal(canStageOrderLot(permanent, 0, permanent.requiredLots - 1), true);
+  assert.equal(canStageOrderLot(permanent, 1, permanent.requiredLots - 1), false);
+  assert.equal(canStageOrderLot(limited, 0, limited.requiredLots), false);
+  assert.equal(canStageOrderLot({ ...limited, contractsRemaining: 0 }, 0, 0), false);
+});
+
 test("batch tools process together while excess lots wait", () => {
   const equipment: EquipmentUnit[] = [{ id: "clean-2", key: "clean", level: 2, purchaseCost: 1440 }];
   const lots = [101, 102, 103].map((id) => makeLot(id, products[0].id));
@@ -193,8 +204,30 @@ test("each generation changes the cleaning station's operating profile", () => {
   assert.equal(lv2.mode, "batch");
   assert.ok(lv2.capacity > lv1.capacity);
   assert.ok(lv2.speed > lv1.speed);
-  assert.ok(lv2.yieldBonus > lv1.yieldBonus);
+  assert.ok(lv2.nominalYield > lv1.nominalYield);
+  assert.ok(lv2.yieldSigma < lv1.yieldSigma);
   assert.ok(lv2.upkeepMultiplier > lv1.upkeepMultiplier);
+});
+
+test("equipment yield centers differ by process and Gaussian samples center on the machine profile", () => {
+  const clean = equipmentDefinitions.find((item) => item.key === "clean")!;
+  const aligner = equipmentDefinitions.find((item) => item.key === "aligner")!;
+  const stepper = equipmentDefinitions.find((item) => item.key === "stepper")!;
+  assert.equal(equipmentLevelProfile(clean, 1).nominalYield, 96);
+  assert.equal(equipmentLevelProfile(aligner, 1).nominalYield, 86);
+  assert.ok(equipmentLevelProfile(stepper, 1).nominalYield < equipmentLevelProfile(aligner, 1).nominalYield);
+  assert.ok(equipmentLevelProfile(clean, 1).yieldSigma < equipmentLevelProfile(aligner, 1).yieldSigma);
+
+  let seed = 123456789;
+  const random = () => {
+    seed = (1664525 * seed + 1013904223) % 4294967296;
+    return seed / 4294967296;
+  };
+  const samples = Array.from({ length: 12000 }, () => sampleEquipmentYield(aligner, 1, random));
+  const mean = samples.reduce((sum, value) => sum + value, 0) / samples.length;
+  assert.ok(Math.abs(mean - 86) < 0.2);
+  assert.ok(samples.some((value) => value < 70));
+  assert.ok(samples.some((value) => value > 95));
 });
 
 test("equipment with multiple OUT ports rotates completed lots evenly", () => {
@@ -235,13 +268,33 @@ test("a newer machine generation improves final yield", () => {
     const unit: EquipmentUnit[] = [{ id: `clean-${level}`, key: "clean", level, purchaseCost: 1200 }];
     let lots = [makeLot(400 + level, product.id)];
     for (let day = 0; day < 8; day += 1) {
-      const result = advanceProductionDay(lots, unit, 58, products, () => 0);
+      const sequence = [Math.exp(-0.5), 0.25];
+      const result = advanceProductionDay(lots, unit, 58, products, () => sequence.shift() ?? 0.25);
       if (result.completed.length) return result.completed[0].yield;
       lots = result.nextLots;
     }
     throw new Error("lot did not finish");
   };
   assert.ok(run(2) > run(1));
+});
+
+test("serial process yields multiply across equipment", () => {
+  const product = products.find((item) => item.id === "diffused-standard")!;
+  const units: EquipmentUnit[] = [
+    { id: "clean-chain", key: "clean", level: 1, purchaseCost: 1200 },
+    { id: "furnace-chain", key: "furnace", level: 1, purchaseCost: 1600 },
+  ];
+  let lots = [makeLot(450, product.id)];
+  for (let day = 0; day < 12; day += 1) {
+    const centeredGaussian = [0.5, 0.25];
+    const result = advanceProductionDay(lots, units, 58, products, () => centeredGaussian.shift() ?? 0.25);
+    if (result.completed.length) {
+      assert.ok(Math.abs(result.completed[0].yield - 96 * 92 / 100) < 0.0001);
+      return;
+    }
+    lots = result.nextLots;
+  }
+  assert.fail("two-stage lot did not finish");
 });
 
 test("order payout waits for required LOTS and applies yield bonus or discount", () => {
@@ -255,17 +308,46 @@ test("order payout waits for required LOTS and applies yield bonus or discount",
   }));
 
   assert.equal(delivered(97, 1).length < product.requiredLots, true);
-  const bonus = calculateOrderPayment(product, delivered(97, product.requiredLots));
-  const discount = calculateOrderPayment(product, delivered(90, product.requiredLots));
-  assert.ok(bonus.multiplier > 1);
-  assert.ok(discount.multiplier < 1);
+  const bonus = calculateOrderPayment(product, delivered(product.minYield + 10, product.requiredLots));
+  const discount = calculateOrderPayment(product, delivered(product.minYield - 10, product.requiredLots));
+  assert.equal(bonus.multiplier, 1.1);
+  assert.equal(discount.multiplier, 0.9);
   assert.ok(bonus.payout > discount.payout);
+  assert.equal(yieldPriceMultiplier(80, 70), 1.1);
+  assert.equal(yieldPriceMultiplier(60, 70), 0.9);
   assert.equal(yieldPriceMultiplier(95, 95), 1);
+});
+
+test("order payment uses the target-yield base price instead of charging twice for actual good dies", () => {
+  const product = products[0];
+  const lots = Array.from({ length: product.requiredLots }, (_, index) => ({ lotId: index + 1, yield: product.minYield, goodDies: 1, baseRevenue: index ? 999999 : 1, spent: 100 }));
+  const payment = calculateOrderPayment(product, lots);
+  assert.equal(payment.multiplier, 1);
+  assert.equal(payment.baseRevenue, Math.round(product.diesPerLot * product.unitPrice * product.minYield / 100) * product.requiredLots);
+  assert.equal(payment.payout, payment.baseRevenue);
 });
 
 test("catalog contains both volume-first and yield-first orders", () => {
   assert.ok(products.some((product) => product.requiredLots >= 5 && product.minYield < 85));
   assert.ok(products.some((product) => product.requiredLots <= 2 && product.minYield >= 94));
+});
+
+test("order recipes grow continuously while multiplicative yield targets fall with complexity", () => {
+  const ranges = [1, 2, 3, 4, 5].map((tier) => {
+    const tierProducts = products.filter((product) => product.marketTier === tier);
+    return {
+      minRecipe: Math.min(...tierProducts.map((product) => product.recipe.length)),
+      maxRecipe: Math.max(...tierProducts.map((product) => product.recipe.length)),
+      averageTarget: tierProducts.reduce((sum, product) => sum + product.minYield, 0) / tierProducts.length,
+    };
+  });
+  for (let index = 1; index < ranges.length; index += 1) {
+    assert.ok(ranges[index].minRecipe <= ranges[index - 1].maxRecipe + 2);
+    assert.ok(ranges[index].maxRecipe > ranges[index - 1].maxRecipe);
+    assert.ok(ranges[index].averageTarget < ranges[index - 1].averageTarget);
+  }
+  assert.equal(products.find((product) => product.id === "cleaned-lab")?.minYield, 93);
+  assert.ok((products.find((product) => product.id === "mcu-triple-layer")?.minYield ?? 100) < 30);
 });
 
 function makeLot(id: number, productId: string, step = 0): ProductionLot {
