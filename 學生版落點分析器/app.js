@@ -2,10 +2,15 @@
   "use strict";
 
   const dataset = window.LANDING_DATA;
-  const subjectLabels = { 國:"國文", 英:"英文", A:"數A", B:"數B", 社:"社會", 自:"自然", 甲:"數甲", 乙:"數乙", 物:"物理", 化:"化學", 生:"生物" };
+  const subjectLabels = { 國:"國文", 英:"英文", A:"數A", B:"數B", 社:"社會", 自:"自然", 甲:"數甲", 乙:"數乙", 歷:"歷史", 地:"地理", 物:"物理", 化:"化學", 生:"生物", 公:"公民與社會" };
   const categoryNames = { dream:"夢幻", challenge:"挑戰", steady:"穩健", safe:"保底" };
   const categoryKeys = ["dream", "challenge", "steady", "safe"];
   const majorCategories = [
+    ["教育、心理與跨領域", /教育|師資|心理|輔導|跨域|不分系|科學班/],
+    ["文史哲與語文", /中文|國文|文學|語文|外文|英文|日本語|日文|韓國語|韓文|法文|德文|西班牙|歷史|哲學|人類學|華語/],
+    ["法政與社會科學", /法律|法學|政治|外交|社會|社工|公共行政|行政學|公共事務|公共政策|犯罪防治|勞工關係|民族|公民/],
+    ["傳播、觀光與服務", /傳播|新聞|廣告|圖書|觀光|休閒|餐旅|旅遊|文化創意|文化事業|運動事業|運動管理/],
+    ["商管與財經", name => /(管理|財務|金融|會計|經濟|商學|企業|行銷|貿易|商務|保險|風險|財政|稅務|地政|不動產|物流|經營)/.test(name) && !/工業工程|工業管理|工程管理|醫務管理|健康.*管理|資訊工程與管理/.test(name)],
     ["資訊與人工智慧", /資訊|人工智慧|大數據|數據科學|計算機|電腦|軟體|網路|多媒體|數位|智慧科技/],
     ["電機、電子與光電", /電機|電子|光電|半導體|通訊|電資|積體電路|晶片/],
     ["醫藥衛生與生醫", /醫|藥|護理|公共衛生|職能治療|物理治療|呼吸治療|營養|牙|獸醫|放射|檢驗/],
@@ -14,11 +19,10 @@
     ["地球、海洋與環境", /環境|地理|地質|大氣|海洋|地球|防災|永續/],
     ["化工、材料與奈米", /化學工程|化工|材料|奈米|高分子|紡織/],
     ["機械、航太與能源", /機械|機電|航太|航空|太空|造船|輪機|車輛|能源|動力|綠能|機器人|自動控制|精密系統/],
-    ["土木、建築與營建", /土木|建築|營建|水利|河海/],
-    ["工業工程與科技管理", /工業工程|工業管理|科技管理|運輸|系統工程|工程管理/],
+    ["土木、建築與營建", /土木|建築|營建|水利|河海|都市計劃/],
+    ["工業工程與科技管理", /工業工程|工業管理|運輸|系統工程|工程管理/],
     ["數學與統計", /數學|應用數|統計|計量|精算/],
     ["物理與化學", /物理|化學/],
-    ["教育與跨領域", /教育|師資|跨域|不分系|學士班|學位學程|科學班/],
     ["綜合工程與工程科學", /.*/]
   ];
   const scoreInputs = [...document.querySelectorAll("[data-subject]")];
@@ -70,7 +74,7 @@
     "臺北醫學大學":"北醫"
   };
   const schoolProgramCounts = new Map(dataset.schoolOrder.map(school => [school, dataset.programs.filter(program => program.school === school).length]));
-  const programMajor = program => majorCategories.find(([, pattern]) => pattern.test(program.name))[0];
+  const programMajor = program => majorCategories.find(([, matcher]) => typeof matcher === "function" ? matcher(program.name) : matcher.test(program.name))[0];
   const majorProgramCounts = new Map(majorCategories.map(([name]) => [name, dataset.programs.filter(program => programMajor(program) === name).length]));
 
   const signed = value => `${value >= 0 ? "＋" : "－"}${Math.abs(value).toFixed(1)}`;

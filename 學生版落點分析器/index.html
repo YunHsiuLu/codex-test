@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="使用114學年度歷史最低錄取資料，在瀏覽器內完成分科測驗落點試算。">
+  <meta name="description" content="使用114學年度歷史最低錄取資料，在瀏覽器內完成各領域分科測驗落點試算。">
   <title>分科測驗落點試算器｜學生版</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -13,7 +13,7 @@
       <div>
         <p class="eyebrow">113／114歷史資料參考</p>
         <h1>分科測驗落點試算器</h1>
-        <p class="hero-copy">輸入各科60級分，依114學年度採計方式計算各校理工與相關自然科學系組的歷史落點。</p>
+        <p class="hero-copy">輸入各科60級分，依114學年度採計方式計算理工、一類組與商管等校系的歷史落點。</p>
       </div>
       <div class="privacy-card">
         <strong>成績不會上傳</strong>
@@ -32,12 +32,15 @@
       <form id="score-form" novalidate>
         <div class="subject-group">
           <h3>分科測驗</h3>
-          <div class="input-grid">
+          <div class="input-grid subject-test-inputs">
             <label>數學甲<input inputmode="decimal" type="number" id="score-math-a" data-subject="甲" min="0" max="60" step="0.01" placeholder="0～60"></label>
             <label>數學乙<input inputmode="decimal" type="number" id="score-math-b" data-subject="乙" min="0" max="60" step="0.01" placeholder="0～60"></label>
             <label>物理<input inputmode="decimal" type="number" id="score-physics" data-subject="物" min="0" max="60" step="0.01" placeholder="0～60"></label>
             <label>化學<input inputmode="decimal" type="number" id="score-chemistry" data-subject="化" min="0" max="60" step="0.01" placeholder="0～60"></label>
             <label>生物<input inputmode="decimal" type="number" id="score-biology" data-subject="生" min="0" max="60" step="0.01" placeholder="0～60"></label>
+            <label>歷史<input inputmode="decimal" type="number" id="score-history" data-subject="歷" min="0" max="60" step="0.01" placeholder="0～60"></label>
+            <label>地理<input inputmode="decimal" type="number" id="score-geography" data-subject="地" min="0" max="60" step="0.01" placeholder="0～60"></label>
+            <label>公民與社會<input inputmode="decimal" type="number" id="score-civics" data-subject="公" min="0" max="60" step="0.01" placeholder="0～60"></label>
           </div>
         </div>
         <div class="subject-group">
