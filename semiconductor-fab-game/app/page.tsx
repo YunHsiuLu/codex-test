@@ -61,8 +61,8 @@ const money = (value: number) => `$${Math.round(value).toLocaleString("en-US")}`
 const getDefinition = (key: EquipmentKey) => equipmentDefinitions.find((item) => item.key === key)!;
 const nodeWidth = 165;
 const nodeHeight = 122;
-const canvasWidth = 1400;
-const canvasHeight = 820;
+const canvasWidth = 2600;
+const canvasHeight = 1600;
 const productionQuality = 58;
 
 const initialNodes: FactoryNode[] = [
@@ -93,12 +93,16 @@ export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<"equipment" | "market" | "objects" | "alarms">("equipment");
   const [guideOpen, setGuideOpen] = useState(false);
+  const [cashWarningOpen, setCashWarningOpen] = useState(false);
   const [toast, setToast] = useState("");
   const [lastSettlement, setLastSettlement] = useState<Settlement | null>(null);
   const nextLot = useRef(101);
   const nextEquipment = useRef(1);
   const nextConnection = useRef(1);
   const draggedRef = useRef(false);
+  const cashWarningOpenRef = useRef(false);
+  const cashWarningAcknowledgedRef = useRef<number | null>(null);
+  const layoutViewportRef = useRef<HTMLDivElement>(null);
   const pendingPortRef = useRef<PortRef | null>(null);
   const sourceSupplyRef = useRef<(sourceId: string) => void>(() => undefined);
   const sourceScheduleRef = useRef<Record<string, number>>({});
@@ -349,6 +353,7 @@ export default function Home() {
 
   function startDrag(event: ReactPointerEvent<HTMLDivElement>, nodeId: string) {
     if ((event.target as HTMLElement).closest("button")) return;
+    event.stopPropagation();
     const node = nodes.find((item) => item.id === nodeId);
     if (!node) return;
     const startX = event.clientX;
@@ -366,6 +371,44 @@ export default function Home() {
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
+  }
+
+  function startWorkspacePan(event: ReactPointerEvent<HTMLDivElement>) {
+    if ((event.target as HTMLElement).closest(".factoryNode, button, .connectionLine")) return;
+    const viewport = layoutViewportRef.current;
+    if (!viewport) return;
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const startLeft = viewport.scrollLeft;
+    const startTop = viewport.scrollTop;
+    viewport.classList.add("isPanning");
+    const move = (moveEvent: PointerEvent) => {
+      viewport.scrollLeft = startLeft - (moveEvent.clientX - startX);
+      viewport.scrollTop = startTop - (moveEvent.clientY - startY);
+    };
+    const up = () => {
+      viewport.classList.remove("isPanning");
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+  }
+
+  function focusProductionLine() {
+    const viewport = layoutViewportRef.current;
+    if (!viewport || !nodes.length) return;
+    const minX = Math.min(...nodes.map((node) => node.x));
+    const minY = Math.min(...nodes.map((node) => node.y));
+    const maxX = Math.max(...nodes.map((node) => node.x + nodeWidth));
+    const maxY = Math.max(...nodes.map((node) => node.y + nodeHeight));
+    viewport.scrollTo({
+      left: Math.max(0, (minX + maxX - viewport.clientWidth) / 2),
+      top: Math.max(0, (minY + maxY - viewport.clientHeight) / 2),
+      behavior: "smooth",
+    });
   }
 
   function purchaseEquipment(key: EquipmentKey) {
@@ -395,14 +438,23 @@ export default function Home() {
   function sellEquipment(node: FactoryNode, event: React.MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
     if (!node.equipmentKey || !node.purchaseCost) return;
-    const occupied = lots.some((lot) => products.find((product) => product.id === lot.productId)?.recipe[lot.step] === node.equipmentKey);
-    if (occupied) return raiseAlarm("此類設備仍有晶圓加工或排隊，暫時不能變賣");
+    const currentPlan = planProduction(lots, routedUnits);
+    const scrapIds = new Set(currentPlan.assignments.filter((assignment) => assignment.unitId === node.id).map((assignment) => assignment.lotId));
+    const firstUnitOfType = fleetUnits.find((unit) => unit.key === node.equipmentKey)?.id === node.id;
+    if (firstUnitOfType) {
+      currentPlan.queuedIds.forEach((lotId) => {
+        const lot = lots.find((item) => item.id === lotId);
+        if (lot && products.find((product) => product.id === lot.productId)?.recipe[lot.step] === node.equipmentKey) scrapIds.add(lotId);
+      });
+    }
     const resale = equipmentResaleValue(node.purchaseCost);
     setCash((value) => value + resale);
+    setLots((items) => items.filter((lot) => !scrapIds.has(lot.id)));
     setNodes((items) => items.filter((item) => item.id !== node.id));
     setConnections((items) => items.filter((connection) => connection.from.nodeId !== node.id && connection.to.nodeId !== node.id));
     setLayoutChecked(false);
-    note(`已折價出售 ${equipmentLevelName(node.equipmentLevel ?? 1)} ${getDefinition(node.equipmentKey).name}，回收 ${money(resale)}。`);
+    cashWarningAcknowledgedRef.current = null;
+    note(`已折價出售 ${equipmentLevelName(node.equipmentLevel ?? 1)} ${getDefinition(node.equipmentKey).name}，回收 ${money(resale)}${scrapIds.size ? `；報廢機台內 ${scrapIds.size} 批晶圓` : ""}。`, scrapIds.size ? "alarm" : "info");
   }
 
   function upgradeSource(node: FactoryNode, event: React.MouseEvent<HTMLButtonElement>) {
@@ -476,6 +528,7 @@ export default function Home() {
   }
 
   function addWaferFromSource(sourceId: string, automatic = false) {
+    if (cashWarningOpenRef.current) return;
     if (draggedRef.current) {
       draggedRef.current = false;
       return;
@@ -559,7 +612,16 @@ export default function Home() {
     const state = stateRef.current;
     if (!state.lots.length) return;
     const result = advanceProductionDay(state.lots, state.units, state.quality);
-    if (state.cash < result.dayCost) return raiseAlarm(`現金不足以支付今日營運費 ${money(result.dayCost)}`);
+    if (state.cash < result.dayCost) {
+      if (cashWarningAcknowledgedRef.current !== state.cash) {
+        cashWarningAcknowledgedRef.current = state.cash;
+        cashWarningOpenRef.current = true;
+        setCashWarningOpen(true);
+        note(`現金不足以支付今日營運費 ${money(result.dayCost)}；可選擇重新遊玩或變賣設備籌資。`, "alarm");
+      }
+      return;
+    }
+    cashWarningAcknowledgedRef.current = null;
     setCash((value) => value - result.dayCost);
     setDay((value) => value + 1);
     setLots(result.nextLots);
@@ -692,9 +754,9 @@ export default function Home() {
       </aside>
 
       <section className="fabArea layoutFabArea">
-        <div className="workspaceHeader"><div><p className="eyebrow">FAB LAYOUT / ROUTING CONSOLE</p><h1>製程佈局工作區</h1><p>可同時承接多筆訂單；每個接線正確的 SOURCE 都會依自身等級自動平均補料。</p></div><div className={`layoutStatus ${layoutValidation.valid ? "valid" : layoutChecked ? "invalid" : ""}`}><span>{layoutValidation.valid ? "PRODUCTION READY" : "LAYOUT CHECK"}</span><b>{layoutValidation.message}</b></div></div>
-        <div className="workspaceToolbar"><span>接線狀態：{pendingPort ? `已選擇 ${pendingPort.port.toUpperCase()}，請選擇第二個接口` : "等待選擇接口"}</span><div><button onClick={purchaseSource} disabled={!canPurchaseSource(sourceNodes.map((node) => node.sourceLevel ?? 1))}>購入 SOURCE {money(sourcePurchasePrice(sourceNodes.length))}</button><button onClick={() => setSidebarOpen((value) => !value)}>{sidebarOpen ? "收合側欄" : "展開側欄"}</button><button onClick={checkLayout}>檢查設備佈局</button><button onClick={clearWiring}>清除接線</button></div></div>
-        <div className="layoutViewport"><div className="layoutCanvas" style={{ width: canvasWidth, height: canvasHeight }}>
+        <div className="workspaceHeader"><div><p className="eyebrow">FAB LAYOUT / ROUTING CONSOLE</p><h1>製程佈局工作區</h1><p>可同時承接多筆訂單；拖曳空白處可平移大型工作區，滾輪與觸控板也可捲動。</p></div><div className={`layoutStatus ${layoutValidation.valid ? "valid" : layoutChecked ? "invalid" : ""}`}><span>{layoutValidation.valid ? "PRODUCTION READY" : "LAYOUT CHECK"}</span><b>{layoutValidation.message}</b></div></div>
+        <div className="workspaceToolbar"><span>接線狀態：{pendingPort ? `已選擇 ${pendingPort.port.toUpperCase()}，請選擇第二個接口` : "等待選擇接口"}</span><div><button onClick={purchaseSource} disabled={!canPurchaseSource(sourceNodes.map((node) => node.sourceLevel ?? 1))}>購入 SOURCE {money(sourcePurchasePrice(sourceNodes.length))}</button><button onClick={() => setSidebarOpen((value) => !value)}>{sidebarOpen ? "收合側欄" : "展開側欄"}</button><button onClick={focusProductionLine}>聚焦產線</button><button onClick={checkLayout}>檢查設備佈局</button><button onClick={clearWiring}>清除接線</button></div></div>
+        <div ref={layoutViewportRef} className="layoutViewport" onPointerDown={startWorkspacePan}><div className="layoutCanvas" style={{ width: canvasWidth, height: canvasHeight }}>
           <div className="pcbGrid" />
           {connections.map((connection) => {
             const error = connectionError(connection);
@@ -745,6 +807,7 @@ export default function Home() {
     </section>
     <footer><span>FAB STATUS: <b className="online">AUTO RUN / {lots.length ? "PROCESSING" : "IDLE"}</b></span><span>承接多筆訂單 → 自動分流補料 → 湊齊 LOTS → 依平均良率付款</span><span>V1.0 LOCAL</span></footer>
     {toast && <div className="toast">{toast}</div>}
+    {cashWarningOpen && <div className="cashWarningOverlay" role="presentation"><section className="cashWarningPanel" role="alertdialog" aria-modal="true" aria-labelledby="cash-warning-title"><p className="eyebrow">CASH FLOW WARNING</p><h2 id="cash-warning-title">現金不足，是否重新遊玩？</h2><p>選擇「否」可返回工廠，變賣設備增加資金；機台內加工或排隊中的晶圓將直接報廢。</p><div><button onClick={() => window.location.reload()}>是</button><button onClick={() => { cashWarningOpenRef.current = false; setCashWarningOpen(false); }}>否</button></div></section></div>}
     {guideOpen && <div className="guideOverlay" role="presentation" onClick={() => setGuideOpen(false)}><section className="guidePanel" role="dialog" aria-modal="true" aria-label="玩家製造指南" onClick={(event) => event.stopPropagation()}><button className="guideClose" aria-label="關閉玩家製造指南" onClick={() => setGuideOpen(false)}>×</button><p className="eyebrow">PLAYER RECIPE GUIDE</p><h2>產品製造指南</h2><p>訂單由單站清洗開始，逐步發展到擴散、光罩、蝕刻、封裝與測試。先承接訂單，再將 SOURCE 的 OUT 依配方順序接入機台，最後接到該訂單 OUTPUT；未接好的訂單會顯示 ALARM，但不會停止其他產線。</p><div className="guideMarkets">{Array.from({ length: maxMarketTier }, (_, index) => (index + 1) as Product["marketTier"]).map((tier) => <section key={tier}><h3>市場 {tier}<small>{tier === 1 ? "起步：清洗成品" : tier === 2 ? "基礎：擴散與光罩" : tier === 3 ? "中階：蝕刻圖形" : tier === 4 ? "進階：封裝與測試" : "高階：多層循環製程"}</small></h3><div className="guideProducts">{products.filter((product) => product.marketTier === tier).map((product) => <article key={product.id}><div><span style={{ background: product.color }}>{product.contractType === "permanent" ? "永久" : "短期"}</span><b>{product.name}</b><small>{product.customer}・{product.requiredLots} LOTS</small></div><p>製程：{product.recipe.map((key, index) => `${index + 1}.${getDefinition(key).short}`).join(" → ")}</p><small>設備門檻：{Object.entries(product.requirements).map(([key, level]) => `${getDefinition(key as EquipmentKey).name} LV${level}`).join("、")}</small></article>)}</div></section>)}</div><p className="guideNote">市場 5 的配方含有多次「清洗 → 擴散／光罩 → 蝕刻」循環。每次重複都需要在工作區建立獨立機台與正確接線；封裝品可直接交付，不一定需要測試。</p></section></div>}
   </main>;
 }

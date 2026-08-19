@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
@@ -52,6 +53,8 @@ test("factory floor starts full-width with a collapsed drawer sidebar", async ()
   assert.match(html, /aria-label="開啟訂單市場"/);
   assert.match(html, /aria-label="開啟物件資料庫"/);
   assert.match(html, /aria-label="開啟營運與警報紀錄"/);
+  assert.match(html, /拖曳空白處可平移大型工作區/);
+  assert.match(html, />聚焦產線</);
 });
 
 test("initial market exposes low-tier permanent and short-term orders only", async () => {
@@ -63,4 +66,13 @@ test("initial market exposes low-tier permanent and short-term orders only", asy
   assert.match(html, /少量高酬勞・短期訂單/);
   assert.doesNotMatch(html, /整流二極體/);
   assert.match(html, /自動分流補料/);
+});
+
+test("cash shortage offers restart or equipment liquidation recovery", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(source, /現金不足，是否重新遊玩？/);
+  assert.match(source, />是<\/button>/);
+  assert.match(source, />否<\/button>/);
+  assert.match(source, /報廢機台內.*批晶圓/);
+  assert.doesNotMatch(source, /仍有晶圓加工或排隊，暫時不能變賣/);
 });
