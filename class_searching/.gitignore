@@ -2,4 +2,16 @@
 __pycache__/
 .class-search.pid
 .class-search.log
-*課表/*.pdf
+
+# Local-only schedule data and teacher records.
+*課表/
+databases/
+_ocr_test/
+adjustments.json
+schedule_database.json
+teacher_course_stats.json
+teacher_directory.json
+teacher_directory_review.json
+teacher_name_directory.json
+name_overrides.json
+semesters.json

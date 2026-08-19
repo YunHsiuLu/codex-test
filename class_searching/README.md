@@ -1,21 +1,34 @@
 # 全校課表查詢系統
 
-## 資料
+## 資料隱私與首次設定
 
-- `114-2課表/`: 本學期全校教師課表與班級課表 PDF
-- `databases/114-2.json`: 依學期保存的資料庫
-- `semesters.json`: 網頁學期選單來源
-- `teacher_directory.json`: 教師編號對應姓名，抽取時優先用這份表校正老師姓名
-- `name_overrides.json`: 手動修正 PDF 抽出的人名
-- `schedule_database.json`: 新版資料庫，包含教師課表、班級課表、課程格資料
-- `teacher_course_stats.json`: 舊檔名相容副本，內容同 `schedule_database.json`
+這個專案的 Git 不保存課表 PDF、班級與教師資料、調代課紀錄，或 OCR 暫存檔。這些檔案都由 `.gitignore` 排除，必須以校內安全的方式在每台電腦各自保存與備份。
 
-目前資料量：
+初次使用時，請在專案根目錄建立一個以學期命名的資料夾，例如：
 
-- 75 位老師
-- 27 個班級
-- 1219 筆教師課表課程
-- 973 筆班級課表課程
+```text
+115-1課表/
+├── 01高中國文領域教師課表.pdf
+├── 02高中英文領域教師課表.pdf
+├── ...各領域教師課表.pdf
+├── 高一班級課表.pdf
+├── 高二班級課表.pdf
+└── 高三班級課表.pdf
+```
+
+檔名必須分別包含「教師課表」或「班級課表」，副檔名為 `.pdf`。抽取器會掃描所有名稱符合 `*課表/` 的資料夾，因此可同時保留不同學期，例如 `114-2課表/`、`115-1課表/`。
+
+重建課表前，電腦需具備：
+
+- Python 3、`pypdf` 與 `Pillow`。
+- Ghostscript 的 `gs` 指令與 Tesseract 的 `tesseract` 指令，供掃描型 PDF 的 OCR 使用。
+- `tessdata/chi_tra.traineddata` 繁體中文辨識檔；此檔隨程式保留，不需要自行加入 Git。
+
+Python 套件尚未安裝時，可執行：
+
+```bash
+python3 -m pip install pypdf Pillow
+```
 
 ## 重建資料庫
 
@@ -23,7 +36,22 @@
 /opt/homebrew/bin/python3 extract_schedule.py
 ```
 
-抽取器會自動掃描 `*課表` 資料夾。例如未來新增 `115-1課表/`，裡面放教師課表與班級課表 PDF 後，重新執行上方指令即可產生 `databases/115-1.json` 並更新 `semesters.json`。
+抽取器會自動掃描所有 `*課表/` 資料夾。每次重建會在本機產生或更新：
+
+- `databases/<學期>.json`：各學期完整課表資料庫。
+- `semesters.json`：網頁的學期選單。
+- `schedule_database.json` 與 `teacher_course_stats.json`：最新學期的相容資料庫。
+- `teacher_directory.json`、`teacher_name_directory.json`、`teacher_directory_review.json`：教師姓名校正與檢查資料。
+
+這些都是本機私密資料，不會被 Git 上傳。
+
+### 新學期操作流程
+
+1. 建立 `115-1課表/`，放入全校教師課表與高一至高三班級課表 PDF。
+2. 若已有教師編號與姓名對照資料，安全地複製本機的 `teacher_directory.json` 至專案根目錄。
+3. 執行 `/opt/homebrew/bin/python3 extract_schedule.py`。
+4. 查看 `teacher_directory_review.json`，確認是否有同一教師編號對應不同姓名，或未讀到編號的教師。
+5. 開啟網頁後，在「學期」選單選擇 `115-1`，抽查教師課表與班級課表是否正確。
 
 ## 人名修正
 
@@ -60,6 +88,17 @@
 ```bash
 /opt/homebrew/bin/python3 extract_schedule.py
 ```
+
+## 本機資料備份與移轉
+
+更換電腦或重灌前，請以校內核准的加密儲存空間備份下列本機資料；不要透過公開 Git、公開雲端連結或公開訊息傳送：
+
+- 所有 `*課表/` PDF 資料夾。
+- `databases/`、`semesters.json`、`schedule_database.json`、`teacher_course_stats.json`。
+- `teacher_directory.json`、`teacher_name_directory.json`、`teacher_directory_review.json`、`name_overrides.json`。
+- `adjustments.json`，其中包含整學期調代課與撤銷歷史。
+
+還原時，把這些檔案放回專案根目錄的相同位置；若只還原 PDF，也可以重新執行抽取器重建課表 JSON。請保留 `adjustments.json`，否則已登記的調代課與歷史紀錄不會自動重建。
 
 ## 命令列查詢
 
@@ -99,6 +138,8 @@ PORT=8766 ./start.sh
 ```bash
 python3 server.py
 ```
+
+首次啟動前，請先完成「重建資料庫」。若畫面顯示無法載入課表，通常表示尚未放入 PDF 並執行抽取器，或 `semesters.json`／`databases/<學期>.json` 尚未在本機建立。
 
 ## 調代課登記
 
