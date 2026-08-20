@@ -736,6 +736,14 @@ def semester_id_from_dir(source_dir):
     return source_dir.name.removesuffix("課表")
 
 
+def semester_parts_from_dir(source_dir):
+    semester_id = semester_id_from_dir(source_dir)
+    match = re.fullmatch(r"(\d{3})-([12])", semester_id)
+    if not match:
+        raise ValueError(f"資料夾名稱必須是例如 115-1課表：{source_dir.name}")
+    return match.group(1), match.group(2)
+
+
 def discover_source_dirs():
     dirs = []
     for path in sorted(BASE_DIR.glob("*課表")):
@@ -750,6 +758,7 @@ def extract_all(source_dir):
     global NAME_OVERRIDES, TEACHER_DIRECTORY
     NAME_OVERRIDES = load_name_overrides()
     TEACHER_DIRECTORY = load_teacher_directory()
+    school_year, semester = semester_parts_from_dir(source_dir)
     teacher_files = sorted(source_dir.glob("*教師課表.pdf"))
     class_files = sorted(source_dir.glob("*班級課表.pdf"))
 
@@ -772,8 +781,8 @@ def extract_all(source_dir):
         "semester_id": semester_id_from_dir(source_dir),
         "source_dir": source_dir.name,
         "source_pdfs": [path.name for path in teacher_files + class_files],
-        "school_year": "114",
-        "semester": "2",
+        "school_year": school_year,
+        "semester": semester,
         "days": DAYS,
         "day_keys": DAY_KEYS,
         "periods": [{"period": i + 1, "time": time} for i, time in enumerate(PERIOD_TIMES)],
