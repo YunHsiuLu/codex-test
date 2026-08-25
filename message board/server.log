@@ -9446,3 +9446,87 @@ Werkzeug appears to be used in a production deployment. Consider switching to a 
 127.0.0.1 - - [12/Jul/2026 09:24:57] "GET /health HTTP/1.1" 200 -
 127.0.0.1 - - [12/Jul/2026 09:25:07] "GET /health HTTP/1.1" 200 -
 127.0.0.1 - - [12/Jul/2026 09:25:17] "GET /health HTTP/1.1" 200 -
+Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+ * Serving Flask app 'server'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on https://127.0.0.1:5001
+ * Running on https://10.240.61.196:5001
+[33mPress CTRL+C to quit[0m
+10.240.61.70 - - [25/Aug/2026 10:11:51] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:11:52] "GET /static/manifest.webmanifest HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:11:52] "GET /socket.io/?EIO=4&transport=polling&t=Q0si3DJ HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:11:52] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+10.240.61.70 - - [25/Aug/2026 10:11:52] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:11:52] "GET /service-worker.js HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:11:52] "POST /socket.io/?EIO=4&transport=polling&t=Q0si3G4&sid=1g4JY2fKV8dqoHDgAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:11:52] "GET /socket.io/?EIO=4&transport=polling&t=Q0si3G6&sid=1g4JY2fKV8dqoHDgAAAA HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:11:52] "GET /static/app-icon.svg HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:11:52] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:11:52] "[36mGET /static/manifest.webmanifest HTTP/1.1[0m" 304 -
+10.240.61.70 - - [25/Aug/2026 10:12:02] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:12] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:22] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:28] "[33mGET /apple-touch-icon-120x120-precomposed.png HTTP/1.1[0m" 404 -
+10.240.61.70 - - [25/Aug/2026 10:12:28] "GET /static/app-icon.svg HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:28] "[33mGET /apple-touch-icon-120x120.png HTTP/1.1[0m" 404 -
+10.240.61.70 - - [25/Aug/2026 10:12:28] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
+10.240.61.70 - - [25/Aug/2026 10:12:28] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
+10.240.61.70 - - [25/Aug/2026 10:12:32] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:33] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:36] "GET /socket.io/?EIO=4&transport=websocket&sid=1g4JY2fKV8dqoHDgAAAA HTTP/1.1" 200 -
+Error on request:
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 335, in execute
+    write(data)
+    ~~~~~^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 301, in write
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1263, in sendall
+    v = self.send(byte_view[count:])
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1232, in send
+    return self._sslobj.write(data)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 371, in run_wsgi
+    execute(self.server.app)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 356, in execute
+    data = self.rfile.read(10_000_000)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+ssl.SSLError: [SSL: UNEXPECTED_EOF_WHILE_READING] unexpected eof while reading (_ssl.c:2711)
+10.240.61.70 - - [25/Aug/2026 10:12:37] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:37] "GET /static/manifest.webmanifest HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:38] "GET /socket.io/?EIO=4&transport=polling&t=Q0siEaM HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:38] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:38] "GET /service-worker.js HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:38] "POST /socket.io/?EIO=4&transport=polling&t=Q0siEb5&sid=uhJ4vTSff9K3Y2B5AAAC HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:39] "GET /socket.io/?EIO=4&transport=polling&t=Q0siEb6&sid=uhJ4vTSff9K3Y2B5AAAC HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:39] "GET / HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:39] "GET /static/app-icon.svg HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:39] "[36mGET /static/manifest.webmanifest HTTP/1.1[0m" 304 -
+10.240.61.70 - - [25/Aug/2026 10:12:48] "GET /health HTTP/1.1" 200 -
+10.240.61.70 - - [25/Aug/2026 10:12:58] "GET /health HTTP/1.1" 200 -
