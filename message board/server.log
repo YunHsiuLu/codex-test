@@ -26717,3 +26717,50 @@ ssl.SSLError: [SSL: UNEXPECTED_EOF_WHILE_READING] unexpected eof while reading (
 10.240.61.70 - - [27/Aug/2026 14:12:16] "GET /socket.io/?EIO=4&transport=polling&t=Q11sGgW HTTP/1.1" 200 -
 10.240.61.70 - - [27/Aug/2026 14:12:16] "POST /socket.io/?EIO=4&transport=polling&t=Q11sGhK&sid=G0Sd6uVzOp7vD87BAAX6 HTTP/1.1" 200 -
 10.240.61.70 - - [27/Aug/2026 14:12:16] "GET /socket.io/?EIO=4&transport=polling&t=Q11sGhL&sid=G0Sd6uVzOp7vD87BAAX6 HTTP/1.1" 200 -
+10.240.61.70 - - [27/Aug/2026 14:12:20] "GET /socket.io/?EIO=4&transport=polling&t=Q11ro8p HTTP/1.1" 200 -
+10.240.61.70 - - [27/Aug/2026 14:12:20] "GET /socket.io/?EIO=4&transport=polling&t=Q11rX0t HTTP/1.1" 200 -
+10.240.61.70 - - [27/Aug/2026 14:12:20] "GET /socket.io/?EIO=4&transport=polling&t=Q11s4T1 HTTP/1.1" 200 -
+10.240.61.70 - - [27/Aug/2026 14:12:21] "GET /socket.io/?EIO=4&transport=websocket&sid=Mx6E3l6NKs4gay8eAAXy HTTP/1.1" 200 -
+Error on request:
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 335, in execute
+    write(data)
+    ~~~~~^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 301, in write
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1263, in sendall
+    v = self.send(byte_view[count:])
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1232, in send
+    return self._sslobj.write(data)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 371, in run_wsgi
+    execute(self.server.app)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/lvyunxiu/.venv/flask/lib/python3.14/site-packages/werkzeug/serving.py", line 356, in execute
+    data = self.rfile.read(10_000_000)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+ssl.SSLError: [SSL: UNEXPECTED_EOF_WHILE_READING] unexpected eof while reading (_ssl.c:2711)
+10.240.61.70 - - [27/Aug/2026 14:12:23] "GET /health HTTP/1.1" 200 -
