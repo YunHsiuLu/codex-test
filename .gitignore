@@ -4,4 +4,4 @@ __pycache__/
 flask server/data/server.pid
 student-workspace-container/.venv/
 student-workspace-container/.image-built
-message\ board/*.log
+message\ board/*
