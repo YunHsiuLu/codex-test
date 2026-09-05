@@ -148,6 +148,7 @@ function findSwapsForSlot(teacher, dayKey, period, limit = 80) {
   if (period === 8) return [];
   const teacherSlot = getSlot(teacher, dayKey, period);
   if (!teacherSlot.lesson) return [];
+  if (adjustmentForSlot(teacher.teacher, dayKey, period) || !simpleLesson(teacherSlot.lesson)) return [];
 
   const results = [];
   for (const { klass, slot: classSlot } of classSlotsForTeacher(teacher.teacher, dayKey, period)) {
@@ -155,12 +156,16 @@ function findSwapsForSlot(teacher, dayKey, period, limit = 80) {
       for (const otherClassSlot of klass.timetable[otherDayKey]) {
         const otherLesson = otherClassSlot.lesson;
         if (!otherLesson) continue;
+        if (!simpleLesson(otherLesson) || !simpleLesson(classSlot.lesson)) continue;
         if (otherClassSlot.period === 8) continue;
         if (otherDayKey === dayKey && otherClassSlot.period === period) continue;
         if (!otherLesson.teacher || otherLesson.teacher === teacher.teacher) continue;
 
         const otherTeacher = getTeacher(otherLesson.teacher);
         if (!otherTeacher) continue;
+        if (adjustmentForSlot(otherTeacher.teacher, otherDayKey, otherClassSlot.period) ||
+            adjustmentForSlot(teacher.teacher, otherDayKey, otherClassSlot.period) ||
+            adjustmentForSlot(otherTeacher.teacher, dayKey, period)) continue;
         if (isFree(teacher, otherDayKey, otherClassSlot.period) && isFree(otherTeacher, dayKey, period)) {
           results.push({ klass, classSlot, otherClassSlot, otherTeacher });
           if (results.length >= limit) return results;
@@ -169,6 +174,11 @@ function findSwapsForSlot(teacher, dayKey, period, limit = 80) {
     }
   }
   return results;
+}
+
+function simpleLesson(lesson) {
+  return lesson && (lesson.classes || []).length <= 1 &&
+    (lesson.teachers || []).length <= 1 && !(lesson.tags || []).includes('跨班課程');
 }
 
 function firstOccupiedSlot(teacher) {
@@ -364,9 +374,11 @@ function renderQuickActions(teacher, slot) {
       `;
       $("crossSwapDate").addEventListener("change", (event) => {
         crossSwap = { ...crossSwap, targetDate: event.target.value, candidate: null, error: "" };
+        renderCrossDateSwap(slot);
       });
       $("crossSwapPeriod").addEventListener("change", (event) => {
         crossSwap = { ...crossSwap, targetPeriod: Number(event.target.value), candidate: null, error: "" };
+        renderCrossDateSwap(slot);
       });
       $("findCrossSwap").addEventListener("click", findCrossSwap);
     }
@@ -669,7 +681,7 @@ async function init() {
 
 async function loadSemesters() {
   try {
-    const payload = await fetch("semesters.json").then((response) => response.json());
+    const payload = await fetch("semesters.json", { cache: "no-store" }).then((response) => response.json());
     semesters = payload.semesters || [];
   } catch (_error) {
     semesters = [{ id: "current", label: "目前資料", database: "schedule_database.json" }];
@@ -680,12 +692,20 @@ async function loadSemesters() {
   $("semesterSelect").innerHTML = semesters
     .map((semester) => `<option value="${semester.database}">${semester.label}</option>`)
     .join("");
+  $("semesterSelect").value = semesters[semesters.length - 1].database;
 }
 
 async function loadSelectedSemester(successMessage = "課表已更新。") {
+  clearCrossSwap();
   setLoading(true, "正在載入課表……");
   try {
     data = await apiFetch(`/api/schedule?database=${apiDatabase()}&date=${apiDate()}`);
+    if (data.effective_start && ($("scheduleDate").value < data.effective_start || $("scheduleDate").value > data.effective_end)) {
+      $("scheduleDate").value = data.effective_start;
+      data = await apiFetch(`/api/schedule?database=${apiDatabase()}&date=${apiDate()}`);
+    }
+    $("scheduleDate").min = data.effective_start || "";
+    $("scheduleDate").max = data.effective_end || "";
     $("sourceLabel").textContent =
       `${data.source_dir}｜${data.metadata.teacher_count} 位老師｜${data.metadata.class_count} 班`;
     renderTeacherOptions();

@@ -13,7 +13,7 @@ from uuid import uuid4
 
 
 ROOT = Path(__file__).resolve().parent
-ADJUSTMENTS_PATH = ROOT / "adjustments.json"
+ADJUSTMENTS_PATH = Path(os.environ.get("CLASS_SEARCH_ADJUSTMENTS", str(ROOT / "adjustments.json")))
 HOST = os.environ.get("CLASS_SEARCH_HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "8765"))
 DAY_KEYS = ["mon", "tue", "wed", "thu", "fri"]
@@ -89,6 +89,8 @@ def normalize_lesson(lesson, teacher_name: str | None = None):
     copied = deepcopy(lesson)
     if teacher_name:
         copied["teacher"] = teacher_name
+        if 'teachers' in copied:
+            copied['teachers'] = [teacher_name]
         parts = [copied.get("subject", ""), teacher_name, copied.get("class", ""), copied.get("location", "")]
         copied["raw"] = " ".join(part for part in parts if part)
     return copied
@@ -152,6 +154,19 @@ def adjustment_at_teacher_slot(data, teacher_name: str, event_date: str, period:
 def require_unadjusted_teacher_slot(data, teacher_name: str, event_date: str, period: int, label: str):
     if adjustment_at_teacher_slot(data, teacher_name, event_date, period):
         raise ValueError(f"{label}已經有調代課紀錄，無法再次建立調課。")
+
+
+def require_single_class_lesson(lesson):
+    if len(lesson.get('classes', [])) > 1 or '跨班課程' in lesson.get('tags', []):
+        raise ValueError('跨班或合班課程暫不開放直接調代課。')
+    if len(lesson.get('teachers', [])) > 1:
+        raise ValueError('共同授課暫不開放直接調代課。')
+
+
+def validate_event_date(data, value):
+    day_key_for_date(value)
+    if data.get('effective_start') and not data['effective_start'] <= value <= data['effective_end']:
+        raise ValueError(f"日期必須位於課表實施期間 {data['effective_start']} 至 {data['effective_end']}。")
 
 
 def class_slot_for_lesson(data, lesson, day_key: str, period: int):
@@ -286,6 +301,7 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
         raise ValueError("type 必須是 substitute 或 swap。")
 
     event_date = raw.get("date", "")
+    validate_event_date(data, event_date)
     day_key = day_key_for_date(event_date)
     period = int(raw.get("period", 0))
     if period < 1 or period > len(data["periods"]):
@@ -299,6 +315,12 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
     if not applicant_slot.get("lesson"):
         raise ValueError("申請人該時段沒有課，無法建立調代課。")
     require_unadjusted_teacher_slot(data, applicant["teacher"], event_date, period, "原時段")
+    require_single_class_lesson(applicant_slot['lesson'])
+    source_class_slot = class_slot_for_lesson(data, applicant_slot['lesson'], day_key, period)
+    if source_class_slot and source_class_slot.get('lesson'):
+        require_single_class_lesson(source_class_slot['lesson'])
+        if source_class_slot['lesson'].get('teacher') != applicant['teacher']:
+            raise ValueError('申請人與班級授課資料不一致，請先確認課表。')
 
     adjustment = {
         "id": uuid4().hex,
@@ -329,6 +351,7 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
         return adjustment
 
     swap_date = raw.get("swap_date", "")
+    validate_event_date(data, swap_date)
     swap_day_key = day_key_for_date(swap_date)
     swap_period = int(raw.get("swap_period", 0))
     if swap_period < 1 or swap_period > len(data["periods"]):
@@ -344,6 +367,7 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
     swap_slot = get_slot(target_class, swap_day_key, swap_period)
     if not swap_slot.get("lesson") or not swap_slot["lesson"].get("teacher"):
         raise ValueError("互換時段沒有可調整的授課老師。")
+    require_single_class_lesson(swap_slot['lesson'])
     swap_teacher_name = raw.get("swap_teacher", "")
     if swap_teacher_name != swap_slot["lesson"]["teacher"]:
         raise ValueError("互換老師與班級課表不一致，請重新查詢。")
@@ -361,6 +385,7 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
     if get_slot(source_swap_teacher, day_key, period).get("lesson"):
         raise ValueError("調課老師在原時段不是空堂。")
     require_unadjusted_teacher_slot(target_data, applicant["teacher"], swap_date, swap_period, "互換時段")
+    require_unadjusted_teacher_slot(target_data, swap_teacher['teacher'], swap_date, swap_period, '互換時段')
     require_unadjusted_teacher_slot(data, swap_teacher["teacher"], event_date, period, "原時段")
     adjustment.update(
         {
@@ -423,6 +448,7 @@ def find_cross_swap_candidate(raw, source_data, target_data):
     require_unadjusted_teacher_slot(target_data, applicant["teacher"], swap_date, swap_period, "互換時段")
     require_unadjusted_teacher_slot(source_data, swap_teacher["teacher"], event_date, period, "原時段")
 
+    validate_adjustment({**raw, 'type':'swap', 'swap_teacher':swap_teacher['teacher']}, source_data, Path('candidate.json'), target_data)
     return {
         "applicant": applicant["teacher"],
         "date": event_date,
@@ -442,6 +468,10 @@ def find_cross_swap_candidate(raw, source_data, target_data):
 class ScheduleHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=ROOT, **kwargs)
+
+    def end_headers(self):
+        self.send_header('Cache-Control', 'no-store')
+        super().end_headers()
 
     def do_GET(self):
         parsed = urlparse(self.path)
@@ -527,13 +557,13 @@ class ScheduleHandler(SimpleHTTPRequestHandler):
             params = parse_qs(parsed.query)
             database_path = safe_database_path(params.get("database", ["schedule_database.json"])[0])
             selected_date = self.read_body()
-            base_schedule = read_json(database_path)
-            base_data = apply_adjustments(deepcopy(base_schedule), database_path, selected_date.get("date"))
-            target_data = None
-            if selected_date.get("type") == "swap":
-                target_data = apply_adjustments(deepcopy(base_schedule), database_path, selected_date.get("swap_date"))
-            adjustment = validate_adjustment(selected_date, base_data, database_path, target_data)
             with ADJUSTMENT_LOCK:
+                base_schedule = read_json(database_path)
+                base_data = apply_adjustments(deepcopy(base_schedule), database_path, selected_date.get("date"))
+                target_data = None
+                if selected_date.get("type") == "swap":
+                    target_data = apply_adjustments(deepcopy(base_schedule), database_path, selected_date.get("swap_date"))
+                adjustment = validate_adjustment(selected_date, base_data, database_path, target_data)
                 payload = load_adjustments()
                 payload.setdefault("adjustments", []).append(adjustment)
                 save_adjustments(payload)

@@ -1,5 +1,37 @@
 # 全校課表查詢系統
 
+## 115-1 正式課表匯入
+
+在專案資料夾執行以下指令。不需要 Streamlit，也不需要使用其他專案的虛擬環境。
+
+```bash
+# 第一次使用才需要建立環境、安裝套件。
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+
+# PDF 放入 115-1課表/ 後，只重建這一學期，保留其他學期。
+./extract.sh --semester 115-1
+./stop.sh
+./start.sh
+```
+
+開啟 http://127.0.0.1:8765 ，選擇「115-1」。本批 PDF 註明實施日期為 2026-09-07 至 2027-01-20；網頁會自動切到可用日期，再到「調代課狀態」查看教師及班級課表。
+
+PDF 檔名須以「教師課表.pdf」結尾，或符合「班級＋任意文字＋課表.pdf」，例如 `高中自然領域教師課表.pdf`、`校內文件高一班級正式課表.pdf`。必須同時放入教師及班級課表，檔名前面的編號不是必要條件。
+
+115 學年度的文字型正式 PDF 使用 PyMuPDF 依表格邊界讀取，不需要 OCR。成功後檢查 `databases/115-1-import-report.json`：
+
+- `metadata`：教師、班級及課堂數量；本批為 74 位教師、29 個班級。
+- `import_warnings`：無法辨識的姓名字形以英文字母 `O` 代替，附原 PDF 與頁碼，等待人工確認，不套用舊學期編號猜測姓名。
+- `missing_teacher_schedules`：只在班級課表出現、缺少個別教師課表的人員；保留班級姓名，不將未知時段視為空堂或列為可代課老師。
+- `schedule_mismatches`：已知教師與班級課表的時段比對差異；正常應為空陣列。
+
+合班、跨班及共同授課暫不開放直接調代課，以免只改一個班級造成衝突。普通課程仍支援代課、同週調課及跨日期調課。
+
+重新匯入只更新基準課表，不刪除 `adjustments.json` 的申請或撤銷歷史。請先備份資料；姓名校正若涉及已登記的申請，也需同步核對，不要只直接改 JSON 的一處。
+
+開發測試可執行 `.venv/bin/python -m unittest -v test_schedule`，使用暫存資料，不寫入正式紀錄。`local_backups/`、`.venv/`、匯入報告及課表資料均不納入 Git。
+
 ## 資料隱私與首次設定
 
 這個專案的 Git 不保存課表 PDF、班級與教師資料、調代課紀錄，或 OCR 暫存檔。這些檔案都由 `.gitignore` 排除，必須以校內安全的方式在每台電腦各自保存與備份。
@@ -27,7 +59,8 @@
 Python 套件尚未安裝時，可執行：
 
 ```bash
-python3 -m pip install pypdf Pillow
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
 ```
 
 ## 新增或重新匯入學期
@@ -41,7 +74,7 @@ cd "/Users/lvyunxiu/codex test/class_searching"
 find "115-1課表" -maxdepth 1 -type f -name "*.pdf" | wc -l
 
 # 一次重建所有含 PDF 的學期。
-/opt/homebrew/bin/python3 extract_schedule.py
+./extract.sh --semester 115-1
 
 # 確認網頁選單資料已包含新學期。
 cat semesters.json
@@ -54,7 +87,7 @@ Wrote .../databases/115-1.json - Teachers: ...
 Wrote .../semesters.json
 ```
 
-抽取器會重新掃描所有符合條件的資料夾，並在本機產生或更新：
+指定 `--semester` 時只重建該學期；省略時才掃描所有符合條件的資料夾。程式在本機產生或更新：
 
 - `databases/<學期>.json`：各學期完整課表資料庫。
 - `semesters.json`：網頁的學期選單。
@@ -78,7 +111,7 @@ Wrote .../semesters.json
 
 1. 建立 `115-1課表/`，放入全校教師課表與高一至高三班級課表 PDF。
 2. 若已有教師編號與姓名對照資料，安全地複製本機的 `teacher_directory.json` 至專案根目錄。
-3. 執行 `/opt/homebrew/bin/python3 extract_schedule.py`，並確認畫面有 `Wrote .../databases/115-1.json`。
+3. 執行 `./extract.sh --semester 115-1`，並確認畫面有 `Wrote .../databases/115-1.json`。
 4. 開啟 `semesters.json`，確認有 `"id": "115-1"` 與 `"database": "databases/115-1.json"`。
 5. 查看 `teacher_directory_review.json`，確認是否有同一教師編號對應不同姓名，或未讀到編號的教師。
 6. 重新啟動網頁服務，強制重新整理頁面後，在「學期」選單選擇 `115-1`，抽查教師課表與班級課表是否正確。
@@ -93,9 +126,11 @@ Wrote .../semesters.json
 4. 執行後查看 `semesters.json`。只有出現在這個檔案的學期才會出現在網頁選單。
 5. 執行 `./stop.sh`、`./start.sh`，並在瀏覽器按 `Command + Shift + R`。
 
-目前 `114-1課表/` 已有 12 份 PDF，而且本機 `semesters.json` 已包含 `114-1`。重新啟動服務後，網頁選單應可選擇 `114-1`；`115-1課表/`、`115-2課表/` 仍是空資料夾，所以尚未出現是預期行為。
+只有已匯入的學期才會出現在選單；空資料夾不代表已建立課表。115-1 的正式檔案請依本文件最上方的流程匯入。
 
 ## 人名修正
+
+以下教師編號對照與 `name_overrides.json` 操作適用於 114 學年度舊版抽取器。115 學年度正式 PDF 暫以原文及 `O` 缺字標記為準，請先依匯入報告核對姓名；舊編號可能已更換，不會自動沿用。
 
 優先建議編輯 `teacher_directory.json`。格式如下：
 

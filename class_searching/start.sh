@@ -9,6 +9,8 @@ LOG_FILE="$ROOT_DIR/.class-search.log"
 
 if [[ -n "${PYTHON_BIN:-}" ]]; then
   PYTHON="$PYTHON_BIN"
+elif [[ -x "$ROOT_DIR/.venv/bin/python" ]]; then
+  PYTHON="$ROOT_DIR/.venv/bin/python"
 elif [[ -x "/opt/homebrew/bin/python3" ]]; then
   PYTHON="/opt/homebrew/bin/python3"
 else

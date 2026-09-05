@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import argparse
 import os
 import re
 import subprocess
@@ -749,8 +750,6 @@ def discover_source_dirs():
     for path in sorted(BASE_DIR.glob("*課表")):
         if path.is_dir() and list(path.glob("*.pdf")):
             dirs.append(path)
-    if SOURCE_DIR.exists() and SOURCE_DIR not in dirs:
-        dirs.append(SOURCE_DIR)
     return dirs
 
 
@@ -760,12 +759,17 @@ def extract_all(source_dir):
     TEACHER_DIRECTORY = load_teacher_directory()
     school_year, semester = semester_parts_from_dir(source_dir)
     teacher_files = sorted(source_dir.glob("*教師課表.pdf"))
-    class_files = sorted(source_dir.glob("*班級課表.pdf"))
+    class_files = sorted(source_dir.glob("*班級*課表.pdf"))
+    if not teacher_files or not class_files:
+        raise ValueError(f"{source_dir.name}: 必須同時提供教師課表及班級課表 PDF。")
+    modern = int(school_year) >= 115
+    if modern:
+        from modern_schedule import read_pages
 
     teachers = []
     teacher_lessons = []
     for path in teacher_files:
-        file_teachers, file_lessons = extract_teacher_file(path)
+        file_teachers, file_lessons = read_pages(path, set(), NAME_OVERRIDES) if modern else extract_teacher_file(path)
         teachers.extend(file_teachers)
         teacher_lessons.extend(file_lessons)
 
@@ -773,7 +777,7 @@ def extract_all(source_dir):
     classes = []
     class_lessons = []
     for path in class_files:
-        file_classes, file_lessons = extract_class_file(path, teacher_names)
+        file_classes, file_lessons = read_pages(path, teacher_names, NAME_OVERRIDES) if modern else extract_class_file(path, teacher_names)
         classes.extend(file_classes)
         class_lessons.extend(file_lessons)
 
@@ -797,6 +801,30 @@ def extract_all(source_dir):
             "class_lesson_count": len(class_lessons),
         },
     }
+    if not teachers or not classes or len(teacher_names) != len(teachers):
+        raise ValueError(f"{source_dir.name}: 缺少教師／班級或姓名重複，停止覆寫資料庫。")
+    if modern:
+        data['import_warnings'] = [
+            {'teacher': t['teacher'], 'domain': t['domain'], 'source_pdf': t['source_pdf'], 'source_page': t['source_page']}
+            for t in teachers if 'O' in t['teacher']
+        ]
+        starts = {t.get('effective_start') for t in teachers if t.get('effective_start')}
+        ends = {t.get('effective_end') for t in teachers if t.get('effective_end')}
+        if len(starts) == 1 and len(ends) == 1:
+            data['effective_start'] = starts.pop()
+            data['effective_end'] = ends.pop()
+        missing = sorted({name for lesson in class_lessons for name in lesson.get('teachers', []) if name not in teacher_names})
+        data['missing_teacher_schedules'] = missing
+        mismatches = []
+        by_name = {t['teacher']:t for t in teachers}
+        for lesson in class_lessons:
+            for name in lesson.get('teachers', []):
+                if name not in by_name:
+                    continue
+                slot = by_name[name]['timetable'][lesson['day_key']][lesson['period']-1]['lesson']
+                if not slot or lesson['class'] not in slot.get('classes', [slot.get('class')]):
+                    mismatches.append({'teacher':name, 'class':lesson['class'], 'day':lesson['day'], 'period':lesson['period']})
+        data['schedule_mismatches'] = mismatches
     return data
 
 
@@ -835,22 +863,32 @@ def merge_teacher_directory(data_sets):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Import local semester PDFs.')
+    parser.add_argument('--semester', help='Only rebuild this semester, e.g. 115-1')
+    args = parser.parse_args()
     source_dirs = discover_source_dirs()
+    if args.semester:
+        source_dirs = [p for p in source_dirs if semester_id_from_dir(p) == args.semester]
     if not source_dirs:
         raise SystemExit(f"Missing source directories like: {SOURCE_DIR}")
 
     DATABASE_DIR.mkdir(exist_ok=True)
-    semesters = []
+    semesters = json.loads(SEMESTERS_PATH.read_text(encoding='utf-8')).get('semesters', []) if args.semester and SEMESTERS_PATH.exists() else []
     data_sets = []
     latest_data = None
     for source_dir in source_dirs:
+        print(f'Reading {source_dir.name} ...', flush=True)
         data = extract_all(source_dir)
         data_sets.append(data)
         semester_id = data["semester_id"]
         out_path = DATABASE_DIR / f"{semester_id}.json"
         payload = json.dumps(data, ensure_ascii=False, indent=2)
         out_path.write_text(payload, encoding="utf-8")
+        if 'import_warnings' in data:
+            report = {key: data.get(key) for key in ['semester_id','metadata','effective_start','effective_end','import_warnings','missing_teacher_schedules','schedule_mismatches']}
+            (DATABASE_DIR / f'{semester_id}-import-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
         latest_data = data
+        semesters = [s for s in semesters if s['id'] != semester_id]
         semesters.append(
             {
                 "id": semester_id,
@@ -867,15 +905,21 @@ def main():
             f"teacher lessons: {meta['teacher_lesson_count']}, class lessons: {meta['class_lesson_count']}"
         )
 
+    semesters.sort(key=lambda s: tuple(map(int, s['id'].split('-'))))
     SEMESTERS_PATH.write_text(json.dumps({"semesters": semesters}, ensure_ascii=False, indent=2), encoding="utf-8")
-    merge_teacher_directory(data_sets)
+    legacy_data = [d for d in data_sets if int(d['school_year']) < 115]
+    if legacy_data:
+        merge_teacher_directory(legacy_data)
+    if semesters:
+        latest_data = json.loads((BASE_DIR / semesters[-1]['database']).read_text(encoding='utf-8'))
     if latest_data:
         payload = json.dumps(latest_data, ensure_ascii=False, indent=2)
         DATA_PATH.write_text(payload, encoding="utf-8")
         LEGACY_DATA_PATH.write_text(payload, encoding="utf-8")
         print(f"Wrote {SEMESTERS_PATH}")
-        print(f"Wrote {TEACHER_DIRECTORY_PATH}")
-        print(f"Wrote {TEACHER_DIRECTORY_REVIEW_PATH}")
+        if legacy_data:
+            print(f"Wrote {TEACHER_DIRECTORY_PATH}")
+            print(f"Wrote {TEACHER_DIRECTORY_REVIEW_PATH}")
         print(f"Wrote current aliases: {DATA_PATH}, {LEGACY_DATA_PATH}")
 
 

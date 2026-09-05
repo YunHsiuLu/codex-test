@@ -1,4 +1,6 @@
 .DS_Store
+.venv/
+local_backups/
 __pycache__/
 .class-search.pid
 .class-search.log
