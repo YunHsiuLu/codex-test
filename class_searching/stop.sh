@@ -3,6 +3,14 @@ set -euo pipefail
 
 ROOT_DIR="${0:A:h}"
 PID_FILE="$ROOT_DIR/.class-search.pid"
+LAUNCHD_FILE="$ROOT_DIR/.class-search.launchd"
+
+if [[ -f "$LAUNCHD_FILE" ]]; then
+  launchctl remove "$(<"$LAUNCHD_FILE")"
+  rm -f "$LAUNCHD_FILE" "$PID_FILE"
+  echo "調代課查詢系統已停止。"
+  exit 0
+fi
 
 if [[ ! -f "$PID_FILE" ]]; then
   echo "沒有找到執行中的調代課查詢系統 PID。"

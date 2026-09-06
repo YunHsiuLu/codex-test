@@ -156,11 +156,55 @@ def require_unadjusted_teacher_slot(data, teacher_name: str, event_date: str, pe
         raise ValueError(f"{label}已經有調代課紀錄，無法再次建立調課。")
 
 
-def require_single_class_lesson(lesson):
+def require_single_class_lesson(lesson, allow_coteaching=False):
     if len(lesson.get('classes', [])) > 1 or '跨班課程' in lesson.get('tags', []):
         raise ValueError('跨班或合班課程暫不開放直接調代課。')
-    if len(lesson.get('teachers', [])) > 1:
+    if len(lesson.get('teachers', [])) > 1 and not allow_coteaching:
         raise ValueError('共同授課暫不開放直接調代課。')
+
+
+def adjustment_lock_reason(slot, adjustment_type='swap'):
+    if adjustment_type == 'swap' and int(slot.get('period', 0)) == 8:
+        return '第八節可代課，但不可調課。'
+    lesson = slot.get('lesson')
+    if not lesson:
+        return ''
+    content = ''.join(str(lesson.get(key, '')) for key in ('subject', 'class', 'raw'))
+    content = ''.join(content.split())
+    for keyword, reason in [('領域時間', '領域時間'), ('共同時間', '共同時間'),
+                            ('自主學習', '自主學習'), ('充實', '充實課程'), ('會議', '會議時段')]:
+        if keyword in content:
+            return f'{reason}不可調代課。'
+    inquiry = '探究' in content
+    if inquiry and adjustment_type == 'swap':
+        return '探究與實作課可代課，但不可調課。'
+    try:
+        require_single_class_lesson(lesson, allow_coteaching=inquiry and adjustment_type == 'substitute')
+    except ValueError as error:
+        return str(error)
+    return ''
+
+
+def require_adjustable_slot(slot, adjustment_type='swap'):
+    reason = adjustment_lock_reason(slot, adjustment_type)
+    if reason:
+        raise ValueError(reason)
+
+
+def annotate_adjustment_locks(data):
+    for entity in data['teachers'] + data['classes']:
+        for day_key, slots in entity['timetable'].items():
+            for slot in slots:
+                class_slot = class_slot_for_lesson(data, slot.get('lesson'), day_key, slot['period'])
+                reasons = {}
+                for adjustment_type in ('substitute', 'swap'):
+                    reason = adjustment_lock_reason(slot, adjustment_type)
+                    if not reason and class_slot:
+                        reason = adjustment_lock_reason(class_slot, adjustment_type)
+                    reasons[adjustment_type] = reason
+                slot['adjustment_lock_reasons'] = reasons
+                slot['adjustment_lock_reason'] = reasons['swap']
+    return data
 
 
 def validate_event_date(data, value):
@@ -192,7 +236,15 @@ def apply_substitute(data, adjustment):
     substituted_lesson = normalize_lesson(original_lesson, substitute_teacher["teacher"])
     class_slot = class_slot_for_lesson(data, original_lesson, day_key, period)
     if class_slot:
-        class_slot["lesson"] = substituted_lesson
+        class_lesson = normalize_lesson(class_slot.get('lesson') or original_lesson)
+        names = class_lesson.get('teachers') or [class_lesson.get('teacher', adjustment['applicant'])]
+        names = [substitute_teacher['teacher'] if name == adjustment['applicant'] else name for name in names]
+        class_lesson['teachers'] = names
+        class_lesson['teacher'] = '、'.join(names)
+        class_lesson['raw'] = ' '.join(filter(None, [class_lesson.get('subject'),
+                                      class_lesson['teacher'], class_lesson.get('class'), class_lesson.get('location')]))
+        class_lesson['lines'] = [class_lesson['raw']]
+        class_slot['lesson'] = class_lesson
     original_slot["lesson"] = None
     get_slot(substitute_teacher, day_key, period)["lesson"] = substituted_lesson
 
@@ -312,14 +364,15 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
     if not applicant:
         raise ValueError("找不到申請人老師。")
     applicant_slot = get_slot(applicant, day_key, period)
+    require_adjustable_slot(applicant_slot, adjustment_type)
     if not applicant_slot.get("lesson"):
         raise ValueError("申請人該時段沒有課，無法建立調代課。")
     require_unadjusted_teacher_slot(data, applicant["teacher"], event_date, period, "原時段")
-    require_single_class_lesson(applicant_slot['lesson'])
     source_class_slot = class_slot_for_lesson(data, applicant_slot['lesson'], day_key, period)
     if source_class_slot and source_class_slot.get('lesson'):
-        require_single_class_lesson(source_class_slot['lesson'])
-        if source_class_slot['lesson'].get('teacher') != applicant['teacher']:
+        require_adjustable_slot(source_class_slot, adjustment_type)
+        class_teachers = source_class_slot['lesson'].get('teachers') or [source_class_slot['lesson'].get('teacher')]
+        if applicant['teacher'] not in class_teachers:
             raise ValueError('申請人與班級授課資料不一致，請先確認課表。')
 
     adjustment = {
@@ -365,6 +418,7 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
     if not target_class:
         raise ValueError("找不到互換班級課表。")
     swap_slot = get_slot(target_class, swap_day_key, swap_period)
+    require_adjustable_slot(swap_slot)
     if not swap_slot.get("lesson") or not swap_slot["lesson"].get("teacher"):
         raise ValueError("互換時段沒有可調整的授課老師。")
     require_single_class_lesson(swap_slot['lesson'])
@@ -374,6 +428,7 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
     swap_teacher = find_teacher(target_data, swap_teacher_name)
     if not swap_teacher:
         raise ValueError("找不到調課老師。")
+    require_adjustable_slot(get_slot(swap_teacher, swap_day_key, swap_period))
     target_applicant = find_teacher(target_data, applicant["teacher"])
     if not target_applicant:
         raise ValueError("找不到申請人老師。")
@@ -520,7 +575,7 @@ class ScheduleHandler(SimpleHTTPRequestHandler):
             database_path = safe_database_path(params.get("database", ["schedule_database.json"])[0])
             selected_date = params.get("date", [""])[0] or None
             data = apply_adjustments(deepcopy(read_json(database_path)), database_path, selected_date)
-            self.send_json(data)
+            self.send_json(annotate_adjustment_locks(data))
         except Exception as error:
             self.send_json({"error": str(error)}, HTTPStatus.BAD_REQUEST)
 

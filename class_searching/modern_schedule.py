@@ -61,7 +61,8 @@ def grid(page, words):
 
 
 def clean_name(value, overrides):
-    return compact(re.sub(r'[\ue000-\uf8ff\ufffd]', 'O', value))
+    name = compact(re.sub(r'[\ue000-\uf8ff\ufffd]', 'O', value))
+    return overrides.get(name, name)
 
 
 def read_pages(path, teacher_names, overrides):
@@ -72,7 +73,9 @@ def read_pages(path, teacher_names, overrides):
             words = [(*w[:4], re.sub(r'[\ue000-\uf8ff\ufffd]', 'O', w[4]), *w[5:]) for w in page.get_text('words')]
             # Some PDF exports omit a missing glyph instead of emitting its code.
             aliases = {n.replace('O',''):n for n in teacher_names if 'O' in n}
-            words = [(*w[:4], aliases.get(w[4], w[4]), *w[5:]) for w in words]
+            aliases.update({source.replace('O',''):target for source,target in overrides.items()
+                            if 'O' in source and target in teacher_names})
+            words = [(*w[:4], overrides.get(compact(w[4]), aliases.get(w[4], w[4])), *w[5:]) for w in words]
             try:
                 xs, ys = grid(page, words)
                 heading = ' '.join(lines_in(words, (0, 0, page.rect.width, 100)))

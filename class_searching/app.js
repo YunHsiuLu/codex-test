@@ -147,14 +147,17 @@ function classSlotsForTeacher(teacherName, dayKey, period) {
 function findSwapsForSlot(teacher, dayKey, period, limit = 80) {
   if (period === 8) return [];
   const teacherSlot = getSlot(teacher, dayKey, period);
+  if (teacherSlot.adjustment_lock_reason) return [];
   if (!teacherSlot.lesson) return [];
   if (adjustmentForSlot(teacher.teacher, dayKey, period) || !simpleLesson(teacherSlot.lesson)) return [];
 
   const results = [];
   for (const { klass, slot: classSlot } of classSlotsForTeacher(teacher.teacher, dayKey, period)) {
+    if (classSlot.adjustment_lock_reason) continue;
     for (const otherDayKey of DAY_KEYS) {
       for (const otherClassSlot of klass.timetable[otherDayKey]) {
         const otherLesson = otherClassSlot.lesson;
+        if (otherClassSlot.adjustment_lock_reason) continue;
         if (!otherLesson) continue;
         if (!simpleLesson(otherLesson) || !simpleLesson(classSlot.lesson)) continue;
         if (otherClassSlot.period === 8) continue;
@@ -163,6 +166,7 @@ function findSwapsForSlot(teacher, dayKey, period, limit = 80) {
 
         const otherTeacher = getTeacher(otherLesson.teacher);
         if (!otherTeacher) continue;
+        if (getSlot(otherTeacher, otherDayKey, otherClassSlot.period).adjustment_lock_reason) continue;
         if (adjustmentForSlot(otherTeacher.teacher, otherDayKey, otherClassSlot.period) ||
             adjustmentForSlot(teacher.teacher, otherDayKey, otherClassSlot.period) ||
             adjustmentForSlot(otherTeacher.teacher, dayKey, period)) continue;
@@ -268,11 +272,15 @@ function renderTimetable() {
         const dateLabel = slotDate(dayKey);
         const adjustment = adjustmentForSlot(teacher.teacher, dayKey, period.period);
         const adjusted = adjustment ? `adjusted adjusted-${adjustment.type}` : "";
-        const title = adjustment ? adjustmentLabel(adjustment) : "";
+        const locks = slot.adjustment_lock_reasons || {swap:slot.adjustment_lock_reason, substitute:slot.adjustment_lock_reason};
+        const lockReason = locks.swap || locks.substitute || "";
+        const lockLabel = locks.swap && !locks.substitute ? '可代課，不可調課' : '不可調整';
+        const title = [lockReason, adjustment ? adjustmentLabel(adjustment) : ""].filter(Boolean).join(" ");
         return `
-          <button class="slot ${active} ${empty} ${adjusted}" type="button" data-day="${dayKey}" data-period="${period.period}" title="${title}">
+          <button class="slot ${active} ${empty} ${adjusted} ${lockReason ? 'locked' : ''}" type="button" data-day="${dayKey}" data-period="${period.period}" title="${title}">
             <small>${dateLabel}</small>
             <span>${lessonText(slot)}</span>
+            ${lockReason ? `<small class="lock-label">${lockLabel}</small>` : ''}
           </button>
         `;
       }).join("");
@@ -476,6 +484,13 @@ function renderResults() {
   $("selectedLesson").innerHTML = slot.lesson
     ? `<strong>${slot.lesson.subject}</strong><span>${slot.lesson.class || "未標示班級"}</span>`
     : `<strong>空堂</strong><span></span>`;
+  const lockReason = slot.adjustment_lock_reasons ? slot.adjustment_lock_reasons[mode] : slot.adjustment_lock_reason;
+  if (lockReason) {
+    $("resultTitle").textContent = mode === 'swap' ? '不可調課' : '不可代課';
+    $("quickActions").textContent = lockReason;
+    $("results").innerHTML = "";
+    return;
+  }
   renderQuickActions(teacher, slot);
 
   if (mode === "substitute") {
@@ -692,7 +707,7 @@ async function loadSemesters() {
   $("semesterSelect").innerHTML = semesters
     .map((semester) => `<option value="${semester.database}">${semester.label}</option>`)
     .join("");
-  $("semesterSelect").value = semesters[semesters.length - 1].database;
+  $("semesterSelect").value = selectDefaultSemester(semesters, todayString()).database;
 }
 
 async function loadSelectedSemester(successMessage = "課表已更新。") {

@@ -330,6 +330,21 @@ button:disabled {
   background: #c4e8d1;
 }
 
+.slot.locked:not(.adjusted) {
+  background: #fff4ca;
+  box-shadow: inset 0 0 0 1px #bc941f;
+}
+
+.slot.locked.active:not(.adjusted) {
+  background: #ffecad;
+  outline-color: #886800;
+}
+
+.slot .lock-label {
+  color: #715600;
+  font-weight: 700;
+}
+
 .timetable > :nth-child(6n) {
   border-right: 0;
 }

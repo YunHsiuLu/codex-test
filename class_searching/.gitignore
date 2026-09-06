@@ -4,6 +4,7 @@ local_backups/
 __pycache__/
 .class-search.pid
 .class-search.log
+.class-search.launchd
 
 # Local-only schedule data and teacher records.
 *課表/
