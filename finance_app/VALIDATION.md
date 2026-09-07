@@ -2,6 +2,18 @@
 
 驗證日期：2026-09-07。環境：macOS、Python 3.14.4；直接依賴版本已固定於 requirements.txt。
 
+## 換機接續驗證
+
+2026-09-07 晚間，於目前 macOS、Python 3.13.5 環境重新驗證：
+
+- 資料夾內未附 `.venv`，已依原有 `requirements.txt` 建立獨立虛擬環境並完成安裝，無須修改套件版本。
+- ２３項 unittest／Streamlit AppTest 測試全部通過；`pip check` 未發現相依衝突。
+- 解除執行沙盒的網路限制後，`scripts/check_live.py` 完成台積電日線、分時、週線、月線、美股、自選、比較及市場／事件頁流程，回報 `LIVE FLOW OK`，各頁沒有程式例外。
+- 以 `./start.sh` 啟動本機服務，Chrome 實際確認首頁的台灣大盤行情摘要與技術圖表載入。
+- 本次接續時沒有 `data/preferences.json`，使用預設清單與設定；未從原電腦還原個人偏好。
+
+以下保留原環境的驗證紀錄；本次未重新操作瀏覽器下載或測試全部螢幕尺寸。
+
 ## 自動測試
 
 - ２３項 unittest／Streamlit AppTest 測試通過。
