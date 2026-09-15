@@ -1,0 +1,6 @@
+{
+  "apiKey": "YOUR_WEB_API_KEY",
+  "projectId": "YOUR_PROJECT_ID",
+  "databaseURL": "https://YOUR_DATABASE_NAME.REGION.firebasedatabase.app",
+  "appId": "YOUR_WEB_APP_ID"
+}

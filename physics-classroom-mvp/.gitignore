@@ -1,0 +1,8 @@
+node_modules/
+dist/
+work/
+.firebase/
+*-debug.log
+playwright-report/
+test-results/
+public/firebase-config.json

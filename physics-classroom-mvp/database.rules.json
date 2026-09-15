@@ -1,0 +1,56 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$room": {
+        "vectors": {
+          ".read": "$room.matches(/^[A-Z0-9]{4,12}$/)",
+          "$id": {
+            ".write": "$room.matches(/^[A-Z0-9]{4,12}$/) && $id.matches(/^v([0-9]|[1-4][0-9])$/)",
+            ".validate": "newData.hasChildren(['label', 'color', 'origin', 'components'])",
+            "label": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"
+            },
+            "color": {
+              ".validate": "newData.isString() && newData.val().matches(/^#[0-9a-fA-F]{6}$/)"
+            },
+            "origin": {
+              ".validate": "newData.hasChildren(['x', 'y', 'z'])",
+              "x": {
+                ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+              },
+              "y": {
+                ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+              },
+              "z": {
+                ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+              },
+              "$other": {
+                ".validate": false
+              }
+            },
+            "components": {
+              ".validate": "newData.hasChildren(['x', 'y', 'z'])",
+              "x": {
+                ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+              },
+              "y": {
+                ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+              },
+              "z": {
+                ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+              },
+              "$other": {
+                ".validate": false
+              }
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    }
+  }
+}
