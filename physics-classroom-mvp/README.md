@@ -2,6 +2,16 @@
 
 Three.js ＋ Firebase Hosting ＋ Realtime Database。老師編輯同一教室的向量；學生只讀頁面即時更新，每個瀏覽器獨立使用 OrbitControls。未加入 Firestore、Cloud Functions 或 Authentication。
 
+## 正式網站（已部署）
+
+- 首頁：<https://physics-classroom-795b1.web.app/>
+- 老師：<https://physics-classroom-795b1.web.app/teacher.html?room=PHYS01>
+- 學生：<https://physics-classroom-795b1.web.app/student.html?room=PHYS01>
+
+正式 Firebase 專案為 physics-classroom-795b1，Realtime Database 位於新加坡。學生開啟上方 HTTPS 網址即可，不需和老師同一個 Wi-Fi。共用 PHYS01 教室代碼；不同課堂可從首頁更換代碼。
+
+本機已填妥 firebase-config.json 與專案對應。日後修改程式後執行 npm run deploy 即可重新建置與部署。部署工具登入狀態保存在被 Git 忽略的 work/config，請勿分享這個目錄。
+
 ## 已完成
 
 - `teacher.html`：新增、選取、重新命名、設定顏色、平移及刪除向量。
@@ -51,8 +61,8 @@ npm run emulators
 ４．登入 Firebase CLI，將本機專案對應到同一個 Firebase 專案：
 
 ```sh
-npx firebase login
-npx firebase use --add
+npm run firebase -- login --no-localhost
+npm run firebase -- use --add
 ```
 
 ５．部署：
@@ -63,7 +73,7 @@ npm run deploy
 
 `npm run deploy` 會驗證正式設定、建置網頁，並部署 Hosting 與 Database 規則。`firebase.json` 的 Hosting predeploy 也會驗證設定並重新建置，避免直接執行部署時使用過期網頁。設定檔不含管理員金鑰，Firebase 網頁設定會隨網站公開。
 
-部署前確認 CLI 的目標專案與 `firebase-config.json` 的 `projectId` 一致。初始 `.firebaserc` 使用 `demo-physics-classroom`，不會替你猜測正式專案。僅修改正式資料庫規則時可用 `npx firebase deploy --only database`；會取代該資料庫現行規則，因此本 MVP 建議使用獨立新專案。
+部署前確認 CLI 的目標專案與 `firebase-config.json` 的 `projectId` 一致。目前 `.firebaserc` 已對應到正式專案 `physics-classroom-795b1`；模擬器脚本仍固定使用 demo 專案，兩者分開。僅修改正式資料庫規則時可用 `npm run firebase -- deploy --only database`；會取代該資料庫現行規則，因此本 MVP 建議使用獨立新專案。
 
 部署後由 CLI 顯示 Hosting 網址，通常為 `https://PROJECT_ID.web.app/`。正式網址不加 `emulator=1`。老師與學生各自對 Firebase 連線，因此老師電腦更換校內 Wi-Fi IP 不影響分享網址；網路切換時會暫時斷線並重新連線。
 

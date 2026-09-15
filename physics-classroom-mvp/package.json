@@ -9,8 +9,9 @@
     "preview": "vite preview --host 127.0.0.1",
     "emulators": "node scripts/emulators.mjs start",
     "test": "npm run build && node scripts/emulators.mjs test",
-    "deploy": "firebase deploy --only hosting,database",
-    "check": "node --test tests/model.test.mjs"
+    "deploy": "node scripts/firebase.mjs deploy --only hosting,database",
+    "check": "node --test tests/model.test.mjs",
+    "firebase": "node scripts/firebase.mjs"
   },
   "dependencies": {
     "firebase": "12.19.0",
