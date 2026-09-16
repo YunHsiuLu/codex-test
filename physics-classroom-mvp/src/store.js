@@ -1,51 +1,58 @@
 import { initializeApp } from 'firebase/app';
-import { getDatabase, connectDatabaseEmulator, ref, onValue, set, remove, runTransaction } from 'firebase/database';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, connectAuthEmulator, setPersistence, browserSessionPersistence } from 'firebase/auth';
+import { getDatabase, connectDatabaseEmulator, ref, onValue, set, get, remove, runTransaction, serverTimestamp } from 'firebase/database';
 import { roomId, validateVector } from './model.js';
+import { DEFAULT_LAB, validateLab } from './physics.js';
 
-export async function connectStore(room, { onScene, onConnection, onError }) {
-  room = roomId(room);
-  const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
-  const useEmulator = local && new URLSearchParams(location.search).get('emulator') === '1';
+export async function connectStore(room, { onScene, onConnection, onError, onAuth, onLab }) {
+  room=roomId(room);
+  const useEmulator=['localhost','127.0.0.1','[::1]'].includes(location.hostname) && new URLSearchParams(location.search).get('emulator')==='1';
   let config;
-  if (useEmulator) {
-    config = { projectId: 'demo-physics-classroom', apiKey: 'demo-key', appId: 'demo-app', databaseURL: 'https://demo-physics-classroom-default-rtdb.firebaseio.com' };
-  } else {
-    const response = await fetch('/firebase-config.json', { cache: 'no-store' });
-    try { config = response.ok ? await response.json() : null; } catch { config = null; }
-    if (!config || !['apiKey', 'projectId', 'databaseURL', 'appId'].every(k => typeof config[k] === 'string' && config[k] && !config[k].includes('YOUR_'))) {
-      throw new Error('尚未設定 Firebase。請依 README 填寫 firebase-config.json；本機測試請從首頁選擇「本機模擬器」。');
-    }
+  if(useEmulator) config={projectId:'demo-physics-classroom',apiKey:'demo-key',appId:'demo-app',databaseURL:'https://demo-physics-classroom-default-rtdb.firebaseio.com'};
+  else {
+    const response=await fetch('/firebase-config.json',{cache:'no-store'});
+    try {config=response.ok?await response.json():null;} catch {config=null;}
+    if(!config?.databaseURL||!config?.apiKey) throw new Error('尚未設定 Firebase，請查看 README。');
   }
-  const db = getDatabase(initializeApp(config));
-  if (useEmulator) connectDatabaseEmulator(db, '127.0.0.1', 9000);
-  const base = `rooms/${room}/vectors`;
-  let connected = false;
-  const unsubscribers = [
-    onValue(ref(db, '.info/connected'), snap => { connected = snap.val() === true; onConnection(connected, useEmulator); }),
-    onValue(ref(db, base), snap => {
-      const vectors = snap.val() || {};
-      try { Object.values(vectors).forEach(validateVector); onScene(vectors); } catch { onError(new Error('教室資料格式錯誤，請檢查資料庫規則。')); }
-    }, onError)
-  ];
-  return {
-    create: async vector => {
-      validateVector(vector);
-      if (!connected) throw new Error('目前離線，重新連線後再新增。');
-      for (let slot = 0; slot < 50; slot++) {
-        const id = 'v' + slot;
-        const result = await runTransaction(ref(db, base + '/' + id), current => current === null ? vector : undefined, { applyLocally: false });
-        if (result.committed) return id;
+  const app=initializeApp(config),db=getDatabase(app),auth=getAuth(app);
+  if(useEmulator){connectDatabaseEmulator(db,'127.0.0.1',9000);connectAuthEmulator(auth,'http://127.0.0.1:9099',{disableWarnings:true});}
+  await setPersistence(auth,browserSessionPersistence);
+  const base=`rooms/${room}`;
+  let connected=false,canWrite=false,offset=0,authGeneration=0;
+  const subscriptions=[
+    onAuthStateChanged(auth,async user=>{
+      const generation=++authGeneration;canWrite=false;onAuth?.(user,false);
+      if(user) {
+        try {await get(ref(db,base+'/teacherAccess'));if(generation===authGeneration){canWrite=true;onAuth?.(user,true);}}
+        catch {if(generation===authGeneration)onAuth?.(user,false);}
       }
-      throw new Error('這間教室已達５０支向量上限。');
+    }),
+    onValue(ref(db,'.info/connected'),s=>{connected=s.val()===true;onConnection(connected,useEmulator);}),
+    onValue(ref(db,'.info/serverTimeOffset'),s=>{offset=s.val()||0;}),
+    onValue(ref(db,base+'/vectors'),s=>{
+      const data=s.val()||{};
+      try{Object.values(data).forEach(validateVector);onScene(data);}catch{onError(new Error('向量資料格式錯誤。'));}
+    },onError),
+    onValue(ref(db,base+'/lab'),s=>{
+      try {onLab?.(validateLab(s.val()||structuredClone(DEFAULT_LAB)));}catch(e){onError(e);}
+    },onError)
+  ];
+  function requireTeacher(){if(!canWrite)throw new Error('只有授權老師能修改教室。');if(!connected)throw new Error('目前離線，請重新連線後再試。');}
+  return {
+    now:()=>Date.now()+offset,
+    login:password=>signInWithEmailAndPassword(auth,config.teacherEmail||'cow3690m@gmail.com',password),
+    logout:()=>signOut(auth),
+    create:async vector=>{
+      requireTeacher();validateVector(vector);
+      for(let i=0;i<50;i++){
+        const id='v'+i,result=await runTransaction(ref(db,base+'/vectors/'+id),current=>current===null?vector:undefined,{applyLocally:false});
+        if(result.committed)return id;
+      }
+      throw new Error('每間教室最多５０支向量。');
     },
-    write: (id, vector) => {
-      if (!connected) return Promise.reject(new Error('目前離線，重新連線後再儲存。'));
-      return set(ref(db, `${base}/${id}`), validateVector(vector));
-    },
-    delete: id => {
-      if (!connected) return Promise.reject(new Error('目前離線，重新連線後再刪除。'));
-      return remove(ref(db, `${base}/${id}`));
-    },
-    dispose: () => unsubscribers.forEach(unsubscribe => unsubscribe())
+    write:(id,vector)=>{requireTeacher();return set(ref(db,base+'/vectors/'+id),validateVector(vector));},
+    delete:id=>{requireTeacher();return remove(ref(db,base+'/vectors/'+id));},
+    writeLab:lab=>{requireTeacher();validateLab(lab);return set(ref(db,base+'/lab'),{...lab,clock:{...lab.clock,startedAt:serverTimestamp()}});},
+    dispose:()=>subscriptions.forEach(f=>f())
   };
 }

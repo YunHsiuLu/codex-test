@@ -1,0 +1,57 @@
+export const AXES = ['x', 'y', 'z'];
+export const vec = (x=0,y=0,z=0) => ({x,y,z});
+export const add = (a,b) => vec(a.x+b.x,a.y+b.y,a.z+b.z);
+export const mul = (a,k) => vec(a.x*k,a.y*k,a.z*k);
+export const dot = (a,b) => a.x*b.x+a.y*b.y+a.z*b.z;
+export const cross = (a,b) => vec(a.y*b.z-a.z*b.y,a.z*b.x-a.x*b.z,a.x*b.y-a.y*b.x);
+export const norm = a => Math.hypot(a.x,a.y,a.z);
+export const DEFAULT_LAB = {
+  mode:'vectors', operation:'add', a:'v0', b:'v1',
+  particle:{charge:1,mass:1,velocity:vec(2,.6,0),electric:vec(),field:vec(0,1,0),duration:20,rate:1,scale:1},
+  clock:{playing:false,elapsed:0,startedAt:0}
+};
+export function validateLab(lab) {
+  if (!lab || !['vectors','algebra','lorentz'].includes(lab.mode) || !['add','subtract','cross'].includes(lab.operation)) throw new Error('模型設定不正確。');
+  for (const key of ['a','b']) if (!/^v([0-9]|[1-4][0-9])$/.test(lab[key])) throw new Error('請選擇有效向量。');
+  const p=lab.particle;
+  const bounded=(n,lo,hi)=>Number.isFinite(n)&&n>=lo&&n<=hi;
+  if (!p || !bounded(p.charge,-1000,1000)||!bounded(p.mass,1e-35,1e6)||!bounded(p.duration,1e-12,1e4)||!bounded(p.rate,1e-15,1000)||!bounded(p.scale,1e-9,1e12)) throw new Error('請檢查電荷、正質量、時間、播放速率與顯示倍率。');
+  for (const k of AXES) if (!bounded(p.velocity?.[k],-1e7,1e7)||!bounded(p.field?.[k],-1000,1000)||!bounded(p.electric?.[k],-1000,1000)) throw new Error('初速度或磁場超出範圍。');
+  if (Math.abs(p.charge)*norm(p.field)/p.mass*p.duration>200*Math.PI) throw new Error('模擬區間超過１００圈，請縮短模擬時間或減小磁場。');
+  for(let i=0;i<=24;i++){const state=particleAt(p,p.duration*i/24);if(norm(state.velocity)>3e7)throw new Error('速度超過光速的十分之一，已超出此非相對論模型；請調整參數。');if(norm(state.position)*p.scale>1000)throw new Error('軌跡超過顯示範圍，請縮短時間或減小顯示倍率。');}
+  const c=lab.clock;
+  if (!c||typeof c.playing!=='boolean'||!bounded(c.elapsed,0,p.duration)||!bounded(c.startedAt,0,1e15)) throw new Error('播放時間不正確。');
+  return lab;
+}
+export function algebra(a,b,operation) { return operation==='cross'?cross(a,b):add(a,mul(b,operation==='subtract'?-1:1)); }
+// Exact nonrelativistic solution for constant uniform E and B. Stable small-angle integrals.
+export function particleAt(p,t) {
+  const strength=norm(p.field), acceleration=mul(p.electric,p.charge/p.mass);
+  let position,velocity;
+  if (!strength || !p.charge) {
+    position=add(mul(p.velocity,t),mul(acceleration,t*t/2));
+    velocity=add(p.velocity,mul(acceleration,t));
+  } else {
+    const axis=mul(p.field,1/strength),omega=p.charge*strength/p.mass,theta=omega*t;
+    const vp=mul(axis,dot(p.velocity,axis)), vt=add(p.velocity,mul(vp,-1)), vr=cross(vt,axis);
+    const ap=mul(axis,dot(acceleration,axis)), at=add(acceleration,mul(ap,-1)), ar=cross(at,axis);
+    const small=Math.abs(theta)<1e-3;
+    const sinc=small?1-theta**2/6+theta**4/120:Math.sin(theta)/theta;
+    const c2=small?.5-theta**2/24+theta**4/720:2*Math.sin(theta/2)**2/theta**2;
+    const s2=small?theta/6-theta**3/120+theta**5/5040:(theta-Math.sin(theta))/theta**2;
+    const cosc=theta*c2;
+    position=add(add(mul(vp,t),mul(ap,t*t/2)),add(add(mul(vt,t*sinc),mul(vr,t*cosc)),add(mul(at,t*t*c2),mul(ar,t*t*s2))));
+    velocity=add(add(vp,mul(ap,t)),add(add(mul(vt,Math.cos(theta)),mul(vr,Math.sin(theta))),add(mul(at,t*sinc),mul(ar,t*cosc))));
+  }
+  const vxB=cross(velocity,p.field),electricForce=mul(p.electric,p.charge),magneticForce=mul(vxB,p.charge);
+  return {position,velocity,vxB,electricForce,magneticForce,force:add(electricForce,magneticForce)};
+}
+export function particleMetrics(p) {
+  const b=norm(p.field),omega=Math.abs(p.charge)*b/p.mass;
+  const parallel=b?dot(p.velocity,mul(p.field,1/b)):norm(p.velocity);
+  const perpendicular=b?norm(add(p.velocity,mul(p.field,-parallel/b))):0;
+  return {speed:norm(p.velocity),radius:omega?perpendicular/omega:null,period:omega?2*Math.PI/omega:null,pitch:omega?parallel*2*Math.PI/omega:null};
+}
+export function simulationTime(lab,now) {
+  return Math.min(lab.particle.duration,Math.max(0,lab.clock.elapsed+(lab.clock.playing?Math.max(0,now-lab.clock.startedAt)/1000*lab.particle.rate:0)));
+}

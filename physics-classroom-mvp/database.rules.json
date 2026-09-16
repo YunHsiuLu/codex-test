@@ -7,7 +7,7 @@
         "vectors": {
           ".read": "$room.matches(/^[A-Z0-9]{4,12}$/)",
           "$id": {
-            ".write": "$room.matches(/^[A-Z0-9]{4,12}$/) && $id.matches(/^v([0-9]|[1-4][0-9])$/)",
+            ".write": "auth != null && auth.uid == 'sjOawvV1pKTvH9xcwKfpQg0Vc2C3' && auth.token.firebase.sign_in_provider == 'password' && $room.matches(/^[A-Z0-9]{4,12}$/) && $id.matches(/^v([0-9]|[1-4][0-9])$/)",
             ".validate": "newData.hasChildren(['label', 'color', 'origin', 'components'])",
             "label": {
               ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"
@@ -48,6 +48,111 @@
             "$other": {
               ".validate": false
             }
+          }
+        },
+        "teacherAccess": {
+          ".read": "auth != null && auth.uid == 'sjOawvV1pKTvH9xcwKfpQg0Vc2C3' && auth.token.firebase.sign_in_provider == 'password' && $room.matches(/^[A-Z0-9]{4,12}$/)",
+          ".write": false
+        },
+        "lab": {
+          ".read": "$room.matches(/^[A-Z0-9]{4,12}$/)",
+          ".write": "auth != null && auth.uid == 'sjOawvV1pKTvH9xcwKfpQg0Vc2C3' && auth.token.firebase.sign_in_provider == 'password' && $room.matches(/^[A-Z0-9]{4,12}$/)",
+          ".validate": "newData.hasChildren(['mode','operation','a','b','particle','clock'])",
+          "mode": {
+            ".validate": "newData.val() == 'vectors' || newData.val() == 'algebra' || newData.val() == 'lorentz'"
+          },
+          "operation": {
+            ".validate": "newData.val() == 'add' || newData.val() == 'subtract' || newData.val() == 'cross'"
+          },
+          "a": {
+            ".validate": "newData.isString() && newData.val().matches(/^v([0-9]|[1-4][0-9])$/)"
+          },
+          "b": {
+            ".validate": "newData.isString() && newData.val().matches(/^v([0-9]|[1-4][0-9])$/)"
+          },
+          "particle": {
+            ".validate": "newData.hasChildren(['charge','mass','velocity','electric','field','duration','rate','scale'])",
+            "charge": {
+              ".validate": "newData.isNumber() && newData.val() >= -1000 && newData.val() <= 1000"
+            },
+            "mass": {
+              ".validate": "newData.isNumber() && newData.val() >= 1e-35 && newData.val() <= 1000000"
+            },
+            "velocity": {
+              ".validate": "newData.hasChildren(['x','y','z'])",
+              "x": {
+                ".validate": "newData.isNumber() && newData.val() >= -10000000 && newData.val() <= 10000000"
+              },
+              "y": {
+                ".validate": "newData.isNumber() && newData.val() >= -10000000 && newData.val() <= 10000000"
+              },
+              "z": {
+                ".validate": "newData.isNumber() && newData.val() >= -10000000 && newData.val() <= 10000000"
+              },
+              "$other": {
+                ".validate": false
+              }
+            },
+            "electric": {
+              ".validate": "newData.hasChildren(['x','y','z'])",
+              "x": {
+                ".validate": "newData.isNumber() && newData.val() >= -1000 && newData.val() <= 1000"
+              },
+              "y": {
+                ".validate": "newData.isNumber() && newData.val() >= -1000 && newData.val() <= 1000"
+              },
+              "z": {
+                ".validate": "newData.isNumber() && newData.val() >= -1000 && newData.val() <= 1000"
+              },
+              "$other": {
+                ".validate": false
+              }
+            },
+            "field": {
+              ".validate": "newData.hasChildren(['x','y','z'])",
+              "x": {
+                ".validate": "newData.isNumber() && newData.val() >= -1000 && newData.val() <= 1000"
+              },
+              "y": {
+                ".validate": "newData.isNumber() && newData.val() >= -1000 && newData.val() <= 1000"
+              },
+              "z": {
+                ".validate": "newData.isNumber() && newData.val() >= -1000 && newData.val() <= 1000"
+              },
+              "$other": {
+                ".validate": false
+              }
+            },
+            "duration": {
+              ".validate": "newData.isNumber() && newData.val() >= 1e-12 && newData.val() <= 10000"
+            },
+            "rate": {
+              ".validate": "newData.isNumber() && newData.val() >= 1e-15 && newData.val() <= 1000"
+            },
+            "scale": {
+              ".validate": "newData.isNumber() && newData.val() >= 1e-9 && newData.val() <= 1000000000000"
+            },
+            "$other": {
+              ".validate": false
+            }
+          },
+          "clock": {
+            ".validate": "newData.hasChildren(['playing','elapsed','startedAt']) && newData.child('elapsed').val() <= newData.parent().child('particle/duration').val()",
+            "playing": {
+              ".validate": "newData.isBoolean()"
+            },
+            "elapsed": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000"
+            },
+            "startedAt": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000000000000"
+            },
+            "$other": {
+              ".validate": false
+            }
+          },
+          "$other": {
+            ".validate": false
           }
         }
       }

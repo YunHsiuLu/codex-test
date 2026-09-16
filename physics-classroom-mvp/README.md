@@ -1,142 +1,120 @@
-# 向量教室｜3D Physics Classroom MVP
+# 向量教室｜3D Physics Classroom
 
-Three.js ＋ Firebase Hosting ＋ Realtime Database。老師編輯同一教室的向量；學生只讀頁面即時更新，每個瀏覽器獨立使用 OrbitControls。未加入 Firestore、Cloud Functions 或 Authentication。
+更新：２０２６－０９－１６。Three.js ＋ Firebase Hosting ＋ Realtime Database ＋ Firebase Authentication。
 
-## 正式網站（已部署）
+## 網站
 
 - 首頁：<https://physics-classroom-795b1.web.app/>
-- 老師：<https://physics-classroom-795b1.web.app/teacher.html?room=PHYS01>
-- 學生：<https://physics-classroom-795b1.web.app/student.html?room=PHYS01>
+- 老師端：<https://physics-classroom-795b1.web.app/teacher.html?room=PHYS01>
+- 學生端：<https://physics-classroom-795b1.web.app/student.html?room=PHYS01>
 
-正式 Firebase 專案為 physics-classroom-795b1，Realtime Database 位於新加坡。學生開啟上方 HTTPS 網址即可，不需和老師同一個 Wi-Fi。共用 PHYS01 教室代碼；不同課堂可從首頁更換代碼。
+老師輸入自己設定的老師密碼，解鎖後修改同教室場景。學生不用登入。每個瀏覽器保有獨立相機；不需同一 Wi-Fi。
 
-本機已填妥 firebase-config.json 與專案對應。日後修改程式後執行 npm run deploy 即可重新建置與部署。部署工具登入狀態保存在被 Git 忽略的 work/config，請勿分享這個目錄。
+## 老師密碼與安全
 
-## 已完成
+介面只要求老師密碼。後台使用 Firebase Authentication 的 email/password，固定老師帳號由 Firebase Console 建立；不是把密碼藏在 JavaScript 裡。原本不加 Authentication 的 MVP 限制，已依使用者要求修正為真正的資料庫寫入權限。
 
-- `teacher.html`：新增、選取、重新命名、設定顏色、平移及刪除向量。
-- `student.html`：訂閱同一教室的向量，只提供觀察與本機視角操作。
-- 起點與分量分開設定，終點＝起點＋分量；顯示向量大小。
-- 同一教室代碼共用資料，不同代碼分開；學生連結自動包含教室代碼。
-- 零向量顯示起點與標籤；座標與分量範圍為 −１００～１００，每室最多５０支向量。
-- 連線狀態、離線禁用寫入、錯誤提示、窄螢幕排版。
+規則只接受指定老師 UID 與 password 登入提供者。未登入、其他帳號、自行註冊或猜到老師網址，都不能新增、修改、刪除向量或模型，也無法自行取得老師權限。學生可讀取已知教室代碼的資料，不能列舉所有教室。
 
-## 本機啟動
+老師密碼由本人在 Firebase Console 設定；本程式未記錄密碼。登入使用分頁工作階段持續性，並提供「鎖定老師端」。關閉分頁或在共用設備上結束授課時，建議按鎖定。已分享出去的老師密碼具有同一老師權限。
 
-需求：Node.js ２２．１２以上，Java ２１。此工作目錄已有 Node，測試用 Java 放在 `work/jdk/Contents/Home`，啟動腳本自動使用它，不需要改系統 Java。
+修改密碼：由老師本人在 Firebase Console 的 Authentication 管理該帳號。不要刪除重建帳號，否則 UID 會變，需要同步更新 `scripts/build-rules.mjs` 的授權 UID、測試 fixture，再產生及部署規則。Firebase 管理員權限另由 Firebase Console 管理，與本網站老師密碼不同。
+
+## 模式一：自由向量
+
+新增／選取向量，設定名稱、色彩、起點與分量，再按「儲存並同步」。移動起點會平移向量；終點＝起點＋分量。每室５０個槽位、座標與分量 −１００～１００。
+
+## 模式二：向量運算
+
+先在自由向量模式新增所需向量，再切到向量運算，選取 A、B：
+
+- A＋B：顯示首尾相接與合向量。
+- A−B：顯示 A＋（−B）。
+- A×B：顯示右手定則方向與叉積分量。
+
+以兩向量的分量運算並移至共同原點；不使用原本起點決定結果。修改 A／B 後會重新計算。結果與公式同步到學生。
+
+## 模式三：帶電粒子・電磁場
+
+完整方程：
+
+```text
+F = q (E + v × B)
+dv/dt = F / m
+dr/dt = v
+```
+
+參數：電荷 q（C）、正質量 m（kg）、初速度 v₀（m/s）、電場 E（N/C）、磁場 B（T），皆支援三維分量。另可設定總時間、每秒播放的物理時間、顯示倍率。所有物理數值採 SI，顯示倍率只影響畫面，不改變計算結果。
+
+模型假設：均勻且固定的電磁場，非相對論點粒子，初始位置為原點，忽略重力、輻射、碰撞及粒子間作用。以解析解計算任意時間，不以畫面幀數累積數值積分，因此背景分頁恢復後仍能對上教室時間。
+
+支援：
+
+- 螺旋運動、圓周運動、純電場加速、交叉電磁場漂移、電子微秒尺度範例。
+- 範例先載入表單，再按「套用參數並歸零」才會全班更新。
+- 播放、暫停、歸零、時間滑桿；學生保有自己的視角。
+- E、B、v、v×B、電力、磁力、合力的箭頭，各瀏覽器可自行開關。
+- 瞬時位置、速度、v×B、qE、q（v×B）、F、速率與動能；純磁場另外顯示迴旋半徑、週期、螺距。
+- 淡線為預測軌跡、亮線為已走過軌跡。「看完整場景」只調整目前瀏覽器相機。
+
+不同物理量單位不同，方向箭頭不共用長度比例。實際大小以數值表為準。為維持教學顯示品質，限制最多１００圈，限制顯示軌跡範圍，並拒絕明顯超出非相對論模型的速度。此版本不處理空間變化場、時間變化場或相對論。
+
+## 同步與資料
+
+```text
+rooms/{room}/vectors/v0..v49
+rooms/{room}/lab
+rooms/{room}/teacherAccess  （規則限定老師能讀的授權檢查路徑，不儲存資料）
+```
+
+`lab` 包含模型、運算選擇、粒子參數、播放旗標、基準物理時間及伺服器時間戳。所有裝置使用 Firebase 伺服器時間偏移計算目前播放時間；不是每幀上傳座標。網路延遲會造成短暫的控制抵達差異，恢復後會依相同時間基準追上。相機不寫入任何雲端路徑。
+
+向量新增以 transaction 分配空槽，同一支向量多人修改採最後寫入者生效。模型設定採整份寫入，主要使用情境是一位老師控制一堂課。離線禁用修改；傳送中斷線時仍可能留有 Firebase 待送出操作，請等待同步完成。
+
+## 本機開發與測試
+
+需求：Node.js ２２．１２以上及 Java ２１。此目錄已有開發依賴；`work/jdk/Contents/Home` 提供測試用 Java。
 
 ```sh
 cd '/Users/lvyunxiu/codex test/physics-classroom-mvp'
 npm ci --cache ./work/npm-cache
-npm run build
+npm test
+# 測試會自行啟動並關閉模擬器；不要與另一組模擬器同時執行。
 npm run emulators
 ```
 
-開啟 <http://127.0.0.1:5055/>，保留「本機模擬器」勾選。老師與學生用同一個教室代碼。
+本機入口：<http://127.0.0.1:5055/>，勾選本機模擬器。Database ９０００、Authentication ９０９９、Hosting ５０５５，全部 loopback。模擬器使用 demo 專案，不連正式資料庫。啟動後的 Authentication 是空的，測試用老師帳號必須有規則允許的 UID；自動規則測試已使用 mock auth 測試上下文，無需正式老師密碼。
 
-- 老師：<http://127.0.0.1:5055/teacher.html?room=PHYS01&emulator=1>
-- 學生：<http://127.0.0.1:5055/student.html?room=PHYS01&emulator=1>
+`npm run dev` 啟用５１７３開發伺服器，仍需模擬器。直接用正式 config 且不加 `emulator=1` 會連正式資料庫，請留意教室代碼。
 
-這是真正的 Firebase Database 與 Hosting 模擬器，不是 localStorage 假同步。本機模式必須在 loopback 網址且帶 `emulator=1` 才啟用，不會誤連正式資料庫。本機網址只供這台電腦測試；學校 iPad 使用部署後的 HTTPS 網址。
+測試包含：
 
-`work/` 是可重新產生的工具與快取，不納入版本控制。搬到另一台電腦時，安裝 Java ２１，或將官方 Temurin JDK 放入上述目錄。官方下載：<https://adoptium.net/temurin/releases/?version=21>。
+- 模型與物理１１項測試：加減／叉積、右手定則、純磁場守恆、正負電荷、螺旋、純電場、漂移、一般 E／B 運動微分檢查、功與能關係、微小 B 數值穩定、播放時鐘與非法參數。
+- 資料庫規則３８項驗證：老師可修改、訪客與其他帳號被拒、不能竄改權限、不能寫相機、格式與範圍限制。
+- 瀏覽器手動驗證記錄見 `HANDOFF.md`。
 
-開發即時更新可另開終端執行 `npm run dev`，使用 <http://127.0.0.1:5173/>；Database 模擬器仍需執行。
+## 部署
 
-## 使用方式
-
-１．老師輸入教室代碼後按「新增向量」。
-２．在清單選擇向量，修改起點座標可平移，修改分量可改變方向與長度。
-３．按「儲存並同步」，同教室的學生會收到更新。
-４．老師複製學生網址分享給學生。學生拖曳旋轉、滾輪或雙指縮放，雙指拖曳平移。
-５．「重設視角」只作用於目前瀏覽器。編輯向量不會重設任何人的相機。
-
-## Firebase Console 設定與部署
-
-可以直接使用網頁版 Firebase Console 管理專案與資料庫；CLI 用來上傳建置後的網站與規則。
-
-１．在 <https://console.firebase.google.com/> 建立專案。無需啟用 Google Analytics、Gemini、Authentication 或付費升級。
-２．建立 Realtime Database，選擇適合的區域（台灣教室可選新加坡，若介面提供）。先用鎖定模式建立，再部署本專案規則。
-３．新增「網頁」應用程式，把 `firebaseConfig` 中的 `apiKey`、`projectId`、`databaseURL`、`appId` 填入 `public/firebase-config.json`。可複製 `public/firebase-config.example.json` 後修改。Database 建立後確認 `databaseURL` 完整包含資料庫名稱與區域。
-４．登入 Firebase CLI，將本機專案對應到同一個 Firebase 專案：
+正式專案：`physics-classroom-795b1`；資料庫：新加坡 `asia-southeast1`。
 
 ```sh
 npm run firebase -- login --no-localhost
-npm run firebase -- use --add
-```
-
-５．部署：
-
-```sh
 npm run deploy
 ```
 
-`npm run deploy` 會驗證正式設定、建置網頁，並部署 Hosting 與 Database 規則。`firebase.json` 的 Hosting predeploy 也會驗證設定並重新建置，避免直接執行部署時使用過期網頁。設定檔不含管理員金鑰，Firebase 網頁設定會隨網站公開。
+部署工具使用被 Git 忽略的 `work/config` 存放登入狀態。**不要分享 work 目錄或任何登入權杖。**
 
-部署前確認 CLI 的目標專案與 `firebase-config.json` 的 `projectId` 一致。目前 `.firebaserc` 已對應到正式專案 `physics-classroom-795b1`；模擬器脚本仍固定使用 demo 專案，兩者分開。僅修改正式資料庫規則時可用 `npm run firebase -- deploy --only database`；會取代該資料庫現行規則，因此本 MVP 建議使用獨立新專案。
+網頁設定在 `public/firebase-config.json`，含 projectId、appId、apiKey、authDomain、databaseURL，為一般公開的 Firebase Web 設定，並非管理員密鑰。範例在 `public/firebase-config.example.json`。
 
-部署後由 CLI 顯示 Hosting 網址，通常為 `https://PROJECT_ID.web.app/`。正式網址不加 `emulator=1`。老師與學生各自對 Firebase 連線，因此老師電腦更換校內 Wi-Fi IP 不影響分享網址；網路切換時會暫時斷線並重新連線。
+修改資料庫規則：先更新 `scripts/build-rules.mjs`，再執行 `node scripts/build-rules.mjs` 產生 `database.rules.json`，完成 `npm test` 後部署。`firebase.json` 的 Hosting predeploy 會檢查設定並建置。
 
-## 無登入版本的權限限制
+## 檔案分工
 
-**學生端只讀是介面行為，不是經過身分驗證的老師／學生權限隔離。**
+- `src/app.js`：兩端介面、密碼登入與向量編輯。
+- `src/store.js`：Firebase Auth／Realtime Database、授權與伺服器時鐘。
+- `src/physics.js`：純函式物理計算、向量運算與參數驗證。
+- `src/lab-ui.js`：模型表單、範例、播放控制與物理量數值。
+- `src/scene.js`：Three.js、獨立相機、軌跡與箭頭。
+- `database.rules.json`：真正執行的資料庫權限與結構檢查。
 
-本版規則允許知道教室代碼的人讀取該室的向量並寫入有效格式的向量。任何人也能自行開老師頁面，或呼叫 Firebase API。不可將「教室代碼」視為密碼。Firebase API key 也不是老師密碼。
-
-規則預設拒絕其他路徑、教室列表讀取、相機資料、未知欄位、不完整向量、超出範圍的數字及超過５０支向量。這些檢查防止資料格式破壞，不保證老師身分、不阻止公開端點被濫用。請僅使用非敏感教學示範資料。
-
-需要真正限制只有老師可寫時，下一版必須引入可靠的身分驗證或受信任後端；本版遵守不加 Authentication／Functions 的需求。
-
-## 測試
-
-```sh
-npm run build
-npm run check
-# 先停止已在執行的模擬器，再執行整合測試。
-npm test
-```
-
-- 單元測試：教室代碼、防止路徑注入、向量大小、零向量、數值範圍。
-- Firebase 規則整合測試：有效 CRUD、拒絕 camera 與未知欄位、拒絕非法座標與名稱、５０支上限。
-- 瀏覽器驗證清單與本次結果見 `HANDOFF.md`。
-
-## 架構
-
-```text
-teacher.html ─┐                       ┌─ student.html（相機 A）
-              ├─ Realtime Database ──┼─ student.html（相機 B）
-老師相機本機 ─┘  rooms/{room}/vectors └─ student.html（相機 C）
-```
-
-資料範例：
-
-```json
-{
-  "rooms": {
-    "PHYS01": {
-      "vectors": {
-        "v0": {
-          "label": "F",
-          "color": "#57dfc2",
-          "origin": { "x": 0, "y": 0, "z": 0 },
-          "components": { "x": 3, "y": 2, "z": 1 }
-        }
-      }
-    }
-  }
-}
-```
-
-`src/scene.js` 管理 Three.js 與本機相機；`src/store.js` 只訂閱與寫入向量；`src/app.js` 管理兩端介面。向量使用 v0～v49 共５０個槽位，新增時以 Firebase transaction 取得空位，避免同時新增互相覆蓋。編輯只更新單支向量，不覆蓋整個教室。若多人同時編輯同一支向量，最後一次寫入生效。
-
-## 第一版界線
-
-以表單數值移動向量，尚無滑鼠拖曳控制把手、QR code、動畫或全息投影四面畫面。相機不傳雲端；重新整理頁面回到預設視角。固定網格範圍為２０，超出畫面時可縮放、平移。離線時禁用新增與儲存；送出途中斷線，Firebase 可能保留待送出操作直到重新連線，請勿在同步中關閉頁面。
-
-## 官方文件
-
-- [Three.js 安裝](https://threejs.org/manual/en/installation.html)
-- [OrbitControls](https://threejs.org/docs/pages/OrbitControls.html)
-- [Firebase 讀寫與即時監聽](https://firebase.google.com/docs/database/web/read-and-write)
-- [Database Security Rules](https://firebase.google.com/docs/database/security)
-- [Firebase Hosting 部署](https://firebase.google.com/docs/hosting/quickstart)
+沒有新增 Firestore、Cloud Functions 或付費方案。

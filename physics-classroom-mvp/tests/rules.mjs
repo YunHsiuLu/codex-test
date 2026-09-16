@@ -1,27 +1,45 @@
-import assert from 'node:assert/strict';
-const endpoint = 'http://127.0.0.1:9000';
-const url = path => `${endpoint}/${path}.json?ns=demo-physics-classroom-default-rtdb`;
-const v = { label: 'F', color: '#57dfc2', origin: {x:0,y:0,z:0}, components: {x:3,y:4,z:0} };
-let count = 0;
-async function request(path, method='GET', body, allowed=true) {
-  const response = await fetch(url(path), {method, ...(body === undefined ? {} : {body:JSON.stringify(body)})});
-  const result = await response.text();
-  assert.equal(response.ok, allowed, `${method} ${path}: ${response.status} ${result}`);
-  count++; return result;
-}
-await request('rooms/RULES1/vectors/v0', 'PUT', v);
-await request('rooms/RULES1/vectors');
-await request('rooms', 'GET', undefined, false);
-await request('rooms/RULES1/camera', 'PUT', {x:1}, false);
-await request('rooms/RULES1/vectors/v0', 'PUT', {...v, camera:{x:1}}, false);
-await request('rooms/RULES1/vectors/v0', 'PUT', {...v, origin:{x:101,y:0,z:0}}, false);
-await request('rooms/RULES1/vectors/v0', 'PUT', {...v, label:''}, false);
-await request('rooms/RULES1/vectors/v0', 'PUT', {...v, color:'red'}, false);
-await request('rooms/RULES1/vectors/v0', 'PUT', {...v, components:{x:1,y:2}}, false);
-await request('rooms/bad/vectors/v0', 'PUT', v, false);
-for (let i=1;i<=49;i++) await request(`rooms/RULES1/vectors/v${i}`, 'PUT', v);
-await request('rooms/RULES1/vectors/v50', 'PUT', v, false);
-await request('rooms/RULES1/vectors/v0', 'DELETE');
-await request('rooms/RULES1/vectors/v0', 'PUT', v);
-for (let i=0;i<=49;i++) await request(`rooms/RULES1/vectors/v${i}`, 'DELETE');
-console.log(`Database emulator：${count} 項規則請求驗證通過。`);
+import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
+import {ref,set,get,remove,update} from 'firebase/database';
+import fs from 'node:fs';
+import {DEFAULT_LAB} from '../src/physics.js';
+const env=await initializeTestEnvironment({projectId:'demo-physics-classroom',database:{host:'127.0.0.1',port:9000,rules:fs.readFileSync('database.rules.json','utf8')}});
+const claims={email:'cow3690m@gmail.com',email_verified:true,firebase:{sign_in_provider:'password'}};
+const teacher=env.authenticatedContext('sjOawvV1pKTvH9xcwKfpQg0Vc2C3',claims).database();
+const guest=env.unauthenticatedContext().database();
+const student=env.authenticatedContext('student',{...claims,email:'student@example.com'}).database();
+const unverified=env.authenticatedContext('unverified',{...claims,email_verified:false}).database();
+const fakeProvider=env.authenticatedContext('sjOawvV1pKTvH9xcwKfpQg0Vc2C3',{...claims,firebase:{sign_in_provider:'google.com'}}).database();
+const path='rooms/TEST01';
+const v={label:'F',color:'#57dfc2',origin:{x:0,y:0,z:0},components:{x:3,y:4,z:0}};
+let count=0;
+async function pass(p){await assertSucceeds(p);count++;}
+async function fail(p){await assertFails(p);count++;}
+try {
+ await env.clearDatabase();
+ await pass(set(ref(teacher,path+'/vectors/v0'),v));
+ for(const db of [guest,student,unverified,fakeProvider]) {
+  await pass(get(ref(db,path+'/vectors')));
+  await fail(set(ref(db,path+'/vectors/v0'),v));
+  await fail(remove(ref(db,path+'/vectors/v0')));
+  await fail(set(ref(db,path+'/lab'),DEFAULT_LAB));
+  await fail(get(ref(db,path+'/teacherAccess')));
+ }
+ await pass(get(ref(teacher,path+'/teacherAccess')));
+ await fail(set(ref(guest,'permissions/student'),true));
+ await fail(set(ref(student,path+'/teacherAccess'),true));
+ await fail(update(ref(guest,path),{'vectors/v0/label':'hacked'}));
+ await fail(set(ref(teacher,path+'/camera'),{x:1}));
+ await fail(set(ref(teacher,path+'/vectors/v0'),{...v,camera:{x:1}}));
+ await fail(set(ref(teacher,path+'/vectors/v0'),{...v,origin:{x:101,y:0,z:0}}));
+ await fail(set(ref(teacher,path+'/vectors/v50'),v));
+ await fail(set(ref(teacher,'rooms/bad/vectors/v0'),v));
+ await pass(set(ref(teacher,path+'/lab'),DEFAULT_LAB));
+ await pass(get(ref(guest,path+'/lab')));
+ await fail(set(ref(teacher,path+'/lab'),{...DEFAULT_LAB,particle:{...DEFAULT_LAB.particle,mass:0}}));
+ await fail(set(ref(teacher,path+'/lab'),{...DEFAULT_LAB,clock:{...DEFAULT_LAB.clock,elapsed:21}}));
+ await fail(set(ref(teacher,path+'/lab'),{...DEFAULT_LAB,admin:true}));
+ await pass(update(ref(teacher,path+'/lab/clock'),{playing:true,startedAt:Date.now()}));
+ await pass(remove(ref(teacher,path+'/vectors/v0')));
+ await fail(get(ref(guest,'rooms')));
+ console.log(`Security rules：${count} assertions passed (including guest / wrong teacher / unverified / forged provider).`);
+} finally {await env.cleanup();}
