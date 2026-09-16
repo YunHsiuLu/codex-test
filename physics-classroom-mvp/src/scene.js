@@ -2,14 +2,15 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { cameraFingerprint } from './model.js';
 import { DEFAULT_LAB, AXES, algebra, vec, mul, norm, particleAt, simulationTime } from './physics.js';
+THREE.Object3D.DEFAULT_UP.set(0,0,1);
 const V=p=>new THREE.Vector3(p.x,p.y,p.z);
 export function createScene(container) {
   const scene=new THREE.Scene();scene.background=new THREE.Color('#0b1220');
-  const camera=new THREE.PerspectiveCamera(45,1,.01,10000);camera.position.set(11,9,13);
+  const camera=new THREE.PerspectiveCamera(45,1,.01,10000);camera.position.set(12,-12,10);camera.up.set(0,0,1);
   const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));
   renderer.domElement.setAttribute('aria-label','三維向量與物理模擬，拖曳旋轉視角');container.append(renderer.domElement);
   const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.target.set(0,1,0);controls.minDistance=.1;controls.maxDistance=4000;
-  scene.add(new THREE.GridHelper(20,20,'#46566f','#263348'));
+  const grid = new THREE.GridHelper(20,20,'#46566f','#263348');grid.rotation.x = Math.PI / 2;scene.add(grid);
   const axes=new THREE.AxesHelper(8);axes.setColors('#ff7f91','#7beaac','#87b7ff');scene.add(axes);
   const objects=new THREE.Group();scene.add(objects);
   function label(text,color){
@@ -68,6 +69,34 @@ export function createScene(container) {
     update:data=>{vectors=data;rebuild();},
     setLab:(data,now,onTick)=>{lab=data;clock=now;tick=onTick;rebuild();},
     show:(key,on)=>{visible[key]=on;},
+    setView: (viewType) => {
+      controls.reset();
+      switch (viewType) {
+        case '2d-top': // 2D 俯視圖 (XY 平面)
+          camera.position.set(0, 0, 25);
+          controls.target.set(0, 0, 0);
+          controls.enableRotate = false; // 2D 模式下禁止 3D 旋轉
+          break;
+        case '2d-front': // 2D 正視圖 (XZ 平面)
+          camera.position.set(0, -25, 0);
+          controls.target.set(0, 0, 0);
+          controls.enableRotate = false;
+          break;
+        case '2d-side': // 2D 側視圖 (YZ 平面)
+          camera.position.set(25, 0, 0);
+          controls.target.set(0, 0, 0);
+          controls.enableRotate = false;
+          break;
+        case '3d': // 3D 立體視角
+        default:
+          camera.position.set(12, -12, 10);
+          controls.target.set(0, 0, 2);
+          controls.enableRotate = true; // 啟用 3D 旋轉
+          break;
+      }
+      camera.up.set(0, 0, 1);
+      controls.update();
+    },
     fit:()=>{
       const box=new THREE.Box3();
       if(lab.mode==='lorentz'){for(let i=0;i<=200;i++)box.expandByPoint(V(mul(particleAt(lab.particle,lab.particle.duration*i/200).position,lab.particle.scale)));}
@@ -75,6 +104,6 @@ export function createScene(container) {
       if(box.isEmpty())return;const center=box.getCenter(new THREE.Vector3()),size=Math.max(3,box.getSize(new THREE.Vector3()).length());
       controls.target.copy(center);camera.position.copy(center).add(new THREE.Vector3(1,.8,1.2).normalize().multiplyScalar(size*1.5));controls.update();
     },
-    reset:()=>{camera.position.set(11,9,13);controls.target.set(0,1,0);controls.update();}
+    reset:()=>{camera.position.set(12,-12,10);controls.target.set(0,0,2);camera.up.set(0,0,1);controls.update();}
   };
 }

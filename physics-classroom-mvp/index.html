@@ -1,3 +1,67 @@
 <!doctype html>
-<html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="viewport" content="width=device-width, initial-scale=1"><title>向量教室｜3D Physics Classroom</title></head>
-<body><main class="landing"><div class="eyebrow">3D PHYSICS CLASSROOM</div><h1>把向量，<br>放進同一個空間。</h1><p class="lead">老師用密碼解鎖，學生自由轉動視角。<br>向量運算與電磁場動畫，一起看懂。</p><form id="join" class="join-card"><label for="room">教室代碼</label><input id="room" name="room" value="PHYS01" minlength="4" maxlength="12" pattern="[A-Za-z0-9]{4,12}" required autocomplete="off"><p class="hint">同一組代碼，就是同一間教室。</p><label id="local-option" hidden class="check"><input id="emulator" type="checkbox">本機模擬器</label><div class="actions"><button type="submit" name="role" value="teacher">進入老師端</button><button type="submit" name="role" value="student" class="secondary">進入學生端</button></div></form><p class="footnote">X ／ Y ／ Z　·　共用場景，獨立視角</p></main><script type="module" src="/src/home.js"></script></body></html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>向量教室｜3D Physics Classroom</title>
+</head>
+<body>
+  <main class="landing">
+    <div class="eyebrow">3D PHYSICS CLASSROOM</div>
+    <h1>把向量，<br>放進同一個空間。</h1>
+    <p class="lead">老師用密碼解鎖，學生自由轉動視角。<br>向量運算與電磁場動畫，一起看懂。</p>
+
+    <form id="join" class="join-card">
+      <label for="room">教室代碼</label>
+      <input 
+        id="room" 
+        name="room" 
+        value="PHYS01" 
+        minlength="4" 
+        maxlength="12" 
+        pattern="[A-Za-z0-9]{4,12}" 
+        required 
+        autocomplete="off"
+      >
+      <p class="hint">同一組代碼，就是同一間教室。</p>
+
+      <label id="local-option" hidden class="check">
+        <input id="emulator" type="checkbox">本機模擬器
+      </label>
+
+      <div class="actions">
+        <button type="submit" name="role" value="teacher">進入老師端</button>
+        <button type="submit" name="role" value="student" class="secondary">進入學生端</button>
+      </div>
+    </form>
+
+    <p class="footnote">X ／ Y ／ Z · 共用場景，獨立視角</p>
+  </main>
+
+  <!-- 老師身份密碼驗證 Modal 視窗 -->
+  <dialog id="login-modal" class="auth-modal">
+    <form id="modal-login-form">
+      <h3>驗證老師權限</h3>
+      <p class="hint">請輸入老師密碼以進入授課控制台</p>
+
+      <input 
+        id="modal-password" 
+        type="password" 
+        placeholder="請輸入密碼" 
+        required 
+        minlength="6" 
+        autocomplete="current-password"
+      >
+      <p id="modal-error" class="error-text" hidden></p>
+
+      <div class="modal-actions">
+        <button type="button" id="close-modal" class="secondary">取消</button>
+        <button type="submit" id="submit-modal">解鎖並進入</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="/src/home.js"></script>
+</body>
+</html>

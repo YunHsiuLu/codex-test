@@ -1,0 +1,453 @@
+-e \n=== src/lab-ui.js ===
+import { DEFAULT_LAB, AXES, algebra, norm, vec, particleMetrics, validateLab, simulationTime } from './physics.js';
+export const numberText=n=>n===null?'—':Math.abs(n)<1e-12&&n!==0||Math.abs(n)>=1e5? n.toExponential(3):Number(n.toPrecision(5)).toString();
+const tuple=v=>`（${AXES.map(k=>numberText(v[k])).join('，')}）`;
+const fields=(name,title,unit,limit)=>`<fieldset><legend>${title}（${unit}）</legend><div class="coordinates">${AXES.map(k=>`<label>${k.toUpperCase()}<input id="${name}-${k}" aria-label="${title} ${k.toUpperCase()}" type="number" step="any" min="-${limit}" max="${limit}" required></label>`).join('')}</div></fieldset>`;
+export function mountLab({teacher,scene,write,getNow,report}) {
+  const container=document.querySelector('#lab-panel');
+  container.innerHTML=`<h2>教學模型</h2><label for="mode">場景模式</label><select id="mode" ${teacher?'':'disabled'}><option value="vectors">自由向量</option><option value="algebra">向量運算</option><option value="lorentz">帶電粒子・電磁場</option></select>
+  <section id="algebra-panel" hidden><div class="pair"><label>A<select id="vector-a"></select></label><label>B<select id="vector-b"></select></label></div><label>運算<select id="operation"><option value="add">A＋B（首尾相接）</option><option value="subtract">A−B（加上負向量）</option><option value="cross">A×B（右手定則）</option></select></label><p class="hint">採用向量分量，統一移到原點比較。</p><output id="algebra-result"></output>${teacher?'<button id="apply-algebra" class="wide">顯示運算結果</button>':''}</section>
+  <section id="particle-panel" hidden><p class="formula">F＝q（E＋v×B）</p><p class="hint">均勻、固定電磁場；忽略重力、輻射與相對論效應。所有數據採 SI 單位。</p>
+  ${teacher?`<label>教學範例<select id="preset"><option value="helix">螺旋運動・純磁場</option><option value="circle">圓周運動</option><option value="electric">純電場加速</option><option value="drift">交叉電磁場漂移</option><option value="electron">電子・微秒尺度</option></select></label><button id="load-preset" class="secondary wide">載入範例到表單</button>`:''}
+  <form id="particle-form"><div class="pair"><label>電荷 q（C）<input id="charge" type="number" step="any" min="-1000" max="1000" required></label><label>質量 m（kg）<input id="mass" type="number" step="any" min="1e-35" max="1e6" required></label></div>
+  ${fields('velocity','初速度 v₀','m/s',1e7)}${fields('electric','電場 E','N/C',1000)}${fields('field','磁場 B','T',1000)}
+  <label>模擬總時間（s）<input id="duration" type="number" step="any" min="1e-12" max="10000" required></label><label>每秒播放的物理時間（s）<input id="rate" type="number" step="any" min="1e-15" max="1000" required></label><label>顯示倍率（１ m 對應的網格數）<input id="scale" type="number" step="any" min="1e-9" max="1e12" required></label>
+  ${teacher?'<button type="submit" id="apply-particle" class="wide">套用參數並歸零</button>':''}</form>
+  ${teacher?'<div id="playback"><div class="actions"><button id="play">播放</button><button id="rewind" class="secondary">歸零</button></div><label>時間位置<input id="seek" type="range" min="0" max="1000" step="1" value="0"></label></div>':''}
+  <p id="time-status" role="status"></p><div id="arrow-options" class="arrow-options">${['E','B','v','vxB','FE','FB','F'].map(key=>`<label><input type="checkbox" data-arrow="${key}" ${['E','B','v','F'].includes(key)?'checked':''}>${{vxB:'v×B',FE:'電力',FB:'磁力',F:'合力'}[key]||key}</label>`).join('')}</div><p class="hint">箭頭顯示方向，不同比例的物理量不共用箭長尺度。淡線為預測軌跡，亮線為已走過路徑。</p><dl id="metrics"></dl></section>`;
+  const $=id=>container.querySelector('#'+id);
+  const panel=$('particle-panel');
+  panel.insertBefore($('time-status'),panel.children[2]);
+  if(teacher)panel.insertBefore($('playback'),$('time-status'));
+  let lab=structuredClone(DEFAULT_LAB),vectors={},editable=false,dirty=false;
+  const controls=()=>{
+    for(const element of container.querySelectorAll('select,input:not([type="checkbox"]),button'))element.disabled=!editable;
+    if(teacher){$('play').textContent=lab.clock.playing&&simulationTime(lab,getNow())<lab.particle.duration?'暫停':'播放';}
+  };
+  function populateParticle(p){for(const key of ['charge','mass','duration','rate','scale'])$(key).value=p[key];for(const key of ['velocity','electric','field'])for(const axis of AXES)$(key+'-'+axis).value=p[key][axis];}
+  function options(){for(const key of ['a','b']){
+    const select=$('vector-'+key),previous=select.value;select.replaceChildren();
+    for(const [id,v]of Object.entries(vectors)){const option=document.createElement('option');option.value=id;option.textContent=v.label;select.append(option);}
+    select.value=dirty&&vectors[previous]?previous:lab[key];
+  }}
+  function result(){
+    const a=vectors[lab.a],b=vectors[lab.b];
+    $('algebra-result').textContent=a&&b?`A＝${tuple(a.components)}\nB＝${tuple(b.components)}\nA${lab.operation==='add'?'＋':lab.operation==='subtract'?'−':'×'}B＝${tuple(algebra(a.components,b.components,lab.operation))}`:'請先在自由向量模式新增向量，再選擇 A、B。';
+  }
+  async function save(next){try{validateLab(next);await write(next);dirty=false;}catch(e){report(e.message,true);}}
+  const resetClock=()=>({playing:false,elapsed:0,startedAt:0});
+  if(teacher){
+    $('mode').onchange=()=>save({...lab,mode:$('mode').value,clock:{...lab.clock,playing:false,elapsed:simulationTime(lab,getNow())}});
+    $('apply-algebra').onclick=()=>save({...lab,a:$('vector-a').value,b:$('vector-b').value,operation:$('operation').value});
+    $('particle-form').oninput=()=>{dirty=true;report('參數尚未套用；目前畫面仍使用上次設定。');};
+    $('particle-form').onsubmit=event=>{
+      event.preventDefault();const particle={};for(const key of ['charge','mass','duration','rate','scale'])particle[key]=$(key).valueAsNumber;
+      for(const key of ['velocity','electric','field'])particle[key]=Object.fromEntries(AXES.map(k=>[k,$(key+'-'+k).valueAsNumber]));
+      save({...lab,particle,clock:resetClock()});
+    };
+    $('play').onclick=()=>{
+      const t=simulationTime(lab,getNow()),atEnd=t>=lab.particle.duration;
+      save({...lab,clock:{playing:atEnd||!lab.clock.playing,elapsed:atEnd?0:t,startedAt:0}});
+    };
+    $('rewind').onclick=()=>save({...lab,clock:resetClock()});
+    $('seek').onchange=()=>save({...lab,clock:{playing:false,elapsed:$('seek').valueAsNumber/1000*lab.particle.duration,startedAt:0}});
+    $('load-preset').onclick=()=>{
+      const p=structuredClone(DEFAULT_LAB.particle);
+      switch($('preset').value){
+        case 'circle':p.velocity.y=0;break;
+        case 'electric':p.field=vec();p.electric=vec(0,1,0);p.velocity=vec(1,0,0);p.duration=5;break;
+        case 'drift':p.velocity=vec();p.electric=vec(1,0,0);break;
+        case 'electron':p.charge=-1.602176634e-19;p.mass=9.1093837139e-31;p.velocity=vec(2e5,5e4,0);p.field=vec(0,.001,0);p.duration=2e-7;p.rate=1e-8;p.scale=1000;break;
+      }
+      populateParticle(p);dirty=true;report('範例已填入，按「套用參數並歸零」後全班才會更新。');
+    };
+  }
+  container.querySelectorAll('[data-arrow]').forEach(input=>input.onchange=()=>scene?.show(input.dataset.arrow,input.checked));
+  function tick(t,state){
+    $('time-status').textContent=`t＝${numberText(t)} s　${t>=lab.particle.duration?'已結束':lab.clock.playing?'播放中':'已暫停'}`;
+    if(teacher&&document.activeElement!==$('seek'))$('seek').value=t/lab.particle.duration*1000;
+    if(teacher)$('play').textContent=lab.clock.playing&&t<lab.particle.duration?'暫停':'播放';
+    const p=lab.particle,metrics=particleMetrics(p);
+    const rows=[['位置 r（m）',tuple(state.position)],['速度 v（m/s）',tuple(state.velocity)],['電場 E（N/C）',tuple(p.electric)],['磁場 B（T）',tuple(p.field)],['v×B（N/C）',tuple(state.vxB)],['電力 qE（N）',tuple(state.electricForce)],['磁力 q（v×B）（N）',tuple(state.magneticForce)],['合力 F（N）',tuple(state.force)],['速率（m/s）',numberText(norm(state.velocity))],['動能（J）',numberText(.5*p.mass*norm(state.velocity)**2)]];
+    if(norm(p.electric)===0)rows.push(['迴旋半徑（m）',numberText(metrics.radius)],['迴旋週期（s）',numberText(metrics.period)],['螺距（m）',numberText(metrics.pitch)]);
+    $('metrics').replaceChildren(...rows.flatMap(([k,v])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=k;dd.textContent=v;return[dt,dd];}));
+  }
+  return {
+    setAccess:allowed=>{editable=teacher&&allowed;controls();},
+    setVectors:data=>{vectors=data;options();result();},
+    setLab:data=>{
+      const changedParameters=JSON.stringify(lab.particle)!==JSON.stringify(data.particle);lab=data;
+      $('mode').value=lab.mode;$('operation').value=lab.operation;
+      $('algebra-panel').hidden=lab.mode!=='algebra';$('particle-panel').hidden=lab.mode!=='lorentz';
+      document.querySelector('#vector-section').hidden=lab.mode==='lorentz';
+      if(!dirty||changedParameters||!teacher){populateParticle(lab.particle);dirty=false;}
+      options();result();controls();scene?.setLab(lab,getNow,tick);
+    },
+    isDirty:()=>dirty
+  };
+}
+-e \n=== src/scene.js ===
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { cameraFingerprint } from './model.js';
+import { DEFAULT_LAB, AXES, algebra, vec, mul, norm, particleAt, simulationTime } from './physics.js';
+const V=p=>new THREE.Vector3(p.x,p.y,p.z);
+export function createScene(container) {
+  const scene=new THREE.Scene();scene.background=new THREE.Color('#0b1220');
+  const camera=new THREE.PerspectiveCamera(45,1,.01,10000);camera.position.set(11,9,13);
+  const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.domElement.setAttribute('aria-label','三維向量與物理模擬，拖曳旋轉視角');container.append(renderer.domElement);
+  const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.target.set(0,1,0);controls.minDistance=.1;controls.maxDistance=4000;
+  scene.add(new THREE.GridHelper(20,20,'#46566f','#263348'));
+  const axes=new THREE.AxesHelper(8);axes.setColors('#ff7f91','#7beaac','#87b7ff');scene.add(axes);
+  const objects=new THREE.Group();scene.add(objects);
+  function label(text,color){
+    const canvas=document.createElement('canvas');canvas.width=512;canvas.height=80;
+    const ctx=canvas.getContext('2d');ctx.font='32px sans-serif';ctx.textAlign='center';ctx.fillStyle=color;ctx.fillText(text,256,50,500);
+    const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(canvas),depthTest:false}));sprite.scale.set(4.8,.75,1);return sprite;
+  }
+  for(const [name,pos,color] of [['X',[8.5,0,0],'#ff7f91'],['Y',[0,8.5,0],'#7beaac'],['Z',[0,0,8.5],'#87b7ff']]){const s=label(name,color);s.position.set(...pos);scene.add(s);}
+  function clear(){objects.traverse(o=>{o.geometry?.dispose();if(o.material){o.material.map?.dispose();o.material.dispose();}});objects.clear();}
+  function arrow(origin,direction,color,text,opacity=1){
+    const length=norm(direction),a=new THREE.ArrowHelper(length?V(direction).normalize():new THREE.Vector3(1,0,0),V(origin),Math.max(length,1e-9),color,Math.min(.55,length*.25),Math.min(.25,length*.12));
+    a.line.geometry=a.line.geometry.clone();a.cone.geometry=a.cone.geometry.clone();
+    a.line.material.transparent=a.cone.material.transparent=true;a.line.material.opacity=a.cone.material.opacity=opacity;a.visible=length>1e-12;objects.add(a);
+    const l=label(text+(length===0?'（零向量）':''),color);l.position.copy(V(origin)).add(V(direction)).add(new THREE.Vector3(0,.4,0));objects.add(l);return {arrow:a,label:l};
+  }
+  let vectors={},lab=structuredClone(DEFAULT_LAB),clock=()=>Date.now(),tick=()=>{},particle,trail,dynamic=[],lastTick=0;
+  const visible={E:true,B:true,v:true,vxB:false,FE:false,FB:false,F:true};
+  function rebuild(){
+    clear();particle=null;trail=null;dynamic=[];
+    if(lab.mode==='vectors')for(const v of Object.values(vectors))arrow(v.origin,v.components,v.color,v.label);
+    if(lab.mode==='algebra'){
+      const a=vectors[lab.a],b=vectors[lab.b];
+      if(a&&b){
+        const av=a.components,bv=b.components,result=algebra(av,bv,lab.operation),op=lab.operation==='add'?'+':lab.operation==='subtract'?'−':'×';
+        arrow(vec(),av,'#57dfc2',`A：${a.label}`);arrow(vec(),bv,'#ffba69',`B：${b.label}`,.6);
+        if(lab.operation!=='cross')arrow(av,mul(bv,lab.operation==='subtract'?-1:1),'#ffba69',lab.operation==='subtract'?'−B（平移）':'B（平移）');
+        arrow(vec(),result,'#b7a2ff',`A ${op} B`);
+      }
+    }
+    if(lab.mode==='lorentz'){
+      const p=lab.particle,turns=Math.abs(p.charge)*norm(p.field)/p.mass*p.duration/(2*Math.PI),samples=Math.max(300,Math.min(6000,Math.ceil(turns*60)));
+      const positions=[];for(let i=0;i<=samples;i++)positions.push(...V(mul(particleAt(p,p.duration*i/samples).position,p.scale)).toArray());
+      const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+      objects.add(new THREE.Line(geometry,new THREE.LineBasicMaterial({color:'#57dfc2',transparent:true,opacity:.3})));
+      const activeGeometry=geometry.clone();trail=new THREE.Line(activeGeometry,new THREE.LineBasicMaterial({color:'#57dfc2'}));objects.add(trail);
+      particle=new THREE.Mesh(new THREE.SphereGeometry(.13,20,12),new THREE.MeshBasicMaterial({color:'#fff2cf'}));objects.add(particle);
+      for(const [key,color] of [['E','#f4d66f'],['B','#79aaff'],['v','#57dfc2'],['vxB','#76d2ff'],['FE','#ffad6b'],['FB','#d28afa'],['F','#ff738a']])dynamic.push({key,...arrow(vec(),vec(1,0,0),color,key==='vxB'?'v×B':key)});
+    }
+    container.dataset.vectorCount=String(Object.keys(vectors).length);container.dataset.mode=lab.mode;
+  }
+  const observer=new ResizeObserver(()=>{const {width,height}=container.getBoundingClientRect();if(width&&height){camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);}});observer.observe(container);
+  renderer.setAnimationLoop(()=>{
+    if(particle){
+      const t=simulationTime(lab,clock()),p=lab.particle,s=particleAt(p,t),position=V(mul(s.position,p.scale));particle.position.copy(position);
+      const fields={E:p.electric,B:p.field,v:s.velocity,vxB:s.vxB,FE:s.electricForce,FB:s.magneticForce,F:s.force};
+      dynamic.forEach(({key,arrow:a,label:l},i)=>{
+        const n=norm(fields[key]),shown=visible[key]&&n>0;a.visible=l.visible=shown;
+        if(shown){const d=V(fields[key]).normalize(),length=1.5+i*.28;a.position.copy(position);a.setDirection(d);a.setLength(length,.3,.14);l.position.copy(position).addScaledVector(d,length).add(new THREE.Vector3(0,.2+i*.06,0));}
+      });
+      trail.geometry.setDrawRange(0,Math.floor(t/p.duration*(trail.geometry.attributes.position.count-1))+1);
+      if(performance.now()-lastTick>100){tick(t,s);lastTick=performance.now();container.dataset.time=String(t);}
+    }
+    controls.update();renderer.render(scene,camera);container.dataset.camera=JSON.stringify(cameraFingerprint(camera,controls));
+  });
+  return {
+    update:data=>{vectors=data;rebuild();},
+    setLab:(data,now,onTick)=>{lab=data;clock=now;tick=onTick;rebuild();},
+    show:(key,on)=>{visible[key]=on;},
+    fit:()=>{
+      const box=new THREE.Box3();
+      if(lab.mode==='lorentz'){for(let i=0;i<=200;i++)box.expandByPoint(V(mul(particleAt(lab.particle,lab.particle.duration*i/200).position,lab.particle.scale)));}
+      else box.setFromObject(objects);
+      if(box.isEmpty())return;const center=box.getCenter(new THREE.Vector3()),size=Math.max(3,box.getSize(new THREE.Vector3()).length());
+      controls.target.copy(center);camera.position.copy(center).add(new THREE.Vector3(1,.8,1.2).normalize().multiplyScalar(size*1.5));controls.update();
+    },
+    reset:()=>{camera.position.set(11,9,13);controls.target.set(0,1,0);controls.update();}
+  };
+}
+-e \n=== src/store.js ===
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, connectAuthEmulator, setPersistence, browserSessionPersistence } from 'firebase/auth';
+import { getDatabase, connectDatabaseEmulator, ref, onValue, set, get, remove, runTransaction, serverTimestamp } from 'firebase/database';
+import { roomId, validateVector } from './model.js';
+import { DEFAULT_LAB, validateLab } from './physics.js';
+
+export async function connectStore(room, { onScene, onConnection, onError, onAuth, onLab }) {
+  room=roomId(room);
+  const useEmulator=['localhost','127.0.0.1','[::1]'].includes(location.hostname) && new URLSearchParams(location.search).get('emulator')==='1';
+  let config;
+  if(useEmulator) config={projectId:'demo-physics-classroom',apiKey:'demo-key',appId:'demo-app',databaseURL:'https://demo-physics-classroom-default-rtdb.firebaseio.com'};
+  else {
+    const response=await fetch('/firebase-config.json',{cache:'no-store'});
+    try {config=response.ok?await response.json():null;} catch {config=null;}
+    if(!config?.databaseURL||!config?.apiKey) throw new Error('尚未設定 Firebase，請查看 README。');
+  }
+  const app=initializeApp(config),db=getDatabase(app),auth=getAuth(app);
+  if(useEmulator){connectDatabaseEmulator(db,'127.0.0.1',9000);connectAuthEmulator(auth,'http://127.0.0.1:9099',{disableWarnings:true});}
+  await setPersistence(auth,browserSessionPersistence);
+  const base=`rooms/${room}`;
+  let connected=false,canWrite=false,offset=0,authGeneration=0;
+  const subscriptions=[
+    onAuthStateChanged(auth,async user=>{
+      const generation=++authGeneration;canWrite=false;onAuth?.(user,false);
+      if(user) {
+        try {await get(ref(db,base+'/teacherAccess'));if(generation===authGeneration){canWrite=true;onAuth?.(user,true);}}
+        catch {if(generation===authGeneration)onAuth?.(user,false);}
+      }
+    }),
+    onValue(ref(db,'.info/connected'),s=>{connected=s.val()===true;onConnection(connected,useEmulator);}),
+    onValue(ref(db,'.info/serverTimeOffset'),s=>{offset=s.val()||0;}),
+    onValue(ref(db,base+'/vectors'),s=>{
+      const data=s.val()||{};
+      try{Object.values(data).forEach(validateVector);onScene(data);}catch{onError(new Error('向量資料格式錯誤。'));}
+    },onError),
+    onValue(ref(db,base+'/lab'),s=>{
+      try {onLab?.(validateLab(s.val()||structuredClone(DEFAULT_LAB)));}catch(e){onError(e);}
+    },onError)
+  ];
+  function requireTeacher(){if(!canWrite)throw new Error('只有授權老師能修改教室。');if(!connected)throw new Error('目前離線，請重新連線後再試。');}
+  return {
+    now:()=>Date.now()+offset,
+    login:password=>signInWithEmailAndPassword(auth,config.teacherEmail||'cow3690m@gmail.com',password),
+    logout:()=>signOut(auth),
+    create:async vector=>{
+      requireTeacher();validateVector(vector);
+      for(let i=0;i<50;i++){
+        const id='v'+i,result=await runTransaction(ref(db,base+'/vectors/'+id),current=>current===null?vector:undefined,{applyLocally:false});
+        if(result.committed)return id;
+      }
+      throw new Error('每間教室最多５０支向量。');
+    },
+    write:(id,vector)=>{requireTeacher();return set(ref(db,base+'/vectors/'+id),validateVector(vector));},
+    delete:id=>{requireTeacher();return remove(ref(db,base+'/vectors/'+id));},
+    writeLab:lab=>{requireTeacher();validateLab(lab);return set(ref(db,base+'/lab'),{...lab,clock:{...lab.clock,startedAt:serverTimestamp()}});},
+    dispose:()=>subscriptions.forEach(f=>f())
+  };
+}
+-e \n=== src/home.js ===
+import './style.css';
+import { roomId } from './model.js';
+const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+document.querySelector('#local-option').hidden = !local;
+document.querySelector('#emulator').checked = local;
+document.querySelector('#join').addEventListener('submit', event => {
+  event.preventDefault();
+  const room = roomId(document.querySelector('#room').value);
+  const params = new URLSearchParams({ room });
+  if (local && document.querySelector('#emulator').checked) params.set('emulator', '1');
+  location.href = `${event.submitter.value}.html?${params}`;
+});
+-e \n=== src/physics.js ===
+export const AXES = ['x', 'y', 'z'];
+export const vec = (x=0,y=0,z=0) => ({x,y,z});
+export const add = (a,b) => vec(a.x+b.x,a.y+b.y,a.z+b.z);
+export const mul = (a,k) => vec(a.x*k,a.y*k,a.z*k);
+export const dot = (a,b) => a.x*b.x+a.y*b.y+a.z*b.z;
+export const cross = (a,b) => vec(a.y*b.z-a.z*b.y,a.z*b.x-a.x*b.z,a.x*b.y-a.y*b.x);
+export const norm = a => Math.hypot(a.x,a.y,a.z);
+export const DEFAULT_LAB = {
+  mode:'vectors', operation:'add', a:'v0', b:'v1',
+  particle:{charge:1,mass:1,velocity:vec(2,.6,0),electric:vec(),field:vec(0,1,0),duration:20,rate:1,scale:1},
+  clock:{playing:false,elapsed:0,startedAt:0}
+};
+export function validateLab(lab) {
+  if (!lab || !['vectors','algebra','lorentz'].includes(lab.mode) || !['add','subtract','cross'].includes(lab.operation)) throw new Error('模型設定不正確。');
+  for (const key of ['a','b']) if (!/^v([0-9]|[1-4][0-9])$/.test(lab[key])) throw new Error('請選擇有效向量。');
+  const p=lab.particle;
+  const bounded=(n,lo,hi)=>Number.isFinite(n)&&n>=lo&&n<=hi;
+  if (!p || !bounded(p.charge,-1000,1000)||!bounded(p.mass,1e-35,1e6)||!bounded(p.duration,1e-12,1e4)||!bounded(p.rate,1e-15,1000)||!bounded(p.scale,1e-9,1e12)) throw new Error('請檢查電荷、正質量、時間、播放速率與顯示倍率。');
+  for (const k of AXES) if (!bounded(p.velocity?.[k],-1e7,1e7)||!bounded(p.field?.[k],-1000,1000)||!bounded(p.electric?.[k],-1000,1000)) throw new Error('初速度或磁場超出範圍。');
+  if (Math.abs(p.charge)*norm(p.field)/p.mass*p.duration>200*Math.PI) throw new Error('模擬區間超過１００圈，請縮短模擬時間或減小磁場。');
+  for(let i=0;i<=24;i++){const state=particleAt(p,p.duration*i/24);if(norm(state.velocity)>3e7)throw new Error('速度超過光速的十分之一，已超出此非相對論模型；請調整參數。');if(norm(state.position)*p.scale>1000)throw new Error('軌跡超過顯示範圍，請縮短時間或減小顯示倍率。');}
+  const c=lab.clock;
+  if (!c||typeof c.playing!=='boolean'||!bounded(c.elapsed,0,p.duration)||!bounded(c.startedAt,0,1e15)) throw new Error('播放時間不正確。');
+  return lab;
+}
+export function algebra(a,b,operation) { return operation==='cross'?cross(a,b):add(a,mul(b,operation==='subtract'?-1:1)); }
+// Exact nonrelativistic solution for constant uniform E and B. Stable small-angle integrals.
+export function particleAt(p,t) {
+  const strength=norm(p.field), acceleration=mul(p.electric,p.charge/p.mass);
+  let position,velocity;
+  if (!strength || !p.charge) {
+    position=add(mul(p.velocity,t),mul(acceleration,t*t/2));
+    velocity=add(p.velocity,mul(acceleration,t));
+  } else {
+    const axis=mul(p.field,1/strength),omega=p.charge*strength/p.mass,theta=omega*t;
+    const vp=mul(axis,dot(p.velocity,axis)), vt=add(p.velocity,mul(vp,-1)), vr=cross(vt,axis);
+    const ap=mul(axis,dot(acceleration,axis)), at=add(acceleration,mul(ap,-1)), ar=cross(at,axis);
+    const small=Math.abs(theta)<1e-3;
+    const sinc=small?1-theta**2/6+theta**4/120:Math.sin(theta)/theta;
+    const c2=small?.5-theta**2/24+theta**4/720:2*Math.sin(theta/2)**2/theta**2;
+    const s2=small?theta/6-theta**3/120+theta**5/5040:(theta-Math.sin(theta))/theta**2;
+    const cosc=theta*c2;
+    position=add(add(mul(vp,t),mul(ap,t*t/2)),add(add(mul(vt,t*sinc),mul(vr,t*cosc)),add(mul(at,t*t*c2),mul(ar,t*t*s2))));
+    velocity=add(add(vp,mul(ap,t)),add(add(mul(vt,Math.cos(theta)),mul(vr,Math.sin(theta))),add(mul(at,t*sinc),mul(ar,t*cosc))));
+  }
+  const vxB=cross(velocity,p.field),electricForce=mul(p.electric,p.charge),magneticForce=mul(vxB,p.charge);
+  return {position,velocity,vxB,electricForce,magneticForce,force:add(electricForce,magneticForce)};
+}
+export function particleMetrics(p) {
+  const b=norm(p.field),omega=Math.abs(p.charge)*b/p.mass;
+  const parallel=b?dot(p.velocity,mul(p.field,1/b)):norm(p.velocity);
+  const perpendicular=b?norm(add(p.velocity,mul(p.field,-parallel/b))):0;
+  return {speed:norm(p.velocity),radius:omega?perpendicular/omega:null,period:omega?2*Math.PI/omega:null,pitch:omega?parallel*2*Math.PI/omega:null};
+}
+export function simulationTime(lab,now) {
+  return Math.min(lab.particle.duration,Math.max(0,lab.clock.elapsed+(lab.clock.playing?Math.max(0,now-lab.clock.startedAt)/1000*lab.particle.rate:0)));
+}
+-e \n=== src/model.js ===
+export const LIMIT = 100;
+export const MAX_VECTORS = 50;
+export function roomId(value) {
+  const room = String(value || '').trim().toUpperCase();
+  if (!/^[A-Z0-9]{4,12}$/.test(room)) throw new Error('教室代碼需為４～１２個英文字母或數字。');
+  return room;
+}
+export function validateVector(value) {
+  if (!value || typeof value !== 'object') throw new Error('向量格式不正確。');
+  if (typeof value.label !== 'string' || !value.label.trim() || value.label.length > 24) throw new Error('名稱需為１～２４個字。');
+  if (!/^#[0-9a-fA-F]{6}$/.test(value.color)) throw new Error('顏色格式不正確。');
+  for (const field of ['origin', 'components']) {
+    if (!value[field] || !['x', 'y', 'z'].every(k => Number.isFinite(value[field][k]) && Math.abs(value[field][k]) <= LIMIT)) throw new Error('座標與分量需為 −１００～１００的有限數值。');
+  }
+  return value;
+}
+export function magnitude(vector) {
+  return Math.hypot(...['x', 'y', 'z'].map(k => vector.components[k]));
+}
+export function cameraFingerprint(camera, controls) {
+  return [...camera.position.toArray(), ...controls.target.toArray()];
+}
+-e \n=== src/app.js ===
+import './style.css';
+import {createScene} from './scene.js';
+import {connectStore} from './store.js';
+import {roomId,validateVector,magnitude,MAX_VECTORS} from './model.js';
+import {DEFAULT_LAB} from './physics.js';
+import {mountLab} from './lab-ui.js';
+const teacher=document.body.dataset.role==='teacher',$=s=>document.querySelector(s);
+let room;
+try{room=roomId(new URLSearchParams(location.search).get('room')||'PHYS01');}catch(e){$('#app').textContent=e.message;throw e;}
+const inputs=prefix=>['x','y','z'].map(axis=>`<label>${axis.toUpperCase()}<input aria-label="${prefix==='origin'?'起點':'分量'} ${axis.toUpperCase()}" id="${prefix}-${axis}" type="number" min="-100" max="100" step="any" required></label>`).join('');
+$('#app').innerHTML=`<header class="topbar"><a class="brand" href="/">向量教室<span>3D PHYSICS CLASSROOM</span></a><div class="room-badge">教室 <strong id="room-name"></strong></div><span class="role">${teacher?'老師端':'學生端・只讀'}</span><span id="connection" role="status">連線中…</span></header>
+<main class="classroom"><section class="stage"><div class="stage-heading"><div class="eyebrow">PHYSICS LAB</div><h1>讓向量，開始運動。</h1><p>${teacher?'從向量運算，走進電磁場。':'場景由老師更新，視角由你決定。'}</p></div><div id="viewport"></div><div class="stage-toolbar"><span>拖曳旋轉 · 雙指縮放／平移</span><div><button id="fit-scene" class="secondary compact">看完整場景</button> <button id="reset-camera" class="secondary compact">重設視角</button></div></div><div class="axis-key"><span class="x">● X</span><span class="y">● Y</span><span class="z">● Z</span><span>網格間距：１</span></div></section>
+<aside class="sidebar">
+${teacher?`<section class="auth-card"><h2>老師操作權限</h2><p id="auth-status" class="hint">請輸入老師密碼，解鎖編輯。</p><form id="login-form"><label for="teacher-password">老師密碼</label><input id="teacher-password" type="password" autocomplete="current-password" required minlength="6"><button id="login" class="wide" disabled>解鎖老師端</button></form><button id="logout" class="secondary wide" hidden>鎖定老師端</button><a id="watch-link" class="hint">切換學生觀看模式</a></section>`:''}
+<p id="message" role="status" aria-live="polite"></p><section id="lab-panel"></section><section id="vector-section"><div class="section-title"><h2>場景向量</h2><span id="count">０個</span></div><div id="vector-list" aria-label="場景向量清單"></div>
+${teacher?`<button id="add" class="wide" disabled>＋ 新增向量</button><form id="editor" hidden><div class="section-title"><h2>編輯向量</h2></div><label for="label">名稱</label><input id="label" maxlength="24" required autocomplete="off"><div class="color-row"><label for="color">顏色</label><input id="color" type="color" value="#57dfc2"></div><fieldset><legend>起點座標</legend><div class="coordinates">${inputs('origin')}</div></fieldset><fieldset><legend>向量分量</legend><div class="coordinates">${inputs('components')}</div></fieldset><p class="hint">終點＝起點＋分量。改起點可平移向量。</p><button id="save" type="submit" class="wide">儲存並同步</button><button id="delete" type="button" class="danger wide">刪除此向量</button></form>`:''}</section>
+${teacher?'<section class="share"><h2>邀請學生</h2><a id="student-link" target="_blank" rel="noopener">開啟學生端 ↗</a><button id="copy-link" class="secondary wide">複製學生網址</button><p id="share-hint" class="hint"></p></section>':'<section class="student-note"><h2>你的觀察席</h2><p>自由旋轉、縮放或平移。老師更新模型時，你的視角會保留。</p></section>'}
+<details class="notice"><summary>模型與權限說明</summary><p>只有通過老師密碼驗證的指定帳號可修改資料。學生免登入觀看。電磁模型假設場均勻且固定，採非相對論運動方程；粒子由原點出發。</p></details></aside></main>`;
+$('#room-name').textContent=room;
+let scene,store,vectors={},selected=null,online=false,authorized=false,ready=false,pending=false,dirty=false,labUI;
+function message(text,error=false){$('#message').textContent=text;$('#message').classList.toggle('error',error);}
+try{scene=createScene($('#viewport'));}catch{message('無法啟動３Ｄ畫面。請使用支援 WebGL ２的瀏覽器。',true);}
+$('#reset-camera').onclick=()=>scene?.reset();$('#fit-scene').onclick=()=>scene?.fit();
+function controls(){
+  labUI?.setAccess(authorized&&ready&&online&&!pending);
+  if(!teacher)return;
+  $('#add').disabled=!authorized||!ready||!online||pending||Object.keys(vectors).length>=MAX_VECTORS;
+  $('#save').disabled=$('#delete').disabled=!authorized||!ready||!online||pending;
+  $('#editor').querySelectorAll('input').forEach(i=>i.disabled=!authorized||pending);
+}
+function populate(){
+  if(!teacher)return;$('#editor').hidden=!authorized||!selected||!vectors[selected];
+  if($('#editor').hidden)return;const v=vectors[selected];$('#label').value=v.label;$('#color').value=v.color;
+  for(const field of ['origin','components'])for(const axis of ['x','y','z'])$(`#${field}-${axis}`).value=v[field][axis];dirty=false;
+}
+function renderList(){
+  $('#count').textContent=`${Object.keys(vectors).length} 個`;$('#vector-list').replaceChildren();
+  if(!Object.keys(vectors).length){const e=document.createElement('p');e.className='empty';e.textContent=teacher?'尚無向量，老師解鎖後可新增。':'等待老師新增向量…';$('#vector-list').append(e);}
+  for(const [id,v]of Object.entries(vectors)){
+    const row=document.createElement(teacher?'button':'div');row.className=`vector-row ${selected===id?'selected':''}`;row.dataset.id=id;row.style.setProperty('--vector-color',v.color);
+    const title=document.createElement('strong');title.textContent=v.label;const detail=document.createElement('small');detail.textContent=`（${v.components.x}，${v.components.y}，${v.components.z}）　｜v｜＝${magnitude(v).toFixed(2)}`;row.append(title,detail);
+    if(teacher){row.disabled=!authorized||pending;row.onclick=()=>{selected=id;populate();renderList();};}$('#vector-list').append(row);
+  }
+}
+async function mutate(operation,success){
+  if(pending||!online||!authorized)throw new Error('請先解鎖老師端並確認連線。');
+  pending=true;controls();renderList();message('同步中…');
+  try{await operation();dirty=false;populate();message(success);}catch(e){message(`未能儲存：${e.message}`,true);throw e;}finally{pending=false;controls();renderList();}
+}
+const safely=p=>p.catch(()=>{});
+labUI=mountLab({teacher,scene,getNow:()=>store?.now()??Date.now(),report:message,write:lab=>mutate(()=>store.writeLab(lab),'模型已同步。')});
+labUI.setLab(structuredClone(DEFAULT_LAB));controls();
+if(teacher){
+  const url=new URL('student.html',location.href);url.search=location.search;if(!url.searchParams.has('room'))url.searchParams.set('room',room);
+  $('#student-link').href=$('#watch-link').href=url.href;
+  $('#share-hint').textContent=url.searchParams.get('emulator')==='1'?'本機模式僅供這台電腦測試。':'分享給學生即可觀看，不需要老師密碼。';
+  $('#copy-link').onclick=async()=>{try{await navigator.clipboard.writeText(url.href);message('已複製學生網址。');}catch{message('請長按或右鍵複製學生端連結。');}};
+  $('#login-form').onsubmit=async event=>{
+    event.preventDefault();$('#login').disabled=true;let password=$('#teacher-password').value;$('#teacher-password').value='';
+    try{await store.login(password);password='';message('老師密碼驗證成功。');}
+    catch(e){message(e.code==='auth/too-many-requests'?'嘗試次數過多，請稍後再試。':e.code==='auth/network-request-failed'?'登入連線失敗，請檢查網路。':'密碼不正確或帳號未啟用。',true);}
+    finally{password='';$('#login').disabled=false;}
+  };
+  $('#logout').onclick=async()=>{try{await store.logout();dirty=false;message('老師端已鎖定。');}catch(e){message(e.message,true);}};
+  $('#editor').oninput=()=>{dirty=true;};
+  $('#add').onclick=()=>safely(mutate(async()=>{const n=Object.keys(vectors).length;selected=await store.create({label:`向量 ${n+1}`,color:['#57dfc2','#ffba69','#a894ff','#ff829d'][n%4],origin:{x:0,y:0,z:0},components:{x:3,y:2,z:1}});},'已新增向量。'));
+  $('#editor').onsubmit=event=>{event.preventDefault();const v={label:$('#label').value.trim(),color:$('#color').value};for(const field of ['origin','components'])v[field]=Object.fromEntries(['x','y','z'].map(k=>[k,$(`#${field}-${k}`).valueAsNumber]));try{validateVector(v);}catch(e){message(e.message,true);return;}const id=selected;safely(mutate(()=>store.write(id,v),'已同步向量。'));};
+  $('#delete').onclick=()=>{const id=selected;safely(mutate(()=>store.delete(id),'已刪除向量。'));};
+}
+try{
+  store=await connectStore(room,{
+    onAuth:(user,allowed)=>{
+      authorized=allowed;
+      if(teacher){$('#auth-status').textContent=allowed?'已解鎖，只有你能修改教室。':user?'此帳號沒有老師權限，請鎖定後重新輸入老師密碼。':'請輸入老師密碼，解鎖編輯。';$('#login-form').hidden=allowed;$('#logout').hidden=!user;}
+      if(!allowed){dirty=false;selected=null;}controls();populate();renderList();
+    },
+    onScene:data=>{vectors=data;ready=true;if(selected&&!vectors[selected]){selected=null;dirty=false;}scene?.update(vectors);labUI.setVectors(vectors);renderList();if(!dirty)populate();controls();},
+    onLab:data=>labUI.setLab(data),
+    onConnection:(connected,emulator)=>{online=connected;$('#connection').textContent=connected?(emulator?'本機模擬器・已連線':'已連線'):'離線・等待重新連線';$('#connection').classList.toggle('connected',connected);controls();},
+    onError:e=>{ready=false;message(`讀取失敗：${e.message}`,true);controls();}
+  });
+  if(teacher)$('#login').disabled=false;
+}catch(e){$('#connection').textContent='尚未連線';message(e.message,true);}
+window.addEventListener('beforeunload',event=>{if(teacher&&(dirty||pending||labUI.isDirty())){event.preventDefault();event.returnValue='';}});
+-e \n=== index.html ===
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="viewport" content="width=device-width, initial-scale=1"><title>向量教室｜3D Physics Classroom</title></head>
+<body><main class="landing"><div class="eyebrow">3D PHYSICS CLASSROOM</div><h1>把向量，<br>放進同一個空間。</h1><p class="lead">老師用密碼解鎖，學生自由轉動視角。<br>向量運算與電磁場動畫，一起看懂。</p><form id="join" class="join-card"><label for="room">教室代碼</label><input id="room" name="room" value="PHYS01" minlength="4" maxlength="12" pattern="[A-Za-z0-9]{4,12}" required autocomplete="off"><p class="hint">同一組代碼，就是同一間教室。</p><label id="local-option" hidden class="check"><input id="emulator" type="checkbox">本機模擬器</label><div class="actions"><button type="submit" name="role" value="teacher">進入老師端</button><button type="submit" name="role" value="student" class="secondary">進入學生端</button></div></form><p class="footnote">X ／ Y ／ Z　·　共用場景，獨立視角</p></main><script type="module" src="/src/home.js"></script></body></html>
+-e \n=== student.html ===
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="viewport" content="width=device-width, initial-scale=1"><title>學生端｜向量教室</title></head><body data-role="student"><div id="app"></div><script type="module" src="/src/app.js"></script></body></html>
+-e \n=== teacher.html ===
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="viewport" content="width=device-width, initial-scale=1"><title>老師端｜向量教室</title></head><body data-role="teacher"><div id="app"></div><script type="module" src="/src/app.js"></script></body></html>
+-e \n=== package.json ===
+{
+  "name": "physics-classroom-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "emulators": "node scripts/emulators.mjs start",
+    "test": "npm run build && node scripts/emulators.mjs test",
+    "deploy": "node scripts/firebase.mjs deploy --only hosting,database",
+    "check": "node --test tests/model.test.mjs",
+    "firebase": "node scripts/firebase.mjs"
+  },
+  "dependencies": {
+    "firebase": "12.19.0",
+    "three": "0.186.0"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "firebase-tools": "15.30.1",
+    "vite": "8.3.0"
+  }
+}
+-e \n=== vite.config.js ===
+import { defineConfig } from 'vite';
+import { resolve } from 'node:path';
+export default defineConfig({
+  build: { rollupOptions: { input: {
+    index: resolve('index.html'), teacher: resolve('teacher.html'), student: resolve('student.html')
+  } } },
+  server: { port: 5173, strictPort: true },
+  preview: { port: 4173, strictPort: true }
+});
