@@ -41,5 +41,23 @@ try {
  await pass(update(ref(teacher,path+'/lab/clock'),{playing:true,startedAt:Date.now()}));
  await pass(remove(ref(teacher,path+'/vectors/v0')));
  await fail(get(ref(guest,'rooms')));
+ for(const mode of ['projectile','oscillator']) {
+  const lab={...DEFAULT_LAB,mode};
+  await pass(set(ref(teacher,path+'/lab'),lab));
+  await pass(get(ref(guest,path+'/lab')));
+  for(const db of [guest,student])await fail(set(ref(db,path+'/lab'),lab));
+  const missing={...lab};delete missing.mechanics;await fail(set(ref(teacher,path+'/lab'),missing));
+ }
+ await fail(set(ref(teacher,path+'/lab'),{...DEFAULT_LAB,mechanics:{...DEFAULT_LAB.mechanics,gravity:0}}));
+ await fail(set(ref(teacher,path+'/lab'),{...DEFAULT_LAB,mechanics:{...DEFAULT_LAB.mechanics,admin:true}}));
+ for(const operation of ['angle','projection'])await pass(set(ref(teacher,path+'/lab'),{...DEFAULT_LAB,operation}));
+ // Loading is one atomic multi-location update; visitors cannot partially replace a scene.
+ const sceneUpdate={'vectors/v0':v,'vectors/v1':null,lab:{...DEFAULT_LAB,mode:'projectile'}};
+ await pass(update(ref(teacher,path),sceneUpdate));
+ await fail(update(ref(guest,path),sceneUpdate));
+ await fail(update(ref(student,path),sceneUpdate));
+ const before=(await get(ref(teacher,path+'/vectors/v0'))).val();
+ await fail(update(ref(teacher,path),{'vectors/v0':{...v,label:'must not apply'},lab:{...DEFAULT_LAB,mechanics:{...DEFAULT_LAB.mechanics,mass:0}}}));
+ if(JSON.stringify((await get(ref(teacher,path+'/vectors/v0'))).val())!==JSON.stringify(before))throw new Error('Atomic scene update changed data after rejection');
  console.log(`Security rules：${count} assertions passed (including guest / wrong teacher / unverified / forged provider).`);
 } finally {await env.cleanup();}

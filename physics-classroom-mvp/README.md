@@ -73,10 +73,10 @@ rooms/{room}/teacherAccess  （規則限定老師能讀的授權檢查路徑，�
 
 ## 本機開發與測試
 
-需求：Node.js ２２．１２以上及 Java ２１。此目錄已有開發依賴；`work/jdk/Contents/Home` 提供測試用 Java。
+需求：Node.js ２２．１２以上及 Java ２１。此目錄已有開發依賴；`work/jdk/Contents/Home` 已安裝 Oracle JDK ２１．０．１２．１（Apple Silicon），測試腳本會自動使用，無需修改系統 PATH。
 
 ```sh
-cd '/Users/lvyunxiu/codex test/physics-classroom-mvp'
+cd '/Users/yulu_blacky/codex test/physics-classroom-mvp'
 npm ci --cache ./work/npm-cache
 npm test
 # 測試會自行啟動並關閉模擬器；不要與另一組模擬器同時執行。
@@ -102,7 +102,7 @@ npm run firebase -- login --no-localhost
 npm run deploy
 ```
 
-部署工具使用被 Git 忽略的 `work/config` 存放登入狀態。**不要分享 work 目錄或任何登入權杖。**
+部署工具沿用一般 Firebase CLI 的登入狀態，執行過 `firebase login` 即可使用；模擬器仍使用獨立的 `work/config`。**不要分享 work 目錄或任何登入權杖。**
 
 網頁設定在 `public/firebase-config.json`，含 projectId、appId、apiKey、authDomain、databaseURL，為一般公開的 Firebase Web 設定，並非管理員密鑰。範例在 `public/firebase-config.example.json`。
 

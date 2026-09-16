@@ -1,4 +1,6 @@
 import './style.css';
+import QRCode from 'qrcode';
+import {mountLibrary} from './library-ui.js';
 import {createScene} from './scene.js';
 import {connectStore} from './store.js';
 import {roomId,validateVector,magnitude,MAX_VECTORS} from './model.js';
@@ -17,12 +19,12 @@ $('#app').innerHTML=`<header class="topbar"><a class="brand" href="/">向量教�
 <aside class="sidebar">
 ${teacher?`<section class="auth-card"><h2>老師操作權限</h2><p id="auth-status" class="hint">請輸入老師密碼，解鎖編輯。</p><form id="login-form"><label for="teacher-password">老師密碼</label><input id="teacher-password" type="password" autocomplete="current-password" required minlength="6"><button id="login" class="wide" disabled>解鎖老師端</button></form><button id="logout" class="secondary wide" hidden>鎖定老師端</button><a id="watch-link" class="hint">切換學生觀看模式</a></section>`:''}
 <p id="message" role="status" aria-live="polite"></p><section id="lab-panel"></section><section id="vector-section"><div class="section-title"><h2>場景向量</h2><span id="count">０個</span></div><div id="vector-list" aria-label="場景向量清單"></div>
-${teacher?`<button id="add" class="wide" disabled>＋ 新增向量</button><form id="editor" hidden><div class="section-title"><h2>編輯向量</h2></div><label for="label">名稱</label><input id="label" maxlength="24" required autocomplete="off"><div class="color-row"><label for="color">顏色</label><input id="color" type="color" value="#57dfc2"></div><fieldset><legend>起點座標</legend><div class="coordinates">${inputs('origin')}</div></fieldset><fieldset><legend>向量分量</legend><div class="coordinates">${inputs('components')}</div></fieldset><p class="hint">終點＝起點＋分量。改起點可平移向量。</p><button id="save" type="submit" class="wide">儲存並同步</button><button id="delete" type="button" class="danger wide">刪除此向量</button></form>`:''}</section>
-${teacher?'<section class="share"><h2>邀請學生</h2><a id="student-link" target="_blank" rel="noopener">開啟學生端 ↗</a><button id="copy-link" class="secondary wide">複製學生網址</button><p id="share-hint" class="hint"></p></section>':'<section class="student-note"><h2>你的觀察席</h2><p>自由旋轉、縮放或平移。老師更新模型時，你的視角會保留。</p></section>'}
+${teacher?`<button id="add" class="wide" disabled>＋ 新增向量</button><form id="editor" hidden><div class="section-title"><h2>編輯向量</h2></div><label for="label">名稱</label><input id="label" maxlength="24" required autocomplete="off"><div class="color-row"><label for="color">顏色</label><input id="color" type="color" value="#57dfc2"></div><fieldset><legend>起點座標</legend><div class="coordinates">${inputs('origin')}</div></fieldset><fieldset><legend>向量分量</legend><div class="coordinates">${inputs('components')}</div></fieldset><p class="hint">終點＝起點＋分量。改起點可平移向量。</p><label>三軸拖曳把手<select id="drag-part"><option value="off">關閉拖曳</option><option value="components">拖曳終點（改變分量）</option><option value="origin">拖曳起點（平移向量）</option></select></label><p class="hint">先選取向量，再拖曳畫面中的紅／綠／藍軸。放開後同步到學生，精度為０．０１。</p><button id="save" type="submit" class="wide">儲存並同步</button><button id="delete" type="button" class="danger wide">刪除此向量</button></form>`:''}</section>
+${teacher?'<section id="scene-library" class="share"></section><section class="share"><h2>邀請學生</h2><canvas id="student-qr" aria-label="學生加入教室 QR code"></canvas><a id="student-link" target="_blank" rel="noopener">開啟學生端 ↗</a><button id="copy-link" class="secondary wide">複製學生網址</button><p id="share-hint" class="hint"></p></section>':'<section class="student-note"><h2>你的觀察席</h2><p>自由旋轉、縮放或平移。老師更新模型時，你的視角會保留。</p></section>'}
 <details class="notice"><summary>模型與權限說明</summary><p>只有通過老師密碼驗證的指定帳號可修改資料。學生免登入觀看。電磁模型假設場均勻且固定，採非相對論運動方程；粒子由原點出發。</p></details></aside></main>`;
 $('#room-name').textContent=room;
 
-let scene,store,vectors={},selected=null,online=false,authorized=false,ready=false,pending=false,dirty=false,labUI;
+let scene,store,vectors={},selected=null,online=false,authorized=false,ready=false,pending=false,dirty=false,labUI,libraryUI;
 function message(text,error=false){$('#message').textContent=text;$('#message').classList.toggle('error',error);}
 
 try{scene=createScene($('#viewport'));}catch{message('無法啟動３Ｄ畫面。請使用支援 WebGL ２的瀏覽器。',true);}
@@ -42,6 +44,8 @@ document.querySelectorAll('[data-view]').forEach(btn=>{
 });
 
 function controls(){
+  libraryUI?.setAccess(teacher&&authorized&&ready&&online&&!pending);
+  syncDrag();
   labUI?.setAccess(authorized&&ready&&online&&!pending);
   if(!teacher)return;
   $('#add').disabled=!authorized||!ready||!online||pending||Object.keys(vectors).length>=MAX_VECTORS;
@@ -49,6 +53,12 @@ function controls(){
   $('#editor').querySelectorAll('input').forEach(i=>i.disabled=!authorized||pending);
 }
 
+function syncDrag(){
+  const part=teacher?$('#drag-part').value:'off';
+  scene?.setDrag(selected,part,teacher&&part!=='off'&&authorized&&ready&&online&&!pending,async(id,v)=>{
+    try{await mutate(()=>store.write(id,v),'拖曳結果已同步。');}catch{scene?.update(vectors);}
+  });
+}
 function populate(){
   if(!teacher)return;$('#editor').hidden=!authorized||!selected||!vectors[selected];
   if($('#editor').hidden)return;const v=vectors[selected];$('#label').value=v.label;$('#color').value=v.color;
@@ -61,7 +71,7 @@ function renderList(){
   for(const [id,v]of Object.entries(vectors)){
     const row=document.createElement(teacher?'button':'div');row.className=`vector-row ${selected===id?'selected':''}`;row.dataset.id=id;row.style.setProperty('--vector-color',v.color);
     const title=document.createElement('strong');title.textContent=v.label;const detail=document.createElement('small');detail.textContent=`（${v.components.x}，${v.components.y}，${v.components.z}） ｜v｜＝${magnitude(v).toFixed(2)}`;row.append(title,detail);
-    if(teacher){row.disabled=!authorized||pending;row.onclick=()=>{selected=id;populate();renderList();};}$('#vector-list').append(row);
+    if(teacher){row.disabled=!authorized||pending;row.onclick=()=>{selected=id;populate();renderList();syncDrag();};}$('#vector-list').append(row);
   }
 }
 
@@ -76,8 +86,11 @@ labUI=mountLab({teacher,scene,getNow:()=>store?.now()??Date.now(),report:message
 labUI.setLab(structuredClone(DEFAULT_LAB));controls();
 
 if(teacher){
-  const url=new URL('student.html',location.href);url.search=location.search;if(!url.searchParams.has('room'))url.searchParams.set('room',room);
+  libraryUI=mountLibrary({container:$('#scene-library'),getScene:()=>({vectors,lab:labUI.getLab()}),load:snapshot=>mutate(()=>store.loadScene(snapshot),'場景已載入並同步。'),report:message});
+  $('#drag-part').onchange=syncDrag;
+  const url=new URL('student.html',location.href);url.searchParams.set('room',room);if(urlParams.get('emulator')==='1')url.searchParams.set('emulator','1');
   url.searchParams.delete('pwd');
+  QRCode.toCanvas($('#student-qr'),url.href,{width:240,margin:4,errorCorrectionLevel:'M',color:{dark:'#0b1220',light:'#ffffff'}}).catch(()=>message('QR code 產生失敗，請使用學生網址。',true));
   $('#student-link').href=$('#watch-link').href=url.href;
   $('#share-hint').textContent=url.searchParams.get('emulator')==='1'?'本機模式僅供這台電腦測試。':'分享給學生即可觀看，不需要老師密碼。';
   $('#copy-link').onclick=async()=>{try{await navigator.clipboard.writeText(url.href);message('已複製學生網址。');}catch{message('請長按或右鍵複製學生端連結。');}};
@@ -88,7 +101,7 @@ if(teacher){
     finally{password='';$('#login').disabled=false;}
   };
   $('#logout').onclick=async()=>{try{await store.logout();dirty=false;message('老師端已鎖定。');}catch(e){message(e.message,true);}};
-  $('#editor').oninput=()=>{dirty=true;};
+  $('#editor').oninput=event=>{if(event.target.id!=='drag-part')dirty=true;};
   $('#add').onclick=()=>safely(mutate(async()=>{const n=Object.keys(vectors).length;selected=await store.create({label:`向量 ${n+1}`,color:['#57dfc2','#ffba69','#a894ff','#ff829d'][n%4],origin:{x:0,y:0,z:0},components:{x:3,y:2,z:1}});},'已新增向量。'));
   $('#editor').onsubmit=event=>{event.preventDefault();const v={label:$('#label').value.trim(),color:$('#color').value};for(const field of ['origin','components'])v[field]=Object.fromEntries(['x','y','z'].map(k=>[k,$(`#${field}-${k}`).valueAsNumber]));try{validateVector(v);}catch(e){message(e.message,true);return;}const id=selected;safely(mutate(()=>store.write(id,v),'已同步向量。'));};
   $('#delete').onclick=()=>{const id=selected;safely(mutate(()=>store.delete(id),'已刪除向量。'));};

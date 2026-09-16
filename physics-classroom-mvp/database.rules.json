@@ -57,12 +57,12 @@
         "lab": {
           ".read": "$room.matches(/^[A-Z0-9]{4,12}$/)",
           ".write": "auth != null && auth.uid == 'sjOawvV1pKTvH9xcwKfpQg0Vc2C3' && auth.token.firebase.sign_in_provider == 'password' && $room.matches(/^[A-Z0-9]{4,12}$/)",
-          ".validate": "newData.hasChildren(['mode','operation','a','b','particle','clock'])",
+          ".validate": "newData.hasChildren(['mode','operation','a','b','particle','clock']) && ((newData.child('mode').val() != 'projectile' && newData.child('mode').val() != 'oscillator') || newData.hasChild('mechanics'))",
           "mode": {
-            ".validate": "newData.val() == 'vectors' || newData.val() == 'algebra' || newData.val() == 'lorentz'"
+            ".validate": "newData.val() == 'vectors' || newData.val() == 'algebra' || newData.val() == 'lorentz' || newData.val() == 'projectile' || newData.val() == 'oscillator'"
           },
           "operation": {
-            ".validate": "newData.val() == 'add' || newData.val() == 'subtract' || newData.val() == 'cross'"
+            ".validate": "newData.val() == 'add' || newData.val() == 'subtract' || newData.val() == 'cross' || newData.val() == 'projection' || newData.val() == 'angle'"
           },
           "a": {
             ".validate": "newData.isString() && newData.val().matches(/^v([0-9]|[1-4][0-9])$/)"
@@ -137,7 +137,7 @@
             }
           },
           "clock": {
-            ".validate": "newData.hasChildren(['playing','elapsed','startedAt']) && newData.child('elapsed').val() <= newData.parent().child('particle/duration').val()",
+            ".validate": "newData.hasChildren(['playing','elapsed','startedAt']) && newData.child('elapsed').val() <= ((newData.parent().child('mode').val() == 'projectile' || newData.parent().child('mode').val() == 'oscillator') ? newData.parent().child('mechanics/duration').val() : newData.parent().child('particle/duration').val())",
             "playing": {
               ".validate": "newData.isBoolean()"
             },
@@ -153,6 +153,45 @@
           },
           "$other": {
             ".validate": false
+          },
+          "mechanics": {
+            ".validate": "newData.hasChildren([\"height\",\"speed\",\"angle\",\"gravity\",\"amplitude\",\"omega\",\"phase\",\"mass\",\"duration\",\"rate\",\"scale\"])",
+            "height": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+            },
+            "speed": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+            },
+            "angle": {
+              ".validate": "newData.isNumber() && newData.val() >= -90 && newData.val() <= 90"
+            },
+            "gravity": {
+              ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 100"
+            },
+            "amplitude": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+            },
+            "omega": {
+              ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 100"
+            },
+            "phase": {
+              ".validate": "newData.isNumber() && newData.val() >= -360 && newData.val() <= 360"
+            },
+            "mass": {
+              ".validate": "newData.isNumber() && newData.val() >= 0.001 && newData.val() <= 1000"
+            },
+            "duration": {
+              ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 1000"
+            },
+            "rate": {
+              ".validate": "newData.isNumber() && newData.val() >= 0.001 && newData.val() <= 100"
+            },
+            "scale": {
+              ".validate": "newData.isNumber() && newData.val() >= 0.001 && newData.val() <= 10"
+            },
+            "$other": {
+              ".validate": false
+            }
           }
         }
       }

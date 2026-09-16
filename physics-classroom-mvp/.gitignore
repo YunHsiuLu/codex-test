@@ -6,3 +6,5 @@ work/
 playwright-report/
 test-results/
 public/firebase-config.json
+
+node_modules.previous/

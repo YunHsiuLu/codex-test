@@ -1,7 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, connectAuthEmulator, setPersistence, browserSessionPersistence } from 'firebase/auth';
-import { getDatabase, connectDatabaseEmulator, ref, onValue, set, get, remove, runTransaction, serverTimestamp } from 'firebase/database';
+import { getDatabase, connectDatabaseEmulator, ref, onValue, set, get, update, remove, runTransaction, serverTimestamp } from 'firebase/database';
 import { roomId, validateVector } from './model.js';
+import { validateSnapshot } from './snapshots.js';
 import { DEFAULT_LAB, validateLab } from './physics.js';
 
 export async function connectStore(room, { onScene, onConnection, onError, onAuth, onLab }) {
@@ -53,6 +54,11 @@ export async function connectStore(room, { onScene, onConnection, onError, onAut
     write:(id,vector)=>{requireTeacher();return set(ref(db,base+'/vectors/'+id),validateVector(vector));},
     delete:id=>{requireTeacher();return remove(ref(db,base+'/vectors/'+id));},
     writeLab:lab=>{requireTeacher();validateLab(lab);return set(ref(db,base+'/lab'),{...lab,clock:{...lab.clock,startedAt:serverTimestamp()}});},
+    loadScene:snapshot=>{
+      requireTeacher();const checked=validateSnapshot(snapshot),changes={lab:{...checked.lab,clock:{playing:false,elapsed:0,startedAt:serverTimestamp()}}};
+      for(let i=0;i<50;i++)changes['vectors/v'+i]=checked.vectors['v'+i]||null;
+      return update(ref(db,base),changes);
+    },
     dispose:()=>subscriptions.forEach(f=>f())
   };
 }
