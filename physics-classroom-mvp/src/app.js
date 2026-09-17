@@ -120,17 +120,7 @@ try{
       online=connected;$('#connection').textContent=connected?(emulator?'本機模擬器・已連線':'已連線'):'離線・等待重新連線';
       $('#connection').classList.toggle('connected',connected);controls();
       
-      const pwd=urlParams.get('pwd');
-      if(teacher&&pwd&&connected&&!authorized){
-        try{
-          await store.login(pwd);
-          message('老師自動驗證成功。');
-          urlParams.delete('pwd');
-          history.replaceState({},'',`${location.pathname}?${urlParams.toString()}`);
-        }catch{
-          message('自動驗證失敗，請輸入密碼解鎖。',true);
-        }
-      }
+
     },
     onError:e=>{ready=false;message(`讀取失敗：${e.message}`,true);controls();}
   });

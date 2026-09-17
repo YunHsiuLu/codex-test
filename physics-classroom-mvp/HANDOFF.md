@@ -1,78 +1,66 @@
-# 交接文件：3D Physics Classroom MVP
+# 3D Physics Classroom：跨電腦交接
 
-更新日期：２０２６－０９－１５
+更新日期：２０２６－０９－１７。此文件取代９月１５日的舊交接狀態。
 
-## 位置與範圍
+## 現況
 
-專案：`/Users/lvyunxiu/codex test/physics-classroom-mvp`
+專案位於 `/Users/lvyunxiu/codex test/physics-classroom-mvp`，屬於上層 Git repository。已有正式 Firebase 專案與部署，並非等待建立專案。此次修改未 commit／push。
 
-依使用者目錄權限偏好，在 `~/codex test` 建立獨立子資料夾。未修改旁邊既有專案，未提交或推送 Git。專案位於 `codex test` 既有 Git repository 下，仍為未追蹤的新專案資料夾。
+- 正式網站：https://physics-classroom-795b1.web.app/
+- Firebase project：`physics-classroom-795b1`
+- Realtime Database：`https://physics-classroom-795b1-default-rtdb.asia-southeast1.firebasedatabase.app`
+- Hosting、Realtime Database、Authentication email/password。沒有 Firestore／Cloud Functions／Google 登入。
+- 老師帳號由本人設定密碼。指定 UID：`sjOawvV1pKTvH9xcwKfpQg0Vc2C3`。規則要求該 UID 與 password provider。學生匿名讀取已知教室，不能寫入或列舉所有教室。
+- 老師介面只輸入密碼；Firebase 使用 `public/firebase-config.json` 的 teacherEmail 或程式預設老師 email。不要索取、記錄或硬編碼老師密碼。
 
-## 完成狀態
+## 已存在且保留的功能
 
-本機最小版本可運行。使用 Three.js、OrbitControls、Firebase Web SDK 的 app／database 模組；Hosting 與 Realtime Database 模擬器已實際執行。無 Firestore、Functions 或 Authentication。
+自由向量建立／修改／刪除與三軸拖曳；５０個固定槽位。向量加減、叉積、投影與夾角。均勻固定電磁場的解析解，完整 F＝q（E＋v×B），同步播放／暫停／時間。Z 軸向上的拋體、X 軸簡諧運動。QR code 學生連結、本機場景儲存與 JSON 匯出／匯入。相機留在各瀏覽器，不寫入資料庫。
 
-- 老師新增、選取、修改起點／分量／名稱／顏色及刪除向量。
-- 學生只讀介面與即時場景同步。
-- 相機與 OrbitControls target 保持在各瀏覽器記憶體，完全不寫入資料庫。
-- `database.rules.json` 限制合法教室代碼、５０個固定向量槽位、完整欄位、數值範圍與色碼；其他路徑拒絕。
-- 新增向量使用 transaction 領取空槽；更新只寫單支向量。
-- Firebase 設定範例、部署設定、正式設定檢查、完整 README 已建立。
+## 本次完成
 
-## 實際測試結果
+１．修正首頁將老師密碼放進 `pwd` 網址參數的問題。首頁直接呼叫 Firebase Auth，再讀取受規則保護的 teacherAccess，成功才導向乾淨的老師網址。
+２．新增 `src/firebase-client.js` 共用初始化與登入。依正式／模擬器分開快取 Firebase app，使用 browserSessionPersistence。直接進老師頁同樣使用共用登入驗證。
+３．移除老師頁的網址密碼自動登入；三個 HTML 在載入模組前移除舊 pwd，並加 no-referrer。密碼保留原始空白，不 trim；送出後清除輸入欄位。未自行儲存密碼。
+４．依 package-lock 重裝缺漏的 QR code 依賴；第一次 npm ci 網路中斷，改用專案 work/npm-cache 重試成功。
+５．已於本日成功執行 `npm run deploy`，Hosting 與 Database 規則均發布至既有正式專案。
 
-`npm test` 通過，包含正式建置、３項單元測試與１１２項 Database 模擬器 HTTP 請求驗證。
+舊版本曾把密碼放進網址；此修正無法撤回既有瀏覽紀錄、已分享網址或伺服器紀錄。若曾透過舊首頁登入，建議老師本人更換密碼。不要刪除重建 Firebase 帳號，否則 UID 會改變。
 
-Chrome 實測：
+## 本次驗證證據
 
-- 老師新增向量，兩個學生分頁接收同一場景。
-- 改名為「合力 F」、起點 X 改為 −２、分量改為（４，５，１），學生即時更新。
-- 第一位學生旋轉相機後，與老師預設相機位置不同；旋轉阻尼停止後再修改向量，相機資料逐項保持一致。
-- 第二位學生稍後加入，取得既有場景。
-- `OTHER1` 教室沒有收到 `PHYS01` 向量。
-- 學生 DOM 無編輯 input。
-- 零向量顯示正常，刪除同步至兩個學生分頁。
-- 停止模擬器後，老師顯示離線，新增、儲存與刪除按鈕停用。
-- Chrome 縮小視窗測試：學生頁面實際 CSS 寬９１１、老師頁面寬４００，均無水平溢出；已還原視窗大小。
+- 正式 build 成功。１９項單元測試通過（model、physics、features、login-url）。
+- Database 模擬器５６項規則 assertions 通過，包括匿名／錯誤 UID／錯誤 provider 拒絕、老師寫入與資料格式。
+- Chrome 本機：錯誤密碼留在首頁並顯示錯誤；正確模擬器密碼跳轉到 teacher.html?room=PHYS01&emulator=1，無 pwd，工作階段恢復且可新增向量。
+- 新學生分頁取得新增向量，只讀。切換 Lorentz 並播放，學生 mode 與時間更新；學生已切換 XZ 視角，camera 僅有約 1e-11 浮點漂移，未被老師視角取代。
+- 拋體、簡諧模式均切換成功並同步；簡諧畫面顯示 x＝3、a＝−12、總能量＝18、週期≈3.1416（預設值）。
+- 鎖定老師端後模型選擇、參數、播放停用。
+- 正式站瀏覽器未登入老師頁可載入；未授權編輯停用。正式 RTDB 匿名讀取 HTTP 200；向隔離測試教室的匿名寫入 HTTP 401，無資料寫入。
+- 正式首頁 HTML 已確認新版 JS 與 no-referrer。
 
-尚未在實體 iPad／Safari 或校園 Wi-Fi 驗證。建置有單一 JS bundle 大於５００ kB 的提示，壓縮後約１９０ kB，並非建置失敗。未配置正式 Firebase 時，部署設定檢查會正確拒絕通過。
+未使用本人正式密碼進行本次登入測試；成功登入流程在本機 Auth 模擬器驗證。未在實體 iPad／Safari／校園 Wi-Fi 執行本次驗收。拖曳與 JSON 匯入／匯出本次沒有完整重測，僅保留既有功能並跑 snapshot 單元與規則測試。
 
-## 雲端狀態與下一步
-
-使用者要求改用已開啟的 Chrome Firebase Console。已查看登入狀態，進入「建立專案」並填入 `Physics Classroom`。首次建立專案要求勾選 Firebase 條款；已向使用者詢問是否同意接受。**目前未接受條款、未建立 Firebase 專案、未建立正式資料庫、未部署。**
-
-下一位接手者應先確認使用者是否已回覆同意，或是否已自行完成條款頁面。不要把等待時間視為同意。確認後：
-
-１．完成 Firebase 專案建立，不加 Analytics／Gemini 或不必要服務。
-２．建立 Realtime Database 與網頁應用程式，取得正式 firebaseConfig。
-３．填入 `public/firebase-config.json`，設定 `.firebaserc` 正式專案對應。
-４．完成 Firebase CLI 登入（可能需要使用者在瀏覽器授權）。
-５．依 README 部署 Hosting 與 Database；部署前明確告知無登入版無法安全區分老師／學生。
-６．以正式 HTTPS 網址測試老師、学生與多裝置同步，更新本文件雲端狀態。
-
-Firebase 網頁設定不是管理員密鑰；不要索取 service account 私鑰。若透過瀏覽器接受條款或變更安全敏感存取，遵守該工具在當下要求的確認。
-
-## 執行方式
+## 新電腦啟動／部署
 
 ```sh
 cd '/Users/lvyunxiu/codex test/physics-classroom-mvp'
+npm ci --cache ./work/npm-cache
+npm test
 npm run build
 npm run emulators
 ```
 
-- 首頁：`http://127.0.0.1:5055/`
-- 老師：`http://127.0.0.1:5055/teacher.html?room=PHYS01&emulator=1`
-- 學生：`http://127.0.0.1:5055/student.html?room=PHYS01&emulator=1`
+本機首頁 `http://127.0.0.1:5055/`，勾本機模擬器；teacher／student 直連需 `?room=PHYS01&emulator=1`。資料庫９０００、Auth ９０９９、Hosting ５０５５，皆 loopback。Auth 模擬器帳號不會自動建立；需建立與規則指定 UID 相同的測試帳號，使用獨立測試密碼，不用正式密碼。模擬器重啟資料不持久化。
 
-Hosting 原預設５０００已被其他程式佔用，所以使用５０５５。Database 是９０００，Hub 是４４００。全部綁定 loopback。模擬器資料預設不持久化，重新啟動後需重新新增向量。開發熱更新：另跑 `npm run dev`，開啟５１７３。
+需要 Java ２１。腳本優先使用 `work/jdk/Contents/Home/bin`，不存在時使用 PATH 的 Java。`work/` 為忽略的本機工具／快取／CLI 登入狀態，不搬移或發布裡面的憑證。
 
-`work/jdk` 是從 Adoptium 官方端點下載的 Temurin JDK ２１；啟動腳本優先使用它。`work/firebase-emulators`、`work/npm-cache`、`work/config` 均為測試工具快取，不納入版本控制。
+正式設定 `public/firebase-config.json` 被 Git 忽略；新電腦依範例與 Firebase Console 網頁應用程式設定填入，不需要 service account 私鑰。`.firebaserc` 已指向正式專案。執行 `npm run firebase -- login` 登入後，以 `npm run deploy` 發布 Hosting 與規則。修改授權 UID 時同步更新規則產生器與測試，重新產生規則。
 
-## 重要限制
+## 後續與已知限制
 
-- 學生頁只讀，但無 Authentication 就沒有可靠的老師身分控管。知道代碼者可自行開老師頁或呼叫 API。這是本版既定範圍，不可宣稱具備安全的老師專屬寫入權限。
-- 固定槽位 v0～v49；不要改成任意 push ID 而仍宣稱規則能限制５０支。RTDB 規則不支援 `numChildren()`；本版已用合法槽位名稱限制並實測通過。
-- 多人同時修改同一支向量，最後寫入生效；槽位刪除再新增後，另一位老師的舊編輯可能覆蓋新向量。本版以單一老師授課為主要使用情境。
-- 更新按儲存後同步，尚非拖曳連續同步。
-- 未做拖曳把手、QR code、動畫、儲存相機視角或全息四面輸出。
-- 斷線會自動重連；傳送途中斷線可能留下 Firebase 待傳操作，不應把「同步中」當成已完成。
+- 優先讓老師在正式站重新登入，並用實體 iPad／校園網路驗證 QR code、操作同步與畫面效能。
+- 場景庫存在本機瀏覽器；換電腦須先匯出 JSON。
+- 2D 視角目前是沿座標軸觀看的透視相機；不是正交相機。「看完整場景」與 2D 視角搭配的行為可再整理。
+- 單一老師授課模型；多個授權分頁同時修改最後寫入生效。斷線待傳操作仍可能在恢復連線後提交。
+- 電磁模型限均勻固定場、非相對論點粒子；拋體不含阻力／反彈；簡諧無阻尼。不可宣稱通用物理引擎。
+- Three.js 主 bundle 有超過５００ kB 的建置提醒；目前不是錯誤，之後可按模型拆載入。

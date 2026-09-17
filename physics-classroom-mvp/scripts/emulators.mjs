@@ -12,7 +12,7 @@ const env = { ...process.env,
   PATH: (existsSync(localJava) ? localJava + delimiter : '') + process.env.PATH
 };
 const command = process.argv[2] === 'test'
-  ? ['emulators:exec', '--only', 'database,hosting,auth', '--project', 'demo-physics-classroom', 'node --test tests/model.test.mjs tests/physics.test.mjs tests/features.test.mjs && node tests/rules.mjs']
+  ? ['emulators:exec', '--only', 'database,hosting,auth', '--project', 'demo-physics-classroom', 'node --test tests/model.test.mjs tests/physics.test.mjs tests/features.test.mjs tests/login-url.test.mjs && node tests/rules.mjs']
   : ['emulators:start', '--only', 'database,hosting,auth', '--project', 'demo-physics-classroom'];
 const child = spawn(resolve('node_modules/.bin/firebase'), command, { env, stdio: 'inherit' });
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => child.kill(signal));

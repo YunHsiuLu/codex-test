@@ -1,23 +1,13 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, connectAuthEmulator, setPersistence, browserSessionPersistence } from 'firebase/auth';
-import { getDatabase, connectDatabaseEmulator, ref, onValue, set, get, update, remove, runTransaction, serverTimestamp } from 'firebase/database';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+import {firebaseClient,loginTeacher} from './firebase-client.js';
+import { ref, onValue, set, get, update, remove, runTransaction, serverTimestamp } from 'firebase/database';
 import { roomId, validateVector } from './model.js';
 import { validateSnapshot } from './snapshots.js';
 import { DEFAULT_LAB, validateLab } from './physics.js';
 
 export async function connectStore(room, { onScene, onConnection, onError, onAuth, onLab }) {
   room=roomId(room);
-  const useEmulator=['localhost','127.0.0.1','[::1]'].includes(location.hostname) && new URLSearchParams(location.search).get('emulator')==='1';
-  let config;
-  if(useEmulator) config={projectId:'demo-physics-classroom',apiKey:'demo-key',appId:'demo-app',databaseURL:'https://demo-physics-classroom-default-rtdb.firebaseio.com'};
-  else {
-    const response=await fetch('/firebase-config.json',{cache:'no-store'});
-    try {config=response.ok?await response.json():null;} catch {config=null;}
-    if(!config?.databaseURL||!config?.apiKey) throw new Error('尚未設定 Firebase，請查看 README。');
-  }
-  const app=initializeApp(config),db=getDatabase(app),auth=getAuth(app);
-  if(useEmulator){connectDatabaseEmulator(db,'127.0.0.1',9000);connectAuthEmulator(auth,'http://127.0.0.1:9099',{disableWarnings:true});}
-  await setPersistence(auth,browserSessionPersistence);
+  const client=await firebaseClient(),{db,auth,useEmulator}=client;
   const base=`rooms/${room}`;
   let connected=false,canWrite=false,offset=0,authGeneration=0;
   const subscriptions=[
@@ -41,7 +31,7 @@ export async function connectStore(room, { onScene, onConnection, onError, onAut
   function requireTeacher(){if(!canWrite)throw new Error('只有授權老師能修改教室。');if(!connected)throw new Error('目前離線，請重新連線後再試。');}
   return {
     now:()=>Date.now()+offset,
-    login:password=>signInWithEmailAndPassword(auth,config.teacherEmail||'cow3690m@gmail.com',password),
+    login:password=>loginTeacher(client,room,password),
     logout:()=>signOut(auth),
     create:async vector=>{
       requireTeacher();validateVector(vector);
