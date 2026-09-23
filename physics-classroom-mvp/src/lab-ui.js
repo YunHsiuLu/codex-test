@@ -1,3 +1,4 @@
+import {VELOCITY_ARROW_SECONDS} from './velocity-arrow.js';
 import { DEFAULT_LAB, AXES, algebra, norm, vec, particleMetrics, validateLab, simulationTime, simulationDuration, simulationParameters, isMechanics, vectorRelation, flightTime } from './physics.js';
 export const numberText=n=>n===null?'—':Math.abs(n)<1e-12&&n!==0||Math.abs(n)>=1e5? n.toExponential(3):Number(n.toPrecision(5)).toString();
 const tuple=v=>`（${AXES.map(k=>numberText(v[k])).join('，')}）`;
@@ -15,7 +16,7 @@ export function mountLab({teacher,scene,write,getNow,report}) {
   ${teacher?`<label>教學範例<select id="preset"><option value="helix">螺旋運動・純磁場</option><option value="circle">圓周運動</option><option value="electric">純電場加速</option><option value="drift">交叉電磁場漂移</option><option value="electron">電子・微秒尺度</option></select></label><button id="load-preset" class="secondary wide">載入範例到表單</button>`:''}
   <form id="particle-form"><div class="pair"><label>電荷 q（C）<input id="charge" type="number" step="any" min="-1000" max="1000" required></label><label>質量 m（kg）<input id="mass" type="number" step="any" min="1e-35" max="1e6" required></label></div>
   ${fields('velocity','初速度 v₀','m/s',1e7)}${fields('electric','電場 E','N/C',1000)}${fields('field','磁場 B','T',1000)}
-  <label>模擬總時間（s）<input id="duration" type="number" step="any" min="1e-12" max="10000" required></label><label>每秒播放的物理時間（s）<input id="rate" type="number" step="any" min="1e-15" max="1000" required></label><label>顯示倍率（１ m 對應的網格數）<input id="scale" type="number" step="any" min="1e-9" max="1e12" required></label>
+  <label>模擬總時間（s）<input id="duration" type="number" step="any" min="1e-12" max="10000" required></label><label>每秒播放的物理時間（s）<input id="rate" type="number" step="any" min="1e-15" max="1000" required></label><label>顯示倍率（１ m 對應的座標單位）<input id="scale" type="number" step="any" min="1e-9" max="1e12" required></label>
   ${teacher?'<button type="submit" id="apply-particle" class="wide">套用參數並歸零</button>':''}</form>
   ${teacher?'<div id="playback"><div class="actions"><button id="play">播放</button><button id="rewind" class="secondary">歸零</button></div><label>時間位置<input id="seek" type="range" min="0" max="1000" step="1" value="0"></label></div>':''}
   <p id="time-status" role="status"></p><div id="arrow-options" class="arrow-options">${['E','B','v','vxB','FE','FB','F'].map(key=>`<label><input type="checkbox" data-arrow="${key}" ${['E','B','v','F'].includes(key)?'checked':''}>${{vxB:'v×B',FE:'電力',FB:'磁力',F:'合力'}[key]||key}</label>`).join('')}</div><p id="arrow-hint" class="hint">箭頭顯示方向，不同比例的物理量不共用箭長尺度。淡線為預測軌跡，亮線為已走過路徑。</p><dl id="metrics"></dl></section>`;
@@ -91,6 +92,7 @@ export function mountLab({teacher,scene,write,getNow,report}) {
     setVectors:data=>{vectors=data;options();result();},
     setLab:data=>{
       const changedParameters=JSON.stringify([lab.particle,lab.mechanics])!==JSON.stringify([data.particle,data.mechanics]);lab=data;
+      $('arrow-hint').textContent=isMechanics(lab)?`速度箭頭長度與瞬時速率成正比：１ m/s＝${numberText(simulationParameters(lab).scale*VELOCITY_ARROW_SECONDS)} 座標單位；相當於以當下速度行進０．２５秒的位移。合力箭頭僅表示方向。淡線為預測軌跡，亮線為已走過路徑。`:'箭頭顯示方向，不同比例的物理量不共用箭長尺度。淡線為預測軌跡，亮線為已走過路徑。';
       $('mode').value=lab.mode;$('operation').value=lab.operation;
       $('algebra-panel').hidden=lab.mode!=='algebra';$('particle-panel').hidden=lab.mode!=='lorentz';
       document.querySelector('#vector-section').hidden=lab.mode==='lorentz'||isMechanics(lab);

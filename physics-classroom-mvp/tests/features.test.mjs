@@ -1,3 +1,5 @@
+import {gridLayout} from '../src/scene-grid.js';
+import {velocityArrowVector} from '../src/velocity-arrow.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT_LAB, mechanicsAt, flightTime, vec, dot, add, mul, vectorRelation, simulationTime, simulationDuration, validateLab } from '../src/physics.js';
@@ -38,4 +40,29 @@ test('snapshot round-trip, old scenes, paused reset, rejects malformed inputs',(
  assert.throws(()=>makeSnapshot('bad',{v50:v},lab));assert.throws(()=>validateSnapshot({...snapshot,version:2}));
  const bad=structuredClone(snapshot);bad.lab.mechanics.omega=0;assert.throws(()=>validateSnapshot(bad));
  assert.throws(()=>makeSnapshot('bad',{v0:{...v,components:vec(Infinity)}},lab));
+});
+
+
+test('projectile velocity arrows keep a fixed scale through ascent, apex and descent',()=>{
+ const p={...DEFAULT_LAB.mechanics,height:0,speed:20,angle:60};
+ const apex=p.speed*Math.sin(Math.PI/3)/p.gravity;
+ const arrows=[0,apex,2*apex].map(t=>velocityArrowVector(mechanicsAt('projectile',p,t).velocity,p.scale));
+ near(arrows[0].x,arrows[1].x);near(arrows[1].x,arrows[2].x);
+ near(arrows[1].z,0);near(arrows[0].z,-arrows[2].z);
+ near(Math.hypot(...Object.values(arrows[0]))/Math.hypot(...Object.values(arrows[1])),2);
+ const vertical={...p,angle:90};
+ near(Math.hypot(...Object.values(velocityArrowVector(mechanicsAt('projectile',vertical,vertical.speed/vertical.gravity).velocity,1))),0);
+ assert.deepEqual(velocityArrowVector(vec(),1),vec());
+ near(velocityArrowVector(vec(4),2).x,2);
+});
+
+
+test('adaptive reference grid covers negative and large 3D trajectories with bounded divisions',()=>{
+ for(const [lo,hi] of [[vec(),vec()],[vec(-120,-2,-60),vec(70,340,12)],[vec(-10000,-10000,-10000),vec(10000,10000,10000)]]) {
+  const grid=gridLayout(lo,hi);
+  for(const k of ['x','y','z']){
+   assert.ok(grid.lower[k]<Math.min(0,lo[k]));assert.ok(grid.upper[k]>Math.max(0,hi[k]));
+   assert.ok((grid.upper[k]-grid.lower[k])/grid.step<=40);
+  }
+ }
 });
