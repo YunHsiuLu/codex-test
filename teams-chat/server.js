@@ -38,6 +38,25 @@ if (db.authVersion !== 1) {
   await save();
 }
 const clients = new Map();
+// Public workspace rooms include active accounts unless they leave or are removed.
+// Legacy rooms have no recorded creator; only local administrators manage them.
+if (db.roomAccessVersion !== 1) {
+  for (const room of db.rooms) Object.assign(room, {creatorId:null, leftUserIds:[], removedUserIds:[]});
+  db.roomAccessVersion = 1;
+  await save();
+}
+const isMember = (room, id) => !room.leftUserIds.includes(id) && !room.removedUserIds.includes(id);
+const canManageRoom = (req, room, user) => localRequest(req) || (room.creatorId === user.id && isMember(room, user.id));
+function findRoom(id) {const room=db.rooms.find(r=>r.id===id);if(!room)fail('找不到頻道。',404);return room;}
+function requireMember(room, user) {if(!isMember(room,user.id))fail('你已離開或被移除此聊天室，無法存取訊息與附件。',403);}
+function roomView(req, room, user) {
+  const manage=canManageRoom(req,room,user), member=isMember(room,user.id);
+  return {id:room.id,name:room.name,description:room.description,icon:room.icon,creatorId:room.creatorId,
+    isMember:member,isRemoved:room.removedUserIds.includes(user.id),canManageMembers:manage,
+    canJoin:!room.removedUserIds.includes(user.id)||localRequest(req),canClearHistory:localRequest(req),
+    memberIds:member||manage?db.users.filter(u=>u.password&&u.status==='active'&&isMember(room,u.id)).map(u=>u.id):[],
+    removedUserIds:manage?room.removedUserIds.filter(id=>db.users.some(u=>u.id===id&&u.password&&u.status==='active')):[]};
+}
 const publicUsers = () => db.users.filter(u => !u.password || u.status === 'active').map(({id,name,color,demo,status})=>({id,name,color,demo,deleted:status==='deleted',online:clients.has(id)}));
 function broadcast(event='change') { for(const streams of clients.values()) for(const stream of streams) stream.write(`event: ${event}\ndata: {}\n\n`); }
 const send = (res,status,body) => {res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(body));};
@@ -99,9 +118,9 @@ const server = http.createServer(async(req,res)=>{
       if (url.pathname === '/api/state' && req.method === 'GET') {
         const canManageAccounts = localRequest(req);
         return send(res, 200, {
-          user: publicUser(user), users: publicUsers(), rooms: db.rooms,
+          user: publicUser(user), users: publicUsers(), rooms: db.rooms.map(room=>roomView(req,room,user)),
           capabilities: {canManageAccounts},
-          messages: db.messages.map(({attachment, ...message}) => ({
+          messages: db.messages.filter(message=>isMember(findRoom(message.roomId),user.id)).map(({attachment, ...message}) => ({
             ...message,
             attachment: attachment ? {name: attachment.name, size: attachment.size} : null
           }))
@@ -176,10 +195,40 @@ const server = http.createServer(async(req,res)=>{
       if(url.pathname==='/api/rooms' && req.method==='POST') {
         const data=await body(req);const name=clean(data.name,40,'頻道名稱');
         if(db.rooms.some(r=>r.name===name))fail('已經有同名頻道。');
-        const room={id:randomUUID(),name,description:typeof data.description==='string'?data.description.trim().slice(0,200):'',icon:'hash'};db.rooms.push(room);await save();broadcast();return send(res,201,room);
+        const room={id:randomUUID(),name,description:typeof data.description==='string'?data.description.trim().slice(0,200):'',icon:'hash',creatorId:user.id,leftUserIds:[],removedUserIds:[]};db.rooms.push(room);await save();broadcast();return send(res,201,roomView(req,room,user));
+      }
+      const roomAction=url.pathname.match(/^\/api\/rooms\/([^/]+)\/(leave|join|members|history)(?:\/([^/]+))?$/);
+      if(roomAction) {
+        const data=req.method==='GET'?{}:await body(req);
+        if(!getSession(db,req))fail('登入已失效，請重新登入。',401);
+        const room=findRoom(roomAction[1]), action=roomAction[2], targetId=roomAction[3];
+        if(action==='leave'&&req.method==='POST'&&!targetId) {
+          if(!room.leftUserIds.includes(user.id))room.leftUserIds.push(user.id);
+        } else if(action==='join'&&req.method==='POST'&&!targetId) {
+          if(room.removedUserIds.includes(user.id)&&!localRequest(req))fail('你已被移除此聊天室，請聯絡建立者或本機管理者解除限制。',403);
+          room.leftUserIds=room.leftUserIds.filter(id=>id!==user.id);
+          room.removedUserIds=room.removedUserIds.filter(id=>id!==user.id);
+        } else if(action==='members'&&targetId&&['DELETE','POST'].includes(req.method)) {
+          if(!canManageRoom(req,room,user))fail('只有本機管理者或聊天室建立者可以管理成員。',403);
+          if(targetId===user.id)fail('請使用「離開聊天室」退出。',409);
+          if(!db.users.some(u=>u.id===targetId&&u.password&&u.status==='active'))fail('找不到此成員。',404);
+          if(req.method==='DELETE') {
+            if(!room.removedUserIds.includes(targetId))room.removedUserIds.push(targetId);
+          } else {
+            // Lift the removal without forcing someone who left voluntarily to rejoin.
+            if(!room.removedUserIds.includes(targetId))fail('此成員未被移除。',409);
+            room.removedUserIds=room.removedUserIds.filter(id=>id!==targetId);
+            if(!room.leftUserIds.includes(targetId))room.leftUserIds.push(targetId);
+          }
+        } else if(action==='history'&&req.method==='DELETE'&&!targetId) {
+          if(!localRequest(req))fail('只有本機管理者可以清除聊天室紀錄。',403);
+          if(data.confirmName!==room.name)fail('請輸入完整聊天室名稱以確認清除。');
+          db.messages=db.messages.filter(m=>m.roomId!==room.id);
+        } else fail('不支援的操作。',405);
+        await save();broadcast();return send(res,200,{ok:true});
       }
       if(url.pathname==='/api/messages' && req.method==='POST') {
-        const data=await body(req);if(!db.rooms.some(r=>r.id===data.roomId))fail('找不到頻道。',404);
+        const data=await body(req);if(!getSession(db,req))fail('登入已失效，請重新登入。',401);requireMember(findRoom(data.roomId),user);
         const text=typeof data.text==='string'?data.text.trim():'';if(text.length>5000)fail('訊息最多 5000 個字。');
         let attachment;
         if(data.attachment) {const a=data.attachment;const name=clean(a.name,180,'檔名');if(typeof a.data!=='string'||!/^[A-Za-z0-9+/]*={0,2}$/.test(a.data))fail('無效的附件。');const size=Buffer.from(a.data,'base64').length;if(size>5*1024*1024)fail('附件上限為 5 MB。',413);attachment={name,data:a.data,size};}
@@ -189,11 +238,14 @@ const server = http.createServer(async(req,res)=>{
       }
       const match=url.pathname.match(/^\/api\/messages\/([^/]+)(?:\/(reaction|attachment))?$/);
       if(match) {
+        const data=['POST','PATCH'].includes(req.method)?await body(req):{};
+        if(!getSession(db,req))fail('登入已失效，請重新登入。',401);
         const message=db.messages.find(m=>m.id===match[1]);if(!message)fail('找不到訊息。',404);
+        requireMember(findRoom(message.roomId),user);
         if(match[2]==='attachment'&&req.method==='GET') {if(!message.attachment)fail('找不到附件。',404);res.writeHead(200,{'Content-Type':'application/octet-stream','Content-Disposition':`attachment; filename*=UTF-8''${encodeURIComponent(message.attachment.name).replace(/'/g,'%27')}`,'X-Content-Type-Options':'nosniff','Cache-Control':'no-store'});return res.end(Buffer.from(message.attachment.data,'base64'));}
-        if(match[2]==='reaction'&&req.method==='POST') {const {emoji}=await body(req);if(!['👍','❤️','🎉','👋','✅','☕'].includes(emoji))fail('不支援的表情。');const list=message.reactions[emoji]||[];message.reactions[emoji]=list.includes(user.id)?list.filter(id=>id!==user.id):[...list,user.id];}
+        if(match[2]==='reaction'&&req.method==='POST') {const {emoji}=data;if(!['👍','❤️','🎉','👋','✅','☕'].includes(emoji))fail('不支援的表情。');const list=message.reactions[emoji]||[];message.reactions[emoji]=list.includes(user.id)?list.filter(id=>id!==user.id):[...list,user.id];}
         else if(!match[2]&&req.method==='DELETE') {if(message.userId!==user.id)fail('只能刪除自己的訊息。',403);db.messages=db.messages.filter(m=>m.id!==message.id);}
-        else if(!match[2]&&req.method==='PATCH') {if(message.userId!==user.id)fail('只能編輯自己的訊息。',403);message.text=clean((await body(req)).text,5000,'訊息');message.edited=true;}
+        else if(!match[2]&&req.method==='PATCH') {if(message.userId!==user.id)fail('只能編輯自己的訊息。',403);message.text=clean(data.text,5000,'訊息');message.edited=true;}
         else fail('不支援的操作。',405);
         await save();broadcast();return send(res,200,{ok:true});
       }

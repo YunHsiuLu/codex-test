@@ -1,6 +1,8 @@
 import { unreadMessages, notificationTitle } from './notifications.js';
 const $ = (s) => document.querySelector(s);
 const icons = {
+ eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+ eyeOff:'<path d="m3 3 18 18M10.5 5.1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3 3.8M6.2 6.2A20 20 0 0 0 2 12s3.5 7 10 7c2 0 3.8-.7 5.3-1.7M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
  search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/>',
  message:'<path d="M21 11a8 8 0 0 1-8 8H5l-4 3V11a10 10 0 0 1 20 0Z"/><path d="M7 8h8M7 12h5"/>',
  folder:'<path d="M3 5h6l2 3h10v12H3Z"/>',users:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 5"/>',
@@ -30,7 +32,7 @@ function loadReadState() {
  }
 }
 function markSeen(){
- if(document.hidden||!document.hasFocus()||!state.user||tab!=='chat'||$('#search').value.trim())return;
+ if(document.hidden||!document.hasFocus()||!state.user||!state.rooms.find(r=>r.id===roomId)?.isMember||tab!=='chat'||$('#search').value.trim())return;
  seen[roomId]=state.messages.filter(m=>m.roomId===roomId).map(m=>m.id);
  localStorage.setItem('together-read-'+seenOwner,JSON.stringify(seen));
 }
@@ -48,13 +50,42 @@ function signedOut(){
 }
 function renderRooms(){
  const rooms=state.rooms.filter(r=>filter!=='unread'||unread(r.id));
- $('#room-list').innerHTML=rooms.map(r=>{const msgs=state.messages.filter(m=>m.roomId===r.id),last=msgs.at(-1),count=unread(r.id);return `<button class="room ${r.id===roomId?'selected':''}" data-room="${r.id}"><span class="room-symbol">${icon(r.icon)}</span><span class="room-info"><strong>${esc(r.name)}</strong><small>${last?esc(person(last.userId).name+'：'+(last.text||last.attachment?.name||'附件')):'讓第一段對話開始吧'}</small></span>${count?`<span class="unread-badge">${count}</span>`:''}</button>`;}).join('')||'<div class="empty">沒有未讀訊息<br>所有對話都跟上了。</div>';
+ $('#room-list').innerHTML=rooms.map(r=>{const msgs=state.messages.filter(m=>m.roomId===r.id),last=msgs.at(-1),count=unread(r.id);return `<button class="room ${r.id===roomId?'selected':''}" data-room="${r.id}"><span class="room-symbol">${icon(r.icon)}</span><span class="room-info"><strong>${esc(r.name)}</strong><small>${!r.isMember?(r.isRemoved?'已被移除・請聯絡聊天室管理者':'已離開・點選可重新加入'):last?esc(person(last.userId).name+'：'+(last.text||last.attachment?.name||'附件')):'讓第一段對話開始吧'}</small></span>${count?`<span class="unread-badge">${count}</span>`:''}</button>`;}).join('')||'<div class="empty">沒有未讀訊息<br>所有對話都跟上了。</div>';
  const count=state.rooms.reduce((a,r)=>a+unread(r.id),0);$('#unread-count').textContent=count?` ${count}`:'';updateNotification();
 }
-function renderDetails(){const room=state.rooms.find(r=>r.id===roomId);$('#details').innerHTML=`<div class="details-heading"><strong>頻道資訊</strong><button class="icon-button" data-close-details aria-label="關閉資訊">${icon('x')}</button></div><h4>${esc(room.name)}</h4><p>${esc(room.description||'在這裡，讓對話開始。')}</p><p>${icon('globe')} 所有工作區成員皆可加入與閱讀</p><h4>工作區成員 · ${state.users.filter(u=>!u.deleted).length}</h4>${state.users.filter(u=>!u.deleted).map(u=>`<div class="member-row">${avatar(u)}<div>${esc(u.name)}${u.id===state.user?.id?'（你）':''}<small>${u.demo?'示範成員':u.online?'在線上':'離線'}</small></div>${u.online?'<span class="member-online"></span>':''}</div>`).join('')}`;}
+function renderDetails(){
+ const room=state.rooms.find(r=>r.id===roomId);
+ const members=room.memberIds.map(person);
+ $('#details').innerHTML=`<div class="details-heading"><strong>頻道資訊</strong><button class="icon-button" data-close-details aria-label="關閉資訊">${icon('x')}</button></div><h4>${esc(room.name)}</h4><p>${esc(room.description||'在這裡，讓對話開始。')}</p><p>${room.creatorId?'建立者：'+esc(person(room.creatorId).name):'舊版頻道，由本機管理者管理。'}</p><p>離開後可重新加入；被移除後需先由建立者或本機管理者解除限制。</p>
+ ${room.isMember?'<button class="room-control" data-leave-room>離開聊天室</button>':room.canJoin?'<button class="room-control" data-join-room>重新加入聊天室</button>':'<p class="room-status">你已被移除此聊天室。</p>'}
+ ${room.isMember||room.canManageMembers?`<h4>聊天室成員 · ${members.length}</h4>${members.map(u=>`<div class="member-row">${avatar(u)}<div class="member-name">${esc(u.name)}${u.id===state.user.id?'（你）':''}<small>${u.id===room.creatorId?'建立者 · ':''}${u.online?'在線上':'離線'}</small></div>${room.canManageMembers&&u.id!==state.user.id?`<button class="room-control danger-link" data-remove-member="${u.id}" aria-label="移除 ${esc(u.name)}">移除</button>`:''}</div>`).join('')}`:''}
+ ${room.canManageMembers&&room.removedUserIds.length?`<h4>已移除 · ${room.removedUserIds.length}</h4>${room.removedUserIds.map(id=>`<div class="member-row"><div class="member-name">${esc(person(id).name)}</div><button class="room-control" data-restore-member="${id}" aria-label="解除 ${esc(person(id).name)} 的限制">解除限制</button></div>`).join('')}`:''}
+ ${room.canClearHistory?'<div class="room-danger-zone"><h4>管理者操作</h4><p>清除所有對話與附件，保留聊天室及成員。</p><button class="room-control danger-link" data-clear-history>清除聊天室紀錄</button></div>':''}`;
+}
+function resetRoomComposer(){
+ replyTo=null;editing=null;attachment=null;$('#message-input').value='';$('#file-input').value='';
+ $('#attachment-preview').hidden=true;$('#reply-banner').hidden=true;$('#emoji-picker').hidden=true;
+}
+function renderRoomAccess(){
+ const room=state.rooms.find(r=>r.id===roomId);
+ $('.composer-area').hidden=tab!=='chat'||!room?.isMember;
+ $('#room-access').hidden=!!room?.isMember;
+ $('#room-access').innerHTML=room&&!room.isMember?`<div class="empty">${icon('lock')}<h3>${room.isRemoved?'你已被移除此聊天室':'你已離開此聊天室'}</h3><p>${room.canJoin?'重新加入後，即可閱讀紀錄、聊天及分享附件。':'請聯絡聊天室建立者或本機管理者解除限制。'}</p>${room.canJoin?'<button class="room-control" data-join-room>重新加入聊天室</button>':''}</div>`:'';
+ $('.channel-public').textContent=room?.isMember?'聊天室成員可閱讀':room?.isRemoved?'已被移除':'已離開';
+}
+function roomControl(event){
+ const room=state.rooms.find(r=>r.id===roomId);if(!room)return;
+ if(event.target.closest('[data-join-room]')){api('/rooms/'+room.id+'/join','POST',{}).then(()=>refresh(true)).catch(error=>toast(error.message));return;}
+ const remove=event.target.closest('[data-remove-member]'),restore=event.target.closest('[data-restore-member]');
+ if(remove){const id=remove.dataset.removeMember;dialog(`<h2>移除聊天室成員？</h2><p>將「${esc(person(id).name)}」移出「${esc(room.name)}」。對方將無法查看紀錄、下載附件或發送訊息，直到解除限制並重新加入。</p>`,async()=>{await api('/rooms/'+room.id+'/members/'+id,'DELETE');await refresh();toast('已移除成員。');},'確認移除');}
+ if(restore){const id=restore.dataset.restoreMember;api('/rooms/'+room.id+'/members/'+id,'POST',{}).then(()=>refresh()).then(()=>toast('已解除限制，對方可自行重新加入。')).catch(error=>toast(error.message));}
+ if(event.target.closest('[data-leave-room]'))dialog(`<h2>離開聊天室？</h2><p>離開「${esc(room.name)}」後，不再收到這裡的新訊息通知。既有訊息會保留，你可以隨時重新加入。</p>`,async()=>{await api('/rooms/'+room.id+'/leave','POST',{});await refresh();toast('已離開聊天室。');},'確認離開');
+ if(event.target.closest('[data-clear-history]'))dialog(`<h2>清除聊天室紀錄？</h2><p>「${esc(room.name)}」的所有訊息、回覆、反應及附件將永久刪除，聊天室和成員會保留。此操作無法復原。</p><label for="confirm-room-name">請輸入聊天室名稱「${esc(room.name)}」</label><input id="confirm-room-name" autocomplete="off" required>`,async()=>{await api('/rooms/'+room.id+'/history','DELETE',{confirmName:$('#confirm-room-name').value});await refresh();toast('聊天室紀錄已清除。');},'永久清除紀錄');
+}
 function renderMessages(scroll=false){const container=$('#messages');const nearBottom=container.scrollHeight-container.scrollTop-container.clientHeight<90;const oldTop=container.scrollTop;
  const query=$('#search').value.trim().toLocaleLowerCase();const all=state.messages.filter(m=>m.roomId===roomId);const messages=all.filter(m=>!query||(m.text+' '+person(m.userId).name+' '+(m.attachment?.name||'')).toLocaleLowerCase().includes(query));
  const room=state.rooms.find(r=>r.id===roomId);
+ if(!room.isMember){container.innerHTML='';$('#files-view').innerHTML='';$('#search-summary').hidden=true;return;}
  $('#search-summary').hidden=!query;$('#search-summary').innerHTML=`<span>在「${esc(room.name)}」找到 ${messages.length} 則訊息</span><button id="clear-search" aria-label="清除搜尋">${icon('x')}</button>`;
  let previousDay='';let html=!query?`<div class="welcome"><span class="welcome-symbol">${icon(room.icon)}</span><div><h3>一起聊聊，${esc(room.name==='general'?'把好點子變成日常。':room.name+'。')}</h3><p>${esc(room.description||'新的頻道、新的開始。分享你的第一個想法。')}</p></div></div>`:'';
  for(const m of messages){const user=person(m.userId),own=m.userId===state.user?.id;const date=day(m.createdAt);if(date!==previousDay){html+=`<div class="date-divider">${date}</div>`;previousDay=date;}
@@ -65,12 +96,33 @@ function renderMessages(scroll=false){const container=$('#messages');const nearB
  container.innerHTML=html;if(scroll||nearBottom)container.scrollTop=container.scrollHeight;else container.scrollTop=oldTop;
  const files=all.filter(m=>m.attachment);$('#files-view').innerHTML=`<h3>共用檔案 <span class="demo-label">${files.length}</span></h3><p style="font-size:11px;color:#a79caf">對話中的附件，都整理在這裡。</p>${files.length?files.map(m=>`<a class="file-row" href="/api/messages/${m.id}/attachment" download>${icon('file')}<div><strong>${esc(m.attachment.name)}</strong><small>${esc(person(m.userId).name)} · ${day(m.createdAt)} · ${size(m.attachment.size)}</small></div>${icon('download')}</a>`).join(''):`<div class="empty">${icon('folder')}目前沒有共用檔案<br>點選輸入框的迴紋針，分享第一份檔案。</div>`}`;
 }
-function render(scroll=false){if(!state.user)return;loadReadState();document.body.classList.remove('signed-out');if(!state.rooms.some(r=>r.id===roomId))roomId=state.rooms[0].id;const room=state.rooms.find(r=>r.id===roomId);$('#channel-name').textContent=room.name;$('#channel-description').textContent=room.description;$('#channel-icon').innerHTML=icon(room.icon);$('#member-stack').innerHTML=state.users.filter(u=>!u.deleted).slice(0,3).map(u=>avatar(u)).join('')+`<span class="avatar">${state.users.filter(u=>!u.deleted).length}</span>`;if(state.user){$('#profile').textContent=state.user.name.slice(-2);$('#profile').title=state.user.name;}$('#manage-accounts').hidden=!state.capabilities?.canManageAccounts;markSeen();renderRooms();renderMessages(scroll);renderDetails();refreshRegistrations().catch(()=>{});}
-async function refresh(scroll=false){const version=++refreshVersion;const next=await api('/state');if(version!==refreshVersion)return;state=next;render(scroll);}
+function render(scroll=false){if(!state.user)return;loadReadState();document.body.classList.remove('signed-out');if(!state.rooms.some(r=>r.id===roomId))roomId=state.rooms[0].id;const room=state.rooms.find(r=>r.id===roomId);$('#channel-name').textContent=room.name;$('#channel-description').textContent=room.description;$('#channel-icon').innerHTML=icon(room.icon);$('#member-stack').innerHTML=room.memberIds.map(person).slice(0,3).map(u=>avatar(u)).join('')+`<span class="avatar">${room.memberIds.length}</span>`;if(state.user){$('#profile').textContent=state.user.name.slice(-2);$('#profile').title=state.user.name;}$('#manage-accounts').hidden=!state.capabilities?.canManageAccounts;markSeen();renderRooms();renderMessages(scroll);renderDetails();renderRoomAccess();refreshRegistrations().catch(()=>{});}
+async function refresh(scroll=false){const version=++refreshVersion;const next=await api('/state');if(version!==refreshVersion)return;const previous=state;state=next;
+ for(const room of state.rooms)if(!room.isMember){delete drafts[room.id];delete seen[room.id];}
+ if(previous.rooms.find(r=>r.id===roomId)?.isMember&&!state.rooms.find(r=>r.id===roomId)?.isMember){resetRoomComposer();toast('你已離開或被移除此聊天室。');}
+ if((editing&&!state.messages.some(m=>m.id===editing))||(replyTo&&!state.messages.some(m=>m.id===replyTo))){resetRoomComposer();delete drafts[roomId];}
+ render(scroll);}
 function connect(){events?.close();events=new EventSource('/api/events');events.onopen=()=>{$('#connection').textContent='即時同步已連線';refresh().catch(()=>{});};events.onerror=()=>{$('#connection').textContent='連線中斷，正在重連…';refresh().catch(()=>{});};events.addEventListener('signed-out',signedOut);events.addEventListener('registrations',()=>refreshRegistrations().catch(()=>{}));events.addEventListener('change',()=>refresh().catch(e=>toast(e.message)));events.addEventListener('presence',()=>refresh().catch(()=>{}));}
-function setTab(value){tab=value;$('#messages').hidden=tab!=='chat';$('#files-view').hidden=tab!=='files';$('.composer-area').hidden=tab!=='chat';document.querySelectorAll('[data-tab]').forEach(el=>el.classList.toggle('active',el.dataset.tab===tab));$('#nav-chat').classList.toggle('active',tab==='chat');$('#nav-files').classList.toggle('active',tab==='files');markSeen();renderRooms();}
+function setTab(value){tab=value;$('#messages').hidden=tab!=='chat';$('#files-view').hidden=tab!=='files';$('.composer-area').hidden=tab!=='chat';document.querySelectorAll('[data-tab]').forEach(el=>el.classList.toggle('active',el.dataset.tab===tab));$('#nav-chat').classList.toggle('active',tab==='chat');$('#nav-files').classList.toggle('active',tab==='files');renderRoomAccess();markSeen();renderRooms();}
 function switchRoom(id){if(sending)return;drafts[roomId]=$('#message-input').value;roomId=id;localStorage.setItem('together-room',id);$('#message-input').value=drafts[id]||'';replyTo=null;editing=null;attachment=null;$('#attachment-preview').hidden=true;$('#reply-banner').hidden=true;$('#search').value='';setTab('chat');render(true);$('.sidebar').classList.remove('open');}
-function dialog(content,action,label='儲存',dismissible=true){$('#dialog').classList.toggle('accounts-dialog',content.includes('id="accounts-panel"'));$('#dialog-content').innerHTML=content;$('#dialog-submit').textContent=label;$('#dialog-error').textContent='';$('#close-dialog').hidden=!dismissible;dialogAction=action;$('#dialog').dataset.required=String(!dismissible);if(!$('#dialog').open)$('#dialog').showModal();setTimeout(()=>$('#dialog input')?.focus(),50);}
+function addPasswordToggles(){
+ for(const input of $('#dialog-content').querySelectorAll('input[type="password"]')){
+  const label=input.labels?.[0]?.textContent.trim()||'密碼';
+  const wrapper=document.createElement('div');wrapper.className='password-field';
+  input.before(wrapper);wrapper.append(input);
+  const button=document.createElement('button');button.type='button';button.className='password-toggle';
+  button.setAttribute('aria-controls',input.id);
+  function update(){
+   const visible=input.type==='text';
+   button.setAttribute('aria-label',(visible?'隱藏':'顯示')+label);
+   button.setAttribute('aria-pressed',String(visible));button.title=(visible?'隱藏':'顯示')+label;
+   button.innerHTML=icon(visible?'eyeOff':'eye');
+  }
+  button.onclick=()=>{input.type=input.type==='password'?'text':'password';update();};
+  update();wrapper.append(button);
+ }
+}
+function dialog(content,action,label='儲存',dismissible=true){$('#dialog').classList.toggle('accounts-dialog',content.includes('id="accounts-panel"'));$('#dialog-content').innerHTML=content;addPasswordToggles();$('#dialog-submit').textContent=label;$('#dialog-error').textContent='';$('#close-dialog').hidden=!dismissible;dialogAction=action;$('#dialog').dataset.required=String(!dismissible);if(!$('#dialog').open)$('#dialog').showModal();setTimeout(()=>$('#dialog input')?.focus(),50);}
 function authDialog(register=false){
  dialog(`<div class="auth-switch"><button type="button" data-auth-mode="login" class="${!register?'selected':''}">登入</button><button type="button" data-auth-mode="register" class="${register?'selected':''}">建立帳號</button></div><h2>${register?'一起加入工作區':'歡迎回來'}</h2><p>${register?'建立自己的帳號，所有成員都能使用相同的聊天功能。':'登入後，即可查看團隊對話與傳送訊息。'}</p>${register?'<label for="account-name">顯示名稱</label><input id="account-name" autocomplete="nickname" maxlength="30" required>':''}<label for="username">帳號</label><input id="username" autocomplete="username" autocapitalize="none" spellcheck="false" pattern="[a-zA-Z0-9_.\\-]{3,32}" minlength="3" maxlength="32" placeholder="英文、數字或 _ . -" required><label for="password">密碼</label><input id="password" type="password" autocomplete="${register?'new-password':'current-password'}" minlength="10" maxlength="128" placeholder="至少 10 個字元" required>${register?'<label for="confirm-password">確認密碼</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="10" maxlength="128" required>':''}<p>新帳號需經本機管理者核准。主機首次建立的帳號會直接啟用；舊版名稱與訊息會保留。</p>`,async()=>{
    const password=$('#password').value;
@@ -135,7 +187,7 @@ function deleteAccountDialog(account){
  $('#back-to-accounts').onclick=()=>showAccounts().catch(error=>toast(error.message));
 }
 $('#manage-accounts').onclick=()=>showAccounts().catch(error=>toast(error.message));
-function newRoom(){dialog('<h2>開啟新的對話</h2><p>給這個頻道一個主題，讓相關的討論聚在一起。</p><label for="room-name">頻道名稱</label><input id="room-name" maxlength="40" placeholder="例如：新學期備課" required><label for="room-description">頻道說明（選填）</label><textarea id="room-description" maxlength="200" rows="3" placeholder="這裡適合聊些什麼？"></textarea>',async()=>{const room=await api('/rooms','POST',{name:$('#room-name').value,description:$('#room-description').value});await refresh();switchRoom(room.id);},'建立頻道');}
+function newRoom(){dialog('<h2>開啟新的對話</h2><p>所有已核准成員預設加入新頻道。你是建立者，可以在「頻道資訊」管理成員。</p><label for="room-name">頻道名稱</label><input id="room-name" maxlength="40" placeholder="例如：新學期備課" required><label for="room-description">頻道說明（選填）</label><textarea id="room-description" maxlength="200" rows="3" placeholder="這裡適合聊些什麼？"></textarea>',async()=>{const room=await api('/rooms','POST',{name:$('#room-name').value,description:$('#room-description').value});await refresh();switchRoom(room.id);},'建立頻道');}
 $('#dialog-form').addEventListener('submit',async e=>{e.preventDefault();$('#dialog-submit').disabled=true;try{const close=await dialogAction?.();if(close!==false)$('#dialog').close();}catch(error){$('#dialog-error').textContent=error.message;}finally{$('#dialog-submit').disabled=false;}});
 $('#close-dialog').onclick=()=>$('#dialog').close();$('#dialog').addEventListener('cancel',e=>{if($('#dialog').dataset.required==='true')e.preventDefault();});
 $('#logout').onclick=async()=>{try{await api('/logout','POST',{});signedOut();}catch(error){if(error.status!==401)toast(error.message);}};
@@ -145,7 +197,8 @@ for(const button of document.querySelectorAll('[data-filter]'))button.onclick=()
 for(const button of document.querySelectorAll('[data-tab]'))button.onclick=()=>setTab(button.dataset.tab);
 $('#nav-chat').onclick=()=>setTab('chat');$('#nav-files').onclick=()=>setTab('files');
 function toggleDetails(){$('#details').hidden=!$('#details').hidden;$('#nav-members').classList.toggle('active',!$('#details').hidden);}
-$('#details-toggle').onclick=$('#nav-members').onclick=toggleDetails;$('#details').onclick=e=>{if(e.target.closest('[data-close-details]'))toggleDetails();};
+$('#details-toggle').onclick=$('#nav-members').onclick=toggleDetails;$('#details').onclick=e=>{if(e.target.closest('[data-close-details]'))toggleDetails();else roomControl(e);};
+$('#room-access').onclick=roomControl;
 $('#mobile-menu').onclick=()=>$('.sidebar').classList.toggle('open');
 $('#search').addEventListener('input',()=>{setTab('chat');renderMessages();});$('#search-summary').onclick=e=>{if(e.target.closest('#clear-search')){$('#search').value='';renderMessages();}};
 document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();$('#search').focus();}});
@@ -159,13 +212,13 @@ $('#messages').onclick=async e=>{try{
  if(del)dialog('<h2>刪除這則訊息？</h2><p>訊息及其附件將從工作區中移除，此操作無法復原。</p>',async()=>{await api('/messages/'+del.dataset.delete,'DELETE');await refresh();},'刪除訊息');
  }catch(error){toast(error.message);}};
 $('#reply-banner').onclick=e=>{if(e.target.closest('#cancel-reply')){if(editing)$('#message-input').value=drafts[roomId]||'';replyTo=null;editing=null;$('#reply-banner').hidden=true;}};
-$('#composer').addEventListener('submit',async e=>{e.preventDefault();if(sending)return;const text=$('#message-input').value.trim();if(!text&&!attachment)return;if(!state.user){profile(true);return;}sending=true;$('#send').disabled=true;$('#message-input').disabled=true;
+$('#composer').addEventListener('submit',async e=>{e.preventDefault();if(sending||!state.rooms.find(r=>r.id===roomId)?.isMember)return;const text=$('#message-input').value.trim();if(!text&&!attachment)return;if(!state.user){profile(true);return;}sending=true;$('#send').disabled=true;$('#message-input').disabled=true;
  try{if(editing)await api('/messages/'+editing,'PATCH',{text});else await api('/messages','POST',{roomId,text,replyTo,attachment});$('#message-input').value='';drafts[roomId]='';replyTo=null;editing=null;attachment=null;$('#file-input').value='';$('#attachment-preview').hidden=true;$('#reply-banner').hidden=true;await refresh(true);}catch(error){toast(error.message);}finally{sending=false;$('#send').disabled=false;$('#message-input').disabled=false;$('#message-input').focus();}});
 $('#message-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();$('#composer').requestSubmit();}});
 $('#attach').onclick=()=>{if(editing)return toast('編輯訊息時無法變更附件，請另傳新訊息。');$('#file-input').click();};
 $('#file-input').onchange=async()=>{const file=$('#file-input').files[0];if(!file)return;if(file.size>5*1024*1024){$('#file-input').value='';return toast('附件最大為 5 MB。');}try{const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=()=>reject(new Error('檔案讀取失敗。'));reader.readAsDataURL(file);});attachment={name:file.name,data};$('#attachment-preview').hidden=false;$('#attachment-preview').innerHTML=`${icon('file')} ${esc(file.name)} · ${size(file.size)}<button id="remove-file" type="button" aria-label="移除附件">×</button>`;}catch(error){toast(error.message);}};
 $('#attachment-preview').onclick=e=>{if(e.target.closest('#remove-file')){attachment=null;$('#file-input').value='';$('#attachment-preview').hidden=true;}};
 $('#emoji-picker').innerHTML=['👍','❤️','🎉','👋','✅','☕','😊','💡'].map(e=>`<button type="button" data-emoji="${e}" aria-label="插入 ${e}">${e}</button>`).join('');$('#emoji').onclick=()=>$('#emoji-picker').hidden=!$('#emoji-picker').hidden;$('#emoji-picker').onclick=e=>{const b=e.target.closest('[data-emoji]');if(b){const input=$('#message-input');input.setRangeText(b.dataset.emoji,input.selectionStart,input.selectionEnd,'end');input.focus();$('#emoji-picker').hidden=true;}};
-$('#help').onclick=()=>dialog('<h2>讓合作更靠近</h2><div class="help-copy"><p>Together 是受 Teams 介面啟發的本機聊天軟體。</p><ul><li>建立頻道，依主題整理討論。</li><li>訊息支援回覆、按讚、編輯與刪除。</li><li>分享 5 MB 以內的附件，在「共用檔案」下載。</li><li>使用不同瀏覽器加入，可驗證即時同步。</li></ul><p>資料保存在伺服器的 data 資料夾。使用帳號與密碼登入，所有成員功能相同。新申請需經本機管理者核准，附件可供所有已核准成員分享。未讀訊息會顯示於分頁標題與圖示；此版尚無私訊、音視訊通話或 Microsoft Teams 整合。</p></div>',()=>{},'知道了');
+$('#help').onclick=()=>dialog('<h2>讓合作更靠近</h2><div class="help-copy"><p>Together 是受 Teams 介面啟發的本機聊天軟體。</p><ul><li>建立頻道，依主題整理討論。</li><li>訊息支援回覆、按讚、編輯與刪除。</li><li>分享 5 MB 以內的附件，在「共用檔案」下載。</li><li>使用不同瀏覽器加入，可驗證即時同步。</li></ul><p>資料保存在伺服器的 data 資料夾。使用帳號與密碼登入，新申請需經本機管理者核准。聊天室建立者與本機管理者可移除成員，成員可自行離開；聊天室紀錄僅限本機管理者清除。離開或被移除後，無法查看該聊天室訊息與附件。未讀訊息會顯示於分頁標題與圖示；此版尚無私訊、音視訊通話或 Microsoft Teams 整合。</p></div>',()=>{},'知道了');
 updateNotification();
 try{await refresh(true);connect();}catch(error){if(error.status!==401){$('#connection').textContent='無法連線';authDialog();toast('無法連線至伺服器，請執行 start.sh 後重新整理。');}}
