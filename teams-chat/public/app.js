@@ -1,3 +1,4 @@
+import { unreadMessages, notificationTitle } from './notifications.js';
 const $ = (s) => document.querySelector(s);
 const icons = {
  search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/>',
@@ -10,7 +11,8 @@ for(const el of document.querySelectorAll('[data-icon]')) el.innerHTML=icon(el.d
 const esc=(s='')=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let state={user:null,users:[],rooms:[],messages:[]};
 let roomId=localStorage.getItem('together-room')||'general',tab='chat',filter='all',replyTo=null,editing=null,attachment=null,events=null,dialogAction=null,sending=false;
-let seen;try{seen=JSON.parse(localStorage.getItem('together-seen')||'{}');}catch{seen={};}
+let seen = {};
+let seenOwner = null;
 let drafts={};let toastTimer;let refreshVersion=0;
 const person=id=>state.users.find(u=>u.id===id)||{name:'未知成員',color:'#9e95ab'};
 const avatar=(user,extra='')=>`<span class="avatar ${extra}" style="background:${/^#[0-9a-f]{6}$/i.test(user.color)?user.color:'#9e95ab'}">${esc(user.name.slice(-2))}</span>`;
@@ -18,13 +20,36 @@ const size=n=>n>=1048576?`${(n/1048576).toFixed(1)} MB`:`${Math.max(1,Math.round
 const stamp=d=>new Date(d).toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false});
 const day=d=>new Date(d).toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'long'});
 function toast(message){$('#toast').textContent=message;$('#toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').hidden=true,4000);}
-async function api(path,method='GET',data){const res=await fetch('/api'+path,{method,headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined});const result=await res.json();if(!res.ok)throw new Error(result.error||'連線失敗。');return result;}
-function markSeen(){if(document.hidden||!state.user)return;seen[roomId]=new Date().toISOString();localStorage.setItem('together-seen',JSON.stringify(seen));}
-function unread(id){return state.messages.filter(m=>m.roomId===id&&m.userId!==state.user?.id&&!person(m.userId).demo&&m.createdAt>(seen[id]||'')).length;}
+async function api(path,method='GET',data){const res=await fetch('/api'+path,{method,headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined});const result=await res.json();if(!res.ok){if(res.status===401&&!['/login','/register'].includes(path))signedOut();const error=new Error(result.error||'連線失敗。');error.status=res.status;throw error;}return result;}
+function loadReadState() {
+ if(seenOwner===state.user.id)return;
+ seenOwner=state.user.id;
+ try {seen=JSON.parse(localStorage.getItem('together-read-'+seenOwner)||'null');} catch {seen=null;}
+ if(!seen||typeof seen!=='object'||Array.isArray(seen)) {
+   seen=Object.fromEntries(state.rooms.map(room=>[room.id,state.messages.filter(m=>m.roomId===room.id).map(m=>m.id)]));
+ }
+}
+function markSeen(){
+ if(document.hidden||!document.hasFocus()||!state.user||tab!=='chat'||$('#search').value.trim())return;
+ seen[roomId]=state.messages.filter(m=>m.roomId===roomId).map(m=>m.id);
+ localStorage.setItem('together-read-'+seenOwner,JSON.stringify(seen));
+}
+function unread(id){return unreadMessages(state.messages,state.users,state.user?.id,id,Array.isArray(seen[id])?seen[id]:[]);}
+function updateNotification(){
+ const total=state.user?state.rooms.reduce((sum,room)=>sum+unread(room.id),0):0;
+ document.title=notificationTitle(total);
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#6260ad"/><text x="10" y="25" font-family="sans-serif" font-size="27" font-weight="bold" fill="white">t</text>${total?'<circle cx="25" cy="7" r="6" fill="#e65464" stroke="white" stroke-width="2"/>':''}</svg>`;
+ $('#notification-icon').href='data:image/svg+xml,'+encodeURIComponent(svg);
+}
+function signedOut(){
+ refreshVersion++;events?.close();events=null;state={user:null,users:[],rooms:[],messages:[]};seenOwner=null;seen={};drafts={};replyTo=null;editing=null;attachment=null;
+ $('#messages').innerHTML='';$('#files-view').innerHTML='';$('#room-list').innerHTML='';$('#details').innerHTML='';$('#member-stack').innerHTML='';$('#message-input').value='';$('#search').value='';$('#file-input').value='';$('#attachment-preview').hidden=true;$('#reply-banner').hidden=true;
+ document.body.classList.add('signed-out');updateNotification();authDialog();
+}
 function renderRooms(){
  const rooms=state.rooms.filter(r=>filter!=='unread'||unread(r.id));
  $('#room-list').innerHTML=rooms.map(r=>{const msgs=state.messages.filter(m=>m.roomId===r.id),last=msgs.at(-1),count=unread(r.id);return `<button class="room ${r.id===roomId?'selected':''}" data-room="${r.id}"><span class="room-symbol">${icon(r.icon)}</span><span class="room-info"><strong>${esc(r.name)}</strong><small>${last?esc(person(last.userId).name+'：'+(last.text||last.attachment?.name||'附件')):'讓第一段對話開始吧'}</small></span>${count?`<span class="unread-badge">${count}</span>`:''}</button>`;}).join('')||'<div class="empty">沒有未讀訊息<br>所有對話都跟上了。</div>';
- const count=state.rooms.reduce((a,r)=>a+unread(r.id),0);$('#unread-count').textContent=count?` ${count}`:'';
+ const count=state.rooms.reduce((a,r)=>a+unread(r.id),0);$('#unread-count').textContent=count?` ${count}`:'';updateNotification();
 }
 function renderDetails(){const room=state.rooms.find(r=>r.id===roomId);$('#details').innerHTML=`<div class="details-heading"><strong>頻道資訊</strong><button class="icon-button" data-close-details aria-label="關閉資訊">${icon('x')}</button></div><h4>${esc(room.name)}</h4><p>${esc(room.description||'在這裡，讓對話開始。')}</p><p>${icon('globe')} 所有工作區成員皆可加入與閱讀</p><h4>工作區成員 · ${state.users.length}</h4>${state.users.map(u=>`<div class="member-row">${avatar(u)}<div>${esc(u.name)}${u.id===state.user?.id?'（你）':''}<small>${u.demo?'示範成員':u.online?'在線上':'離線'}</small></div>${u.online?'<span class="member-online"></span>':''}</div>`).join('')}`;}
 function renderMessages(scroll=false){const container=$('#messages');const nearBottom=container.scrollHeight-container.scrollTop-container.clientHeight<90;const oldTop=container.scrollTop;
@@ -40,16 +65,48 @@ function renderMessages(scroll=false){const container=$('#messages');const nearB
  container.innerHTML=html;if(scroll||nearBottom)container.scrollTop=container.scrollHeight;else container.scrollTop=oldTop;
  const files=all.filter(m=>m.attachment);$('#files-view').innerHTML=`<h3>共用檔案 <span class="demo-label">${files.length}</span></h3><p style="font-size:11px;color:#a79caf">對話中的附件，都整理在這裡。</p>${files.length?files.map(m=>`<a class="file-row" href="/api/messages/${m.id}/attachment" download>${icon('file')}<div><strong>${esc(m.attachment.name)}</strong><small>${esc(person(m.userId).name)} · ${day(m.createdAt)} · ${size(m.attachment.size)}</small></div>${icon('download')}</a>`).join(''):`<div class="empty">${icon('folder')}目前沒有共用檔案<br>點選輸入框的迴紋針，分享第一份檔案。</div>`}`;
 }
-function render(scroll=false){if(!state.rooms.some(r=>r.id===roomId))roomId=state.rooms[0].id;const room=state.rooms.find(r=>r.id===roomId);$('#channel-name').textContent=room.name;$('#channel-description').textContent=room.description;$('#channel-icon').innerHTML=icon(room.icon);$('#member-stack').innerHTML=state.users.slice(0,3).map(u=>avatar(u)).join('')+`<span class="avatar">${state.users.length}</span>`;if(state.user){$('#profile').textContent=state.user.name.slice(-2);$('#profile').title=state.user.name;}markSeen();renderRooms();renderMessages(scroll);renderDetails();}
+function render(scroll=false){if(!state.user)return;loadReadState();document.body.classList.remove('signed-out');if(!state.rooms.some(r=>r.id===roomId))roomId=state.rooms[0].id;const room=state.rooms.find(r=>r.id===roomId);$('#channel-name').textContent=room.name;$('#channel-description').textContent=room.description;$('#channel-icon').innerHTML=icon(room.icon);$('#member-stack').innerHTML=state.users.slice(0,3).map(u=>avatar(u)).join('')+`<span class="avatar">${state.users.length}</span>`;if(state.user){$('#profile').textContent=state.user.name.slice(-2);$('#profile').title=state.user.name;}$('#manage-accounts').hidden=!state.capabilities?.canManageAccounts;markSeen();renderRooms();renderMessages(scroll);renderDetails();refreshRegistrations().catch(()=>{});}
 async function refresh(scroll=false){const version=++refreshVersion;const next=await api('/state');if(version!==refreshVersion)return;state=next;render(scroll);}
-function connect(){events?.close();events=new EventSource('/api/events');events.onopen=()=>{$('#connection').textContent='即時同步已連線';refresh().catch(()=>{});};events.onerror=()=>$('#connection').textContent='連線中斷，正在重連…';events.addEventListener('change',()=>refresh().catch(e=>toast(e.message)));events.addEventListener('presence',()=>refresh().catch(()=>{}));}
-function setTab(value){tab=value;$('#messages').hidden=tab!=='chat';$('#files-view').hidden=tab!=='files';$('.composer-area').hidden=tab!=='chat';document.querySelectorAll('[data-tab]').forEach(el=>el.classList.toggle('active',el.dataset.tab===tab));$('#nav-chat').classList.toggle('active',tab==='chat');$('#nav-files').classList.toggle('active',tab==='files');}
+function connect(){events?.close();events=new EventSource('/api/events');events.onopen=()=>{$('#connection').textContent='即時同步已連線';refresh().catch(()=>{});};events.onerror=()=>{$('#connection').textContent='連線中斷，正在重連…';refresh().catch(()=>{});};events.addEventListener('signed-out',signedOut);events.addEventListener('registrations',()=>refreshRegistrations().catch(()=>{}));events.addEventListener('change',()=>refresh().catch(e=>toast(e.message)));events.addEventListener('presence',()=>refresh().catch(()=>{}));}
+function setTab(value){tab=value;$('#messages').hidden=tab!=='chat';$('#files-view').hidden=tab!=='files';$('.composer-area').hidden=tab!=='chat';document.querySelectorAll('[data-tab]').forEach(el=>el.classList.toggle('active',el.dataset.tab===tab));$('#nav-chat').classList.toggle('active',tab==='chat');$('#nav-files').classList.toggle('active',tab==='files');markSeen();renderRooms();}
 function switchRoom(id){if(sending)return;drafts[roomId]=$('#message-input').value;roomId=id;localStorage.setItem('together-room',id);$('#message-input').value=drafts[id]||'';replyTo=null;editing=null;attachment=null;$('#attachment-preview').hidden=true;$('#reply-banner').hidden=true;$('#search').value='';setTab('chat');render(true);$('.sidebar').classList.remove('open');}
 function dialog(content,action,label='儲存',dismissible=true){$('#dialog-content').innerHTML=content;$('#dialog-submit').textContent=label;$('#dialog-error').textContent='';$('#close-dialog').hidden=!dismissible;dialogAction=action;$('#dialog').dataset.required=String(!dismissible);if(!$('#dialog').open)$('#dialog').showModal();setTimeout(()=>$('#dialog input')?.focus(),50);}
-function profile(initial=false){dialog(`<h2>${initial?'你的團隊，在這裡。':'讓大家認識你'}</h2><p>${initial?'歡迎來到 Together。輸入顯示名稱，開啟今天的第一段對話。':'更新名稱後，工作區中的訊息會一起更新。'}</p><label for="display-name">顯示名稱</label><input id="display-name" name="name" placeholder="例如：昀修" value="${esc(state.user?.name||'')}" maxlength="30" required><p>這是本機協作原型。名稱僅用於辨識發話者，所有頻道皆為公開，未提供密碼登入。</p>`,async()=>{await api('/session','POST',{name:$('#display-name').value});await refresh();connect();},initial?'進入工作區 →':'儲存名稱',!initial);}
+function authDialog(register=false){
+ dialog(`<div class="auth-switch"><button type="button" data-auth-mode="login" class="${!register?'selected':''}">登入</button><button type="button" data-auth-mode="register" class="${register?'selected':''}">建立帳號</button></div><h2>${register?'一起加入工作區':'歡迎回來'}</h2><p>${register?'建立自己的帳號，所有成員都能使用相同的聊天功能。':'登入後，即可查看團隊對話與傳送訊息。'}</p>${register?'<label for="account-name">顯示名稱</label><input id="account-name" autocomplete="nickname" maxlength="30" required>':''}<label for="username">帳號</label><input id="username" autocomplete="username" autocapitalize="none" spellcheck="false" pattern="[a-zA-Z0-9_.\\-]{3,32}" minlength="3" maxlength="32" placeholder="英文、數字或 _ . -" required><label for="password">密碼</label><input id="password" type="password" autocomplete="${register?'new-password':'current-password'}" minlength="10" maxlength="128" placeholder="至少 10 個字元" required>${register?'<label for="confirm-password">確認密碼</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="10" maxlength="128" required>':''}<p>新帳號需經本機管理者核准。主機首次建立的帳號會直接啟用；舊版名稱與訊息會保留。</p>`,async()=>{
+   const password=$('#password').value;
+   if(register&&password!==$('#confirm-password').value)throw new Error('兩次輸入的密碼不一致。');
+   const result=await api(register?'/register':'/login','POST',{username:$('#username').value,password,...(register?{name:$('#account-name').value}:{})});
+   if(result.pending){authDialog();$('#dialog-error').textContent='申請已送出。請通知主機管理者核准，再使用帳號與密碼登入。';return false;}
+   await refresh(true);connect();
+ },register?'送出帳號申請':'登入工作區',false);
+ $('#dialog-content').querySelectorAll('[data-auth-mode]').forEach(button=>button.onclick=()=>authDialog(button.dataset.authMode==='register'));
+}
+function profile(initial=false){
+ if(initial||!state.user)return authDialog();
+ dialog(`<h2>讓大家認識你</h2><p>帳號：${esc(state.user.username)}。更新名稱後，工作區中的訊息會一起更新。</p><label for="display-name">顯示名稱</label><input id="display-name" value="${esc(state.user.name)}" maxlength="30" required>`,async()=>{await api('/session','POST',{name:$('#display-name').value});await refresh();},'儲存名稱');
+}
+let accountRequests=[];
+async function refreshRegistrations(){
+ if(!state.user||!state.capabilities?.canManageAccounts)return;
+ const result=await api('/registrations');accountRequests=result.requests;
+ const count=accountRequests.filter(request=>request.status==='pending').length;
+ $('#manage-accounts').textContent=count?`帳號審核（${count}）`:'帳號審核';
+ if($('#dialog').open&&$('#requests-list'))renderRequests();
+}
+function renderRequests(){
+ const list=$('#requests-list');if(!list)return;
+ list.innerHTML=accountRequests.length?accountRequests.map(request=>`<div class="request-row"><div><strong>${esc(request.name)}</strong><small>${esc(request.username)} · ${new Date(request.requestedAt).toLocaleDateString('zh-TW')} · ${request.status==='pending'?'等待審核':'已拒絕'}</small></div><div><button type="button" data-approve="${request.id}">核准</button>${request.status==='pending'?`<button type="button" data-reject="${request.id}">拒絕</button>`:''}</div></div>`).join(''):'<p class="empty">目前沒有待審核的帳號。</p>';
+ list.onclick=async event=>{
+   const approve=event.target.closest('[data-approve]'),reject=event.target.closest('[data-reject]');if(!approve&&!reject)return;
+   const button=approve||reject;button.disabled=true;
+   try{await api('/registrations/'+(approve?.dataset.approve||reject.dataset.reject),'POST',{action:approve?'approve':'reject'});await refreshRegistrations();toast(approve?'已核准，對方現在可以登入。':'已拒絕此帳號申請。');}catch(error){toast(error.message);}finally{button.disabled=false;}
+ };
+}
+$('#manage-accounts').onclick=async()=>{try{await refreshRegistrations();dialog('<h2>帳號申請審核</h2><p>核准後即可加入聊天室。此頁僅能從主機本機存取；所有已核准帳號的聊天功能相同。</p><div id="requests-list"></div>',()=>{},'完成');renderRequests();}catch(error){toast(error.message);}};
 function newRoom(){dialog('<h2>開啟新的對話</h2><p>給這個頻道一個主題，讓相關的討論聚在一起。</p><label for="room-name">頻道名稱</label><input id="room-name" maxlength="40" placeholder="例如：新學期備課" required><label for="room-description">頻道說明（選填）</label><textarea id="room-description" maxlength="200" rows="3" placeholder="這裡適合聊些什麼？"></textarea>',async()=>{const room=await api('/rooms','POST',{name:$('#room-name').value,description:$('#room-description').value});await refresh();switchRoom(room.id);},'建立頻道');}
-$('#dialog-form').addEventListener('submit',async e=>{e.preventDefault();$('#dialog-submit').disabled=true;try{await dialogAction?.();$('#dialog').close();}catch(error){$('#dialog-error').textContent=error.message;}finally{$('#dialog-submit').disabled=false;}});
+$('#dialog-form').addEventListener('submit',async e=>{e.preventDefault();$('#dialog-submit').disabled=true;try{const close=await dialogAction?.();if(close!==false)$('#dialog').close();}catch(error){$('#dialog-error').textContent=error.message;}finally{$('#dialog-submit').disabled=false;}});
 $('#close-dialog').onclick=()=>$('#dialog').close();$('#dialog').addEventListener('cancel',e=>{if($('#dialog').dataset.required==='true')e.preventDefault();});
+$('#logout').onclick=async()=>{try{await api('/logout','POST',{});signedOut();}catch(error){if(error.status!==401)toast(error.message);}};
 $('#new-room').onclick=$('#add-channel').onclick=newRoom;$('#profile').onclick=()=>profile();
 $('#room-list').onclick=e=>{const button=e.target.closest('[data-room]');if(button)switchRoom(button.dataset.room);};
 for(const button of document.querySelectorAll('[data-filter]'))button.onclick=()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('selected',b===button));renderRooms();};
@@ -60,7 +117,9 @@ $('#details-toggle').onclick=$('#nav-members').onclick=toggleDetails;$('#details
 $('#mobile-menu').onclick=()=>$('.sidebar').classList.toggle('open');
 $('#search').addEventListener('input',()=>{setTab('chat');renderMessages();});$('#search-summary').onclick=e=>{if(e.target.closest('#clear-search')){$('#search').value='';renderMessages();}};
 document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();$('#search').focus();}});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){markSeen();renderRooms();}});
+function readVisibleRoom(){if(!document.hidden&&state.user){markSeen();renderRooms();}}
+document.addEventListener('visibilitychange',readVisibleRoom);window.addEventListener('focus',readVisibleRoom);
+window.addEventListener('storage',event=>{if(event.key==='together-read-'+seenOwner&&state.user){try{seen=JSON.parse(event.newValue)||{};}catch{seen={};}renderRooms();}});
 $('#messages').onclick=async e=>{try{
  const reaction=e.target.closest('[data-react]');if(reaction){await api(`/messages/${reaction.dataset.id}/reaction`,'POST',{emoji:reaction.dataset.react});await refresh();return;}
  const reply=e.target.closest('[data-reply]'),edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');
@@ -75,5 +134,6 @@ $('#attach').onclick=()=>{if(editing)return toast('編輯訊息時無法變更�
 $('#file-input').onchange=async()=>{const file=$('#file-input').files[0];if(!file)return;if(file.size>5*1024*1024){$('#file-input').value='';return toast('附件最大為 5 MB。');}try{const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=()=>reject(new Error('檔案讀取失敗。'));reader.readAsDataURL(file);});attachment={name:file.name,data};$('#attachment-preview').hidden=false;$('#attachment-preview').innerHTML=`${icon('file')} ${esc(file.name)} · ${size(file.size)}<button id="remove-file" type="button" aria-label="移除附件">×</button>`;}catch(error){toast(error.message);}};
 $('#attachment-preview').onclick=e=>{if(e.target.closest('#remove-file')){attachment=null;$('#file-input').value='';$('#attachment-preview').hidden=true;}};
 $('#emoji-picker').innerHTML=['👍','❤️','🎉','👋','✅','☕','😊','💡'].map(e=>`<button type="button" data-emoji="${e}" aria-label="插入 ${e}">${e}</button>`).join('');$('#emoji').onclick=()=>$('#emoji-picker').hidden=!$('#emoji-picker').hidden;$('#emoji-picker').onclick=e=>{const b=e.target.closest('[data-emoji]');if(b){const input=$('#message-input');input.setRangeText(b.dataset.emoji,input.selectionStart,input.selectionEnd,'end');input.focus();$('#emoji-picker').hidden=true;}};
-$('#help').onclick=()=>dialog('<h2>讓合作更靠近</h2><div class="help-copy"><p>Together 是受 Teams 介面啟發的本機聊天軟體。</p><ul><li>建立頻道，依主題整理討論。</li><li>訊息支援回覆、按讚、編輯與刪除。</li><li>分享 5 MB 以內的附件，在「共用檔案」下載。</li><li>使用不同瀏覽器加入，可驗證即時同步。</li></ul><p>資料保存在伺服器的 data 資料夾。此版沒有密碼驗證、私訊或音視訊通話；適合本機體驗與可信任環境，尚未連接 Microsoft Teams。</p></div>',()=>{},'知道了');
-try{await refresh(true);if(state.user)connect();else{$('#connection').textContent='等你加入工作區';profile(true);}}catch(error){$('#connection').textContent='無法連線';toast('無法連線至伺服器，請確認已啟動 npm start，再重新整理。');}
+$('#help').onclick=()=>dialog('<h2>讓合作更靠近</h2><div class="help-copy"><p>Together 是受 Teams 介面啟發的本機聊天軟體。</p><ul><li>建立頻道，依主題整理討論。</li><li>訊息支援回覆、按讚、編輯與刪除。</li><li>分享 5 MB 以內的附件，在「共用檔案」下載。</li><li>使用不同瀏覽器加入，可驗證即時同步。</li></ul><p>資料保存在伺服器的 data 資料夾。使用帳號與密碼登入，所有成員功能相同。新申請需經本機管理者核准，附件可供所有已核准成員分享。未讀訊息會顯示於分頁標題與圖示；此版尚無私訊、音視訊通話或 Microsoft Teams 整合。</p></div>',()=>{},'知道了');
+updateNotification();
+try{await refresh(true);connect();}catch(error){if(error.status!==401){$('#connection').textContent='無法連線';authDialog();toast('無法連線至伺服器，請執行 start.sh 後重新整理。');}}

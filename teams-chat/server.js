@@ -2,7 +2,8 @@ import http from 'node:http';
 import { readFile, mkdir, writeFile, rename } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { randomUUID, randomBytes } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
+import { getSession, issueSession, publicUser, hashPassword, checkPassword, allowAuth, localRequest } from './auth.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const dataDir = process.env.DATA_DIR || join(root, 'data');
@@ -29,33 +30,103 @@ catch (error) {
 }
 let writeQueue = Promise.resolve();
 function save() { const snapshot = JSON.stringify(db,null,2); const task = writeQueue.then(async()=>{ await writeFile(dbPath+'.tmp',snapshot,{mode:0o600}); await rename(dbPath+'.tmp',dbPath); }); writeQueue=task.catch(()=>{}); return task; }
+// Legacy display-name sessions cannot authenticate an account. Keep old messages intact.
+if (db.authVersion !== 1) {
+  await writeFile(join(dataDir, 'workspace-before-login.json'), JSON.stringify(db, null, 2), {mode: 0o600, flag: 'wx'}).catch(error => { if (error.code !== 'EEXIST') throw error; });
+  db.sessions = {};
+  db.authVersion = 1;
+  await save();
+}
 const clients = new Map();
-const publicUsers = () => db.users.map(({id,name,color,demo})=>({id,name,color,demo,online:clients.has(id)}));
+const publicUsers = () => db.users.filter(u => !u.password || u.status === 'active').map(({id,name,color,demo})=>({id,name,color,demo,online:clients.has(id)}));
 function broadcast(event='change') { for(const streams of clients.values()) for(const stream of streams) stream.write(`event: ${event}\ndata: {}\n\n`); }
 const send = (res,status,body) => {res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(body));};
 function fail(message,status=400) {const e=new Error(message);e.status=status;throw e;}
 async function body(req) { let bytes=0;const chunks=[]; for await(const chunk of req) {bytes+=chunk.length;if(bytes>8*1024*1024) fail('附件太大，請選擇 5 MB 以下的檔案。',413);chunks.push(chunk);} try{return JSON.parse(Buffer.concat(chunks).toString()||'{}');}catch{fail('無效的請求格式。');} }
 const clean = (v,max,label) => {if(typeof v!=='string'||!v.trim()||v.trim().length>max) fail(`${label}需介於 1 至 ${max} 個字。`);return v.trim();};
-function currentUser(req) {const token=req.headers.cookie?.split(';').map(v=>v.trim()).find(v=>v.startsWith('together_session='))?.slice(17); return db.users.find(u=>u.id===db.sessions[token]);}
 const server = http.createServer(async(req,res)=>{
   try {
     const url = new URL(req.url,'http://localhost');
     if(req.method!=='GET' && req.headers.origin && req.headers.origin!==`http://${req.headers.host}`) fail('不允許此來源的請求。',403);
-    if(url.pathname==='/api/session' && req.method==='POST') {
-      const data=await body(req);const name=clean(data.name,30,'顯示名稱');
-      let user=currentUser(req);
-      if(user) user.name=name;
-      else {user={id:randomUUID(),name,color:['#7474bd','#438b82','#b67d54','#688db0'][db.users.length%4]}; db.users.push(user);}
-      const token=randomBytes(32).toString('hex');db.sessions[token]=user.id;await save();
-      res.setHeader('Set-Cookie',`together_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=2592000`);broadcast();return send(res,200,{user});
+    if (url.pathname === '/api/health' && req.method === 'GET') return send(res, 200, {ok: true, instance: process.env.SERVICE_INSTANCE || null});
+    if (['/api/login', '/api/register'].includes(url.pathname) && req.method === 'POST') {
+      const data = await body(req);
+      const username = typeof data.username === 'string' ? data.username.trim().toLowerCase() : '';
+      if (!/^[a-z0-9_.-]{3,32}$/.test(username)) fail('帳號請使用 3 至 32 個英文字母、數字或 _ . -。');
+      if (typeof data.password !== 'string' || data.password.length < 10 || data.password.length > 128) fail('密碼需介於 10 至 128 個字元。');
+      if (!allowAuth(req.socket.remoteAddress, username)) fail('嘗試次數過多，請於十分鐘後再試。', 429);
+      let user = db.users.find(u => u.username === username);
+      if (url.pathname === '/api/register') {
+        const name = clean(data.name, 30, '顯示名稱');
+        if (user) fail('此帳號已被使用。', 409);
+        const password = await hashPassword(data.password);
+        // scrypt is asynchronous: recheck uniqueness after yielding.
+        if (db.users.some(u => u.username === username)) fail('此帳號已被使用。', 409);
+        const firstLocal = localRequest(req) && !db.users.some(u => u.password && u.status === 'active');
+        user = {id: randomUUID(), username, name, password, status: firstLocal ? 'active' : 'pending', requestedAt: new Date().toISOString(), color: ['#7474bd','#438b82','#b67d54','#688db0'][db.users.length % 4]};
+        db.users.push(user);
+      } else if (!await checkPassword(data.password, user?.password)) {
+        fail('帳號或密碼不正確。', 401);
+      }
+      if (user.status !== 'active') {
+        if (url.pathname === '/api/register') {await save();broadcast('registrations');return send(res, 202, {pending: true});}
+        fail(user.status === 'rejected' ? '此帳號申請未獲核准，請聯絡本機管理者。' : '帳號申請等待本機管理者核准，核准後即可登入。', 403);
+      }
+      issueSession(db, res, user);
+      await save();
+      broadcast();
+      return send(res, 200, {user: publicUser(user)});
     }
-    if(url.pathname==='/api/state') return send(res,200,{user:currentUser(req)||null,users:publicUsers(),rooms:db.rooms,messages:db.messages.map(({attachment,...m})=>({...m,attachment:attachment?{name:attachment.name,size:attachment.size}:null}))});
     if(url.pathname.startsWith('/api/')) {
-      const user=currentUser(req);if(!user) fail('請先輸入名稱，加入工作區。',401);
+      const session = getSession(db, req);
+      const user = session?.user;
+      if (!user) fail('請先登入工作區。', 401);
+      if (url.pathname === '/api/logout' && req.method === 'POST') {
+        delete db.sessions[session.key];
+        await save();
+        for (const stream of clients.get(user.id) || []) if (stream.sessionKey === session.key) {
+          stream.write('event: signed-out\ndata: {}\n\n');
+          stream.end();
+        }
+        res.setHeader('Set-Cookie', 'together_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');
+        return send(res, 200, {ok: true});
+      }
+      if (url.pathname === '/api/session' && req.method === 'POST') {
+        user.name = clean((await body(req)).name, 30, '顯示名稱');
+        await save(); broadcast();
+        return send(res, 200, {user: publicUser(user)});
+      }
+      if (url.pathname === '/api/state' && req.method === 'GET') {
+        const canManageAccounts = localRequest(req);
+        return send(res, 200, {
+          user: publicUser(user), users: publicUsers(), rooms: db.rooms,
+          capabilities: {canManageAccounts},
+          messages: db.messages.map(({attachment, ...message}) => ({
+            ...message,
+            attachment: attachment ? {name: attachment.name, size: attachment.size} : null
+          }))
+        });
+      }
+      if (url.pathname === '/api/registrations' && req.method === 'GET') {
+        if (!localRequest(req)) fail('請在伺服器本機管理帳號申請。', 403);
+        return send(res, 200, {requests: db.users.filter(u => u.password && u.status !== 'active').map(u => ({...publicUser(u), status:u.status, requestedAt:u.requestedAt}))});
+      }
+      const approval = url.pathname.match(/^\/api\/registrations\/([^/]+)$/);
+      if (approval && req.method === 'POST') {
+        if (!localRequest(req)) fail('請在伺服器本機管理帳號申請。', 403);
+        const applicant = db.users.find(u => u.id === approval[1] && u.password && u.status !== 'active');
+        if (!applicant) fail('找不到待處理的帳號申請。', 404);
+        const {action} = await body(req);
+        if (!['approve','reject'].includes(action)) fail('無效的審核操作。');
+        applicant.status = action === 'approve' ? 'active' : 'rejected';
+        applicant.reviewedAt = new Date().toISOString();
+        await save();broadcast('registrations');broadcast();
+        return send(res, 200, {ok:true});
+      }
       if(url.pathname==='/api/events' && req.method==='GET') {
-        res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache','Connection':'keep-alive'});res.write(': connected\n\n');
+        res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache','Connection':'keep-alive'});res.write(': connected\n\n');res.sessionKey=session.key;
         if(!clients.has(user.id))clients.set(user.id,new Set());clients.get(user.id).add(res);broadcast('presence');
-        const heartbeat=setInterval(()=>res.write(': heartbeat\n\n'),20000);
+        const heartbeat=setInterval(()=>{if(!getSession(db,req)){res.write('event: signed-out\ndata: {}\n\n');res.end();}else res.write(': heartbeat\n\n');},20000);
         req.on('close',()=>{clearInterval(heartbeat);clients.get(user.id)?.delete(res);if(!clients.get(user.id)?.size)clients.delete(user.id);broadcast('presence');});return;
       }
       if(url.pathname==='/api/rooms' && req.method==='POST') {
@@ -75,7 +146,7 @@ const server = http.createServer(async(req,res)=>{
       const match=url.pathname.match(/^\/api\/messages\/([^/]+)(?:\/(reaction|attachment))?$/);
       if(match) {
         const message=db.messages.find(m=>m.id===match[1]);if(!message)fail('找不到訊息。',404);
-        if(match[2]==='attachment'&&req.method==='GET') {if(!message.attachment)fail('找不到附件。',404);res.writeHead(200,{'Content-Type':'application/octet-stream','Content-Disposition':`attachment; filename*=UTF-8''${encodeURIComponent(message.attachment.name).replace(/'/g,'%27')}`,'X-Content-Type-Options':'nosniff'});return res.end(Buffer.from(message.attachment.data,'base64'));}
+        if(match[2]==='attachment'&&req.method==='GET') {if(!message.attachment)fail('找不到附件。',404);res.writeHead(200,{'Content-Type':'application/octet-stream','Content-Disposition':`attachment; filename*=UTF-8''${encodeURIComponent(message.attachment.name).replace(/'/g,'%27')}`,'X-Content-Type-Options':'nosniff','Cache-Control':'no-store'});return res.end(Buffer.from(message.attachment.data,'base64'));}
         if(match[2]==='reaction'&&req.method==='POST') {const {emoji}=await body(req);if(!['👍','❤️','🎉','👋','✅','☕'].includes(emoji))fail('不支援的表情。');const list=message.reactions[emoji]||[];message.reactions[emoji]=list.includes(user.id)?list.filter(id=>id!==user.id):[...list,user.id];}
         else if(!match[2]&&req.method==='DELETE') {if(message.userId!==user.id)fail('只能刪除自己的訊息。',403);db.messages=db.messages.filter(m=>m.id!==message.id);}
         else if(!match[2]&&req.method==='PATCH') {if(message.userId!==user.id)fail('只能編輯自己的訊息。',403);message.text=clean((await body(req)).text,5000,'訊息');message.edited=true;}
@@ -84,10 +155,22 @@ const server = http.createServer(async(req,res)=>{
       }
       fail('找不到此功能。',404);
     }
-    const files={'/':'index.html','/app.js':'app.js','/style.css':'style.css'};
+    const files={'/':'index.html','/app.js':'app.js','/notifications.js':'notifications.js','/style.css':'style.css'};
     if(!files[url.pathname]||req.method!=='GET')fail('找不到頁面。',404);
     const content=await readFile(join(root,'public',files[url.pathname]));
-    res.writeHead(200,{'Content-Type':url.pathname.endsWith('.js')?'text/javascript; charset=utf-8':url.pathname.endsWith('.css')?'text/css; charset=utf-8':'text/html; charset=utf-8','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"});res.end(content);
+    res.writeHead(200,{'Content-Type':url.pathname.endsWith('.js')?'text/javascript; charset=utf-8':url.pathname.endsWith('.css')?'text/css; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"});res.end(content);
   } catch(error) {if(!res.headersSent)send(res,error.status||500,{error:error.status?error.message:'伺服器發生錯誤，請稍後重試。'});else res.end();if(!error.status)console.error(error);}
 });
 server.listen(Number(process.env.PORT||4310),process.env.HOST||'127.0.0.1',()=>console.log(`Together is running at http://${process.env.HOST||'127.0.0.1'}:${server.address().port}`));
+
+let shuttingDown = false;
+async function shutdown() {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  server.close();
+  for (const streams of clients.values()) for (const stream of streams) stream.end();
+  await writeQueue;
+  server.closeAllConnections();
+}
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
