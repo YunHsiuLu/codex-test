@@ -1,0 +1,28 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { once } from 'node:events';
+const root=dirname(dirname(fileURLToPath(import.meta.url)));
+
+test('Together 工作區完整流程',async t=>{
+ const dir=await mkdtemp(join(root,'data-test-'));
+ let child;let base;
+ async function start(){child=spawn(process.execPath,['server.js'],{cwd:root,env:{...process.env,PORT:'0',DATA_DIR:dir},stdio:['ignore','pipe','pipe']});const output=await Promise.race([once(child.stdout,'data'),once(child,'exit').then(()=>{throw Error('Server exited');})]);base=String(output[0]).trim().split(' ').at(-1);}
+ async function stop(){if(!child||child.exitCode!==null)return;const closed=once(child,'exit');child.kill();await closed;}
+ t.after(async()=>{await stop();await rm(dir,{recursive:true,force:true});});
+ await start();
+ const request=async(path,method='GET',data,cookie,extra={})=>{const res=await fetch(base+'/api'+path,{method,headers:{...(data?{'Content-Type':'application/json'}:{}),...(cookie?{Cookie:cookie}:{}),...extra},body:data?JSON.stringify(data):undefined});return {status:res.status,cookie:res.headers.get('set-cookie')?.split(';')[0],data:await res.json()};};
+ let alice,bob,messageId,room;
+ await t.test('匿名可查看公開頻道，但不能發話',async()=>{const s=await request('/state');assert.equal(s.data.rooms.length,4);assert.equal(s.data.user,null);assert.equal((await request('/messages','POST',{roomId:'general',text:'x'})).status,401);});
+ await t.test('建立兩個獨立身分，Cookie 可恢復身分',async()=>{alice=await request('/session','POST',{name:'Alice'});bob=await request('/session','POST',{name:'Bob'});assert.notEqual(alice.data.user.id,bob.data.user.id);assert.equal((await request('/state','GET',null,alice.cookie)).data.user.name,'Alice');});
+ await t.test('建立頻道與重複名稱檢查',async()=>{room=(await request('/rooms','POST',{name:'測試頻道',description:'驗收'},alice.cookie)).data;assert.equal((await request('/rooms','POST',{name:'測試頻道'},alice.cookie)).status,400);});
+ await t.test('跨用戶 SSE 即時通知、發送訊息與附件下載',async()=>{const controller=new AbortController();const response=await fetch(base+'/api/events',{headers:{Cookie:bob.cookie},signal:controller.signal});const reader=response.body.getReader();try{await reader.read();const sent=await request('/messages','POST',{roomId:room.id,text:'Hello <script>alert(1)</script>',attachment:{name:'測試.txt',data:Buffer.from('Hello Together').toString('base64')}},alice.cookie);assert.equal(sent.status,201);messageId=sent.data.id;let received='';while(!received.includes('event: change')){const chunk=await Promise.race([reader.read(),new Promise((_,reject)=>{const timer=setTimeout(()=>reject(Error('SSE timed out')),3000);timer.unref();})]);received+=new TextDecoder().decode(chunk.value);}const state=(await request('/state','GET',null,bob.cookie)).data;assert.equal(state.messages.find(m=>m.id===messageId).text,'Hello <script>alert(1)</script>');assert.equal(state.messages.find(m=>m.id===messageId).attachment.data,undefined);const file=await fetch(base+`/api/messages/${messageId}/attachment`,{headers:{Cookie:bob.cookie}});assert.equal(await file.text(),'Hello Together');assert.match(file.headers.get('content-disposition'),/attachment/);}finally{controller.abort();await reader.cancel().catch(()=>{});}});
+ await t.test('回覆與反應可以新增和取消',async()=>{assert.equal((await request('/messages','POST',{roomId:room.id,text:'收到',replyTo:messageId},bob.cookie)).status,201);await request(`/messages/${messageId}/reaction`,'POST',{emoji:'👍'},bob.cookie);let state=(await request('/state')).data;assert.deepEqual(state.messages.find(m=>m.id===messageId).reactions['👍'],[bob.data.user.id]);await request(`/messages/${messageId}/reaction`,'POST',{emoji:'👍'},bob.cookie);state=(await request('/state')).data;assert.deepEqual(state.messages.find(m=>m.id===messageId).reactions['👍'],[]);});
+ await t.test('只能編輯與刪除自己的訊息',async()=>{assert.equal((await request(`/messages/${messageId}`,'PATCH',{text:'竄改'},bob.cookie)).status,403);assert.equal((await request(`/messages/${messageId}`,'DELETE',null,bob.cookie)).status,403);assert.equal((await request(`/messages/${messageId}`,'PATCH',{text:'已更新'},alice.cookie)).status,200);});
+ await t.test('拒絕跨來源、空白、超長與不存在的回覆',async()=>{assert.equal((await request('/messages','POST',{roomId:room.id,text:'x'},alice.cookie,{Origin:'http://evil.example'})).status,403);assert.equal((await request('/messages','POST',{roomId:room.id,text:' '},alice.cookie)).status,400);assert.equal((await request('/messages','POST',{roomId:room.id,text:'a'.repeat(5001)},alice.cookie)).status,400);assert.equal((await request('/messages','POST',{roomId:room.id,text:'x',replyTo:'missing'},alice.cookie)).status,400);const oversized=Buffer.alloc(5*1024*1024+1).toString('base64');assert.equal((await request('/messages','POST',{roomId:room.id,attachment:{name:'big.bin',data:oversized}},alice.cookie)).status,413);});
+ await t.test('伺服器重新啟動後訊息、附件與身分仍保留',async()=>{await stop();await start();const state=(await request('/state','GET',null,alice.cookie)).data;assert.equal(state.user.name,'Alice');assert.equal(state.messages.find(m=>m.id===messageId).text,'已更新');const file=await fetch(base+`/api/messages/${messageId}/attachment`,{headers:{Cookie:alice.cookie}});assert.equal(await file.text(),'Hello Together');});
+ await t.test('刪除訊息也移除附件下載',async()=>{assert.equal((await request(`/messages/${messageId}`,'DELETE',null,alice.cookie)).status,200);assert.equal((await request(`/messages/${messageId}/attachment`,'GET',null,alice.cookie)).status,404);});
+});
