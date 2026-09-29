@@ -14,18 +14,29 @@ const logPath = join(runDir, 'server.log');
 const lockPath = join(runDir, 'service.lock');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const exists = pid => {try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; }};
+const psOptions = {encoding:'utf8', env:{...process.env, LC_ALL:'C', LANG:'C'}};
+function normalizedStart(value) {
+  // Old records made by a Chinese terminal used e.g. 二 9月/29 10:41:07 2026.
+  const chinese = value?.match(/^\S+\s+(\d{1,2})月\/(\d{1,2})\s+(\d{2}:\d{2}:\d{2})\s+(\d{4})$/);
+  if (chinese) return `${chinese[4]}-${Number(chinese[1])}-${Number(chinese[2])} ${chinese[3]}`;
+  const english = value?.match(/^\S+\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})\s+(\d{2}:\d{2}:\d{2})\s+(\d{4})$/);
+  if (english) return `${english[4]}-${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(english[1])+1}-${Number(english[2])} ${english[3]}`;
+  return null;
+}
 function identity(pid) {
   try {
     return {
-      started: execFileSync('ps', ['-p', String(pid), '-o', 'lstart='], {encoding:'utf8'}).trim(),
-      command: execFileSync('ps', ['-p', String(pid), '-o', 'args='], {encoding:'utf8'}).trim()
+      started: execFileSync('ps', ['-p', String(pid), '-o', 'lstart='], psOptions).trim(),
+      command: execFileSync('ps', ['-p', String(pid), '-o', 'args='], psOptions).trim()
     };
   } catch { return null; }
 }
 function owned(record) {
   if (!record || !Number.isInteger(record.pid) || record.pid <= 1 || record.entry !== entry) return false;
   const actual = identity(record.pid);
-  return actual && actual.started === record.started && actual.command === record.command && actual.command.endsWith(entry);
+  const sameStart = actual && (actual.started === record.started ||
+    (normalizedStart(record.started) && normalizedStart(actual.started) === normalizedStart(record.started)));
+  return sameStart && actual.command === record.command && actual.command.endsWith(entry);
 }
 async function readRecord() {try{return JSON.parse(await readFile(recordPath, 'utf8'));}catch(e){if(e.code==='ENOENT')return null;throw Error('程序記錄損毀；請檢查 .run/service.json，未停止任何程序。');}}
 async function portFree(port, host) {

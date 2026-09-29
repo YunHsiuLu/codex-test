@@ -61,6 +61,74 @@ test('Together 工作區完整流程',async t=>{
    assert.equal((await request('/login','POST',{username:'bob',password:'bob-test-password'})).status,200);
  });
 
+ let manual,manualSession,manualSession2,oldMessage;
+ await t.test('本機可以列出所有帳號並直接新增啟用；不可刪除自己',async()=>{
+   assert.equal((await request('/accounts')).status,401);
+   assert.equal((await request('/accounts/'+alice.data.user.id,'DELETE',null,alice.cookie)).status,409);
+   assert.equal((await request('/accounts','POST',{name:'Manual',username:'manual',password:'short'},alice.cookie)).status,400);
+   const created=await request('/accounts','POST',{name:'Manual',username:'manual',password:'manual-test-password'},alice.cookie);
+   assert.equal(created.status,201);manual=created.data.user;
+   assert.equal(manual.password,undefined);
+   assert.equal((await request('/accounts','POST',{name:'Duplicate',username:'MANUAL',password:'manual-test-password'},alice.cookie)).status,409);
+   const list=(await request('/accounts','GET',null,alice.cookie)).data.accounts;
+   assert.ok(list.some(u=>u.id===alice.data.user.id&&u.isSelf));
+   assert.ok(list.some(u=>u.id===manual.id&&u.status==='active'));assert.ok(list.every(u=>!u.password));
+   manualSession=await request('/login','POST',{username:'manual',password:'manual-test-password'});
+   manualSession2=await request('/login','POST',{username:'manual',password:'manual-test-password'});
+   assert.equal(manualSession.status,200);
+ });
+ await t.test('遠端無法列出、新增或刪除帳號，即使使用本機帳號 Cookie',async t=>{
+   const address=Object.values(networkInterfaces()).flat().find(i=>i.family==='IPv4'&&!i.internal)?.address;
+   if(!address){t.skip('無區網介面');return;}
+   const remoteBase=base.replace('127.0.0.1',address);
+   for(const [path,method,data] of [['/accounts','GET'],['/accounts','POST',{username:'intruder',password:'intruder-test-password',name:'Intruder'}],['/accounts/'+manual.id,'DELETE']]){
+     const result=await fetch(remoteBase+'/api'+path,{method,headers:{Cookie:alice.cookie,'Content-Type':'application/json','X-Forwarded-For':'127.0.0.1'},body:data?JSON.stringify(data):undefined});
+     assert.equal(result.status,403);
+   }
+ });
+ await t.test('刪除會撤銷所有登入並通知 SSE，同時保留歷史訊息與附件',async()=>{
+   oldMessage=(await request('/messages','POST',{roomId:room.id,text:'保留的歷史訊息',attachment:{name:'history.txt',data:Buffer.from('history').toString('base64')}},manualSession.cookie)).data.id;
+   const controller=new AbortController();
+   const stream=await fetch(base+'/api/events',{headers:{Cookie:manualSession.cookie},signal:controller.signal});const reader=stream.body.getReader();
+   try {
+     await reader.read();
+     assert.equal((await request('/accounts/'+manual.id,'DELETE',null,alice.cookie)).status,200);
+     let received='';
+     while(!received.includes('event: signed-out')){
+       const chunk=await Promise.race([reader.read(),new Promise((_,reject)=>{const timer=setTimeout(()=>reject(Error('Sign-out event timed out')),3000);timer.unref();})]);
+       if(chunk.done)break;received+=new TextDecoder().decode(chunk.value);
+     }
+     assert.match(received,/event: signed-out/);
+   }finally{controller.abort();await reader.cancel().catch(()=>{});}
+   for(const session of [manualSession,manualSession2])assert.equal((await request('/state','GET',null,session.cookie)).status,401);
+   assert.equal((await request('/login','POST',{username:'manual',password:'manual-test-password'})).status,401);
+   const state=(await request('/state','GET',null,alice.cookie)).data;
+   assert.equal(state.messages.find(m=>m.id===oldMessage).text,'保留的歷史訊息');
+   assert.equal(state.users.find(u=>u.id===manual.id).deleted,true);
+   const file=await fetch(base+'/api/messages/'+oldMessage+'/attachment',{headers:{Cookie:alice.cookie}});assert.equal(await file.text(),'history');
+   assert.ok(!(await request('/accounts','GET',null,alice.cookie)).data.accounts.some(u=>u.id===manual.id));
+   assert.equal((await request('/registrations/'+manual.id,'POST',{action:'approve'},alice.cookie)).status,404);
+ });
+ await t.test('同名帳號可重建，但無法接管舊帳號訊息；刪除狀態在重啟後保留',async()=>{
+   const recreated=await request('/accounts','POST',{name:'New Manual',username:'manual',password:'new-manual-password'},alice.cookie);
+   assert.equal(recreated.status,201);assert.notEqual(recreated.data.user.id,manual.id);
+   const login=await request('/login','POST',{username:'manual',password:'new-manual-password'});
+   assert.equal((await request('/messages/'+oldMessage,'PATCH',{text:'接管'},login.cookie)).status,403);
+   await stop();await start();
+   assert.equal((await request('/state','GET',null,manualSession.cookie)).status,401);
+   const disk=JSON.parse(await readFile(join(dir,'workspace.json'),'utf8'));
+   const removed=disk.users.find(u=>u.id===manual.id);assert.equal(removed.password,undefined);assert.equal(removed.username,undefined);
+   assert.equal((await request('/state','GET',null,login.cookie)).status,200);
+ });
+ await t.test('待審與拒絕的帳號也能列出及刪除',async()=>{
+   await request('/register','POST',{username:'pending-delete',password:'pending-test-password',name:'Pending'});
+   let list=(await request('/accounts','GET',null,alice.cookie)).data.accounts;
+   const pending=list.find(u=>u.username==='pending-delete');assert.equal(pending.status,'pending');
+   await request('/registrations/'+pending.id,'POST',{action:'reject'},alice.cookie);
+   list=(await request('/accounts','GET',null,alice.cookie)).data.accounts;assert.equal(list.find(u=>u.id===pending.id).status,'rejected');
+   assert.equal((await request('/accounts/'+pending.id,'DELETE',null,alice.cookie)).status,200);
+ });
+
 });
 
 test('本機判斷不信任可偽造標頭',()=>{

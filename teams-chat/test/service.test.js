@@ -37,6 +37,18 @@ test('啟停腳本：重複操作、身分核對、衝突與重啟保存',async 
    try {await writeFile(path,JSON.stringify({...JSON.parse(saved),pid:process.pid}));await assert.rejects(run('stop'),/程序身分與記錄不符/);process.kill(process.pid,0);}
    finally {await writeFile(path,saved);}
  });
+ await t.test('中文舊版時間記錄與不同終端機語系仍可安全啟停',async()=>{
+   const path=join(runtime,'service.json');const record=JSON.parse(await readFile(path,'utf8'));
+   const parts=record.started.match(/^\S+\s+(\S+)\s+(\d+)\s+(\S+)\s+(\d+)$/);
+   const month=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(parts[1])+1;
+   record.started=`二  ${month}月/${parts[2]} ${parts[3]} ${parts[4]}`;
+   await writeFile(path,JSON.stringify(record));
+   assert.match((await run('stop')).stdout,/已停止/);
+   await exec('/bin/sh',[join(root,'start.sh')],{cwd:root,env:{...env,LC_ALL:'zh_TW.UTF-8',LANG:'zh_TW.UTF-8'},timeout:15000});
+   const next=JSON.parse(await readFile(path,'utf8'));assert.match(next.started,/\b[A-Z][a-z]{2}\b/);
+   assert.match((await run('stop')).stdout,/已停止/);
+   await run('start');
+ });
  await t.test('其他連接埠占用時不誤認為自己的服務',async()=>{
    await run('stop');const blocker=net.createServer();await new Promise(resolve=>blocker.listen(port,'127.0.0.1',resolve));
    try {await assert.rejects(run('start'),/無法監聽/);assert.equal(blocker.listening,true);}

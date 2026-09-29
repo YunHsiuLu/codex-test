@@ -38,7 +38,7 @@ if (db.authVersion !== 1) {
   await save();
 }
 const clients = new Map();
-const publicUsers = () => db.users.filter(u => !u.password || u.status === 'active').map(({id,name,color,demo})=>({id,name,color,demo,online:clients.has(id)}));
+const publicUsers = () => db.users.filter(u => !u.password || u.status === 'active').map(({id,name,color,demo,status})=>({id,name,color,demo,deleted:status==='deleted',online:clients.has(id)}));
 function broadcast(event='change') { for(const streams of clients.values()) for(const stream of streams) stream.write(`event: ${event}\ndata: {}\n\n`); }
 const send = (res,status,body) => {res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(body));};
 function fail(message,status=400) {const e=new Error(message);e.status=status;throw e;}
@@ -110,6 +110,50 @@ const server = http.createServer(async(req,res)=>{
       if (url.pathname === '/api/registrations' && req.method === 'GET') {
         if (!localRequest(req)) fail('請在伺服器本機管理帳號申請。', 403);
         return send(res, 200, {requests: db.users.filter(u => u.password && u.status !== 'active').map(u => ({...publicUser(u), status:u.status, requestedAt:u.requestedAt}))});
+      }
+      if (url.pathname === '/api/accounts') {
+        if (!localRequest(req)) fail('請在伺服器本機管理使用者。', 403);
+        if (req.method === 'GET') {
+          return send(res, 200, {accounts: db.users.filter(u => u.password).map(u => ({
+            ...publicUser(u), status:u.status, requestedAt:u.requestedAt,
+            online:clients.has(u.id), isSelf:u.id === user.id
+          }))});
+        }
+        if (req.method === 'POST') {
+          const data = await body(req);
+          const username = typeof data.username === 'string' ? data.username.trim().toLowerCase() : '';
+          if (!/^[a-z0-9_.-]{3,32}$/.test(username)) fail('帳號請使用 3 至 32 個英文字母、數字或 _ . -。');
+          const name = clean(data.name, 30, '顯示名稱');
+          if (typeof data.password !== 'string' || data.password.length < 10 || data.password.length > 128) fail('密碼需介於 10 至 128 個字元。');
+          if (db.users.some(u => u.username === username)) fail('此帳號已被使用。', 409);
+          const password = await hashPassword(data.password);
+          if (!getSession(db, req)) fail('登入已失效，請重新登入。', 401);
+          if (db.users.some(u => u.username === username)) fail('此帳號已被使用。', 409);
+          const account = {id:randomUUID(), username, name, password, status:'active',
+            requestedAt:new Date().toISOString(), color:['#7474bd','#438b82','#b67d54','#688db0'][db.users.length % 4]};
+          db.users.push(account);
+          await save();broadcast('registrations');broadcast();
+          return send(res, 201, {user:publicUser(account)});
+        }
+        fail('不支援的操作。', 405);
+      }
+      const accountDeletion = url.pathname.match(/^\/api\/accounts\/([^/]+)$/);
+      if (accountDeletion && req.method === 'DELETE') {
+        if (!localRequest(req)) fail('請在伺服器本機管理使用者。', 403);
+        const target = db.users.find(u => u.id === accountDeletion[1] && u.password);
+        if (!target) fail('找不到此帳號。', 404);
+        if (target.id === user.id) fail('無法刪除目前登入的帳號。', 409);
+        // Keep only the author identity for existing messages; never transfer old ownership.
+        target.status = 'deleted';target.deletedAt = new Date().toISOString();
+        delete target.password;delete target.username;
+        for (const [key, value] of Object.entries(db.sessions)) if (value.userId === target.id) delete db.sessions[key];
+        await save();
+        for (const stream of clients.get(target.id) || []) {
+          stream.write('event: signed-out\ndata: {}\n\n');stream.end();
+        }
+        clients.delete(target.id);
+        broadcast('registrations');broadcast();
+        return send(res, 200, {ok:true});
       }
       const approval = url.pathname.match(/^\/api\/registrations\/([^/]+)$/);
       if (approval && req.method === 'POST') {
