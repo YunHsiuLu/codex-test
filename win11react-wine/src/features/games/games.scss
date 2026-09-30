@@ -1,0 +1,33 @@
+.gamesApp {
+  width: 760px; height: 650px; max-width: calc(100vw - 110px); max-height: calc(100vh - 90px);
+  color: #192438;
+  &[data-size="full"] { max-width: none; max-height: none; }
+  .windowScreen { background: #f3f6fb; overflow: hidden; }
+  .games-content { overflow: auto; height: 100%; box-sizing: border-box; padding: 28px 32px 32px; user-select: text; }
+  .games-eyebrow { color: #536782; font-size: 11px; letter-spacing: 1.8px; font-weight: 700; }
+  h1 { font-size: 28px; font-weight: 650; margin: 8px 0; }
+  h2 { font-size: 17px; font-weight: 600; margin: 5px 0 9px; }
+  p { font-size: 13px; line-height: 1.65; margin: 5px 0; }
+  .games-heading { margin-bottom: 22px; }
+  .games-card { padding: 20px; background: #fff; border: 1px solid #dce3ed; border-radius: 10px; margin-bottom: 14px; }
+  .games-label { color: #526581; font-size: 12px; }
+  .games-path { overflow-wrap: anywhere; color: #526581; }
+  .games-chip { display: inline-block; background: #eaf1fd; color: #235baa; border-radius: 5px; padding: 3px 8px; font-size: 12px; margin-top: 7px; }
+  .games-actions { display: flex; gap: 10px; margin-top: 20px; }
+  button { border: 1px solid #bdc9da; border-radius: 5px; background: white; color: #213b60; padding: 8px 16px; font-size: 13px; cursor: pointer; }
+  button:hover:enabled { background: #edf3fd; }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, input:focus-visible { outline: 2px solid #266acb; outline-offset: 3px; }
+  .games-primary { background: #1263c4; border-color: #1263c4; color: white; &:hover:enabled { background: #084d9e; } }
+  .games-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  label { display: block; font-size: 12px; margin: 14px 0 6px; color: #526581; }
+  input { width: 100%; box-sizing: border-box; background: #f8faff; border: 1px solid #bbc8db; border-radius: 5px; padding: 9px 10px; color: #192438; font-size: 12px; }
+  .games-status { font-size: 12px; color: #526581; margin: 12px 0; }
+  .games-error, .games-banner { white-space: pre-wrap; overflow-wrap: anywhere; background: #fff1ed; border: 1px solid #f3bdaf; padding: 14px; font-size: 13px; line-height: 1.6; border-radius: 6px; margin-bottom: 14px; }
+  .games-banner { background: #e9f2ff; border-color: #b2cfee; }
+  .games-run[data-phase="failed"] { border-color: #dd9584; }
+  .games-run[data-phase="exited"] { border-color: #86bca6; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #172236; color: #e8eef8; padding: 12px; max-height: 180px; overflow: auto; border-radius: 5px; font: 12px/1.6 ui-monospace, monospace; }
+  summary { cursor: pointer; font-size: 12px; }
+  .games-footnote { font-size: 11px; color: #65758a; }
+}

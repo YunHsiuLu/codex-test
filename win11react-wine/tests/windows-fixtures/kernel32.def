@@ -1,0 +1,7 @@
+LIBRARY KERNEL32.dll
+EXPORTS
+ExitProcess
+GetStdHandle
+WriteFile
+GetFileAttributesA
+GetModuleHandleW
