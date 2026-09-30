@@ -10,11 +10,36 @@
     "frontendDist": "../build"
   },
   "app": {
-    "windows": [{ "label": "main", "title": "Win11React Wine", "width": 1200, "height": 800, "minWidth": 800, "minHeight": 600 }],
+    "windows": [
+      {
+        "label": "main",
+        "title": "Win11React Wine",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600
+      }
+    ],
     "security": {
-      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost; frame-src https:; media-src 'self' data: https:",
-      "devCsp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost ws://127.0.0.1:1420; frame-src https:; media-src 'self' data: https:"
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost; frame-src https:; media-src 'self' data: https:",
+      "devCsp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost ws://127.0.0.1:1420; frame-src https:; media-src 'self' data: https:"
     }
   },
-  "bundle": { "active": true, "targets": ["app"], "icon": ["icons/icon.png", "icons/icon.icns"], "macOS": { "minimumSystemVersion": "12.0" } }
+  "bundle": {
+    "active": true,
+    "targets": [
+      "app"
+    ],
+    "icon": [
+      "icons/icon.png",
+      "icons/icon.icns"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "12.0"
+    },
+    "resources": [
+      "resources/wine-host.exe",
+      "resources/wine-display.dll"
+    ]
+  }
 }

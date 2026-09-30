@@ -31,3 +31,12 @@
   summary { cursor: pointer; font-size: 12px; }
   .games-footnote { font-size: 11px; color: #65758a; }
 }
+
+.gamesApp {
+  .games-mode {display:flex;align-items:center;gap:8px;line-height:1.6;input{width:auto;}}
+  .library-entry {border-top:1px solid #e1e7ef;padding:14px 0 4px;margin-top:12px;b{font-size:14px;} .games-chip{margin:0 0 0 8px;}}
+  .library-exe {display:block;width:100%;text-align:left;margin-top:8px;overflow-wrap:anywhere;span{color:#718096;}}
+  .games-empty {padding:20px 0;color:#718096;font-size:13px;}
+  .game-screen canvas {max-width:100%;height:auto;margin:16px auto 0;background:#172236;touch-action:none;user-select:none;border:1px solid #bbc8db;}
+  .game-screen canvas:focus{outline:3px solid #2276d7;outline-offset:2px;}
+}

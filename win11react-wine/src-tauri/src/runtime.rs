@@ -25,7 +25,7 @@ fn drain(mut stream: impl Read + Send + 'static, tail: OutputTail) -> thread::Jo
         }
     })
 }
-fn capture(child: &mut Child, tail: &OutputTail) {
+pub fn capture(child: &mut Child, tail: &OutputTail) {
     if let Some(stdout) = child.stdout.take() { drain(stdout, tail.clone()); }
     if let Some(stderr) = child.stderr.take() { drain(stderr, tail.clone()); }
 }

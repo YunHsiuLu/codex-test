@@ -32,3 +32,9 @@ yarn-error.log*
 /src-tauri/gen/
 
 /test-games/
+
+# User game archives and generated native helper
+/*.zip
+/src-tauri/resources/*.exe
+/src-tauri/resources/*.dll
+/src-tauri/resources/*.lib

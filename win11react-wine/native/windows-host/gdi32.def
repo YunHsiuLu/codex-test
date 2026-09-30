@@ -1,0 +1,9 @@
+LIBRARY GDI32.dll
+EXPORTS
+CreateCompatibleDC
+DeleteDC
+CreateDIBSection
+SelectObject
+DeleteObject
+GdiFlush
+BitBlt

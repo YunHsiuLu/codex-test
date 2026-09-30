@@ -1,0 +1,15 @@
+LIBRARY USER32.dll
+EXPORTS
+EnumWindows
+GetWindowThreadProcessId
+IsWindowVisible
+GetWindow
+GetClientRect
+PrintWindow
+GetDC
+ReleaseDC
+SetWindowPos
+PostMessageW
+ChildWindowFromPointEx
+MapWindowPoints
+SendMessageTimeoutW
