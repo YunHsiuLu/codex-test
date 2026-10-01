@@ -22,6 +22,9 @@ pub fn detect_root() -> Option<PathBuf> {
 fn single_name(name:&str)->Result<(),String> {
     if name.is_empty() || name.contains(['/', '\\', ':']) || name=="." || name==".." { return Err("檔名無效。".into()); } Ok(())
 }
+fn fingerprint(meta:&fs::Metadata)->String {
+    format!("{}:{}",meta.len(),meta.modified().ok().and_then(|t|t.duration_since(std::time::UNIX_EPOCH).ok()).map(|t|t.as_nanos()).unwrap_or_default())
+}
 fn imported(root:&Path)->PathBuf { root.join(".local-data/library") }
 fn candidates(dir:&Path)->Result<Vec<Candidate>,String> {
     fn visit(root:&Path,p:&Path,out:&mut Vec<Candidate>,depth:usize)->Result<(),String> {
@@ -38,7 +41,7 @@ fn candidates(dir:&Path)->Result<Vec<Candidate>,String> {
 }
 pub fn list(root:Option<&Path>)->Result<Catalog,String> {
     let Some(root)=root else{return Ok(Catalog{root:None,entries:vec![]});};
-    let mut entries=vec![];
+    let mut entries=vec![];let mut already_imported=HashSet::new();
     for file in fs::read_dir(root).map_err(|e|format!("無法讀取遊戲資料夾：{e}"))? {
         let file=file.map_err(|e|e.to_string())?; if !file.file_type().map_err(|e|e.to_string())?.is_file(){continue;}
         let p=file.path();let name=file.file_name().to_string_lossy().into_owned();
@@ -50,8 +53,9 @@ pub fn list(root:Option<&Path>)->Result<Catalog,String> {
     if imported(root).is_dir(){for dir in fs::read_dir(imported(root)).map_err(|e|e.to_string())? {
         let dir=dir.map_err(|e|e.to_string())?;let id=dir.file_name().to_string_lossy().into_owned();
         if id.len()!=64 || !id.bytes().all(|c|c.is_ascii_hexdigit()) || !dir.file_type().map_err(|e|e.to_string())?.is_dir(){continue;}
-        if let Ok(name)=fs::read_to_string(dir.path().join("source.txt")) {entries.push(Entry{id:format!("game:{id}"),name,kind:"game".into(),candidates:candidates(&dir.path().join("files"))?});}
+        if let Ok(name)=fs::read_to_string(dir.path().join("source.txt")) {if let (Ok(saved),Ok(meta))=(fs::read_to_string(dir.path().join("fingerprint.txt")),fs::metadata(root.join(&name))){if saved==fingerprint(&meta){already_imported.insert(name.clone());}}entries.push(Entry{id:format!("game:{id}"),name,kind:"game".into(),candidates:candidates(&dir.path().join("files"))?});}
     }}
+    entries.retain(|e|e.kind!="zip" || !already_imported.contains(&e.name));
     entries.sort_by(|a,b|a.name.cmp(&b.name).then(a.kind.cmp(&b.kind)));Ok(Catalog{root:Some(root.to_owned()),entries})
 }
 fn safe_relative(name:&str)->Result<PathBuf,String> {
@@ -95,11 +99,12 @@ pub fn import(root:&Path,name:&str)->Result<String,String> {
     if n>MAX_ARCHIVE || meta.len()!=n || after.len()!=n || meta.modified().ok()!=after.modified().ok(){return Err("ZIP 仍在複製或已變更，請稍後重新匯入。".into());}
     let mut hash=Sha256::new();let mut file=fs::File::open(&archive).map_err(|e|e.to_string())?;let mut buf=[0;65536];loop{let n=file.read(&mut buf).map_err(|e|e.to_string())?;if n==0{break;}hash.update(&buf[..n]);}
     let id=format!("{:x}",hash.finalize());let final_dir=parent.join(&id);
-    if final_dir.join("source.txt").is_file(){return Ok(format!("game:{id}"));}
+    if final_dir.join("source.txt").is_file(){fs::write(final_dir.join("fingerprint.txt"),fingerprint(&meta)).map_err(|e|e.to_string())?;return Ok(format!("game:{id}"));}
     let files=temp.path().join("files");fs::create_dir(&files).map_err(|e|e.to_string())?;
     extract(fs::File::open(&archive).map_err(|e|e.to_string())?,&files)?;
     if candidates(&files)?.is_empty(){return Err("ZIP 中找不到有效的 Windows x86／x64 EXE。".into());}
     fs::remove_file(&archive).map_err(|e|e.to_string())?;fs::write(temp.path().join("source.txt"),name).map_err(|e|e.to_string())?;
+    fs::write(temp.path().join("fingerprint.txt"),fingerprint(&meta)).map_err(|e|e.to_string())?;
     fs::rename(temp.path(),final_dir).map_err(|e|e.to_string())?;Ok(format!("game:{id}"))
 }
 pub fn resolve(root:&Path,id:&str,relative:&str)->Result<importer::GameCandidate,String> {
@@ -115,4 +120,15 @@ pub fn resolve(root:&Path,id:&str,relative:&str)->Result<importer::GameCandidate
     #[test] fn rejects_traversal_and_no_partial_import(){let d=tempfile::tempdir().unwrap();archive(&d.path().join("bad.zip"),&[("../escaped.exe",b"bad")]);assert!(import(d.path(),"bad.zip").is_err());assert!(!d.path().join("escaped.exe").exists());assert_eq!(fs::read_dir(imported(d.path())).unwrap().count(),0);for p in ["C:/a","a\\b","/a","a/../b","a/./b"]{assert!(safe_relative(p).is_err());}}
     #[test] fn rejects_case_collisions(){let d=tempfile::tempdir().unwrap();let p=d.path().join("bad.zip");archive(&p,&[("A.exe",b"x"),("a.exe",b"y")]);assert!(extract(fs::File::open(p).unwrap(),d.path()).unwrap_err().contains("大小寫"));}
     #[test] fn inbox_discovers_without_execution(){let d=tempfile::tempdir().unwrap();assert!(list(Some(d.path())).unwrap().entries.is_empty());fs::write(d.path().join("New Game.ZIP"),b"copying").unwrap();assert_eq!(list(Some(d.path())).unwrap().entries[0].kind,"zip");assert!(import(d.path(),"New Game.ZIP").is_err());assert!(resolve(d.path(),"zip:New Game.ZIP","../x").is_err());}
+    #[test] fn import_is_persistent_idempotent_and_preserves_sidecars(){
+        let d=tempfile::tempdir().unwrap();let mut pe=vec![0;88];pe[..2].copy_from_slice(b"MZ");pe[60]=64;pe[64..68].copy_from_slice(b"PE\0\0");pe[68..70].copy_from_slice(&0x8664u16.to_le_bytes());pe[86]=2;
+        archive(&d.path().join("Game.zip"),&[("folder/Game.exe",&pe),("folder/data.txt",b"assets")]);
+        let id=import(d.path(),"Game.zip").unwrap();assert_eq!(import(d.path(),"Game.zip").unwrap(),id);
+        let catalog=list(Some(d.path())).unwrap();assert_eq!(catalog.entries.len(),1);assert_eq!(catalog.entries[0].candidates.len(),1);
+        let game=resolve(d.path(),&id,"folder/Game.exe").unwrap();assert_eq!(fs::read(game.path.parent().unwrap().join("data.txt")).unwrap(),b"assets");
+        fs::write(game.path.parent().unwrap().join("save.txt"),b"keep").unwrap();import(d.path(),"Game.zip").unwrap();assert!(game.path.parent().unwrap().join("save.txt").is_file());
+        fs::remove_file(d.path().join("Game.zip")).unwrap();assert_eq!(list(Some(d.path())).unwrap().entries.len(),1);
+        assert!(resolve(d.path(),&id,"../../unlisted.exe").is_err());
+    }
+
 }

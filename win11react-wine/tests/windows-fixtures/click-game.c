@@ -37,6 +37,8 @@ static void updateScore(void) {
     label[8] = (WCHAR)('0' + (score / 10) % 10);
     label[9] = (WCHAR)('0' + score % 10);
     SetWindowTextW(scoreLabel, label);
+    char result[]="GUI_SCORE:000\n"; result[10]=(char)label[7];result[11]=(char)label[8];result[12]=(char)label[9];
+    DWORD written=0;WriteFile(GetStdHandle(-11),result,sizeof(result)-1,&written,0);
 }
 static HANDLE child(HANDLE parent,const WCHAR *kind,const WCHAR *label,int x,int y,int w,int h,int id) {
     HANDLE result = CreateWindowExW(0,kind,label,0x50000000UL,x,y,w,h,parent,(HANDLE)(WPARAM)id,instance,0);
@@ -52,6 +54,7 @@ static LRESULT windowProc(HANDLE hwnd,UINT message,WPARAM wParam,LPARAM lParam) 
         child(hwnd,L"BUTTON",L"Finish successfully",24,174,198,40,102);
         child(hwnd,L"BUTTON",L"Test failure (exit 7)",236,174,198,40,103);
         return 0;
+    case 0x0100: if(wParam==32){score=(score+1)%1000;updateScore();return 0;}break;
     case 0x0111: /* WM_COMMAND */
         switch (wParam & 0xffff) {
         case 101: score = (score + 1) % 1000; updateScore(); return 0;

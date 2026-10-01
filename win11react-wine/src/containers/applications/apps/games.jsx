@@ -76,13 +76,13 @@ export const WindowsGames = () => {
             <div className="games-row"><div><b>{entry.name}</b><span className="games-chip">{entry.kind==="zip"?"ZIP・待匯入":entry.kind==="game"?"已匯入":"EXE"}</span></div>
               {entry.kind==="zip" && <button disabled={!!busy||running} onClick={()=>perform("import",async()=>{setNotice("正在解壓縮與尋找遊戲主程式…");const id=await importZip(entry.name);const next=await libraryList();setCatalog(next);const imported=next.entries.find(e=>e.id===id);if(imported?.candidates.length===1)setGame(await selectLibraryExe(id,imported.candidates[0].relativePath));setNotice("已匯入。請選擇下方的 EXE，再按啟動遊戲。");})}>{busy==="import"?"匯入中…":"匯入 ZIP"}</button>}
             </div>
-            {entry.candidates.map(candidate=><button className="library-exe" key={candidate.relativePath} disabled={!!busy||running} onClick={()=>perform("select",async()=>{setGame(await selectLibraryExe(entry.id,candidate.relativePath));setNotice("已選擇主程式，按啟動遊戲開始。");})}>{candidate.relativePath}　<span>{candidate.architecture}</span></button>)}
+            {entry.candidates.map(candidate=><button className="library-exe" key={candidate.relativePath} disabled={!!busy||running} onClick={()=>perform("select",async()=>{setGame(await selectLibraryExe(entry.id,candidate.relativePath));setNotice("已選擇主程式，按啟動遊戲開始。");const content=document.querySelector("#gamesApp .games-content"),section=document.getElementById("game-selection");if(content&&section)content.scrollTo({top:content.scrollTop+section.getBoundingClientRect().top-content.getBoundingClientRect().top,behavior:"smooth"});})}>{candidate.relativePath}　<span>{candidate.architecture}</span></button>)}
           </div>)}
         </section>
-        <section className="games-card" aria-label="遊戲檔案">
+        <section className="games-card" aria-label="遊戲檔案" id="game-selection">
           <span className="games-label">遊戲主程式</span>
           <h2>{game?.name || "尚未選擇 EXE"}</h2>
-          <p className="games-path">{game ? game.path : "可从上方遊戲庫選擇，或直接選取本機 .exe。"}</p>
+          <p className="games-path">{game ? game.path : "可從上方遊戲庫選擇，或直接選取本機 .exe。"}</p>
           {game && <span className="games-chip">{game.architecture}</span>}
           <label className="games-mode"><input type="checkbox" checked={embedded} disabled={running||!!busy} onChange={e=>setEmbedded(e.target.checked)} /> 在 Win11React 視窗內顯示（實驗性，x64 Win32／GDI）</label>
           <div className="games-actions">

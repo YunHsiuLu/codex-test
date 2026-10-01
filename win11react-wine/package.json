@@ -44,7 +44,8 @@
     "setup:rust": "sh scripts/setup-rust.sh",
     "setup:wine": "sh scripts/setup-wine.sh",
     "test:fixtures": "node scripts/build-test-exes.mjs",
-    "test:windows": "node scripts/test-windows-exes.mjs"
+    "test:windows": "node scripts/test-windows-exes.mjs",
+    "test:embedded": "node scripts/test-embedded.mjs"
   },
   "eslintConfig": {
     "extends": [

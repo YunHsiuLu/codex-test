@@ -40,9 +40,10 @@ static int findWindow(H h,LP unused) {
 }
 static int number(const char **p) { int n=0,sign=1; while(**p==' ')(*p)++; if(**p=='-'){sign=-1;(*p)++;} while(**p>='0' && **p<='9'){n=n*10+*(*p)++-'0';} return n*sign; }
 static void input(const char *line) {
-    H target=(H)window; if(!target)return;
+    H target=(H)window;
+    if(line[0]=='q'){stopping=1;if(target)PostMessageW(target,0x10,0,0);return;}
+    if(!target)return;
     const char *p=line+1; int a=number(&p),b=number(&p),c=number(&p);
-    if(line[0]=='q'){stopping=1;PostMessageW(target,0x10,0,0);return;}
     if(line[0]=='k'){PostMessageW(target,b?0x100:0x101,(UP)a,b?1:0xc0000001);return;}
     if(line[0]=='c'){PostMessageW(target,0x102,(UP)a,1);return;}
     POINT point={a,b}; H child;

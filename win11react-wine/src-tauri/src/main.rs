@@ -60,7 +60,7 @@ async fn launch_exe(app: tauri::AppHandle, state: State<'_, Launcher>, wine_path
         if slot.as_ref().is_some_and(|r| r.status.phase == "running") { return Err("目前已有 Wine 程序執行中，請先關閉遊戲。".into()); }
         let game = launcher.selected.lock().map_err(|e| e.to_string())?.clone().ok_or("請先選擇 EXE。")?;
         let game = importer::inspect_exe(&game.path)?;
-        if embedded && game.architecture != "x64" {return Err("目前內嵌顯示支援 x64，x86 請取消內嵌選項後啟動。".into());}
+        if embedded && !game.architecture.starts_with("x64") {return Err("目前內嵌顯示支援 x64，x86 請取消內嵌選項後啟動。".into());}
         let wine = runtime::discover(wine_path)?;
         let prefix = runtime::prefix_for(&data, &game.path);
         let tail = runtime::new_tail();

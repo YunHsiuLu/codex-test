@@ -144,3 +144,58 @@ npm run app:dev
 這次只新增測試原始碼／腳本與修改文件、Git 資料；原生 App 程式碼未改，因此沿用已驗證的 release App，沒有重複建置未變動的原生碼。
 
 GUI 追加測試：從原生 UI 選取並啟動 `Click Game.exe`，看到自製程式輸出 `GUI_WINDOW_CREATED`，表示已完成 RegisterClass／CreateWindow／ShowWindow／UpdateWindow 並進入訊息迴圈。但電腦操作工具的應用程式清單沒有辨識到 Wine 遊戲的獨立視窗，故未驗證實際可見性、Click +1 或結束按鈕。不得把這項測試寫成完整 GUI 互動通過。收尾以限定該 EXE 專屬 WINEPREFIX 的 wineserver -k 結束本次圖形測試，未停止其他 prefix。
+
+## 2026-10-01 追加：ZIP 遊戲庫與實際內嵌畫面
+
+使用者明確補充：遊戲畫面本身要出現在 Win11React 視窗裡；ZIP 放進 `win11react-wine` 資料夾後，在 App 能看到。這取代先前「ZIP 未實作／只開獨立視窗」的狀態，前面的紀錄保留作歷史。
+
+### 本次完成
+
+- `src-tauri/src/library.rs`：自動找專案根目錄（環境 `WIN11_LIBRARY_DIR`、App 所在祖先、編譯時專案位置），可用原生選擇資料夾。React 每３秒掃描根目錄第一層 ZIP／EXE；不自動執行。
+- ZIP 匯入至 `.local-data/library/<sha256>/files`：先複製快照、核對複製期間是否變動、暫存解壓、確認有效 PE 候選後原子搬入。保留完整資料夾／素材，拒絕穿越路徑、Windows drive／ADS、symlink／特殊檔案、大小寫衝突／重複，限２ GiB 壓縮、４ GiB 展開、２０，０００項／６４層。Stored／Deflate；加密等不支援格式顯示錯誤。
+- 已匯入且未變動的 ZIP 不重複顯示待匯入項；同 ZIP 重用，不覆寫存檔。已匯入清單重開 App 仍保留，移除原 ZIP 也保留匯入內容。不同內容以不同 hash 保留版本，沒有存檔遷移。
+- library_select 只接受目前候選清單的 id／relativePath，重新驗證 canonical containment 與 PE，再沿用原本 launch_exe。
+- Windows Games 內整合遊戲庫、手動 EXE、內嵌／獨立模式切換、狀態／錯誤。選取 EXE 後只捲動遊戲內容區（修正 scrollIntoView 連整個桌面也捲走）。桌面／開始選單／工作列沿用原入口；模擬檔案總管仍不是本機檔案系統。
+- `native/windows-host/host.c` 同時建成 `wine-host.exe` 與 `wine-display.dll`：啟動選定 x64 子程序，載入專案自己的顯示 DLL，再恢復執行。DLL 在該程序內用 GDI BitBlt 擷取主視窗 client，原生視窗移到畫面外；只對該程序發送 Win32 mouse／key／char 訊息。
+- 不能跨程序擷取：實驗證實跨程序 PrintWindow 為黑畫面、BitBlt 無畫面。同程序 BitBlt 可得到完整畫面，故採目前 DLL 元件。這不是假的 React 重畫遊戲，也不是 macOS 外部視窗直接 reparent。
+- BMP 幀以暫存檔原子替換，Tauri binary response → React canvas（BGRA→RGBA），約１０ fps、上限1920×1080。滑鼠映射子控制項，基本鍵盤送主視窗。無 macOS 螢幕錄製／輔助使用授權、無全桌面擷取或全域輸入。
+- 「結束遊戲」送 WM_CLOSE；約１０秒仍存活時顯示 DLL ExitProcess(123)。App 退出關閉 stdin 也觸發同流程。只關閉 Win11React 模擬視窗是隱藏，不等於結束。
+- `scripts/build-wine-host.mjs` 開發／打包前自動編譯，兩個產物放進 Tauri resources。只有原始碼要加入 Git；resources EXE／DLL／LIB、根目錄 ZIP、runtime／快取／遊戲資料均忽略。
+- 更新 README、native/windows-host/README，新增 `npm run test:embedded`。自製 Click Game 加入空白鍵加分與狀態輸出，依然是真正 Win32 EXE。
+
+### 驗證證據
+
+- `npm run test:native`：９項全部通過；新增 ZIP 越界／殘留清理、大小寫衝突、自動發現、持久匯入、重複匯入保留 sidecar／save、候選 allowlist。`work/tests-library-final.log`。
+- `npm run test:embedded`：真實 Wine 通過 BMP 非黑像素、滑鼠點擊分數００１、空白鍵分數００２、畫面像素變更、成功退出０、失敗退出７、關閉退出０、console 成功／失敗退出碼。`work/test-embedded.log`、`work/embedded-test-results.json`，測試 prefix `.local-data/fixture-embedded`。
+- 最後 `npm run app:build` 成功：ARM64 App 約24.57 MiB，含內嵌元件。`work/build-embedded-final.log`。
+- 原生 App：開著時新增自製 `Sample Games.zip` 到專案根目錄，未重新啟動即自動出現；從 UI 匯入，列出 Click Game／Failure／Success 三個 EXE。重新開啟 App 仍保留匯入項，沒有重複待匯入 ZIP。
+- 原生 App：由 ZIP 候選選 Click Game 並啟動，真實 Windows 圖形畫面出現在 Win11React 的 Windows Games 視窗內，滑鼠点击 Click +1 看到 Score:001。無需提供外部測試遊戲。
+
+### 新電腦／重啟
+
+依 README 安裝 Node.js、Xcode CLT、Rust、Wine／Rosetta（工具仍留在本專案 work/，未改全域設定）。
+
+```sh
+cd "/Users/lvyunxiu/codex test/win11react-wine"
+npm ci --cache ./work/npm-cache
+npm run setup:rust
+npm run setup:wine
+npm run app:dev
+```
+
+目前這台只需 `npm run app:dev`。打包 `npm run app:build`。若直接開打包版並希望資料全部留專案內，使用 README 的 WIN11_DATA_DIR／WIN11_WINE 命令。
+
+示範包為根目錄 `Sample Games.zip`（不加入 Git）。`npm run test:fixtures` 重建三個 EXE 到 test-games；可自行以 Finder 壓縮成 ZIP。App 裡選 `Sample Games/Click Game.exe`，啟動後 Click +1／空白鍵加分，成功／失敗按鈕結束。
+
+### 保留限制與下一步
+
+- 目前內嵌是 x64 Win32／GDI 實驗原型。不是任意 Windows 小遊戲都能嵌入，未驗證第三方實際遊戲。x86 使用獨立視窗模式。
+- 不支援／未驗證 DirectX／OpenGL、全螢幕、Raw Input、pointer lock、滾輪、IME、手把、音效重導、彈出視窗切換、子程序追蹤。只擷取第一個主視窗，開始時可能短暫出現原生視窗；有些遊戲會拒絕 offscreen 或额外 DLL。
+- 停止有約１０秒回退，但若顯示執行緒本身被卡住仍可能無法退出。獨立模式保留原行為，沒有停止按鈕。
+- 選擇其他遊戲資料夾尚未持久化；只有專案根目錄會自動找到。大型匯入尚無進度百分比／取消，容量限制已實作。
+- 下一步應測使用者實際小遊戲，依圖形引擎決定是否需要不同顯示後端。先不要把這個 GDI 原型宣稱為通用 Parallels 替代品。
+- `.git`／`.github` 仍不存在，保留授權與來源；未 init、commit、push。外層 Git 未修改。
+
+最終原生 UI 追加驗證：修正選取後捲動不再影響整個桌面；重啟後選同一已匯入 Click Game，滑鼠加分至００１，空白鍵加分至００２，按遊戲內 Test failure 後 UI 正確顯示退出碼７。遊戲結束後隱藏 canvas，改顯示退出結果，避免最後一幀在視窗銷毀時變黑造成誤解。
+
+收尾驗證：最後打包版再次啟動同一遊戲，按 Win11React「結束遊戲」，UI 顯示「遊戲已正常結束。退出碼：0」，canvas 正確收起，沒有殘留黑畫面。保留已開啟的最終 App 視窗及 Sample Games.zip；測試遊戲已結束，沒有背景 dev server。這台不需要追加依賴。所有程式修改、測試與文件都在 `/Users/lvyunxiu/codex test/win11react-wine` 內。
