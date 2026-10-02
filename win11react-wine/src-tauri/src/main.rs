@@ -2,8 +2,6 @@
 mod importer;
 mod runtime;
 mod library;
-use std::io::Write;
-use std::process::{ChildStdin,Command,Stdio};
 use importer::GameCandidate;
 use runtime::{OutputTail, WineInfo};
 use serde::Serialize;
@@ -15,9 +13,9 @@ use tauri_plugin_dialog::DialogExt;
 #[serde(rename_all = "camelCase")]
 struct RunStatus {
     id: String, phase: String, pid: u32, exit_code: Option<i32>,
-    message: String, prefix: PathBuf, output: String, embedded: bool,
+    message: String, prefix: PathBuf, output: String,
 }
-struct Run { status: RunStatus, tail: OutputTail, input: Option<ChildStdin>, frame: PathBuf }
+struct Run { status: RunStatus, tail: OutputTail }
 #[derive(Default, Clone)]
 struct Launcher { selected: Arc<Mutex<Option<GameCandidate>>>, run: Arc<Mutex<Option<Run>>>, root: Arc<Mutex<Option<PathBuf>>> }
 
@@ -46,41 +44,25 @@ async fn get_run_status(state: State<'_, Launcher>) -> Result<Option<RunStatus>,
     }).await.map_err(|e| e.to_string())?
 }
 #[tauri::command]
-async fn launch_exe(app: tauri::AppHandle, state: State<'_, Launcher>, wine_path: Option<String>, embedded: Option<bool>) -> Result<RunStatus, String> {
+async fn launch_exe(app: tauri::AppHandle, state: State<'_, Launcher>, wine_path: Option<String>) -> Result<RunStatus, String> {
     let launcher = state.inner().clone();
     let data = match std::env::var_os("WIN11_DATA_DIR") {
         Some(path) => PathBuf::from(path), None => app.path().app_data_dir().map_err(|e| e.to_string())?,
     };
-    let embedded = embedded.unwrap_or(true);
-    let host = app.path().resource_dir().map_err(|e|e.to_string())?.join("resources/wine-host.exe");
-    let host = if host.is_file() { host } else { PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("resources/wine-host.exe") };
     tauri::async_runtime::spawn_blocking(move || {
         // Reserve the single launch slot while probing and spawning; repeated clicks cannot race.
         let mut slot = launcher.run.lock().map_err(|e| e.to_string())?;
         if slot.as_ref().is_some_and(|r| r.status.phase == "running") { return Err("目前已有 Wine 程序執行中，請先關閉遊戲。".into()); }
         let game = launcher.selected.lock().map_err(|e| e.to_string())?.clone().ok_or("請先選擇 EXE。")?;
         let game = importer::inspect_exe(&game.path)?;
-        if embedded && !game.architecture.starts_with("x64") {return Err("目前內嵌顯示支援 x64，x86 請取消內嵌選項後啟動。".into());}
         let wine = runtime::discover(wine_path)?;
         let prefix = runtime::prefix_for(&data, &game.path);
         let tail = runtime::new_tail();
         let id = SystemTime::now().duration_since(UNIX_EPOCH).unwrap_or_default().as_nanos().to_string();
-        let frame = data.join("frames").join(&id).join("frame.bmp");
-        let mut child = if embedded {
-            if !host.is_file() {return Err("內嵌顯示元件不存在，請重新建置 App。".into());}
-            std::fs::create_dir_all(frame.parent().unwrap()).map_err(|e|e.to_string())?;
-            std::fs::create_dir_all(&prefix).map_err(|e|e.to_string())?;
-            let win = |p:&std::path::Path| format!("Z:{}",p.to_string_lossy().replace('/',"\\"));
-            let mut child=Command::new(&wine.path).arg(&host).arg(win(&game.path)).arg(win(&frame)).arg(win(&host.with_file_name("wine-display.dll")))
-                .current_dir(game.path.parent().unwrap()).env("WINEPREFIX",&prefix)
-                .env("WINEDEBUG","-all,err+all,warn+module").env("MVK_CONFIG_LOG_LEVEL","0")
-                .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped()).spawn().map_err(|e|e.to_string())?;
-            runtime::capture(&mut child,&tail);child
-        } else {runtime::spawn_game(&wine.path,&game.path,&prefix,&tail)?};
-        let input=child.stdin.take();
+        let mut child = runtime::spawn_game(&wine.path, &game.path, &prefix, &tail)?;
         let status = RunStatus { id: id.clone(), phase: "running".into(), pid: child.id(), exit_code: None,
-            message: "已啟動，正在等待遊戲畫面；首次啟動需要初始化。".into(), prefix, output: String::new(), embedded };
-        *slot = Some(Run { status: status.clone(), tail, input, frame });
+            message: "已交由 Wine 在 Mac 開啟獨立遊戲視窗；首次啟動需要初始化。".into(), prefix, output: String::new() };
+        *slot = Some(Run { status: status.clone(), tail });
         drop(slot);
         let run = launcher.run.clone();
         std::thread::spawn(move || {
@@ -129,25 +111,20 @@ async fn library_choose_folder(app:tauri::AppHandle,state:State<'_,Launcher>)->R
     }).await.map_err(|e|e.to_string())?
 }
 #[tauri::command]
-async fn game_frame(state:State<'_,Launcher>,id:String)->Result<tauri::ipc::Response,String> {
-    let frame=state.run.lock().map_err(|e|e.to_string())?.as_ref().filter(|r|r.status.id==id).map(|r|r.frame.clone()).ok_or("執行已變更。")?;
+async fn library_pick_zip(app:tauri::AppHandle,state:State<'_,Launcher>)->Result<Option<String>,String> {
+    let root=state.root.lock().map_err(|e|e.to_string())?.clone().ok_or("請先選擇遊戲庫資料夾。")?;
     tauri::async_runtime::spawn_blocking(move || {
-        match std::fs::read(frame) {Ok(bytes) if bytes.len()<=1920*1080*4+54=>Ok(tauri::ipc::Response::new(bytes)),Ok(_)=>Err("畫面尺寸超過上限。".into()),Err(e) if e.kind()==std::io::ErrorKind::NotFound=>Ok(tauri::ipc::Response::new(Vec::<u8>::new())),Err(e)=>Err(e.to_string())}
+        let file=app.dialog().file().set_title("匯入下載好的遊戲 ZIP").add_filter("ZIP archive", &["zip", "ZIP"]).blocking_pick_file();
+        let Some(file)=file else{return Ok(None);};
+        let path=file.into_path().map_err(|e|e.to_string())?;
+        library::import_from_path(&root,&path).map(Some)
     }).await.map_err(|e|e.to_string())?
-}
-#[tauri::command]
-fn game_input(state:State<'_,Launcher>,id:String,kind:String,a:i32,b:i32,c:i32)->Result<(),String> {
-    if !["d","u","m","k","c","q"].contains(&kind.as_str())|| !(0..=65535).contains(&a)|| !(0..=65535).contains(&b)|| !(0..=2).contains(&c) {return Err("輸入格式無效。".into());}
-    let mut slot=state.run.lock().map_err(|e|e.to_string())?;
-    let run=slot.as_mut().filter(|r|r.status.id==id&&r.status.phase=="running").ok_or("遊戲已結束。")?;
-    let input=run.input.as_mut().ok_or("此遊戲使用獨立視窗。")?;
-    writeln!(input,"{kind} {a} {b} {c}").map_err(|e|e.to_string())
 }
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .manage(Launcher { root: Arc::new(Mutex::new(library::detect_root())), ..Default::default() })
-        .invoke_handler(tauri::generate_handler![select_exe, check_wine, launch_exe, get_run_status, library_list, library_import, library_select, library_choose_folder, game_frame, game_input])
+        .invoke_handler(tauri::generate_handler![select_exe, check_wine, launch_exe, get_run_status, library_list, library_import, library_select, library_choose_folder, library_pick_zip])
         .run(tauri::generate_context!())
         .expect("Unable to start Win11React Wine");
 }

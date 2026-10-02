@@ -7,12 +7,11 @@ function call(command, args) {
 // Import UI depends only on candidates, leaving room for importArchive/scanCandidates.
 export const selectExe = () => call("select_exe");
 export const checkWine = winePath => call("check_wine", { winePath: winePath.trim() || null });
-export const launchExe = (winePath, embedded=true) => call("launch_exe", { winePath: winePath.trim() || null, embedded });
+export const launchExe = winePath => call("launch_exe", { winePath: winePath.trim() || null });
 export const getRunStatus = () => call("get_run_status");
 export const errorText = error => typeof error === "string" ? error : error?.message || String(error);
 export const libraryList = () => call("library_list");
 export const importZip = name => call("library_import", { name });
 export const selectLibraryExe = (id, relativePath) => call("library_select", { id, relativePath });
 export const chooseLibraryFolder = () => call("library_choose_folder");
-export const gameFrame = id => call("game_frame", { id });
-export const gameInput = (id, kind, a=0, b=0, c=0) => call("game_input", { id, kind, a, b, c });
+export const pickZip = () => call("library_pick_zip");

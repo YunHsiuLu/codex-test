@@ -1,21 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { ToolBar } from "../../../utils/general";
-import { nativeAvailable, selectExe, checkWine, launchExe, getRunStatus, errorText, libraryList, importZip, selectLibraryExe, chooseLibraryFolder } from "../../../features/games/bridge";
+import { nativeAvailable, selectExe, checkWine, launchExe, getRunStatus, errorText, libraryList, importZip, selectLibraryExe, chooseLibraryFolder, pickZip } from "../../../features/games/bridge";
 import "../../../features/games/games.scss";
-import { GameScreen } from "../../../features/games/GameScreen";
 
 export const WindowsGames = () => {
   const wnapp = useSelector(state => state.apps.games);
   const [catalog, setCatalog] = useState({root:null, entries:[]});
-  const [embedded, setEmbedded] = useState(true);
   const [libraryError, setLibraryError] = useState("");
   const [game, setGame] = useState(null);
   const [wine, setWine] = useState(null);
   const [winePath, setWinePath] = useState(() => localStorage.getItem("games.winePath") || "");
   const [run, setRun] = useState(null);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("選擇已解壓縮的遊戲主程式，保留同資料夾的素材與 DLL。");
+  const [notice, setNotice] = useState("匯入下載好的 ZIP，再選擇主程式遊玩。");
   const [busy, setBusy] = useState("");
   const actionInFlight = useRef(false);
   const native = nativeAvailable();
@@ -26,6 +24,13 @@ export const WindowsGames = () => {
     setBusy(kind); setError("");
     try { await action(); } catch (e) { setError(errorText(e)); }
     finally { actionInFlight.current = false; setBusy(""); }
+  }
+  async function finishImport(id) {
+    if(!id){setNotice("已取消匯入，保留原本遊戲庫。");return;}
+    const next=await libraryList();setCatalog(next);
+    const imported=next.entries.find(entry=>entry.id===id);
+    if(imported?.candidates.length===1)setGame(await selectLibraryExe(id,imported.candidates[0].relativePath));
+    setNotice("已匯入。選擇遊戲主程式後，按「遊玩遊戲」在 Mac 開啟。");
   }
   async function refreshWine() {
     setWine(null);
@@ -62,21 +67,24 @@ export const WindowsGames = () => {
     <ToolBar app={wnapp.action} icon={wnapp.icon} size={wnapp.size} name="Windows Games" />
     <div className="windowScreen" data-dock="true">
       <main className="games-content win11Scroll">
-        <div className="games-heading"><span className="games-eyebrow">WIN11REACT · MACOS</span><h1>你的 Windows 小遊戲</h1><p>ZIP 放進專案資料夾，就會在這裡出現。匯入後選擇遊戲主程式。</p></div>
+        <div className="games-heading"><span className="games-eyebrow">WIN11REACT · MACOS</span><h1>你的 Windows 小遊戲</h1><p>匯入下載好的 ZIP，透過 Wine 在 Mac 的獨立視窗遊玩。</p></div>
         {!native && <div className="games-banner">網頁預覽模式。請使用 macOS App 進行選檔與啟動。</div>}
-        {run?.embedded && <GameScreen key={run.id} run={run} onError={setError} />}
+        <div className="games-actions games-import-action"><button className="games-primary" disabled={!native||!!busy||running} onClick={()=>perform("import",async()=>{
+          setNotice("請選擇下載好的遊戲 ZIP，選定後會自動解壓縮與掃描…");await finishImport(await pickZip());
+        })}>{busy==="import"?"正在匯入…":"選擇 ZIP 匯入"}</button></div>
+        {busy==="import" && <div className="games-status" role="status">正在選取／匯入遊戲，請稍候…</div>}
         {error && <div className="games-error" role="alert">{error}</div>}
         <section className="games-card" aria-label="本機遊戲庫">
           <div className="games-row"><h2>本機遊戲庫</h2><button disabled={!native||!!busy||running} onClick={()=>perform("folder",async()=>{await chooseLibraryFolder();setCatalog(await libraryList());})}>選擇資料夾</button></div>
           <p className="games-path">{catalog.root || "開啟原生 App 後，選擇遊戲所在資料夾。"}</p>
-          <p>每３秒自動更新。ZIP 會先列在待匯入區，匯入不會自動執行。</p>
+          <p>可從下載項目直接選擇 ZIP 匯入；也會每３秒掃描上方資料夾。匯入不會自動執行。</p>
           {libraryError && <div className="games-error">{libraryError}</div>}
-          {!catalog.entries.length && <div className="games-empty">把 .zip 或 .exe 放在上方資料夾的第一層，遊戲就會出現在這裡。</div>}
+          {!catalog.entries.length && <div className="games-empty">按「選擇 ZIP 匯入」加入遊戲，或把 .zip／.exe 放在上方資料夾。</div>}
           {catalog.entries.map(entry=><div className="library-entry" key={entry.id}>
             <div className="games-row"><div><b>{entry.name}</b><span className="games-chip">{entry.kind==="zip"?"ZIP・待匯入":entry.kind==="game"?"已匯入":"EXE"}</span></div>
-              {entry.kind==="zip" && <button disabled={!!busy||running} onClick={()=>perform("import",async()=>{setNotice("正在解壓縮與尋找遊戲主程式…");const id=await importZip(entry.name);const next=await libraryList();setCatalog(next);const imported=next.entries.find(e=>e.id===id);if(imported?.candidates.length===1)setGame(await selectLibraryExe(id,imported.candidates[0].relativePath));setNotice("已匯入。請選擇下方的 EXE，再按啟動遊戲。");})}>{busy==="import"?"匯入中…":"匯入 ZIP"}</button>}
+              {entry.kind==="zip" && <button disabled={!!busy||running} onClick={()=>perform("import",async()=>{setNotice("正在解壓縮與尋找遊戲主程式…");await finishImport(await importZip(entry.name));})}>{busy==="import"?"匯入中…":"匯入 ZIP"}</button>}
             </div>
-            {entry.candidates.map(candidate=><button className="library-exe" key={candidate.relativePath} disabled={!!busy||running} onClick={()=>perform("select",async()=>{setGame(await selectLibraryExe(entry.id,candidate.relativePath));setNotice("已選擇主程式，按啟動遊戲開始。");const content=document.querySelector("#gamesApp .games-content"),section=document.getElementById("game-selection");if(content&&section)content.scrollTo({top:content.scrollTop+section.getBoundingClientRect().top-content.getBoundingClientRect().top,behavior:"smooth"});})}>{candidate.relativePath}　<span>{candidate.architecture}</span></button>)}
+            {entry.candidates.map(candidate=><button className="library-exe" key={candidate.relativePath} disabled={!!busy||running} onClick={()=>perform("select",async()=>{setGame(await selectLibraryExe(entry.id,candidate.relativePath));setNotice("已選擇主程式，按遊玩遊戲開始。");const content=document.querySelector("#gamesApp .games-content"),section=document.getElementById("game-selection");if(content&&section)content.scrollTo({top:content.scrollTop+section.getBoundingClientRect().top-content.getBoundingClientRect().top,behavior:"smooth"});})}>{candidate.relativePath}　<span>{candidate.architecture}</span></button>)}
           </div>)}
         </section>
         <section className="games-card" aria-label="遊戲檔案" id="game-selection">
@@ -84,19 +92,17 @@ export const WindowsGames = () => {
           <h2>{game?.name || "尚未選擇 EXE"}</h2>
           <p className="games-path">{game ? game.path : "可從上方遊戲庫選擇，或直接選取本機 .exe。"}</p>
           {game && <span className="games-chip">{game.architecture}</span>}
-          <label className="games-mode"><input type="checkbox" checked={embedded} disabled={running||!!busy} onChange={e=>setEmbedded(e.target.checked)} /> 在 Win11React 視窗內顯示（實驗性，x64 Win32／GDI）</label>
           <div className="games-actions">
             <button disabled={!native || !!busy || running} onClick={() => perform("select", async () => {
               const selected = await selectExe();
-              if (selected) { setGame(selected); setNotice("已選擇遊戲。按「啟動遊戲」開始執行。"); }
+              if (selected) { setGame(selected); setNotice("已選擇遊戲。按「遊玩遊戲」開始執行。"); }
               else setNotice("已取消選檔，保留原本選擇。");
             })}>{busy === "select" ? "選檔中…" : "選擇 EXE"}</button>
             <button className="games-primary" disabled={!native || !game || !!busy || running} onClick={() => perform("launch", async () => {
               setNotice("正在檢查 Wine 並準備啟動…");
-              setRun(await launchExe(winePath,embedded));
-              document.querySelector("#gamesApp .games-content")?.scrollTo({top:0,behavior:"smooth"});
-              setNotice("啟動要求已送出，執行狀態與診斷輸出顯示於下方。");
-            })}>{busy === "launch" ? "啟動中…" : running ? "Wine 執行中" : "啟動遊戲"}</button>
+              setRun(await launchExe(winePath));
+              setNotice("已交由 Wine 開啟 Mac 獨立視窗；請切換到遊戲視窗遊玩。");
+            })}>{busy === "launch" ? "啟動中…" : running ? "Wine 執行中" : "遊玩遊戲"}</button>
           </div>
         </section>
         <section className="games-card" aria-label="Wine 環境">
@@ -116,7 +122,7 @@ export const WindowsGames = () => {
           <details><summary>Wine 環境位置</summary><p className="games-path">{run.prefix}</p></details>
           <label>診斷輸出（最近 32 KB）</label><pre>{run.output || "目前沒有輸出。"}</pre>
         </section>}
-        <p className="games-footnote">內嵌顯示會在選定的遊戲程序載入本專案的顯示元件。DirectX、全螢幕、特殊輸入及另外啟動子程序的遊戲尚未支援；可取消勾選改用 Wine 獨立視窗。請只執行可信任的 EXE。</p>
+        <p className="games-footnote">遊戲會在 Mac 上開啟獨立視窗；視窗大小與全螢幕由遊戲本身控制。結束時請關閉遊戲視窗。</p>
       </main>
     </div>
   </div>;

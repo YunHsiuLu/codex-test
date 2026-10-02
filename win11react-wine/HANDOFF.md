@@ -199,3 +199,54 @@ npm run app:dev
 最終原生 UI 追加驗證：修正選取後捲動不再影響整個桌面；重啟後選同一已匯入 Click Game，滑鼠加分至００１，空白鍵加分至００２，按遊戲內 Test failure 後 UI 正確顯示退出碼７。遊戲結束後隱藏 canvas，改顯示退出結果，避免最後一幀在視窗銷毀時變黑造成誤解。
 
 收尾驗證：最後打包版再次啟動同一遊戲，按 Win11React「結束遊戲」，UI 顯示「遊戲已正常結束。退出碼：0」，canvas 正確收起，沒有殘留黑畫面。保留已開啟的最終 App 視窗及 Sample Games.zip；測試遊戲已結束，沒有背景 dev server。這台不需要追加依賴。所有程式修改、測試與文件都在 `/Users/lvyunxiu/codex test/win11react-wine` 內。
+
+## 2026-10-01 追加：依使用者要求改回 Wine 獨立視窗
+
+最新需求取代上一節內嵌方向：Mac 下載 ZIP → Win11React App 匯入 ZIP → 按遊玩時由 Wine 在 Mac 開啟獨立視窗。使用者認為內嵌畫面太小。
+
+完成：
+
+- Windows Games 移除內嵌 canvas／模式勾選；「遊玩遊戲」只呼叫直接 Wine EXE 啟動。
+- Rust `launch_exe` 移除 embedded 參數、host／DLL 注入、frame／input 命令及狀態。直接使用 `runtime::spawn_game`，保留 cwd、每 EXE prefix、診斷與退出碼。
+- dev／build 不再編譯 Windows host，App bundle 不再帶 EXE／DLL 資源。實查最後 App Resources 只有 icon.icns。
+- 歷史 Windows host、建置／測試腳本保留作實驗參考，與目前 App 無關；退休畫面原始碼移為 `native/windows-host/GameScreen.jsx.reference`，不再在前端來源引用。
+- 新增原生 `library_pick_zip` 與醒目「選擇 ZIP 匯入」按鈕。用 macOS 選檔框選下載好的 ZIP，路徑只由 native dialog 提供，前端不傳任意路徑。
+- library::import_from_path 重用既有快照、安全解壓、候選掃描及持久化流程；原 ZIP 不搬走、不改寫，不需要先複製到專案根目錄。
+- 保留原來根目錄 ZIP／EXE 自動發現、已匯入遊戲／存檔。單一候選自動選取，多候選仍由使用者選主程式。
+- README 改寫為目前操作方式與依賴；沒有增加依賴、沒有修改全域設定、沒有 Git 上傳。
+
+驗證：
+
+- `npm run test:native` 十項全部通過：新增「從遊戲庫以外資料夾匯入 ZIP，原檔不變，刪除原 ZIP 後遊戲仍可解析」。記錄 `work/test-standalone.log`。
+- `npm run app:build` 成功，ARM64 App 約24.57 MiB；`work/build-standalone.log`。
+- 實際原生 UI 開啟 ZIP 選檔，選 `work/import-demo/Downloaded Game.zip`（自製 Click Game，位於遊戲庫根目錄之外），成功匯入清單，保留原有 Sample Games。
+- 從已匯入 Click Game 按「遊玩遊戲」，確認真正 Wine 直接執行解壓後 EXE，沒有 wine-host／顯示 DLL／React canvas。程序命令為 `.local-data/library/c49edeaab1a86c7af52dd14cf587de0dfc207c2aa2fc913f1d0ea45d3b57acdf/files/Click Game.exe`。
+- 電腦操作工具的應用程式清單仍未辨識 Wine 遊戲視窗，已詢問使用者是否看見獨立 Click Game 視窗；不能只以程序啟動當作 GUI 可見／可操作已驗證。
+
+啟動維持 `npm run app:dev`；打包 `npm run app:build`。資料位置與新電腦安裝見 README。遊戲結束請關閉其原生視窗，App 沒有強制停止／程序樹追蹤。視窗大小與全螢幕由遊戲／Wine 控制，未保證所有游戏相容。先前內嵌１０ fps／x64-only限制已不適用目前啟動器，x86／x64 仍須個別驗證 Wine 相容性。
+
+使用者已回覆「有看到獨立遊戲視窗」，補足 Wine GUI 可見性的實機確認。此次完整流程已確認：原生選 ZIP → 解壓與清單 → 選 EXE → 直接 Wine 啟動 → 使用者看到 Mac 獨立遊戲視窗。保留新版 Win11React 與本次 Click Game 獨立視窗供使用者操作，不主動終止；不宣稱本次已由自動工具驗證該獨立視窗鍵鼠互動。
+
+## 2026-10-01 追加：自製貪食蛇 EXE／ZIP
+
+使用者要求自行產生簡單貪食蛇 Windows EXE、包成 ZIP，再從 Win11React 開啟。全程在本專案內開發，沒有新增全域依賴或進行 Git 上傳。
+
+完成：
+
+- `games/snake/snake.c`：原生 Win32／GDI 視窗，棋盤、蛇與食物、分數／本次最高分、逐漸加速、遊戲結束／勝利提示、可調整視窗大小與雙緩衝繪製。
+- `games/snake/logic.h`：獨立純 C 遊戲邏輯；方向鍵／WASD、Space 開始／暫停、R 重來、Esc 關閉。失焦自動暫停，初次開啟等待按鍵。
+- `scripts/build-snake.mjs` 與 `npm run game:snake`：以現有 Apple Clang 交叉編譯 x86_64 Windows PE，Rust 附帶 rust-lld 連結，使用自製 Win32 import symbol lists，沒有依賴 Windows SDK／CRT／額外 DLL。
+- 產物為根目錄 `Snake.zip`，只含 `Snake/Snake.exe`、`Snake/README.txt` 與目錄項；EXE 為 7680 bytes。`dist-games/` 加入忽略，ZIP 沿用既有忽略規則。原始碼可重新建置。
+- README 補上操作與跨電腦建置方式。App 本身仍使用已驗證的 Wine 獨立視窗流程，本次未改 App 前後端。
+
+驗證：
+
+- `npm run game:snake` 成功，`work/build-snake.log` 保存結果；本機 C 邏輯測試通過逆向限制、單 tick 轉向緩衝、成長／分數、食物空格、牆／身體碰撞、允許進入本 tick 移出的尾格、滿盤勝利。
+- `file` 確認真正 PE32+ GUI x86-64 Windows EXE；`unzip -l` 確認 ZIP 不含 macOS AppleDouble／資源叉垃圾檔。
+- 已用真實 Win11React 原生 ZIP 選檔框選根目錄 `Snake.zip`，畫面顯示已匯入、`Snake/Snake.exe` x64，按「遊玩遊戲」後 UI 顯示 Wine 執行中。
+- 已確認直接運行 `.local-data/library/31e02633f0a07e034166b19ab2af0fd72d5d731a404b59c71137d623dd436d59/files/Snake/Snake.exe`，當時 PID 11865。沒有內嵌 host 或 canvas。
+- CUA 清單仍無法辨識 Wine 遊戲視窗；已詢問使用者是否看到 Snake 且方向鍵能玩。等待回覆前，不將鍵鼠／實際畫面稱為已驗證。先前 Click Game 的視窗可見性已由使用者確認，但不替代本次 Snake 驗證。
+
+使用者最終回覆「有看到，方向鍵能正常玩」，確認本次 Snake 獨立視窗及方向鍵遊玩正常。驗證完整涵蓋 Mac 交叉編譯 → ZIP → 原生 App 匯入 → Wine 啟動 → 使用者實際遊玩。
+
+續作／啟動：在本專案執行 `npm run game:snake` 重建 ZIP；`npm run app:dev` 開啟啟動器，匯入根目錄 ZIP。這台無須增加依賴，新電腦依 README 設定 Node.js／Xcode CLT／Rust，遊玩另需 Wine／Rosetta。保留當前 Snake 程序與啟動器供使用者試玩。最高分未持久化、尚無音效，Windows 實機未驗證；不影響本次 Mac Wine 示範目標。

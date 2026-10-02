@@ -36,10 +36,6 @@
     ],
     "macOS": {
       "minimumSystemVersion": "12.0"
-    },
-    "resources": [
-      "resources/wine-host.exe",
-      "resources/wine-display.dll"
-    ]
+    }
   }
 }

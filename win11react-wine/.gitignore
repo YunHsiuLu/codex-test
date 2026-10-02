@@ -38,3 +38,5 @@ yarn-error.log*
 /src-tauri/resources/*.exe
 /src-tauri/resources/*.dll
 /src-tauri/resources/*.lib
+
+/dist-games/

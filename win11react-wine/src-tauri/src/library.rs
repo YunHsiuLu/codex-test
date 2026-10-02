@@ -86,7 +86,12 @@ fn extract(file:fs::File,dest:&Path)->Result<(),String> {
     } Ok(())
 }
 pub fn import(root:&Path,name:&str)->Result<String,String> {
-    single_name(name)?;let path=root.join(name);
+    single_name(name)?;
+    import_from_path(root,&root.join(name))
+}
+// The native file picker authorizes this source; the frontend never supplies an arbitrary path.
+pub fn import_from_path(root:&Path,path:&Path)->Result<String,String> {
+    let name=path.file_name().and_then(|n|n.to_str()).ok_or("ZIP 檔名無法辨識。")?;
     if !path.extension().is_some_and(|e|e.eq_ignore_ascii_case("zip")){return Err("請選擇 ZIP。".into());}
     let meta=fs::symlink_metadata(&path).map_err(|e|e.to_string())?;
     if !meta.is_file()||meta.len()>MAX_ARCHIVE{return Err("ZIP 必須是一般檔案且不超過 2 GiB。".into());}
@@ -129,6 +134,15 @@ pub fn resolve(root:&Path,id:&str,relative:&str)->Result<importer::GameCandidate
         fs::write(game.path.parent().unwrap().join("save.txt"),b"keep").unwrap();import(d.path(),"Game.zip").unwrap();assert!(game.path.parent().unwrap().join("save.txt").is_file());
         fs::remove_file(d.path().join("Game.zip")).unwrap();assert_eq!(list(Some(d.path())).unwrap().entries.len(),1);
         assert!(resolve(d.path(),&id,"../../unlisted.exe").is_err());
+    }
+
+    #[test] fn picker_import_from_another_folder_preserves_original(){
+        let root=tempfile::tempdir().unwrap();let downloads=tempfile::tempdir().unwrap();
+        let mut pe=vec![0;88];pe[..2].copy_from_slice(b"MZ");pe[60]=64;pe[64..68].copy_from_slice(b"PE\0\0");pe[68..70].copy_from_slice(&0x8664u16.to_le_bytes());pe[86]=2;
+        let source=downloads.path().join("Downloaded Game.zip");archive(&source,&[("Game.exe",&pe),("data.txt",b"assets")]);let before=fs::read(&source).unwrap();
+        let id=import_from_path(root.path(),&source).unwrap();assert_eq!(before,fs::read(&source).unwrap());assert!(!root.path().join("Downloaded Game.zip").exists());
+        assert_eq!(list(Some(root.path())).unwrap().entries.len(),1);assert!(resolve(root.path(),&id,"Game.exe").is_ok());
+        fs::remove_file(source).unwrap();assert!(resolve(root.path(),&id,"Game.exe").is_ok());
     }
 
 }

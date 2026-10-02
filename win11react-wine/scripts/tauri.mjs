@@ -1,4 +1,4 @@
-import { spawn, execFileSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -17,7 +17,6 @@ if (process.argv[2] === "dev" && existsSync(portableWine)) env.WIN11_WINE ||= po
 const testing = process.argv[2] === "test";
 const executable = testing ? "cargo" : path.join(root, "node_modules/.bin/tauri");
 const args = testing ? ["test", "--manifest-path", "src-tauri/Cargo.toml", ...process.argv.slice(3)] : process.argv.slice(2);
-if (!testing) execFileSync(process.execPath, ["scripts/build-wine-host.mjs"], {cwd:root,env,stdio:"inherit"});
 const child = spawn(executable, args, { cwd: root, env, stdio: "inherit" });
 child.on("error", error => { console.error(error.message); process.exitCode = 1; });
 child.on("exit", code => { process.exitCode = code ?? 1; });
