@@ -57,9 +57,9 @@
         "lab": {
           ".read": "$room.matches(/^[A-Z0-9]{4,12}$/)",
           ".write": "auth != null && auth.uid == 'sjOawvV1pKTvH9xcwKfpQg0Vc2C3' && auth.token.firebase.sign_in_provider == 'password' && $room.matches(/^[A-Z0-9]{4,12}$/)",
-          ".validate": "newData.hasChildren(['mode','operation','a','b','particle','clock']) && ((newData.child('mode').val() != 'projectile' && newData.child('mode').val() != 'oscillator') || newData.hasChild('mechanics'))",
+          ".validate": "newData.hasChildren(['mode','operation','a','b','particle','clock']) && ((newData.child('mode').val() != 'projectile' && newData.child('mode').val() != 'oscillator') || newData.hasChild('mechanics')) && (newData.child('mode').val() != 'comparison' || newData.hasChild('comparison'))",
           "mode": {
-            ".validate": "newData.val() == 'vectors' || newData.val() == 'algebra' || newData.val() == 'lorentz' || newData.val() == 'projectile' || newData.val() == 'oscillator'"
+            ".validate": "newData.val() == 'vectors' || newData.val() == 'algebra' || newData.val() == 'lorentz' || newData.val() == 'projectile' || newData.val() == 'oscillator' || newData.val() == 'comparison'"
           },
           "operation": {
             ".validate": "newData.val() == 'add' || newData.val() == 'subtract' || newData.val() == 'cross' || newData.val() == 'projection' || newData.val() == 'angle'"
@@ -137,7 +137,7 @@
             }
           },
           "clock": {
-            ".validate": "newData.hasChildren(['playing','elapsed','startedAt']) && newData.child('elapsed').val() <= ((newData.parent().child('mode').val() == 'projectile' || newData.parent().child('mode').val() == 'oscillator') ? newData.parent().child('mechanics/duration').val() : newData.parent().child('particle/duration').val())",
+            ".validate": "newData.hasChildren(['playing','elapsed','startedAt']) && newData.child('elapsed').val() <= (newData.parent().child('mode').val() == 'comparison' ? 1000 : ((newData.parent().child('mode').val() == 'projectile' || newData.parent().child('mode').val() == 'oscillator') ? newData.parent().child('mechanics/duration').val() : newData.parent().child('particle/duration').val()))",
             "playing": {
               ".validate": "newData.isBoolean()"
             },
@@ -188,6 +188,48 @@
             },
             "scale": {
               ".validate": "newData.isNumber() && newData.val() >= 0.001 && newData.val() <= 10"
+            },
+            "$other": {
+              ".validate": false
+            }
+          },
+          "comparison": {
+            ".validate": "newData.hasChildren(['gravity','rate','scale','objects'])",
+            "gravity": {
+              ".validate": "newData.isNumber() && newData.val() >= 0.1 && newData.val() <= 30"
+            },
+            "rate": {
+              ".validate": "newData.isNumber() && newData.val() >= 0.05 && newData.val() <= 10"
+            },
+            "scale": {
+              ".validate": "newData.isNumber() && newData.val() >= 0.01 && newData.val() <= 10"
+            },
+            "objects": {
+              ".validate": "newData.hasChildren(['p0','p1'])",
+              "$id": {
+                ".validate": "$id.matches(/^p[0-3]$/) && newData.hasChildren(['name','speed','angle','height','x0','delay'])",
+                "name": {
+                  ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"
+                },
+                "speed": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+                },
+                "angle": {
+                  ".validate": "newData.isNumber() && newData.val() >= -90 && newData.val() <= 90"
+                },
+                "height": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+                },
+                "x0": {
+                  ".validate": "newData.isNumber() && newData.val() >= -100 && newData.val() <= 100"
+                },
+                "delay": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 30"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              }
             },
             "$other": {
               ".validate": false

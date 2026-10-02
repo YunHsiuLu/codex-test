@@ -3,3 +3,15 @@ select{display:block;width:100%;font:inherit;color:#edf3ff;background:#0c1525;bo
 #student-qr{display:block;max-width:100%;height:auto!important;margin:16px auto;border-radius:10px}#scene-library h2{margin-bottom:12px}.file-label{display:block;margin-top:16px}#scene-import{font-size:12px}#mechanics-form>label{margin-top:14px}#simulation-controls{margin-top:18px}#simulation-controls:empty{display:none}.view-controls{display:flex;flex-wrap:wrap;gap:5px}.stage-toolbar{flex-wrap:wrap}.stage-toolbar>div{display:flex;flex-wrap:wrap;gap:5px}.stage-toolbar button{white-space:nowrap}.axis-key{bottom:110px}@media(max-width:620px){.axis-key{bottom:125px}.stage-heading p{max-width:230px}}
 
 .arrow-options label[hidden]{display:none!important}
+
+#projectile-components { padding: 12px; border: 1px solid #405671; border-radius: 12px; margin: 12px 0; background: #0b1220; }
+#component-values { display: block; white-space: pre-line; font-variant-numeric: tabular-nums; line-height: 1.8; color: #e8eef8; }
+[data-arrow="vx"] { accent-color: #ffba69; }
+[data-arrow="vz"] { accent-color: #79aaff; }
+.comparison-table { overflow-x: auto; margin-top: 12px; }
+.comparison-table table { border-collapse: collapse; font-size: .82rem; white-space: nowrap; width: 100%; }
+.comparison-table caption { text-align: left; margin-bottom: 8px; }
+.comparison-table th,.comparison-table td { padding: 8px; border-bottom: 1px solid #405671; text-align: right; }
+.comparison-table th:first-child { text-align: left; }
+#compare-bodies fieldset { border: 1px solid; border-radius: 10px; padding: 10px; margin-top: 12px; }
+#comparison-panel .wide { margin-top: 10px; }

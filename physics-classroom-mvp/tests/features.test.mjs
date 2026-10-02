@@ -1,5 +1,5 @@
 import {gridLayout} from '../src/scene-grid.js';
-import {velocityArrowVector} from '../src/velocity-arrow.js';
+import {velocityArrowVector,projectileVelocityComponents} from '../src/velocity-arrow.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT_LAB, mechanicsAt, flightTime, vec, dot, add, mul, vectorRelation, simulationTime, simulationDuration, validateLab } from '../src/physics.js';
@@ -65,4 +65,19 @@ test('adaptive reference grid covers negative and large 3D trajectories with bou
    assert.ok((grid.upper[k]-grid.lower[k])/grid.step<=40);
   }
  }
+});
+
+
+test('projectile components are orthogonal and sum to the instantaneous velocity at every phase',()=>{
+ const p={...DEFAULT_LAB.mechanics,height:0,speed:20,angle:60},apex=20*Math.sin(Math.PI/3)/p.gravity;
+ for(const t of [0,apex/2,apex,apex*1.5,2*apex]){
+  const velocity=mechanicsAt('projectile',p,t).velocity,{vx,vz}=projectileVelocityComponents(velocity);
+  assert.deepEqual(add(vx,vz),velocity);near(dot(vx,vz),0);near(vx.x,10);
+  const x=velocityArrowVector(vx,2),z=velocityArrowVector(vz,2),total=velocityArrowVector(velocity,2);
+  assert.deepEqual(add(x,z),total);near(x.x,5);
+  if(t<apex)assert.ok(vz.z>0);else if(t>apex)assert.ok(vz.z<0);else near(vz.z,0);
+ }
+ const vertical=projectileVelocityComponents(mechanicsAt('projectile',{...p,angle:90},0).velocity);near(vertical.vx.x,0);
+ const horizontal=projectileVelocityComponents(mechanicsAt('projectile',{...p,angle:0,height:2},0).velocity);near(horizontal.vz.z,0);
+ assert.deepEqual(projectileVelocityComponents(vec()),{vx:vec(),vz:vec()});
 });

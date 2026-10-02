@@ -13,6 +13,7 @@ export function validateSnapshot(value) {
   if(!input)throw new Error('場景缺少模型。');
   // Store a paused scene at its starting time, never an old server timestamp.
   const lab={mode:input.mode,operation:input.operation,a:input.a,b:input.b,particle:structuredClone(input.particle),mechanics:structuredClone(input.mechanics||DEFAULT_LAB.mechanics),clock:{playing:false,elapsed:0,startedAt:0}};
+  if(input.comparison)lab.comparison=structuredClone(input.comparison);
   validateLab(lab);
   const particleKeys=Object.keys(DEFAULT_LAB.particle);
   if(Object.keys(lab.particle).some(k=>!particleKeys.includes(k)))throw new Error('場景含有未知粒子參數。');

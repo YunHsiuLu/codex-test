@@ -1,6 +1,7 @@
+import {BODY_COLORS,comparisonMetrics,comparisonState} from './comparison.js';
 import * as THREE from 'three';
 import {gridLayout} from './scene-grid.js';
-import {velocityArrowVector} from './velocity-arrow.js';
+import {velocityArrowVector,projectileVelocityComponents} from './velocity-arrow.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { validateVector } from './model.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -92,8 +93,8 @@ export function createScene(container) {
       }
     });
   }
-  let vectors={},lab=structuredClone(DEFAULT_LAB),clock=()=>Date.now(),tick=()=>{},particle,trail,dynamic=[],lastTick=0;
-  const visible={E:true,B:true,v:true,vxB:false,FE:false,FB:false,F:true};
+  let vectors={},lab=structuredClone(DEFAULT_LAB),clock=()=>Date.now(),tick=()=>{},particle,trail,dynamic=[],componentGuides=[],comparisonBodies=[],comparisonFocus='p0',currentView='3d',lastTick=0;
+  const visible={E:true,B:true,v:true,vx:true,vz:true,vxB:false,FE:false,FB:false,F:true,predictions:true};
   let dragId=null,dragPart='components',dragAllowed=false,onDrag=()=>{},dragStart=null;
   const handle=new THREE.Object3D();scene.add(handle);
   const transform=new TransformControls(camera,renderer.domElement);transform.setMode('translate');transform.setSpace('world');scene.add(transform.getHelper());
@@ -118,7 +119,7 @@ export function createScene(container) {
   });
   function line(points,color,dashed=false){const geometry=new THREE.BufferGeometry().setFromPoints(points.map(V));const material=dashed?new THREE.LineDashedMaterial({color,dashSize:.2,gapSize:.1}):new THREE.LineBasicMaterial({color});const line=new THREE.Line(geometry,material);line.computeLineDistances();objects.add(line);}
   function rebuild(){
-    clear();particle=null;trail=null;dynamic=[];
+    clear();particle=null;trail=null;dynamic=[];componentGuides=[];comparisonBodies=[];delete container.dataset.comparisonStates;delete container.dataset.velocityComponents;
     if(lab.mode==='vectors')for(const v of Object.values(vectors))arrow(v.origin,v.components,v.color,v.label);
     if(lab.mode==='algebra'){
       const a=vectors[lab.a],b=vectors[lab.b];
@@ -149,64 +150,94 @@ export function createScene(container) {
       const activeGeometry=geometry.clone();trail=new THREE.Line(activeGeometry,new THREE.LineBasicMaterial({color:'#57dfc2',depthTest:false}));objects.add(trail);
       if(lab.mode==='oscillator'){const equilibrium=label('平衡點 x＝0','#a8b7ca');equilibrium.position.set(0,0,.4);objects.add(equilibrium);}
       particle=new THREE.Mesh(new THREE.SphereGeometry(.13,20,12),new THREE.MeshBasicMaterial({color:'#fff2cf'}));objects.add(particle);
-      for(const [key,color] of [['E','#f4d66f'],['B','#79aaff'],['v','#57dfc2'],['vxB','#76d2ff'],['FE','#ffad6b'],['FB','#d28afa'],['F','#ff738a']])dynamic.push({key,...arrow(vec(),vec(1,0,0),color,({v:'v 速度',E:'E 電場',B:'B 磁場',vxB:'v×B',FE:'電力 qE',FB:'磁力 qv×B',F:'F 合力'})[key])});
+      for(const [key,color] of [['E','#f4d66f'],['B','#79aaff'],['v','#57dfc2'],['vxB','#76d2ff'],['FE','#ffad6b'],['FB','#d28afa'],['F','#ff738a'],...(lab.mode==='projectile'?[['vx','#ffba69'],['vz','#79aaff']]:[])])dynamic.push({key,...arrow(vec(),vec(1,0,0),color,({v:'v 合速度',vx:'v_x 水平',vz:'v_z 垂直',E:'E 電場',B:'B 磁場',vxB:'v×B',FE:'電力 qE',FB:'磁力 qv×B',F:'F 合力'})[key])});
+    }
+    if(lab.mode==='comparison'){
+      const c=lab.comparison;
+      for(const [id,b] of Object.entries(c.objects)){
+        const metrics=comparisonMetrics(c,b),color=BODY_COLORS[id],points=[];
+        for(let i=0;i<=300;i++){const point=V(mul(comparisonState(c,b,b.delay+metrics.flight*i/300).position,c.scale));points.push(point);contentBounds.expandByPoint(point);}
+        const geometry=new THREE.BufferGeometry().setFromPoints(points);
+        const prediction=new THREE.Line(geometry,new THREE.LineBasicMaterial({color,transparent:true,opacity:.35}));objects.add(prediction);
+        const trace=new THREE.Line(geometry.clone(),new THREE.LineBasicMaterial({color}));objects.add(trace);
+        const dot=new THREE.Mesh(new THREE.SphereGeometry(.18,16,10),new THREE.MeshBasicMaterial({color}));objects.add(dot);
+        const name=label(b.name,color);objects.add(name);
+        const arrows={v:arrow(vec(),vec(1),color,b.name+' v'),vx:arrow(vec(),vec(1),'#ffba69',b.name+' v_x'),vz:arrow(vec(),vec(1),'#79aaff',b.name+' v_z')};
+        comparisonBodies.push({id,b,metrics,prediction,trace,dot,name,arrows});
+      }
+    }
+    if(lab.mode==='projectile'){
+      for(const color of ['#79aaff','#ffba69']){
+        const geometry=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]);
+        const guide=new THREE.Line(geometry,new THREE.LineDashedMaterial({color,dashSize:.15,gapSize:.1,transparent:true,opacity:.8}));
+        objects.add(guide);componentGuides.push(guide);
+      }
     }
     rebuildGrid();syncHandle();
     container.dataset.vectorCount=String(Object.keys(vectors).length);container.dataset.mode=lab.mode;
   }
   const observer=new ResizeObserver(()=>{const {width,height}=container.getBoundingClientRect();if(width&&height){camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);}});observer.observe(container);
   renderer.setAnimationLoop(()=>{
+    if(comparisonBodies.length){
+      const t=simulationTime(lab,clock()),c=lab.comparison,states={};
+      for(const body of comparisonBodies){
+        const state=comparisonState(c,body.b,t),position=V(mul(state.position,c.scale)),parts={v:state.velocity,...projectileVelocityComponents(state.velocity)};
+        body.dot.position.copy(position);body.dot.scale.setScalar(Math.max(1,unitsPerPixel(position)*7/.18));body.name.position.copy(position);
+        body.prediction.visible=visible.predictions;
+        body.trace.visible=t>=body.b.delay;
+        body.trace.geometry.setDrawRange(0,Math.floor(Math.min(1,Math.max(0,(t-body.b.delay)/(body.metrics.flight||1)))*300)+1);
+        for(const [key,{arrow:a,label:l}] of Object.entries(body.arrows)){
+          const n=norm(parts[key]),shown=visible[key]&&n>1e-12&&(key==='v'||body.id===comparisonFocus);a.visible=l.visible=shown;
+          if(shown){const scaled=velocityArrowVector(parts[key],c.scale);a.position.copy(position);a.setDirection(V(parts[key]).normalize());a.setLength(norm(scaled));l.position.copy(position).add(V(scaled));}
+        }
+        states[body.id]=state;
+      }
+      if(performance.now()-lastTick>100){tick(t,{});lastTick=performance.now();container.dataset.time=String(t);container.dataset.comparisonStates=JSON.stringify(states);}
+    }
     if(particle){
       const t=simulationTime(lab,clock()),p=simulationParameters(lab),s=stateAt(lab,t),position=V(mul(s.position,p.scale));particle.position.copy(position);
       const fields=isMechanics(lab)?{E:vec(),B:vec(),v:s.velocity,vxB:vec(),FE:vec(),FB:vec(),F:s.force}:{E:p.electric,B:p.field,v:s.velocity,vxB:s.vxB,FE:s.electricForce,FB:s.magneticForce,F:s.force};
+      if(lab.mode==='projectile')Object.assign(fields,projectileVelocityComponents(s.velocity));
+      const components={};
       dynamic.forEach(({key,arrow:a,label:l},i)=>{
-        const n=norm(fields[key]),proportional=key==='v'&&isMechanics(lab),length=proportional?norm(velocityArrowVector(fields[key],p.scale)):Math.max(1.5+i*.28,unitsPerPixel(position)*(48+i*7)),shown=visible[key]&&(proportional?n>1e-12:n>0);a.visible=l.visible=shown;
+        const n=norm(fields[key]),proportional=['v','vx','vz'].includes(key)&&isMechanics(lab),length=proportional?norm(velocityArrowVector(fields[key],p.scale)):Math.max(1.5+i*.28,unitsPerPixel(position)*(48+i*7)),shown=visible[key]&&(proportional?n>1e-12:n>0);a.visible=l.visible=shown;
         if(shown){const d=V(fields[key]).normalize();a.position.copy(position);a.setDirection(d);a.setLength(length);l.position.copy(position).addScaledVector(d,length).add(new THREE.Vector3(0,.2+i*.06,0));}
+        if(key==='vx'||key==='vz')components[key]={length:shown?length:0,visible:shown,velocity:fields[key],origin:position.toArray()};
         if(key==='v')container.dataset.velocityArrow=JSON.stringify({length:shown?length:0,visible:shown,velocity:fields[key],origin:position.toArray(),scale:proportional?p.scale*.25:null});
       });
+      if(lab.mode==='projectile'){
+        container.dataset.velocityComponents=JSON.stringify(components);
+        const total=position.clone().add(V(velocityArrowVector(s.velocity,p.scale)));
+        componentGuides.forEach((guide,i)=>{
+          guide.visible=visible.v&&visible.vx&&visible.vz&&norm(fields.vx)>1e-12&&norm(fields.vz)>1e-12;
+          if(!guide.visible)return;
+          const start=position.clone().add(V(velocityArrowVector(fields[i===0?'vx':'vz'],p.scale)));
+          const points=guide.geometry.attributes.position;points.setXYZ(0,start.x,start.y,start.z);points.setXYZ(1,total.x,total.y,total.z);points.needsUpdate=true;
+          guide.geometry.computeBoundingSphere();guide.computeLineDistances();
+          guide.material.dashSize=Math.max(.01,p.scale*.15);guide.material.gapSize=Math.max(.008,p.scale*.1);
+        });
+      }
       trail.geometry.setDrawRange(0,Math.floor((simulationDuration(lab)?t/simulationDuration(lab):0)*(trail.geometry.attributes.position.count-1))+1);
       if(performance.now()-lastTick>100){tick(t,s);lastTick=performance.now();container.dataset.time=String(t);}
     }
     controls.update();updateReadability();renderer.render(scene,camera);container.dataset.camera=JSON.stringify(cameraFingerprint(camera,controls));
   });
+  function fitView(){
+    const box=contentBounds.clone();if(box.isEmpty())return;
+    const center=box.getCenter(new THREE.Vector3()),radius=Math.max(2,box.getSize(new THREE.Vector3()).length()/2);
+    const vfov=THREE.MathUtils.degToRad(camera.fov),hfov=2*Math.atan(Math.tan(vfov/2)*camera.aspect),distance=radius/Math.sin(Math.min(vfov,hfov)/2)*1.2;
+    const direction=currentView==='2d-front'?new THREE.Vector3(0,-1,0):currentView==='2d-side'?new THREE.Vector3(1,0,0):currentView==='2d-top'?new THREE.Vector3(0,0,1):new THREE.Vector3(1,-1,.8).normalize();
+    camera.up.set(0,currentView==='2d-top'?1:0,currentView==='2d-top'?0:1);
+    controls.target.copy(center);camera.position.copy(center).addScaledVector(direction,distance);controls.update();
+  }
   return {
+    focusComparison:id=>{comparisonFocus=id;},
     setDrag:(id,part,allowed,callback)=>{dragId=id;dragPart=part;dragAllowed=allowed;onDrag=callback;syncHandle();},
     update:data=>{vectors=data;rebuild();},
     setLab:(data,now,onTick)=>{lab=data;clock=now;tick=onTick;rebuild();},
     show:(key,on)=>{visible[key]=on;},
-    setView: (viewType) => {
-      controls.reset();
-      switch (viewType) {
-        case '2d-top': // 2D 俯視圖 (XY 平面)
-          camera.position.set(0, 0, 25);
-          controls.target.set(0, 0, 0);
-          controls.enableRotate = false; // 2D 模式下禁止 3D 旋轉
-          break;
-        case '2d-front': // 2D 正視圖 (XZ 平面)
-          camera.position.set(0, -25, 0);
-          controls.target.set(0, 0, 0);
-          controls.enableRotate = false;
-          break;
-        case '2d-side': // 2D 側視圖 (YZ 平面)
-          camera.position.set(25, 0, 0);
-          controls.target.set(0, 0, 0);
-          controls.enableRotate = false;
-          break;
-        case '3d': // 3D 立體視角
-        default:
-          camera.position.set(12, -12, 10);
-          controls.target.set(0, 0, 2);
-          controls.enableRotate = true; // 啟用 3D 旋轉
-          break;
-      }
-      camera.up.set(0, 0, 1);
-      controls.update();
-    },
-    fit:()=>{
-      const box=contentBounds.clone();
-      if(box.isEmpty())return;const center=box.getCenter(new THREE.Vector3()),size=Math.max(3,box.getSize(new THREE.Vector3()).length());
-      controls.target.copy(center);camera.position.copy(center).add(new THREE.Vector3(1,.8,1.2).normalize().multiplyScalar(size*1.5));controls.update();
-    },
-    reset:()=>{controls.enableRotate=true;camera.position.set(12,-12,10);controls.target.set(0,0,2);camera.up.set(0,0,1);controls.update();}
+    setView:type=>{currentView=type;controls.enableRotate=type==='3d';fitView();},
+    fit:()=>fitView(),
+    reset:()=>{currentView='3d';controls.enableRotate=true;camera.position.set(12,-12,10);controls.target.set(0,0,2);camera.up.set(0,0,1);controls.update();}
   };
 }

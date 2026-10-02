@@ -1,3 +1,4 @@
+import {validateComparison,comparisonDuration} from './comparison.js';
 export const AXES = ['x', 'y', 'z'];
 export const vec = (x=0,y=0,z=0) => ({x,y,z});
 export const add = (a,b) => vec(a.x+b.x,a.y+b.y,a.z+b.z);
@@ -12,7 +13,7 @@ export const DEFAULT_LAB = {
   clock:{playing:false,elapsed:0,startedAt:0}
 };
 export function validateLab(lab) {
-  if (!lab || !['vectors','algebra','lorentz','projectile','oscillator'].includes(lab.mode) || !['add','subtract','cross','projection','angle'].includes(lab.operation)) throw new Error('模型設定不正確。');
+  if (!lab || !['vectors','algebra','lorentz','projectile','oscillator','comparison'].includes(lab.mode) || !['add','subtract','cross','projection','angle'].includes(lab.operation)) throw new Error('模型設定不正確。');
   for (const key of ['a','b']) if (!/^v([0-9]|[1-4][0-9])$/.test(lab[key])) throw new Error('請選擇有效向量。');
   const p=lab.particle;
   const bounded=(n,lo,hi)=>Number.isFinite(n)&&n>=lo&&n<=hi;
@@ -21,6 +22,7 @@ export function validateLab(lab) {
   if (Math.abs(p.charge)*norm(p.field)/p.mass*p.duration>200*Math.PI) throw new Error('模擬區間超過１００圈，請縮短模擬時間或減小磁場。');
   for(let i=0;i<=24;i++){const state=particleAt(p,p.duration*i/24);if(norm(state.velocity)>3e7)throw new Error('速度超過光速的十分之一，已超出此非相對論模型；請調整參數。');if(norm(state.position)*p.scale>1000)throw new Error('軌跡超過顯示範圍，請縮短時間或減小顯示倍率。');}
   if (lab.mechanics || ['projectile','oscillator'].includes(lab.mode)) validateMechanics(lab.mechanics,lab.mode);
+  if(lab.comparison||lab.mode==='comparison')validateComparison(lab.comparison);
   const c=lab.clock;
   if (!c||typeof c.playing!=='boolean'||!bounded(c.elapsed,0,simulationDuration(lab))||!bounded(c.startedAt,0,1e15)) throw new Error('播放時間不正確。');
   return lab;
@@ -59,12 +61,12 @@ export function simulationTime(lab,now) {
 }
 
 export const isMechanics = lab => ['projectile','oscillator'].includes(lab.mode);
-export const simulationParameters = lab => isMechanics(lab) ? lab.mechanics : lab.particle;
+export const simulationParameters = lab => lab.mode==='comparison'?lab.comparison:isMechanics(lab) ? lab.mechanics : lab.particle;
 export function flightTime(p) {
   const vz=p.speed*Math.sin(p.angle*Math.PI/180);
   return (vz+Math.sqrt(vz*vz+2*p.gravity*p.height))/p.gravity;
 }
-export const simulationDuration = lab => lab.mode==='projectile' ? Math.min(lab.mechanics.duration,flightTime(lab.mechanics)) : simulationParameters(lab).duration;
+export const simulationDuration = lab => lab.mode==='comparison'?comparisonDuration(lab.comparison):lab.mode==='projectile' ? Math.min(lab.mechanics.duration,flightTime(lab.mechanics)) : simulationParameters(lab).duration;
 export function validateMechanics(p,mode) {
   const ranges={height:[0,100],speed:[0,100],angle:[-90,90],gravity:[.01,100],amplitude:[0,100],omega:[.01,100],phase:[-360,360],mass:[.001,1000],duration:[.01,1000],rate:[.001,100],scale:[.001,10]};
   if(!p || Object.keys(p).some(k=>!ranges[k]))throw new Error('力學參數格式不正確。');

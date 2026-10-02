@@ -1,3 +1,4 @@
+import {comparisonPreset} from '../src/comparison.js';
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import {ref,set,get,remove,update} from 'firebase/database';
 import fs from 'node:fs';
@@ -59,5 +60,15 @@ try {
  const before=(await get(ref(teacher,path+'/vectors/v0'))).val();
  await fail(update(ref(teacher,path),{'vectors/v0':{...v,label:'must not apply'},lab:{...DEFAULT_LAB,mechanics:{...DEFAULT_LAB.mechanics,mass:0}}}));
  if(JSON.stringify((await get(ref(teacher,path+'/vectors/v0'))).val())!==JSON.stringify(before))throw new Error('Atomic scene update changed data after rejection');
+ const comparison={...structuredClone(DEFAULT_LAB),mode:'comparison',comparison:comparisonPreset('speed')};
+ await pass(set(ref(teacher,path+'/lab'),comparison));
+ await pass(get(ref(guest,path+'/lab')));
+ for(const db of [guest,student,fakeProvider])await fail(set(ref(db,path+'/lab'),comparison));
+ await fail(set(ref(teacher,path+'/lab'),{...DEFAULT_LAB,mode:'comparison'}));
+ for(const mutate of [c=>c.objects.p4={...c.objects.p0},c=>delete c.objects.p1,c=>c.objects.p0.speed=-1,c=>c.objects.p0.angle=91,c=>c.gravity=0,c=>c.objects.p0.admin=true]){
+  const bad=structuredClone(comparison);mutate(bad.comparison);await fail(set(ref(teacher,path+'/lab'),bad));
+ }
+ await fail(remove(ref(teacher,path+'/lab/comparison/objects/p1')));
+ await pass(update(ref(teacher,path),{lab:comparison,'vectors/v0':null}));
  console.log(`Security rules：${count} assertions passed (including guest / wrong teacher / unverified / forged provider).`);
 } finally {await env.cleanup();}
