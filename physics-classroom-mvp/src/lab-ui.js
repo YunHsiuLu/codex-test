@@ -1,3 +1,4 @@
+import {motionComponents,MOTION_ARROWS} from './motion-components.js';
 import {DEFAULT_COMPARISON} from './comparison.js';
 import {mountComparison} from './comparison-ui.js';
 import {VELOCITY_ARROW_SECONDS} from './velocity-arrow.js';
@@ -21,7 +22,7 @@ export function mountLab({teacher,scene,write,getNow,report}) {
   <label>模擬總時間（s）<input id="duration" type="number" step="any" min="1e-12" max="10000" required></label><label>每秒播放的物理時間（s）<input id="rate" type="number" step="any" min="1e-15" max="1000" required></label><label>顯示倍率（１ m 對應的座標單位）<input id="scale" type="number" step="any" min="1e-9" max="1e12" required></label>
   ${teacher?'<button type="submit" id="apply-particle" class="wide">套用參數並歸零</button>':''}</form>
   ${teacher?'<div id="playback"><div class="actions"><button id="play">播放</button><button id="rewind" class="secondary">歸零</button></div><label>時間位置<input id="seek" type="range" min="0" max="1000" step="1" value="0"></label></div>':''}
-  <p id="time-status" role="status"></p><div id="arrow-options" class="arrow-options">${['E','B','v','vx','vz','vxB','FE','FB','F','predictions'].map(key=>`<label><input type="checkbox" data-arrow="${key}" ${['E','B','v','vx','vz','F','predictions'].includes(key)?'checked':''}>${{predictions:'完整預測軌跡',v:'合速度 v',vx:'水平速度 vₓ',vz:'垂直速度 v_z',vxB:'v×B',FE:'電力',FB:'磁力',F:'合力'}[key]||key}</label>`).join('')}</div><p id="arrow-hint" class="hint">箭頭顯示方向，不同比例的物理量不共用箭長尺度。淡線為預測軌跡，亮線為已走過路徑。</p><dl id="metrics"></dl></section>`;
+  <p id="time-status" role="status"></p><div id="arrow-options" class="arrow-options">${['E','B','v','vx','vz','vxB','FE','FB','F',...Object.keys(MOTION_ARROWS),'predictions'].map(key=>`<label><input type="checkbox" data-arrow="${key}" ${['E','B','v','vx','vz','F','predictions'].includes(key)?'checked':''}>${{...Object.fromEntries(Object.entries(MOTION_ARROWS).map(([k,[,name]])=>[k,name])),predictions:'完整預測軌跡',v:'合速度 v',vx:'水平速度 vₓ',vz:'垂直速度 v_z',vxB:'v×B',FE:'電力',FB:'磁力',F:'合力'}[key]||key}</label>`).join('')}</div><p id="arrow-hint" class="hint">箭頭顯示方向，不同比例的物理量不共用箭長尺度。淡線為預測軌跡，亮線為已走過路徑。</p><section id="motion-components"><h3>切向／法向分解</h3><p class="hint">切向沿當下速度；法向垂直速度。aₜ＝（a·v̂）v̂，aₙ＝a−aₜ；Fₜ＝maₜ，Fₙ＝maₙ。此處法向力是合力的法向分量，不是接觸面正向力。速度為零時分解未定義。</p><output id="motion-values"></output><p class="hint">新箭頭預設關閉，可逐項勾選。同組加速度或力的分量共用當下比例尺；比例會自動調整，請由數值比較不同時刻的大小。零分量不畫箭頭。</p></section><dl id="metrics"></dl></section>`;
   const $=id=>container.querySelector('#'+id);
   const comparison=mountComparison($('comparison-panel'),{teacher,scene,report,apply:async value=>{const next={...lab,comparison:value,clock:resetClock()};validateLab(next);await write(next);}});
   const panel=$('particle-panel');
@@ -29,7 +30,7 @@ export function mountLab({teacher,scene,write,getNow,report}) {
   if(teacher)panel.insertBefore($('playback'),$('time-status'));
   const transport=document.createElement('section');transport.id='simulation-controls';container.append(transport);
   if(teacher)transport.append($('playback'));
-  transport.append($('time-status'),$('arrow-options'),$('arrow-hint'),$('metrics'));
+  transport.append($('time-status'),$('arrow-options'),$('arrow-hint'),$('motion-components'),$('metrics'));
   let lab=structuredClone(DEFAULT_LAB),vectors={},editable=false,dirty=false;
   const controls=()=>{
     for(const element of container.querySelectorAll('select:not([data-local]),input:not([type="checkbox"]),button'))element.disabled=!editable;
@@ -91,7 +92,9 @@ export function mountLab({teacher,scene,write,getNow,report}) {
       const vx=Math.abs(state.velocity.x)<1e-12?0:state.velocity.x,vz=Math.abs(state.velocity.z)<1e-12?0:state.velocity.z;
       $('component-values').textContent=`水平 vₓ＝${numberText(vx)} m/s\n垂直 v_z＝${numberText(vz)} m/s（${vz>0?'向上':vz<0?'向下':'垂直分量為零'}）\n合速率 |v|＝${numberText(norm(state.velocity))} m/s`;
     }
-    const p=simulationParameters(lab),metrics=isMechanics(lab)?null:particleMetrics(p);
+    const p=simulationParameters(lab),a=state.acceleration||Object.fromEntries(AXES.map(k=>[k,state.force[k]/p.mass])),d=motionComponents(state.velocity,a,p.mass);
+    $('motion-values').textContent=`加速度 a＝${tuple(a)} m/s²\n`+(d.defined?`切向加速度 aₜ＝${tuple(d.at)} m/s²\n法向加速度 aₙ＝${tuple(d.an)} m/s²\n帶符號切向值＝${numberText(d.tangential)} m/s²\n法向大小＝${numberText(d.normal)} m/s²\n切向力 Fₜ＝${tuple(d.Ft)} N\n法向力 Fₙ＝${tuple(d.Fn)} N`:'速度為零：切向／法向分解未定義。');
+    const metrics=isMechanics(lab)?null:particleMetrics(p);
     const rows=isMechanics(lab)?[['位置 r（m）',tuple(state.position)],['速度 v（m/s）',tuple(state.velocity)],['加速度 a（m/s²）',tuple(state.acceleration)],['合力 F（N）',tuple(state.force)],['動能（J）',numberText(state.kinetic)],['位能（J）',numberText(state.potential)],['總機械能（J）',numberText(state.kinetic+state.potential)],lab.mode==='projectile'?['落地時間（s）',numberText(flightTime(p))]:['週期（s）',numberText(2*Math.PI/p.omega)]]:[['位置 r（m）',tuple(state.position)],['速度 v（m/s）',tuple(state.velocity)],['電場 E（N/C）',tuple(p.electric)],['磁場 B（T）',tuple(p.field)],['v×B（N/C）',tuple(state.vxB)],['電力 qE（N）',tuple(state.electricForce)],['磁力 q（v×B）（N）',tuple(state.magneticForce)],['合力 F（N）',tuple(state.force)],['速率（m/s）',numberText(norm(state.velocity))],['動能（J）',numberText(.5*p.mass*norm(state.velocity)**2)]];
     if(!isMechanics(lab)&&norm(p.electric)===0)rows.push(['迴旋半徑（m）',numberText(metrics.radius)],['迴旋週期（s）',numberText(metrics.period)],['螺距（m）',numberText(metrics.pitch)]);
     $('metrics').replaceChildren(...rows.flatMap(([k,v])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=k;dd.textContent=v;return[dt,dd];}));
@@ -102,8 +105,8 @@ export function mountLab({teacher,scene,write,getNow,report}) {
     setLab:data=>{
       const changedParameters=JSON.stringify([lab.particle,lab.mechanics])!==JSON.stringify([data.particle,data.mechanics]);lab=data;
       $('comparison-panel').hidden=lab.mode!=='comparison';comparison.setData(lab.comparison);
-      $('metrics').hidden=lab.mode==='comparison';
-      $('arrow-hint').textContent=(isMechanics(lab)||lab.mode==='comparison')?`速度箭頭長度與瞬時速率成正比：１ m/s＝${numberText(simulationParameters(lab).scale*VELOCITY_ARROW_SECONDS)} 座標單位；相當於以當下速度行進０．２５秒的位移。${lab.mode==='comparison'?'':'合力箭頭僅表示方向。'}淡線為預測軌跡，亮線為已走過路徑。`:'箭頭顯示方向，不同比例的物理量不共用箭長尺度。淡線為預測軌跡，亮線為已走過路徑。';
+      $('metrics').hidden=lab.mode==='comparison';$('motion-components').hidden=lab.mode==='comparison';
+      $('arrow-hint').textContent=(isMechanics(lab)||lab.mode==='comparison')?`速度箭頭長度與瞬時速率成正比：１ m/s＝${numberText(simulationParameters(lab).scale*VELOCITY_ARROW_SECONDS)} 座標單位；相當於以當下速度行進０．２５秒的位移。${lab.mode==='comparison'?'':'合力及其分量共用當下比例尺。'}淡線為預測軌跡，亮線為已走過路徑。`:'箭頭顯示方向，不同比例的物理量不共用箭長尺度。淡線為預測軌跡，亮線為已走過路徑。';
       $('mode').value=lab.mode;$('operation').value=lab.operation;
       $('algebra-panel').hidden=lab.mode!=='algebra';$('particle-panel').hidden=lab.mode!=='lorentz';
       document.querySelector('#vector-section').hidden=lab.mode==='lorentz'||isMechanics(lab)||lab.mode==='comparison';
@@ -112,7 +115,7 @@ export function mountLab({teacher,scene,write,getNow,report}) {
       $('mechanics-formula').textContent=lab.mode==='projectile'?'z＝h＋v₀ sinθ t−½gt²':'x＝A cos（ωt＋φ）';
       $('mechanics-assumptions').textContent=lab.mode==='projectile'?'在 XZ 平面運動，Z 軸向上；忽略空氣阻力，落地即停止，不模擬反彈。':'沿 X 軸作無阻尼簡諧運動，平衡點為原點；k＝mω²。';
       container.querySelectorAll('[data-mechanics-mode]').forEach(e=>e.hidden=e.dataset.mechanicsMode!=='both'&&e.dataset.mechanicsMode!==lab.mode);
-      container.querySelectorAll('[data-arrow]').forEach(e=>{const k=e.dataset.arrow;e.parentElement.hidden=lab.mode==='comparison'?!['v','vx','vz','predictions'].includes(k):k==='predictions'||(['vx','vz'].includes(k)?lab.mode!=='projectile':isMechanics(lab)&&!['v','F'].includes(k));});
+      container.querySelectorAll('[data-arrow]').forEach(e=>{const k=e.dataset.arrow;e.parentElement.hidden=lab.mode==='comparison'?!['v','vx','vz','predictions'].includes(k):k==='predictions'||(['vx','vz'].includes(k)?lab.mode!=='projectile':isMechanics(lab)&&!['v','F',...Object.keys(MOTION_ARROWS)].includes(k));});
       if(!dirty||changedParameters||!teacher){populateParticle(lab.particle);populateMechanics(lab.mechanics||DEFAULT_LAB.mechanics);dirty=false;}
       options();result();controls();scene?.setLab(lab,getNow,tick);
     },

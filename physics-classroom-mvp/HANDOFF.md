@@ -60,7 +60,7 @@ npm run emulators
 
 - 優先讓老師在正式站重新登入，並用實體 iPad／校園網路驗證 QR code、操作同步與畫面效能。
 - 場景庫存在本機瀏覽器；換電腦須先匯出 JSON。
-- 2D 視角目前是沿座標軸觀看的透視相機；不是正交相機。１０月２日已修正「看完整場景」保留所選平面方向並框住完整軌跡。
+- 2D 視角於１０月６日改為真正正交相機，只顯示所選平面，切換／重設／完整場景皆以原點置中。
 - 單一老師授課模型；多個授權分頁同時修改最後寫入生效。斷線待傳操作仍可能在恢復連線後提交。
 - 電磁模型限均勻固定場、非相對論點粒子；拋體不含阻力／反彈；簡諧無阻尼。不可宣稱通用物理引擎。
 - Three.js 主 bundle 有超過５００ kB 的建置提醒；目前不是錯誤，之後可按模型拆載入。
@@ -115,3 +115,36 @@ physics.js 增加 comparison 模式和共同時鐘長度；snapshots.js 保留�
 續作：依老師使用回饋再考慮自訂目標射程反解、指定時間對齊、跨模型多物體；先保留目前明確物理假設。啟動流程沿用上方，新設定需同步部署 Hosting＋Database：npm run deploy。不得只發布新版 Hosting 而漏掉比較模式規則。
 
 發布完成：npm run deploy 成功發布既有 physics-classroom-795b1 的 Hosting 與 RTDB 規則。正式學生端重新開啟確認「已連線」、多物體選項存在、載入 app-D9OG5WaB.js，console 無 error；正式教室原有簡諧場景未改動。新版互動寫入在本機模擬器驗收，未用正式教師密碼重做多物體雲端寫入。本次未 commit／push。
+
+## ２０２６－１０－０６：淺色授課介面
+
+依使用者要求改成淺色：style.css 全站淡灰白／白色表單與深色文字；scene.js 同步淡色背景、弱化網格、深色軌跡與箭頭、白底標籤。標籤 CanvasTexture 明確設 SRGBColorSpace，避免文字褪色。comparison.js 四物體改深綠／橘／紫／紅；app.js 新增向量的預設配色同步調深。既有自訂向量顏色仍保留；淺色向量標籤採深色文字，箭身仍由老師所選顏色決定。
+
+驗證：build、２５項既有單元測試通過；Chrome 本機 LIGHT01 同射程三物體場景檢查 XZ 正視圖、軌跡、箭頭與表格，console 無 error。截圖 work/light-theme-2026-10-06.jpg。未於實際投影機／iPad 驗證。本次無物理計算與權限規則變更，未重跑規則測試。npm run firebase -- deploy --only hosting 已成功發布原專案；沒有修改正式教室資料。無 commit／push。啟動及部署流程沿用上方，後續可依實際投影對比再調整色彩。
+
+## ２０２６－１０－０６：運動軌跡加粗
+
+src/scene.js 的拋體／簡諧／帶電粒子／多物體軌跡改用 Three.js Line2、LineGeometry、LineMaterial。已走過路徑３．５ CSS px，預測２．５ px／透明度０．６；螢幕空間線寬，縮放保持可讀，網格與輔助線不變。播放進度改用 geometry.instanceCount 控制已走過的線段數，保留原取樣與物理計算。Line2 自動依 renderer viewport 更新 resolution。
+
+驗證：build 及２５項既有單元測試通過。Chrome 本機模擬器確認三物體比較與單拋體在中途時刻的深／淺軌跡正確、切換模型正常，console 無 error。截圖 work/thick-trajectories-2026-10-06.jpg。未重测實體 iPad／投影機；無規則變更。以 npm run firebase -- deploy --only hosting 發布原 Firebase 專案。未更動正式教室資料，未 commit／push；啟動／部署流程沿用上方。
+
+## ２０２６－１０－０６：標籤避讓與乾淨演示
+
+針對使用者截圖中 YZ 側視圖的標籤遮住垂直投影軌跡，scene.js 在螢幕座標評分中加入預測軌跡及可見箭頭的線段避讓，優先避開物理路徑；標籤高度從３２降到２８ px，增加左右外移候選位置及前一位置偏好以減少跳動。偏移標籤以灰色細引線連到原位置，動態箭頭標籤的原位置改為真正箭頭終點。軌跡最多取約２４０段作避讓估算；極密集／狹小畫面仍為盡力避讓，不保證完全不重疊。
+
+app.js 下方加入「隱藏標籤／顯示標籤」按鈕，獨立控制本機所有３Ｄ文字與引線，不隱藏軌跡／箭頭或右側數值，不寫 Firebase。清除／換模型後此顯示偏好仍保留於本次頁面生命期。使用者截圖也涉及沿Ｘ軸觀看，使拋體水平位移被壓縮；解說拋體建議選 2D Front (XZ)，保留其他觀察方向。
+
+新增 src/label-layout.js 純線段／矩形相交計算及 tests/label-layout.test.mjs，涵蓋垂直、水平、零長度投影及安全距離。更新完整 npm test 的測試清單。build 與２６項單元測試通過。Chrome 本機 Auth 不需登入的學生頁驗證平拋 YZ／XZ 視角、標籤外移／引線、隱藏開關，無 console error；截圖 work/labels-clear-2026-10-06.jpg。未在實體 iPad／投影機驗證；未修改權限規則，未重跑規則測試。沿用既有啟動方式及 Hosting-only 發布流程。無 Git commit／push。
+
+發布結果：npm run firebase -- deploy --only hosting 成功，正式學生端出現「隱藏標籤」控制項。此次未改寫正式 PHYS01 資料。
+
+
+## ２０２６－１０－０６：真正的２Ｄ正交平面
+
+src/scene.js 在 XY／XZ／YZ 切換到 OrthographicCamera，３Ｄ回到 PerspectiveCamera。２Ｄ只畫所選零座標平面的網格、兩條軸及其標籤／圖例；移除其他參考面。相機垂直注視所選平面，切換時 controls.target＝原點，依相對原點的完整軌跡最大範圍決定對稱視窗，故原點在畫布中央。２Ｄ左鍵或單指為平移，滾輪／雙指缩放，禁用旋轉。重設視角保留当前平面且重新原點置中；看完整場景亦同。老師更新模型不重設個人相機。
+
+相機切換時清除並重建 OrbitControls、更新 TransformControls.camera、隱藏垂直所選平面的拖曳軸；unitsPerPixel 支援正交相機及 zoom，ResizeObserver 維持平面比例。app.js 重設按鈕不再強制切回３Ｄ。預期２Ｄ為三維資料在所選平面的正交投影，不更動物理座標與同步數據。
+
+驗證：build、２６項單元測試通過。Chrome 本機平拋 XY／XZ／YZ 相機 target 均為０；XZ 相機沿−Y、XY 沿＋Z、YZ 沿＋X。平移後 target 改變，按重設回原點並仍為 orthographic。檢視平面網格截圖，無透視牆面；切回３Ｄ恢復 perspective，console 無 error。截圖 work/orthographic-2026-10-06.jpg。未實測觸控裝置與教師拖曳編輯；未變更規則，未重跑規則測試。部署沿用 Hosting-only，啟動流程沿用上方，無 commit／push。
+
+發布成功：正式站學生端 XZ 模式讀回 projection＝orthographic、相機 target＝０，連線正常且 console 無 error。正式教室資料未改動。

@@ -1,4 +1,4 @@
-export const BODY_COLORS={p0:'#57dfc2',p1:'#ffba69',p2:'#b7a2ff',p3:'#ff7f91'};
+export const BODY_COLORS={p0:'#087f72',p1:'#af5700',p2:'#7041bc',p3:'#bf3154'};
 const body=(name,speed,angle,height=0)=>({name,speed,angle,height,x0:0,delay:0});
 export const DEFAULT_COMPARISON={gravity:9.81,rate:1,scale:1,objects:{p0:body('A',20,30),p1:body('B',20,60)}};
 export const COMPARISON_PRESETS={
