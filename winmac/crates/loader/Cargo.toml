@@ -1,0 +1,8 @@
+[package]
+name = "winmac-loader"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+winmac-pe = { path = "../pe" }

@@ -1,0 +1,9 @@
+[package]
+name = "winmac-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+winmac-pe = { path = "../../crates/pe" }
+anyhow.workspace = true

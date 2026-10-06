@@ -1,0 +1,10 @@
+[package]
+name = "winmac-runtime"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+winmac-loader = { path = "../loader" }
+winmac-memory = { path = "../memory" }
+winmac-win32 = { path = "../win32" }
