@@ -37,7 +37,7 @@ impl From<u16> for MachineType {
 }
 
 impl fmt::Display for MachineType {
-    fn fmt(&self, f: &fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             MachineType::I386 => write!(f, "x86"),
             MachineType::Amd64 => write!(f, "x86-64"),
@@ -77,10 +77,7 @@ pub fn parse_pe(bytes: &[u8]) -> Result<PeImage, PeError> {
     let e_lfanew = u32::from_le_bytes(e_lfanew_bytes);
     let pe_offset = e_lfanew as usize;
 
-    if pe_offset
-        .checked_add(4)
-        .map_or(true, |end| end > bytes.len())
-    {
+    if pe_offset.checked_add(4).is_none_or(|end| end > bytes.len()) {
         return Err(PeError::InvalidElfanew(e_lfanew));
     }
 
