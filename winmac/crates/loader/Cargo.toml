@@ -6,3 +6,6 @@ license.workspace = true
 
 [dependencies]
 winmac-pe = { path = "../pe" }
+thiserror.workspace = true
+
+[dev-dependencies]
