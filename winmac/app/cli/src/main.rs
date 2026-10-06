@@ -24,15 +24,31 @@ fn run(path: &str) -> anyhow::Result<()> {
 
     println!("WinMac PE Inspector\n");
     println!("File: {}", path);
-    println!("DOS Signature: MZ");
-    println!("PE Signature: PE\\0\\0");
     println!("Architecture: {}", pe.coff_header.machine);
-    println!("Sections: {}", pe.coff_header.number_of_sections);
+    println!("Format: {}", pe.optional_header.format);
     println!(
-        "Optional Header Size: {}",
-        pe.coff_header.size_of_optional_header
+        "Entry Point: {:#010X}",
+        pe.optional_header.address_of_entry_point
     );
-    println!("Characteristics: {:#06x}", pe.coff_header.characteristics);
+    println!("Image Base: {:#018X}", pe.optional_header.image_base);
+    println!(
+        "Section Alignment: {}",
+        pe.optional_header.section_alignment
+    );
+    println!("File Alignment: {}", pe.optional_header.file_alignment);
+    println!("Image Size: {}", pe.optional_header.size_of_image);
+    println!("Headers Size: {}", pe.optional_header.size_of_headers);
+    println!("Subsystem: {}", pe.optional_header.subsystem);
+    println!("Data Directories: {}", pe.data_directories.len());
+    println!("\nSections ({}):", pe.sections.len());
+
+    for sec in &pe.sections {
+        println!("\n{}", sec.name_lossy());
+        println!("  RVA:          {:#010X}", sec.virtual_address);
+        println!("  Virtual Size: {:#010X}", sec.virtual_size);
+        println!("  Raw Size:     {:#010X}", sec.size_of_raw_data);
+        println!("  Raw Pointer:  {:#010X}", sec.pointer_to_raw_data);
+    }
 
     Ok(())
 }
