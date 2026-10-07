@@ -1,3 +1,6 @@
+mod imports;
+pub use imports::*;
+
 use thiserror::Error;
 use winmac_pe::PeImage;
 
@@ -5,6 +8,8 @@ pub const MAX_IMAGE_SIZE: usize = 512 * 1024 * 1024;
 
 #[derive(Error, Debug, PartialEq, Eq)]
 pub enum LoaderError {
+    #[error(transparent)]
+    Import(#[from] ImportError),
     #[error("Image size is zero")]
     ImageSizeZero,
 

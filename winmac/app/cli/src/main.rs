@@ -50,5 +50,25 @@ fn run(path: &str) -> anyhow::Result<()> {
         println!("  Raw Pointer:  {:#010X}", sec.pointer_to_raw_data);
     }
 
+    let imports = winmac_loader::parse_import_table(&pe, &bytes)?;
+    if imports.modules.is_empty() {
+        println!("\nImports: none");
+    } else {
+        println!("\nImports:");
+        for module in imports.modules {
+            println!("  {}", module.dll_name.escape_default());
+            for symbol in module.symbols {
+                match symbol {
+                    winmac_loader::ImportSymbol::ByName { hint, name } => {
+                        println!("    {} (hint {})", name.escape_default(), hint);
+                    }
+                    winmac_loader::ImportSymbol::ByOrdinal { ordinal } => {
+                        println!("    ordinal #{}", ordinal);
+                    }
+                }
+            }
+        }
+    }
+
     Ok(())
 }
