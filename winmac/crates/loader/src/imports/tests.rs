@@ -7,7 +7,10 @@ struct Fixture {
 }
 impl Fixture {
     fn new(plus: bool) -> Self {
-        let mut f = Self { bytes: vec![0; 0x2400], plus };
+        let mut f = Self {
+            bytes: vec![0; 0x2400],
+            plus,
+        };
         f.bytes[..2].copy_from_slice(b"MZ");
         f.u32(0x3c, 0x80);
         f.bytes[0x80..0x84].copy_from_slice(b"PE\0\0");
@@ -57,10 +60,15 @@ impl Fixture {
         self.u32(offset + 16, ft);
     }
     fn thunk(&mut self, rva: u32, value: u64) {
-        if self.plus { self.put(rva, &value.to_le_bytes()); }
-        else { self.put(rva, &(value as u32).to_le_bytes()); }
+        if self.plus {
+            self.put(rva, &value.to_le_bytes());
+        } else {
+            self.put(rva, &(value as u32).to_le_bytes());
+        }
     }
-    fn pe(&self) -> PeImage { parse_pe(&self.bytes).unwrap() }
+    fn pe(&self) -> PeImage {
+        parse_pe(&self.bytes).unwrap()
+    }
     fn parse(&self) -> Result<ImportTable, LoaderError> {
         parse_import_table(&self.pe(), &self.bytes)
     }
@@ -71,7 +79,10 @@ fn absent_and_zero_directory() {
     let mut f = Fixture::new(true);
     let mut pe = f.pe();
     pe.data_directories.clear();
-    assert!(parse_import_table(&pe, &f.bytes).unwrap().modules.is_empty());
+    assert!(parse_import_table(&pe, &f.bytes)
+        .unwrap()
+        .modules
+        .is_empty());
     f.directory(0, u32::MAX);
     assert!(f.parse().unwrap().modules.is_empty());
 }
@@ -88,14 +99,25 @@ fn names_ordinals_widths_hints_and_read_only() {
         let before = f.bytes.clone();
         let table = f.parse().unwrap();
         assert_eq!(f.bytes, before);
-        assert_eq!(table.modules, vec![ImportModule {
-            dll_name: "KERNEL32.dll".into(), original_first_thunk: 0x1100, first_thunk: 0x1200,
-            symbols: vec![
-                ImportSymbol::ByName { hint: 123, name: "ExitProcess".into() },
-                ImportSymbol::ByName { hint: 45, name: "GetLastError".into() },
-                ImportSymbol::ByOrdinal { ordinal: 12 },
-            ],
-        }]);
+        assert_eq!(
+            table.modules,
+            vec![ImportModule {
+                dll_name: "KERNEL32.dll".into(),
+                original_first_thunk: 0x1100,
+                first_thunk: 0x1200,
+                symbols: vec![
+                    ImportSymbol::ByName {
+                        hint: 123,
+                        name: "ExitProcess".into()
+                    },
+                    ImportSymbol::ByName {
+                        hint: 45,
+                        name: "GetLastError".into()
+                    },
+                    ImportSymbol::ByOrdinal { ordinal: 12 },
+                ],
+            }]
+        );
     }
 }
 
@@ -103,8 +125,13 @@ fn names_ordinals_widths_hints_and_read_only() {
 fn single_name_both_formats() {
     for plus in [false, true] {
         let f = Fixture::new(plus);
-        assert_eq!(f.parse().unwrap().modules[0].symbols,
-            vec![ImportSymbol::ByName { hint: 123, name: "ExitProcess".into() }]);
+        assert_eq!(
+            f.parse().unwrap().modules[0].symbols,
+            vec![ImportSymbol::ByName {
+                hint: 123,
+                name: "ExitProcess".into()
+            }]
+        );
     }
 }
 
@@ -119,7 +146,13 @@ fn multiple_modules() {
     let modules = f.parse().unwrap().modules;
     assert_eq!(modules.len(), 2);
     assert_eq!(modules[1].dll_name, "USER32.dll");
-    assert_eq!(modules[1].symbols, vec![ImportSymbol::ByName { hint: 45, name: "MessageBoxW".into() }]);
+    assert_eq!(
+        modules[1].symbols,
+        vec![ImportSymbol::ByName {
+            hint: 45,
+            name: "MessageBoxW".into()
+        }]
+    );
 }
 
 #[test]
@@ -153,7 +186,10 @@ fn terminator_requires_all_five_fields_zero() {
         let mut f = Fixture::new(true);
         f.put(0x1000, &[0; 20]);
         f.u32(0x400 + field * 4, 1);
-        assert!(matches!(f.parse(), Err(LoaderError::Import(ImportError::NullDescriptorField { .. }))));
+        assert!(matches!(
+            f.parse(),
+            Err(LoaderError::Import(ImportError::NullDescriptorField { .. }))
+        ));
     }
 }
 
@@ -162,11 +198,17 @@ fn descriptor_size_and_termination_errors() {
     for size in [0, 1, 19, 21, 39] {
         let mut f = Fixture::new(true);
         f.directory(0x1000, size);
-        assert!(matches!(f.parse(), Err(LoaderError::Import(ImportError::DescriptorTruncated { .. }))));
+        assert!(matches!(
+            f.parse(),
+            Err(LoaderError::Import(ImportError::DescriptorTruncated { .. }))
+        ));
     }
     let mut f = Fixture::new(true);
     f.directory(0x1000, 20);
-    assert_eq!(f.parse(), Err(ImportError::DescriptorTerminatorMissing.into()));
+    assert_eq!(
+        f.parse(),
+        Err(ImportError::DescriptorTerminatorMissing.into())
+    );
 }
 
 #[test]
@@ -174,7 +216,10 @@ fn directory_overflow_and_image_bounds() {
     for (rva, size) in [(u32::MAX - 10, 40), (0x1000, u32::MAX), (0x3ff0, 40)] {
         let mut f = Fixture::new(true);
         f.directory(rva, size);
-        assert_eq!(f.parse(), Err(ImportError::DirectoryOutOfBounds { rva, size }.into()));
+        assert_eq!(
+            f.parse(),
+            Err(ImportError::DirectoryOutOfBounds { rva, size }.into())
+        );
     }
 }
 
@@ -197,7 +242,10 @@ fn null_required_descriptor_fields() {
     for (oft, name, ft) in [(0, 0x1080, 0), (0x1100, 0, 0x1200), (0x1100, 0x1080, 0)] {
         let mut f = Fixture::new(true);
         f.descriptor(0, oft, name, ft);
-        assert!(matches!(f.parse(), Err(LoaderError::Import(ImportError::NullDescriptorField { .. }))));
+        assert!(matches!(
+            f.parse(),
+            Err(LoaderError::Import(ImportError::NullDescriptorField { .. }))
+        ));
     }
 }
 
@@ -205,10 +253,18 @@ fn null_required_descriptor_fields() {
 fn strings_at_safety_limit() {
     for dll in [false, true] {
         let mut f = Fixture::new(true);
-        let rva = if dll { f.descriptor(0, 0x1100, 0x1800, 0x1200); 0x1800 }
-            else { f.thunk(0x1100, 0x17fe); 0x1800 };
+        let rva = if dll {
+            f.descriptor(0, 0x1100, 0x1800, 0x1200);
+            0x1800
+        } else {
+            f.thunk(0x1100, 0x17fe);
+            0x1800
+        };
         f.put(rva, &vec![b'A'; MAX_IMPORT_STRING_BYTES]);
-        assert_eq!(f.parse(), Err(ImportError::StringUnterminated { rva }.into()));
+        assert_eq!(
+            f.parse(),
+            Err(ImportError::StringUnterminated { rva }.into())
+        );
         f.put(rva + MAX_IMPORT_STRING_BYTES as u32 - 1, &[0]);
         assert!(f.parse().is_ok());
     }
@@ -218,13 +274,22 @@ fn strings_at_safety_limit() {
 fn strings_cannot_read_file_overlay_or_zero_fill() {
     for dll in [false, true] {
         let mut f = Fixture::new(true);
-        if dll { f.descriptor(0, 0x1100, 0x2ffe, 0x1200); }
-        else { f.thunk(0x1100, 0x2ffc); }
+        if dll {
+            f.descriptor(0, 0x1100, 0x2ffe, 0x1200);
+        } else {
+            f.thunk(0x1100, 0x2ffc);
+        }
         f.put(0x2ffe, b"AB");
         let mut pe = f.pe();
         pe.sections[0].virtual_size += 0x100;
         f.bytes.extend_from_slice(&[0; 0x100]);
-        assert!(matches!(parse_import_table(&pe, &f.bytes), Err(LoaderError::Import(ImportError::InvalidRva { kind: "string", .. }))));
+        assert!(matches!(
+            parse_import_table(&pe, &f.bytes),
+            Err(LoaderError::Import(ImportError::InvalidRva {
+                kind: "string",
+                ..
+            }))
+        ));
     }
 }
 
@@ -232,11 +297,17 @@ fn strings_cannot_read_file_overlay_or_zero_fill() {
 fn empty_and_invalid_utf8_names() {
     let mut f = Fixture::new(true);
     f.put(0x1080, b"\0");
-    assert_eq!(f.parse(), Err(ImportError::EmptyName { rva: 0x1080 }.into()));
+    assert_eq!(
+        f.parse(),
+        Err(ImportError::EmptyName { rva: 0x1080 }.into())
+    );
     f.put(0x1080, b"\xff.dll\0");
     assert_eq!(f.parse().unwrap().modules[0].dll_name, "\u{fffd}.dll");
     f.put(0x1302, b"\0");
-    assert_eq!(f.parse(), Err(ImportError::EmptyName { rva: 0x1302 }.into()));
+    assert_eq!(
+        f.parse(),
+        Err(ImportError::EmptyName { rva: 0x1302 }.into())
+    );
     f.put(0x1302, b"\xff\0");
     assert!(f.parse().is_ok());
 }
@@ -250,14 +321,32 @@ fn truncated_structures_even_with_overlay() {
             f.descriptor(0, 0x3000 - remaining, 0x1080, 0x1200);
             let pe = f.pe();
             f.bytes.extend_from_slice(&[0; 20]);
-            assert!(matches!(parse_import_table(&pe, &f.bytes), Err(LoaderError::Import(ImportError::InvalidRva { kind: "thunk", .. }))));
+            assert!(matches!(
+                parse_import_table(&pe, &f.bytes),
+                Err(LoaderError::Import(ImportError::InvalidRva {
+                    kind: "thunk",
+                    ..
+                }))
+            ));
         }
     }
     let mut f = Fixture::new(true);
     f.thunk(0x1100, 0x2fff);
-    assert!(matches!(f.parse(), Err(LoaderError::Import(ImportError::InvalidRva { kind: "hint/name", .. }))));
+    assert!(matches!(
+        f.parse(),
+        Err(LoaderError::Import(ImportError::InvalidRva {
+            kind: "hint/name",
+            ..
+        }))
+    ));
     f.directory(0x2ff0, 40);
-    assert!(matches!(f.parse(), Err(LoaderError::Import(ImportError::InvalidRva { kind: "descriptor", .. }))));
+    assert!(matches!(
+        f.parse(),
+        Err(LoaderError::Import(ImportError::InvalidRva {
+            kind: "descriptor",
+            ..
+        }))
+    ));
 }
 
 #[test]
@@ -266,7 +355,10 @@ fn missing_thunk_terminator_at_file_boundary() {
         let mut f = Fixture::new(plus);
         let width = if plus { 8 } else { 4 };
         f.descriptor(0, 0x3000 - width, 0x1080, 0x1200);
-        f.thunk(0x3000 - width, if plus { (1 << 63) | 1 } else { (1 << 31) | 1 });
+        f.thunk(
+            0x3000 - width,
+            if plus { (1 << 63) | 1 } else { (1 << 31) | 1 },
+        );
         assert!(f.parse().is_err());
     }
 }
@@ -275,15 +367,31 @@ fn missing_thunk_terminator_at_file_boundary() {
 fn wide_rva_and_reserved_bits_rejected() {
     let mut f = Fixture::new(true);
     f.thunk(0x1100, 0x1_0000_1300);
-    assert_eq!(f.parse(), Err(ImportError::RvaTooLarge { value: 0x1_0000_1300 }.into()));
+    assert_eq!(
+        f.parse(),
+        Err(ImportError::RvaTooLarge {
+            value: 0x1_0000_1300
+        }
+        .into())
+    );
     for plus in [false, true] {
         let mut f = Fixture::new(plus);
-        let value = if plus { (1 << 63) | 0x10001 } else { (1 << 31) | 0x10001 };
+        let value = if plus {
+            (1 << 63) | 0x10001
+        } else {
+            (1 << 31) | 0x10001
+        };
         f.thunk(0x1100, value);
-        assert_eq!(f.parse(), Err(ImportError::ReservedThunkBits { value }.into()));
+        assert_eq!(
+            f.parse(),
+            Err(ImportError::ReservedThunkBits { value }.into())
+        );
     }
     f.thunk(0x1100, 0x8000_1300);
-    assert_eq!(f.parse(), Err(ImportError::ReservedThunkBits { value: 0x8000_1300 }.into()));
+    assert_eq!(
+        f.parse(),
+        Err(ImportError::ReservedThunkBits { value: 0x8000_1300 }.into())
+    );
 }
 
 #[test]
@@ -303,24 +411,45 @@ fn adjacent_sections_with_discontiguous_raw_data() {
     f.put(0x2ffc, b"\x01\0AB");
     let mut pe = f.pe();
     pe.sections.push(winmac_pe::SectionHeader {
-        name: *b".extra\0\0", virtual_address: 0x3000, virtual_size: 0x100,
-        pointer_to_raw_data: 0x2500, size_of_raw_data: 0x100, characteristics: 0,
+        name: *b".extra\0\0",
+        virtual_address: 0x3000,
+        virtual_size: 0x100,
+        pointer_to_raw_data: 0x2500,
+        size_of_raw_data: 0x100,
+        characteristics: 0,
     });
     f.bytes.resize(0x2600, 0);
     f.bytes[0x2500..0x2502].copy_from_slice(b"C\0");
-    assert_eq!(parse_import_table(&pe, &f.bytes).unwrap().modules[0].symbols,
-        vec![ImportSymbol::ByName { hint: 1, name: "ABC".into() }]);
+    assert_eq!(
+        parse_import_table(&pe, &f.bytes).unwrap().modules[0].symbols,
+        vec![ImportSymbol::ByName {
+            hint: 1,
+            name: "ABC".into()
+        }]
+    );
 }
 
 #[test]
 fn budget_and_symbol_limits() {
     let f = Fixture::new(true);
     let pe = f.pe();
-    let mut reader = Reader { pe: &pe, bytes: &f.bytes, remaining: 1 };
-    assert_eq!(reader.read::<2>(0x1300, "hint"), Err(ImportError::LimitExceeded { kind: "read bytes" }));
+    let mut reader = Reader {
+        pe: &pe,
+        bytes: &f.bytes,
+        remaining: 1,
+    };
+    assert_eq!(
+        reader.read::<2>(0x1300, "hint"),
+        Err(ImportError::LimitExceeded { kind: "read bytes" })
+    );
     reader.remaining = MAX_IMPORT_READ_BYTES;
     let mut count = MAX_IMPORT_SYMBOLS;
-    assert_eq!(reader.symbols(0x1100, &mut count), Err(ImportError::LimitExceeded { kind: "total symbols" }));
+    assert_eq!(
+        reader.symbols(0x1100, &mut count),
+        Err(ImportError::LimitExceeded {
+            kind: "total symbols"
+        })
+    );
 }
 
 #[test]
@@ -340,6 +469,69 @@ fn truncations_and_deterministic_mutations_never_panic() {
                 bytes[offset] = (seed >> 24) as u8;
             }
             let _ = parse_import_table(&pe, &bytes);
+        }
+    }
+}
+
+fn many_modules(count: usize, long_names: bool) -> Fixture {
+    let mut f = Fixture::new(true);
+    f.bytes.resize(0x20400, 0);
+    let sec = 0x98 + 128;
+    f.u32(sec + 8, 0x20000);
+    f.u32(sec + 16, 0x20000);
+    f.u32(0x98 + 56, 0x21000);
+    f.bytes[0x400..].fill(0);
+    f.directory(0x1000, ((count + 1) * 20) as u32);
+    for i in 0..count {
+        f.descriptor(i, 0x18000, 0x16000, 0x19000);
+    }
+    if long_names {
+        f.put(0x16000, &vec![b'A'; MAX_IMPORT_STRING_BYTES - 1]);
+    } else {
+        f.put(0x16000, b"A\0");
+    }
+    f
+}
+
+#[test]
+fn module_limit_accepts_boundary_and_rejects_excess() {
+    assert_eq!(
+        many_modules(MAX_IMPORT_MODULES, false)
+            .parse()
+            .unwrap()
+            .modules
+            .len(),
+        MAX_IMPORT_MODULES
+    );
+    assert_eq!(
+        many_modules(MAX_IMPORT_MODULES + 1, false).parse(),
+        Err(ImportError::LimitExceeded { kind: "modules" }.into())
+    );
+}
+
+#[test]
+fn repeated_names_cannot_amplify_past_global_budget() {
+    assert_eq!(
+        many_modules(MAX_IMPORT_MODULES, true).parse(),
+        Err(ImportError::LimitExceeded { kind: "read bytes" }.into())
+    );
+}
+
+#[test]
+fn invalid_public_pe_metadata_never_panics() {
+    let f = Fixture::new(true);
+    for value in [0, 1, 0x1000, u32::MAX - 1, u32::MAX] {
+        for field in 0..6 {
+            let mut pe = f.pe();
+            match field {
+                0 => pe.optional_header.size_of_image = value,
+                1 => pe.optional_header.size_of_headers = value,
+                2 => pe.sections[0].virtual_address = value,
+                3 => pe.sections[0].virtual_size = value,
+                4 => pe.sections[0].size_of_raw_data = value,
+                _ => pe.sections[0].pointer_to_raw_data = value,
+            }
+            let _ = parse_import_table(&pe, &f.bytes);
         }
     }
 }

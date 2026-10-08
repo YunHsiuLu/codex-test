@@ -5,6 +5,8 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
+thiserror.workspace = true
+winmac-pe = { path = "../pe" }
 winmac-loader = { path = "../loader" }
 winmac-memory = { path = "../memory" }
 winmac-win32 = { path = "../win32" }

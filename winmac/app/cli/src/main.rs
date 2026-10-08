@@ -1,25 +1,82 @@
 use std::env;
 use std::fs;
+use std::io::{Read, Write};
 use std::process::ExitCode;
 
 fn main() -> ExitCode {
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        eprintln!("Usage: winmac-cli <path-to-executable>");
-        return ExitCode::FAILURE;
+    match command(&env::args().skip(1).collect::<Vec<_>>()) {
+        Ok(code) => ExitCode::from((code & 0xff) as u8),
+        Err(error) => {
+            eprintln!("Error: {error:#}");
+            ExitCode::FAILURE
+        }
     }
-
-    let file_path = &args[1];
-    if let Err(e) = run(file_path) {
-        eprintln!("Error: {:#}", e);
-        return ExitCode::FAILURE;
-    }
-
-    ExitCode::SUCCESS
 }
 
-fn run(path: &str) -> anyhow::Result<()> {
-    let bytes = fs::read(path)?;
+fn number(text: &str) -> anyhow::Result<u64> {
+    Ok(if let Some(hex) = text.strip_prefix("0x") {
+        u64::from_str_radix(hex, 16)?
+    } else {
+        text.parse()?
+    })
+}
+
+fn command(args: &[String]) -> anyhow::Result<u32> {
+    if args.len() == 1 && matches!(args[0].as_str(), "--help" | "-h") {
+        println!("Usage: winmac-cli [inspect] <file.exe>\n       winmac-cli run <file.exe> [--base <address>] [--max-instructions <count>]");
+        return Ok(0);
+    }
+    if args.first().is_some_and(|a| a == "run") {
+        let path = args
+            .get(1)
+            .ok_or_else(|| anyhow::anyhow!("run requires a PE file"))?;
+        let mut options = winmac_runtime::RunOptions::default();
+        let mut i = 2;
+        while i < args.len() {
+            let value = args
+                .get(i + 1)
+                .ok_or_else(|| anyhow::anyhow!("{} requires a value", args[i]))?;
+            match args[i].as_str() {
+                "--base" => options.load_base = Some(number(value)?),
+                "--max-instructions" => options.max_instructions = number(value)?,
+                flag => anyhow::bail!("Unknown option: {flag}"),
+            }
+            i += 2;
+        }
+        let result = winmac_runtime::run_pe(&read_input(path)?, &options)?;
+        std::io::stdout().lock().write_all(&result.stdout)?;
+        std::io::stderr().lock().write_all(&result.stderr)?;
+        eprintln!(
+            "WinMac: guest exited with code {} ({} instructions, {} API calls)",
+            result.exit_code,
+            result.instructions,
+            result.api_calls.len()
+        );
+        return Ok(result.exit_code);
+    }
+    match args {
+        [path] if !path.starts_with('-') => inspect(path)?,
+        [mode, path] if mode == "inspect" => inspect(path)?,
+        _ => anyhow::bail!("Usage: winmac-cli [inspect] <file.exe> | run <file.exe> [--base <address>] [--max-instructions <count>]"),
+    }
+    Ok(0)
+}
+
+fn read_input(path: &str) -> anyhow::Result<Vec<u8>> {
+    const MAX_FILE_SIZE: u64 = 64 * 1024 * 1024;
+    let mut bytes = Vec::new();
+    fs::File::open(path)?
+        .take(MAX_FILE_SIZE + 1)
+        .read_to_end(&mut bytes)?;
+    anyhow::ensure!(
+        bytes.len() as u64 <= MAX_FILE_SIZE,
+        "PE file exceeds 64 MiB CLI limit"
+    );
+    Ok(bytes)
+}
+
+fn inspect(path: &str) -> anyhow::Result<()> {
+    let bytes = read_input(path)?;
     let pe = winmac_pe::parse_pe(&bytes)?;
 
     println!("WinMac PE Inspector\n");
@@ -70,5 +127,12 @@ fn run(path: &str) -> anyhow::Result<()> {
         }
     }
 
+    let relocations = winmac_loader::parse_relocation_table(&pe, &bytes)?;
+    let entries: usize = relocations.blocks.iter().map(|b| b.entries.len()).sum();
+    println!(
+        "\nRelocations: {} blocks, {} entries (including padding)",
+        relocations.blocks.len(),
+        entries
+    );
     Ok(())
 }

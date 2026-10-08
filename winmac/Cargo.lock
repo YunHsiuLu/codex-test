@@ -68,7 +68,9 @@ name = "winmac-cli"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "winmac-loader",
  "winmac-pe",
+ "winmac-runtime",
 ]
 
 [[package]]
@@ -94,8 +96,10 @@ dependencies = [
 name = "winmac-runtime"
 version = "0.1.0"
 dependencies = [
+ "thiserror",
  "winmac-loader",
  "winmac-memory",
+ "winmac-pe",
  "winmac-win32",
 ]
 

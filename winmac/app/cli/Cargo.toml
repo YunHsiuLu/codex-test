@@ -5,6 +5,7 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
+winmac-runtime = { path = "../../crates/runtime" }
 winmac-loader = { path = "../../crates/loader" }
 winmac-pe = { path = "../../crates/pe" }
 anyhow.workspace = true
