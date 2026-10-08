@@ -1,7 +1,9 @@
-//! Experimental, bounded x86-64 interpreter for small Windows console PEs.
+//! Experimental, bounded x86-64 interpreter for small Windows console and GUI PEs.
 //! This does not execute guest instructions on the host CPU.
+mod ui;
 mod x64;
 use thiserror::Error;
+pub use ui::{MessageBox, UserInterface};
 use winmac_loader::{map_image_at, parse_import_table, LoaderError};
 use winmac_memory::{AddressSpace, MemoryError, Permissions};
 use winmac_pe::{parse_pe, MachineType, PeError, PeFormat};
@@ -45,8 +47,10 @@ pub enum RuntimeError {
     Memory(#[from] MemoryError),
     #[error(transparent)]
     Console(#[from] ConsoleError),
-    #[error("Runtime supports only AMD64 PE32+ console executables")]
+    #[error("Runtime supports only AMD64 PE32+ console or GUI executables")]
     UnsupportedImage,
+    #[error("GUI error: {0}")]
+    Gui(String),
     #[error("Runtime does not support nonempty data directory {index}")]
     UnsupportedDirectory { index: usize },
     #[error("Unresolved import: {dll}!{symbol}")]
@@ -67,7 +71,8 @@ pub enum RuntimeError {
     InvalidCallStack { rsp: u64 },
 }
 
-struct Machine {
+struct Machine<'a> {
+    ui: &'a mut dyn UserInterface,
     memory: AddressSpace,
     console: Console,
     apis: Vec<Api>,
@@ -77,13 +82,22 @@ struct Machine {
 /// Load a PE, bind the explicit console API allowlist, then interpret its entry
 /// point. Unsupported formats/features fail explicitly. No host DLLs are loaded.
 pub fn run_pe(bytes: &[u8], options: &RunOptions) -> Result<RunResult, RuntimeError> {
+    run_pe_with_ui(bytes, options, &mut ui::Headless)
+}
+
+/// Run with a synchronous host UI. Button results resume guest execution.
+pub fn run_pe_with_ui(
+    bytes: &[u8],
+    options: &RunOptions,
+    ui: &mut dyn UserInterface,
+) -> Result<RunResult, RuntimeError> {
     if options.max_instructions == 0 || options.max_instructions > MAX_INSTRUCTIONS {
         return Err(RuntimeError::InvalidInstructionLimit);
     }
     let pe = parse_pe(bytes)?;
     if pe.coff_header.machine != MachineType::Amd64
         || pe.optional_header.format != PeFormat::Pe32Plus
-        || pe.optional_header.subsystem != 3
+        || !matches!(pe.optional_header.subsystem, 2 | 3)
         || pe.coff_header.characteristics & 0x2000 != 0
         || pe.optional_header.address_of_entry_point == 0
     {
@@ -213,6 +227,7 @@ pub fn run_pe(bytes: &[u8], options: &RunOptions) -> Result<RunResult, RuntimeEr
     memory.write(rsp, &RETURN_SENTINEL.to_le_bytes())?;
     memory.fetch(entry)?;
     let mut machine = Machine {
+        ui,
         memory,
         console: Console::default(),
         apis,

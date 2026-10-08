@@ -131,6 +131,22 @@ impl Cpu {
                 m.memory.check_write(rsp + 8, 32)?;
                 m.api_calls.push(api);
                 match api {
+                    Api::MessageBoxA => {
+                        let request = super::ui::read_message_box(
+                            &m.memory,
+                            self.registers[1],
+                            self.registers[2],
+                            self.registers[8],
+                            self.registers[9] as u32,
+                        )?;
+                        let result = m.ui.message_box(&request).map_err(RuntimeError::Gui)?;
+                        if !request.accepts(result) {
+                            return Err(RuntimeError::Gui(
+                                "Host returned an invalid button ID".into(),
+                            ));
+                        }
+                        self.registers[0] = u64::from(result);
+                    }
                     Api::GetStdHandle => {
                         self.registers[0] = m.console.get_std_handle(self.registers[1] as u32)
                     }

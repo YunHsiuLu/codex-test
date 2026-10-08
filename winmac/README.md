@@ -4,6 +4,8 @@
 
 這是有限功能的可執行原型，尚非一般 Windows 應用程式相容層。
 
+2026-10-08 新增 Task 011：可執行使用 MessageBoxA 的 GUI 物理問答 EXE。以 `sh scripts/package-macos.sh /absolute/output/path` 打包後，雙擊 `Play-Quiz.command`。詳細用法與限制見 [Task 011](docs/task-011.md)。
+
 ## 快速執行
 
 在此 workspace 目錄執行，需 Rust 1.99 或更新版本。
@@ -41,6 +43,7 @@ WinMac: guest exited with code 0 (11 instructions, 3 API calls)
 | Task 008 | 最小 kernel32 console API 模型與 IAT 綁定 |
 | Task 009 | 受限 x64 指令直譯器與指令數上限 |
 | Task 010 | Runtime／CLI 整合、可重現 PE 範例與端到端測試 |
+| Task 011 | 最小 USER32 MessageBoxA 與 macOS 同步 UI 橋接、GUI 問答 EXE |
 
 Task 005–010 是本次依「跑通最小 Windows 主控台程式」目標拆分的階段，不代表所有 Windows 相容性工作已完成。
 
@@ -48,9 +51,9 @@ Task 005–010 是本次依「跑通最小 Windows 主控台程式」目標拆�
 
 ## 現階段支援範圍
 
-執行模式接受 AMD64、PE32+、console EXE。每個 guest address 都是數值，指令由 Rust 解碼與直譯，沒有 host executable memory、JIT、unsafe 或直接跳進 PE entry point。
+執行模式接受 AMD64、PE32+、console 或 GUI EXE；GUI API 暫限下述 MessageBoxA 子集。每個 guest address 都是數值，指令由 Rust 解碼與直譯，沒有 host executable memory、JIT、unsafe 或直接跳進 PE entry point。
 
-匯入綁定只接受 `kernel32.dll` 的 `GetStdHandle`、`WriteFile`、`ExitProcess`、`GetLastError`、`SetLastError`。DLL 名稱不分大小寫，API 名稱區分大小寫。沒有載入 host DLL；IAT 寫入的是 runtime 專用 token。OFT 存在時不從 IAT 解析名稱。
+匯入綁定接受 `user32.dll!MessageBoxA`，以及 `kernel32.dll` 的 `GetStdHandle`、`WriteFile`、`ExitProcess`、`GetLastError`、`SetLastError`。DLL 名稱不分大小寫，API 名稱區分大小寫。沒有載入 host DLL；IAT 寫入的是 runtime 專用 token。OFT 存在時不從 IAT 解析名稱。
 
 `WriteFile` 只支援 stdout／stderr 的同步寫入，結果先保存在記憶體，成功結束後由 CLI 輸出。無檔案系統、網路、子程序、stdin、非同步 I/O 與一般 Win32 handle 支援。無效 handle 回報 Windows 錯誤碼，無效 guest pointer 則停止 runtime 並回報記憶體錯誤。
 
@@ -87,3 +90,5 @@ cargo clippy --workspace --all-targets -- -D warnings
 第一個可交付終點已達成。要擴展至一般編譯器產出的程式，下一步應建立外部編譯器產生的測試 corpus，再逐項擴充 decoder、memory addressing 與 flags；接著處理更多 Win32 API、TLS／CRT／SEH 與多模組載入。GUI 與大型應用程式仍屬後續範圍。
 
 規格參考：[PE Format](https://learn.microsoft.com/en-us/windows/win32/debug/pe-format)、[Windows x64 calling convention](https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention)、[WriteFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile)。
+
+Task 011 驗證：124 項測試通過。MessageBoxA 僅支援 ASCII、無 owner、MB_OK／MB_YESNO；按鈕回傳後才繼續 guest 指令。詳見 docs/task-011.md。

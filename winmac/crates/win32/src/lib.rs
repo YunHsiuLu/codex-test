@@ -10,9 +10,13 @@ pub enum Api {
     ExitProcess,
     GetLastError,
     SetLastError,
+    MessageBoxA,
 }
 impl Api {
     pub fn resolve(dll: &str, name: &str) -> Option<Self> {
+        if dll.eq_ignore_ascii_case("user32.dll") && name == "MessageBoxA" {
+            return Some(Self::MessageBoxA);
+        }
         if !dll.eq_ignore_ascii_case("kernel32.dll") {
             return None;
         }
@@ -97,6 +101,12 @@ mod tests {
     }
     #[test]
     fn explicit_api_allowlist() {
+        assert_eq!(
+            Api::resolve("USER32.DLL", "MessageBoxA"),
+            Some(Api::MessageBoxA)
+        );
+        assert_eq!(Api::resolve("kernel32.dll", "MessageBoxA"), None);
+        assert_eq!(Api::resolve("user32.dll", "MessageBoxW"), None);
         assert_eq!(
             Api::resolve("KERNEL32.DLL", "WriteFile"),
             Some(Api::WriteFile)

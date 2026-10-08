@@ -1,6 +1,106 @@
 use super::*;
 #[path = "../examples/support/demo.rs"]
 mod demo;
+#[path = "../examples/support/gui.rs"]
+mod gui_demo;
+
+struct TestUi {
+    answer: u32,
+    messages: Vec<MessageBox>,
+}
+impl UserInterface for TestUi {
+    fn message_box(&mut self, request: &MessageBox) -> Result<u32, String> {
+        self.messages.push(request.clone());
+        Ok(if request.yes_no { self.answer } else { 1 })
+    }
+}
+#[test]
+fn gui_guest_branches_on_buttons_at_different_bases() {
+    for answer in [6, 7] {
+        for base in [demo::BASE, demo::BASE + 0x10000] {
+            let mut ui = TestUi {
+                answer,
+                messages: Vec::new(),
+            };
+            let result = run_pe_with_ui(
+                &gui_demo::quiz_pe(),
+                &RunOptions {
+                    load_base: Some(base),
+                    ..options()
+                },
+                &mut ui,
+            )
+            .unwrap();
+            assert_eq!(result.exit_code, 0);
+            assert_eq!(result.api_calls, [Api::MessageBoxA, Api::MessageBoxA]);
+            assert_eq!(ui.messages.len(), 2);
+            assert_eq!(ui.messages[0].text, gui_demo::QUESTION);
+            assert_eq!(ui.messages[0].caption, "WinMac Physics Quiz");
+            assert_eq!(
+                ui.messages[1].text,
+                if answer == 6 {
+                    gui_demo::CORRECT
+                } else {
+                    gui_demo::INCORRECT
+                }
+            );
+            assert!(!ui.messages[1].yes_no);
+        }
+    }
+}
+#[test]
+fn gui_requires_host_and_valid_button_response() {
+    assert!(matches!(
+        run_pe(&gui_demo::quiz_pe(), &options()),
+        Err(RuntimeError::Gui(_))
+    ));
+    let mut ui = TestUi {
+        answer: 0,
+        messages: Vec::new(),
+    };
+    assert!(matches!(
+        run_pe_with_ui(&gui_demo::quiz_pe(), &options(), &mut ui),
+        Err(RuntimeError::Gui(_))
+    ));
+    assert_eq!(ui.messages.len(), 1);
+    struct FailedUi;
+    impl UserInterface for FailedUi {
+        fn message_box(&mut self, _: &MessageBox) -> Result<u32, String> {
+            Err("Host unavailable".into())
+        }
+    }
+    assert!(
+        matches!(run_pe_with_ui(&gui_demo::quiz_pe(), &options(), &mut FailedUi), Err(RuntimeError::Gui(s)) if s == "Host unavailable")
+    );
+}
+#[test]
+fn gui_validates_strings_pointers_and_options_before_host_call() {
+    let mut memory = AddressSpace::default();
+    memory
+        .map(0x1000, vec![b'A'; 4096], Permissions::READ)
+        .unwrap();
+    memory
+        .map(0x3000, vec![0xff, 0], Permissions::READ)
+        .unwrap();
+    for (owner, text, flags) in [(1, 0, 0), (0, 0, 1), (0, 0x1000, 0), (0, 0x3000, 0)] {
+        assert!(matches!(
+            super::ui::read_message_box(&memory, owner, text, 0, flags),
+            Err(RuntimeError::Gui(_))
+        ));
+    }
+    assert!(matches!(
+        super::ui::read_message_box(&memory, 0, 0x9999, 0, 0),
+        Err(RuntimeError::Memory(_))
+    ));
+    assert_eq!(
+        super::ui::read_message_box(&memory, 0, 0, 0, 0).unwrap(),
+        MessageBox {
+            text: String::new(),
+            caption: "Error".into(),
+            yes_no: false,
+        }
+    );
+}
 fn options() -> RunOptions {
     RunOptions::default()
 }

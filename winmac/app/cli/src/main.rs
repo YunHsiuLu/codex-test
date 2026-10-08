@@ -2,6 +2,7 @@ use std::env;
 use std::fs;
 use std::io::{Read, Write};
 use std::process::ExitCode;
+mod ui;
 
 fn main() -> ExitCode {
     match command(&env::args().skip(1).collect::<Vec<_>>()) {
@@ -43,7 +44,8 @@ fn command(args: &[String]) -> anyhow::Result<u32> {
             }
             i += 2;
         }
-        let result = winmac_runtime::run_pe(&read_input(path)?, &options)?;
+        let result =
+            winmac_runtime::run_pe_with_ui(&read_input(path)?, &options, &mut ui::NativeUi)?;
         std::io::stdout().lock().write_all(&result.stdout)?;
         std::io::stderr().lock().write_all(&result.stderr)?;
         eprintln!(
