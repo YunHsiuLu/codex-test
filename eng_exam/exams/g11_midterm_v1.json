@@ -1,0 +1,736 @@
+{
+  "id": "G11-U13-01",
+  "title": "高二英文練習段考",
+  "version": "1.0",
+  "date": "2026-10-07",
+  "minutes": 70,
+  "total": 100,
+  "scope": "Core Vocabulary Unit 13、基礎文法與篇章閱讀、資訊整合、中譯英及短文寫作",
+  "status": "自主設計練習卷；尚未依教科書主課文配題，無聽力部分。",
+  "instructions": [
+    "全卷共六頁、三十六題，滿分一百分，作答時間七十分鐘。請直接在試卷上作答，不使用答案卡。",
+    "第一、二、四大題及第二十九至三十題為四選一，每題僅選一個答案，填在題號前括號內。第三大題填字庫的字母。",
+    "第三十一至三十六題依指示以英文作答。選擇題多選、未作答或修改後無法辨認者不給分；答錯不倒扣。",
+    "請勿使用字典、翻譯工具或其他電子設備。閱讀材料為命題用原創情境。"
+  ],
+  "sections": [
+    {
+      "id": "vocab",
+      "title": "一　詞彙與搭配",
+      "points": 20,
+      "minutes": 9,
+      "instruction": "第１至１０題，每題２分。依句意選出最適當的單字。"
+    },
+    {
+      "id": "cloze",
+      "title": "二　綜合測驗",
+      "points": 10,
+      "minutes": 7,
+      "instruction": "第１１至１５題，每題２分。閱讀短文，選出各空格的最佳答案。"
+    },
+    {
+      "id": "bank",
+      "title": "三　文意選填",
+      "points": 10,
+      "minutes": 6,
+      "instruction": "第１６至２０題，每題２分。從字庫選出最適當的詞，填入字母；每詞最多用一次，有三個多餘選項。"
+    },
+    {
+      "id": "reading",
+      "title": "四　閱讀測驗",
+      "points": 16,
+      "minutes": 14,
+      "instruction": "第２１至２８題，每題２分。依各篇文章選出最佳答案。"
+    },
+    {
+      "id": "mixed",
+      "title": "五　混合題",
+      "points": 14,
+      "minutes": 10,
+      "instruction": "第２９至３２題，每題２分；第３３題６分。閱讀公告與表格，再依各題指示作答。"
+    },
+    {
+      "id": "translation",
+      "title": "六　中譯英",
+      "points": 10,
+      "minutes": 7,
+      "instruction": "第３４至３５題，每題５分。將完整句意譯成自然、正確的英文，不限定使用單一句型。"
+    },
+    {
+      "id": "writing",
+      "title": "七　短文寫作",
+      "points": 20,
+      "minutes": 17,
+      "instruction": "第３６題，２０分。依提示寫一封８０至１００字的英文電子郵件。"
+    }
+  ],
+  "passages": {
+    "cloze": {
+      "title": "A Repair Afternoon",
+      "paragraphs": [
+        "Last month, our school held a repair afternoon to give broken everyday objects a second chance. Students ___11___ had never fixed anything before worked with adult volunteers at tables set up inside the library. ___12___ some volunteers expected students to lose interest quickly, the young helpers stayed until the last visitor left and asked to join the next event. By the time the doors opened at two, the adults ___13___ three lamps to demonstrate simple repairs and had placed them near the entrance. Each student had ___14___ part in a short safety lesson before being allowed to use any tools. The experience increased their ___15___: several students said they now believed they could solve small problems at home without immediately buying replacements. Objects that could not be fixed that day were labeled clearly, so their owners knew what kind of professional help to seek. The organizers hoped that the event would become a regular part of school life."
+      ]
+    },
+    "bank": {
+      "title": "A Mystery Walk",
+      "word_bank": {
+        "A": "adventure",
+        "B": "burden",
+        "C": "passion",
+        "D": "clue",
+        "E": "routine",
+        "F": "reward",
+        "G": "rush",
+        "H": "scream"
+      },
+      "paragraphs": [
+        "Our drama club created a mystery walk through the old part of our town. Mei's ___16___ for local history was clear: she spent every free afternoon reading old maps simply because she loved the subject. The team wanted visitors to feel a sense of ___17___ as they explored unfamiliar lanes and discovered places they had never noticed before. When a cardboard ghost suddenly fell from a window, one visitor let out a loud ___18___ that everyone in the next street could hear, then laughed in relief. A sudden ___19___ of visitors arrived just after lunch, so the team introduced starting times to prevent crowding. At the final stop, a muddy footprint became the decisive ___20___ that helped visitors identify which character had entered the garden. After finishing the walk, families compared their ideas over cups of tea and explained which details had changed their minds. The club kept their comments to improve the next event."
+      ]
+    },
+    "reading_a": {
+      "title": "Reading A　The Cup Return Problem",
+      "paragraphs": [
+        "At Brook High School, students could borrow a reusable cup from the cafe by paying a small deposit. They received the money back when they returned the cup. The student council expected this system to reduce waste, but many cups remained in classrooms at the end of each day. In interviews, students said they usually remembered the cups; the problem was that the cafe closed before their last class ended.",
+        "For the next two weeks, the council placed return boxes near the school gates and kept the deposit unchanged. The number of cups returned on the day they were borrowed rose from 60 out of 100 to 85 out of 100. The cafe also washed every returned cup before lending it again. However, the council did not count how many disposable cups students bought during either period.",
+        "Some members wanted to announce that the project had reduced waste by 25 percent. Others disagreed. A higher return rate showed that returning borrowed cups had become easier, but it did not reveal how much total waste the school produced. The council therefore decided to record both cup returns and purchases of disposable cups during a longer trial. It also planned to ask students who still kept their cups overnight what prevented them from returning them."
+      ],
+      "gloss": "deposit＝押金；disposable＝拋棄式的。"
+    },
+    "reading_b": {
+      "title": "Reading B　From Writing to Speaking",
+      "paragraphs": [
+        "In the first month of an English discussion club, twelve students attended regularly, but only a few spoke. The leader, Lina, first thought the quiet members were not interested. Instead of requiring everyone to speak immediately, she asked each member to write one reason for staying silent. Several students said they needed time to organize their ideas. Others worried that a mistake would interrupt the discussion.",
+        "Lina changed the next four meetings. Before each discussion, members spent two minutes writing. They then shared their ideas with one partner before speaking to the whole group. Lina also allowed members to submit a question on paper. By the fourth meeting, nine students had contributed at least once, compared with four at the first meeting. One student, however, said that speaking with the same partner every week limited the range of opinions he heard.",
+        "The club decided to keep the preparation time but change partners regularly. Lina did not claim that the new activities alone explained the improvement: members might also have become more familiar with one another. Still, their written comments helped her understand a problem she had first misread. For her, participation was no longer simply a matter of asking quiet people to try harder. It also depended on how the activity was organized."
+      ]
+    },
+    "mixed": {
+      "title": "School Service Day",
+      "paragraphs": [
+        "Registration closes at 4:00 p.m. on Friday. Each student may join ONE team. Check the schedule and requirements before choosing. The school will lend all necessary tools. Students must bring a water bottle, but no previous volunteer experience is required. Work in pairs and follow the team leader's instructions throughout the activity.",
+        "Outdoor teams will move to the gym if it rains; their starting and ending times will stay the same. The Office Team will work in the school office in all weather. Students must attend the full session, including the final cleanup. A bus to Central Station leaves the school at 11:40 a.m. Students who need it should choose a team that finishes before then."
+      ],
+      "table": [
+        [
+          "Team",
+          "Time",
+          "Main task",
+          "Special requirement"
+        ],
+        [
+          "Garden Team",
+          "09:00-11:00",
+          "Plant flowers outdoors",
+          "Bring a hat"
+        ],
+        [
+          "Office Team",
+          "10:00-12:00",
+          "Sort donated books indoors",
+          "Read small labels"
+        ],
+        [
+          "Repair Team",
+          "09:30-11:30",
+          "Fix chairs outdoors",
+          "Wear closed-toe shoes"
+        ]
+      ],
+      "after_table": "Leo cannot arrive before 9:20 a.m. He needs to take the 11:40 a.m. bus, can read small labels, and owns closed-toe shoes. He has no previous volunteer experience.",
+      "gloss": "closed-toe shoes＝包覆腳趾的鞋。"
+    }
+  },
+  "items": [
+    {
+      "n": 1,
+      "section": "vocab",
+      "type": "mc",
+      "points": 2,
+      "stem": "The club cannot afford new cameras because its annual _____ is only three thousand dollars.",
+      "options": [
+        "report",
+        "survey",
+        "budget",
+        "policy"
+      ],
+      "answer": "C",
+      "target": "budget；名詞；支出上限",
+      "difficulty": "易",
+      "explanation": "年度可支出的上限是 annual budget。report 報告、survey 調查、policy 政策，皆不是採購時可使用的金額。",
+      "unit_word": "budget"
+    },
+    {
+      "n": 2,
+      "section": "vocab",
+      "type": "mc",
+      "points": 2,
+      "stem": "The lawyer's _____ paid her to represent him in court and explain the legal process.",
+      "options": [
+        "client",
+        "colleague",
+        "judge",
+        "assistant"
+      ],
+      "answer": "A",
+      "target": "client；名詞；專業服務關係",
+      "difficulty": "易",
+      "explanation": "付費委託律師代表自己出庭的人是 client。colleague 同事、judge 法官、assistant 助理都不是本題描述的服務關係。",
+      "unit_word": "client"
+    },
+    {
+      "n": 3,
+      "section": "vocab",
+      "type": "mc",
+      "points": 2,
+      "stem": "Excited about her first trip abroad, Amy was _____ to learn a few useful phrases before leaving.",
+      "options": [
+        "afraid",
+        "unable",
+        "ashamed",
+        "eager"
+      ],
+      "answer": "D",
+      "target": "eager；形容詞；渴望",
+      "difficulty": "易",
+      "explanation": "Excited 與主動準備旅行的線索支持 eager to learn。afraid 表害怕，unable 表無法做到，ashamed 表羞愧，都不能表達此處的興奮與期待。",
+      "unit_word": "eager"
+    },
+    {
+      "n": 4,
+      "section": "vocab",
+      "type": "mc",
+      "points": 2,
+      "stem": "To remove the extra water, _____ the wet sponge firmly over the sink.",
+      "options": [
+        "stretch",
+        "squeeze",
+        "scratch",
+        "slide"
+      ],
+      "answer": "B",
+      "target": "squeeze；動詞；壓出水分",
+      "difficulty": "易",
+      "explanation": "對濕海綿施壓以去水，用 squeeze。stretch 拉長、scratch 刮、slide 滑動，都不符合 firmly 與去水目的。",
+      "unit_word": "squeeze"
+    },
+    {
+      "n": 5,
+      "section": "vocab",
+      "type": "mc",
+      "points": 2,
+      "stem": "All members must _____ their votes before the meeting ends; late votes will not be counted.",
+      "options": [
+        "cast",
+        "draw",
+        "hold",
+        "earn"
+      ],
+      "answer": "A",
+      "target": "cast；動詞；cast a vote",
+      "difficulty": "中",
+      "explanation": "投票的搭配是 cast one's vote。句意要求在截止前投出，hold 表示保留而非投出。",
+      "unit_word": "cast"
+    },
+    {
+      "n": 6,
+      "section": "vocab",
+      "type": "mc",
+      "points": 2,
+      "stem": "Please _____ the muddy footprints off the floor with a damp cloth before anyone slips.",
+      "options": [
+        "pour",
+        "fold",
+        "wipe",
+        "hang"
+      ],
+      "answer": "C",
+      "target": "wipe；動詞；擦除",
+      "difficulty": "易",
+      "explanation": "damp cloth 和 footprints off the floor 指以濕布擦掉腳印，故選 wipe。其餘動作不符合工具及受詞。",
+      "unit_word": "wipe"
+    },
+    {
+      "n": 7,
+      "section": "vocab",
+      "type": "mc",
+      "points": 2,
+      "stem": "When the dry curtains caught fire, tall _____ quickly rose toward the ceiling.",
+      "options": [
+        "clouds",
+        "flames",
+        "shadows",
+        "sparks"
+      ],
+      "answer": "B",
+      "target": "flame；名詞；燃燒火焰",
+      "difficulty": "易",
+      "explanation": "燃燒窗簾產生向上竄的高聳火焰，flames 符合 tall。sparks 是細小、短暫的火星，不能用 tall 描述；clouds 與 shadows 不符合燃燒情境。",
+      "unit_word": "flame"
+    },
+    {
+      "n": 8,
+      "section": "vocab",
+      "type": "mc",
+      "points": 2,
+      "stem": "Still _____ about being unfairly blamed, Eric refused to speak to the teammate who had accused him.",
+      "options": [
+        "curious",
+        "nervous",
+        "cheerful",
+        "bitter"
+      ],
+      "answer": "D",
+      "target": "bitter；形容詞；憤憤不平",
+      "difficulty": "中",
+      "explanation": "受到不公平責怪後仍拒絕與對方說話，支持 bitter 的憤恨義，非味覺義。nervous 是緊張，不能完整呈現受到不公平待遇的怨懟。",
+      "unit_word": "bitter"
+    },
+    {
+      "n": 9,
+      "section": "vocab",
+      "type": "mc",
+      "points": 2,
+      "stem": "The child would answer questions only in the _____ of her mother, who had to remain beside her.",
+      "options": [
+        "absence",
+        "distance",
+        "presence",
+        "silence"
+      ],
+      "answer": "C",
+      "target": "presence；名詞；in the presence of",
+      "difficulty": "中",
+      "explanation": "母親必須留在旁邊，表示在母親在場時才肯回答。in the presence of 是固定搭配；absence 意思相反。",
+      "unit_word": "presence"
+    },
+    {
+      "n": 10,
+      "section": "vocab",
+      "type": "mc",
+      "points": 2,
+      "stem": "Hold both ends of the wet towel and _____ them in opposite directions to force the water out.",
+      "options": [
+        "twist",
+        "shake",
+        "raise",
+        "press"
+      ],
+      "answer": "A",
+      "target": "twist；動詞；扭轉",
+      "difficulty": "中",
+      "explanation": "握住兩端向相反方向轉動，描述的是 twist。press 壓、shake 搖與 raise 舉起都未表達相反方向的扭轉。",
+      "unit_word": "twist"
+    },
+    {
+      "n": 11,
+      "section": "cloze",
+      "type": "mc",
+      "points": 2,
+      "options": [
+        "which",
+        "who",
+        "whose",
+        "where"
+      ],
+      "answer": "B",
+      "target": "關係代名詞；主格",
+      "difficulty": "易",
+      "explanation": "先行詞 Students 是人，空格在 had never fixed 前作主詞，所以用 who。whose 須帶其所修飾的名詞。"
+    },
+    {
+      "n": 12,
+      "section": "cloze",
+      "type": "mc",
+      "points": 2,
+      "options": [
+        "Because",
+        "Unless",
+        "After",
+        "Although"
+      ],
+      "answer": "D",
+      "target": "讓步邏輯",
+      "difficulty": "中",
+      "explanation": "預期學生很快失去興趣，實際卻待到最後，形成預期與事實的反差，因此用 Although。"
+    },
+    {
+      "n": 13,
+      "section": "cloze",
+      "type": "mc",
+      "points": 2,
+      "options": [
+        "had repaired",
+        "will repair",
+        "have repaired",
+        "are repairing"
+      ],
+      "answer": "A",
+      "target": "過去完成式；事件先後",
+      "difficulty": "中",
+      "explanation": "修好燈發生在過去兩點開門之前；By the time 加過去事件，主要子句用 had repaired 表示此前已完成。"
+    },
+    {
+      "n": 14,
+      "section": "cloze",
+      "type": "mc",
+      "points": 2,
+      "options": [
+        "made",
+        "kept",
+        "taken",
+        "given"
+      ],
+      "answer": "C",
+      "target": "take part in 固定搭配",
+      "difficulty": "中",
+      "explanation": "參加安全課程是 take part in；在 had 後用過去分詞 taken。四個選項本身均為正確的過去分詞。"
+    },
+    {
+      "n": 15,
+      "section": "cloze",
+      "type": "mc",
+      "points": 2,
+      "options": [
+        "curiosity",
+        "confidence",
+        "patience",
+        "sympathy"
+      ],
+      "answer": "B",
+      "target": "名詞語意；從後文回推",
+      "difficulty": "中",
+      "explanation": "冒號後 now believed they could solve small problems 說明對自身能力更有信心，故用 confidence。不是只因參加活動就推測好奇心或耐性。"
+    },
+    {
+      "n": 16,
+      "section": "bank",
+      "type": "bank",
+      "points": 2,
+      "answer": "C",
+      "target": "passion for",
+      "difficulty": "易",
+      "explanation": "每個空閒下午都主動查地圖且因喜愛而做，顯示對歷史的熱情 passion。",
+      "unit_word": "passion"
+    },
+    {
+      "n": 17,
+      "section": "bank",
+      "type": "bank",
+      "points": 2,
+      "answer": "A",
+      "target": "a sense of adventure",
+      "difficulty": "易",
+      "explanation": "探索陌生巷道、發現從未注意的地方，對應冒險感 adventure。不是例行 routine 或負擔 burden。",
+      "unit_word": "adventure"
+    },
+    {
+      "n": 18,
+      "section": "bank",
+      "type": "bank",
+      "points": 2,
+      "answer": "H",
+      "target": "scream；受到驚嚇的聲音",
+      "difficulty": "中",
+      "explanation": "突見紙板鬼嚇得發出聲音，整條鄰街都聽見，對應 let out a loud scream。字庫其他名詞皆無此聲音義。",
+      "unit_word": "scream"
+    },
+    {
+      "n": 19,
+      "section": "bank",
+      "type": "bank",
+      "points": 2,
+      "answer": "G",
+      "target": "a rush of visitors",
+      "difficulty": "中",
+      "explanation": "午餐後突然來了許多遊客，接著要錯開出發時間避免擁擠，因此是 a rush of visitors。",
+      "unit_word": "rush"
+    },
+    {
+      "n": 20,
+      "section": "bank",
+      "type": "bank",
+      "points": 2,
+      "answer": "D",
+      "target": "clue；實體證據",
+      "difficulty": "中",
+      "explanation": "泥腳印是辨識誰進過花園的關鍵證據，用 clue；本字庫其他名詞沒有可用於 identify which character 的證據義。",
+      "unit_word": "clue"
+    },
+    {
+      "n": 21,
+      "section": "reading",
+      "passage": "reading_a",
+      "type": "mc",
+      "points": 2,
+      "stem": "What was the main reason for adding return boxes near the gates?",
+      "options": [
+        "To make students pay a larger deposit.",
+        "To let students wash cups after class.",
+        "To stop the cafe from lending more cups.",
+        "To let students return cups after the cafe closed."
+      ],
+      "answer": "D",
+      "target": "問題與措施的因果連結",
+      "difficulty": "易",
+      "explanation": "第一段說咖啡店比最後一堂課更早關門；第二段把回收點移到校門附近。兩段合讀可知是改善歸還時間與地點的限制。"
+    },
+    {
+      "n": 22,
+      "section": "reading",
+      "passage": "reading_a",
+      "type": "mc",
+      "points": 2,
+      "stem": "Which statement is directly supported by the recorded numbers?",
+      "options": [
+        "More borrowed cups were returned on the same day.",
+        "Students bought fewer disposable cups during the trial.",
+        "The school's total waste fell by exactly one quarter.",
+        "Every student returned a cup before going home."
+      ],
+      "answer": "A",
+      "target": "數據的測量對象",
+      "difficulty": "中",
+      "explanation": "當日歸還率從１００杯中６０杯變為８５杯，支持 A。未統計拋棄式杯購買量及垃圾量，且８５並非全部。增加的是２５個百分點，不是已證實減廢２５％。"
+    },
+    {
+      "n": 23,
+      "section": "reading",
+      "passage": "reading_a",
+      "type": "mc",
+      "points": 2,
+      "stem": "In paragraph 2, what does 'either period' refer to?",
+      "options": [
+        "The first and last classes on the same school day.",
+        "The cafe's opening hours and the time after it closed.",
+        "The periods before and after the boxes were added.",
+        "The time before and after a borrowed cup was washed."
+      ],
+      "answer": "C",
+      "target": "指涉；跨句整合",
+      "difficulty": "中",
+      "explanation": "第二段比較措施前後兩段期間的歸還數據，並說兩段期間都未計算拋棄式杯的購買量。"
+    },
+    {
+      "n": 24,
+      "section": "reading",
+      "passage": "reading_a",
+      "type": "mc",
+      "points": 2,
+      "stem": "Why did the council plan a longer trial with another kind of record?",
+      "options": [
+        "To prove that every unreturned cup had been lost.",
+        "To judge the environmental result with more complete evidence.",
+        "To replace student interviews with guesses about their habits.",
+        "To find a reason to remove all the new return boxes."
+      ],
+      "answer": "B",
+      "target": "推論；證據限制",
+      "difficulty": "難",
+      "explanation": "增加杯具歸還及拋棄式杯購買兩種紀錄，才能更完整評估環境結果；不能只憑歸還率推斷垃圾減量。"
+    },
+    {
+      "n": 25,
+      "section": "reading",
+      "passage": "reading_b",
+      "type": "mc",
+      "points": 2,
+      "stem": "Which title best expresses the main idea?",
+      "options": [
+        "Changing a Discussion So More Members Can Join In",
+        "Winning a Speaking Contest with Perfect Grammar",
+        "Choosing the Most Experienced Leader for a Club",
+        "Replacing Group Discussions with Written Tests"
+      ],
+      "answer": "A",
+      "target": "主旨；問題到調整",
+      "difficulty": "中",
+      "explanation": "全文從少數人發言、蒐集原因、調整活動到檢討成效，核心是如何讓更多成員參與討論。未辦競賽、選領導者或改成筆試。"
+    },
+    {
+      "n": 26,
+      "section": "reading",
+      "passage": "reading_b",
+      "type": "mc",
+      "points": 2,
+      "stem": "Which change directly addressed the need to organize ideas before speaking?",
+      "options": [
+        "Requiring every member to speak as soon as a meeting began.",
+        "Allowing only the most active members to ask questions.",
+        "Keeping the same discussion partner for the whole year.",
+        "Giving members two minutes to write before sharing."
+      ],
+      "answer": "D",
+      "target": "措施與需求配對",
+      "difficulty": "易",
+      "explanation": "第一段的困難是整理想法需要時間，第二段的兩分鐘書寫準備直接回應此需求。"
+    },
+    {
+      "n": 27,
+      "section": "reading",
+      "passage": "reading_b",
+      "type": "mc",
+      "points": 2,
+      "stem": "Why did the club decide to change partners regularly?",
+      "options": [
+        "Quiet students had asked to stop all pair work.",
+        "A member wanted to hear a wider variety of views.",
+        "Lina wanted to avoid reading written comments.",
+        "The club no longer had time for preparation."
+      ],
+      "answer": "B",
+      "target": "回饋與後續調整",
+      "difficulty": "中",
+      "explanation": "第二段最後指出同一搭檔限制接觸意見的範圍，第三段因此決定定期換搭檔；保留準備時間。"
+    },
+    {
+      "n": 28,
+      "section": "reading",
+      "passage": "reading_b",
+      "type": "mc",
+      "points": 2,
+      "stem": "Why was Lina careful about explaining the increase in participation?",
+      "options": [
+        "No one had written down how many students spoke.",
+        "All members had already mastered public speaking.",
+        "Growing familiarity might also have helped students speak.",
+        "The changes had made every member less willing to talk."
+      ],
+      "answer": "C",
+      "target": "因果推論限制",
+      "difficulty": "難",
+      "explanation": "第三段明說成員也可能只是彼此更熟悉，因此無法把增加發言全部歸因於新活動。"
+    },
+    {
+      "n": 29,
+      "section": "mixed",
+      "type": "mc",
+      "points": 2,
+      "stem": "Which team can Leo join while meeting all his time limits?",
+      "options": [
+        "Garden Team only",
+        "Office Team only",
+        "Garden Team or Repair Team",
+        "Repair Team only"
+      ],
+      "answer": "D",
+      "target": "公告、表格及人物限制整合",
+      "difficulty": "中",
+      "explanation": "９：２０才可到，排除９：００開始的 Garden；須搭１１：４０公車，排除１２：００才結束的 Office。Repair ９：３０至１１：３０符合。"
+    },
+    {
+      "n": 30,
+      "section": "mixed",
+      "type": "mc",
+      "points": 2,
+      "stem": "Which statement correctly describes the arrangements for a rainy day?",
+      "options": [
+        "The Repair Team changes location but keeps its original hours.",
+        "The Garden Team starts later and no longer needs a full session.",
+        "The Office Team moves to the gym with all the outdoor teams.",
+        "All teams finish early so every student can catch the bus."
+      ],
+      "answer": "A",
+      "target": "條件公告與時間表整合",
+      "difficulty": "中",
+      "explanation": "公告規定戶外隊移至體育館但時間不變；Repair 是戶外隊。Office 在所有天氣都留在辦公室。"
+    },
+    {
+      "n": 31,
+      "section": "mixed",
+      "type": "short",
+      "points": 2,
+      "stem": "Copy TWO consecutive words from the notice to complete the sentence: Every student must bring a ____ ____.",
+      "answer": "water bottle",
+      "target": "擷取連續詞組",
+      "difficulty": "易",
+      "explanation": "第一段明寫 Students must bring a water bottle。須依題意抄出連續兩詞。",
+      "rubric": [
+        "water 與 bottle 各１分，順序正確；大小寫不扣分。單詞拼錯則該詞不得分；多抄不影響辨識的冠詞不扣分。"
+      ]
+    },
+    {
+      "n": 32,
+      "section": "mixed",
+      "type": "short",
+      "points": 2,
+      "stem": "Copy TWO consecutive words from the notice: On a rainy day, outdoor teams keep the same starting and ____ ____.",
+      "answer": "ending times",
+      "target": "公告改寫中的擷取",
+      "difficulty": "易",
+      "explanation": "第二段 their starting and ending times will stay the same 提供答案 ending times。",
+      "rubric": [
+        "ending 與 times 各１分，順序正確；大小寫不扣分。單詞拼錯或 times 缺 s，該詞不得分。"
+      ]
+    },
+    {
+      "n": 33,
+      "section": "mixed",
+      "type": "short",
+      "points": 6,
+      "stem": "Sam writes, 'I have never volunteered before, so I cannot join any team.' In ONE or TWO English sentences, correct his misunderstanding and tell him ONE action he must complete before Service Day. Use the registration deadline in your answer.",
+      "answer": "You can join because no previous volunteer experience is required. Register by 4:00 p.m. on Friday.",
+      "target": "修正誤解與完成溝通目的",
+      "difficulty": "難",
+      "explanation": "必須回應 Sam 的經驗誤解，並把截止時間轉為具體可執行的報名建議；不是只抄表格。",
+      "rubric": [
+        "內容２分：指出沒有志工經驗也可以參加／不要求過往經驗。只說可以參加但沒交代理由，１分。",
+        "行動２分：明確要求報名１分；完整提及星期五下午４點前１分。只說帶水或穿鞋，未回答指定期限行動，不給此項。",
+        "語言２分：表達清楚、句子完整且大致正確得２分；可理解但有片語殘缺或明顯錯誤得１分；無法理解得０分。",
+        "接受同義改寫、縮寫及十二／二十四小時制。誤寫與文本衝突的內容不給該內容分。同一文法錯誤只在語言項處理。"
+      ]
+    },
+    {
+      "n": 34,
+      "section": "translation",
+      "type": "translation",
+      "points": 5,
+      "stem": "這場雨使我們無法在戶外舉行原定於今天下午進行的校園音樂會。",
+      "answer": "The rain prevented us from holding the campus concert outdoors as planned this afternoon.",
+      "target": "prevent...from...；地點與時間資訊",
+      "difficulty": "中",
+      "explanation": "參考譯句１４字。可用 Because of the rain, we could not hold... 等正確等值句型。",
+      "rubric": [
+        "這場雨使我們無法：２分。因果與否定／阻止關係完整。",
+        "舉行校園音樂會：１分。hold／have the school concert 均可。",
+        "在戶外：１分。outdoors 或 outside 均可。",
+        "原定今天下午：１分。as planned this afternoon 或 scheduled for this afternoon 均可。",
+        "各語意單位可按０．５分給部分分；該單位明顯文法或用字錯誤扣０．５分，意思錯誤該單位０分；拼字、大小寫、標點每處０．５分，這類錯誤全句合計最多扣１分，且同一錯誤不重複扣。最低０分。"
+      ]
+    },
+    {
+      "n": 35,
+      "section": "translation",
+      "type": "translation",
+      "points": 5,
+      "stem": "你越仔細閱讀這些說明，完成這項任務時就會犯越少錯誤。",
+      "answer": "The more carefully you read these instructions, the fewer mistakes you will make completing this task.",
+      "target": "比較結構；carefully／fewer；語意保留",
+      "difficulty": "難",
+      "explanation": "參考譯句１６字。可用 If you read...more carefully, you will make fewer... 表達相同關係；不限定使用 The more..., the fewer...。",
+      "rubric": [
+        "越仔細閱讀這些說明：２分。須保留比較程度及 read these instructions。",
+        "就會犯越少錯誤：２分。須表達同向條件對應與 fewer mistakes 的數量降低。",
+        "完成這項任務時：１分。when／while completing this task，或 when you complete this task 均可。",
+        "各語意單位可按０．５分給部分分；局部文法錯誤扣０．５分，意思錯誤該單位０分；拼字、大小寫、標點合計最多扣１分且不重複扣。完整語意也可用不同句型得到滿分。"
+      ]
+    },
+    {
+      "n": 36,
+      "section": "writing",
+      "type": "writing",
+      "points": 20,
+      "stem": "Your class has received NT$3,000 to improve English learning. Write an email to your class representative, Alex, suggesting ONE activity. Explain what students will do, how the money will be used, why the activity will help, and ONE possible problem with a practical solution. Do not sign your real name; use Chris.",
+      "answer": "Hi Alex,\nI suggest holding an English story afternoon. Small groups could create short stories and perform them for our class. We could spend NT$1,800 on simple materials and NT$1,200 on English books as prizes. Preparing together would give everyone a reason to use English and listen carefully to others. Some students might be nervous about performing, so each group could rehearse with a partner first. Students could also choose a role with fewer lines. This activity would help us learn while enjoying our classmates' ideas.\nBest,\nChris",
+      "target": "溝通目的、內容發展、組織與語言",
+      "difficulty": "難",
+      "rubric": [
+        "內容８分：活動明確且交代學生做什麼２分；經費使用合理且不超過３０００元２分；學習效益有說明２分；問題與可行解法相互對應２分。每項完整２、僅提及而未說清１、缺漏或矛盾０。可不列精確金額，但需清楚說明合理的用途。",
+        "組織４分：郵件對象與語氣恰當１分；有自然開頭與收尾１分；想法順序連貫、句間連結清楚２分，偶有跳接１分，零散無序０分。",
+        "語言６分：５至６分＝句型大致正確、表達清楚且用字合宜；３至４分＝有錯誤但多數內容易懂；１至２分＝頻繁錯誤、需推測意思；０分＝幾乎無可理解的自行表達。區間內依錯誤頻率與句型掌握決定。",
+        "拼寫與標點２分：少量不影響閱讀的疏失２分；反覆出錯但仍易讀１分；嚴重妨礙閱讀０分。此處處理的錯誤不得再於語言項重扣。",
+        "字數目標８０至１００字，問候語與署名不計。７０至７９或１０１至１１０字不另扣；少於７０或超過１１０字，總分另扣１分。字數偏離導致內容缺漏仍依內容規準評分，但不再加罰篇幅。最高２０、最低０分。",
+        "空白０分；完全離題者內容０、全題最高５分；純抄題目或其他閱讀原文而無自行表達者０分。部分引用只評其自行產出內容。多於一個活動不自動判零，依是否充分發展主要建議評分。"
+      ]
+    }
+  ]
+}

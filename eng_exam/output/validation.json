@@ -1,0 +1,82 @@
+{
+  "status": "passed",
+  "total_points": 100,
+  "minutes": 70,
+  "question_count": 36,
+  "section_points": {
+    "vocab": 20,
+    "cloze": 10,
+    "bank": 10,
+    "reading": 16,
+    "mixed": 14,
+    "translation": 10,
+    "writing": 20
+  },
+  "mc_answer_counts": {
+    "A": 7,
+    "B": 6,
+    "C": 6,
+    "D": 6
+  },
+  "word_bank_answers": [
+    "C",
+    "A",
+    "H",
+    "G",
+    "D"
+  ],
+  "unit13_direct_points": 30,
+  "unit13_unique_targets": [
+    "adventure",
+    "bitter",
+    "budget",
+    "cast",
+    "client",
+    "clue",
+    "eager",
+    "flame",
+    "passion",
+    "presence",
+    "rush",
+    "scream",
+    "squeeze",
+    "twist",
+    "wipe"
+  ],
+  "vocabulary_stem_words": {
+    "1": 14,
+    "2": 14,
+    "3": 16,
+    "4": 12,
+    "5": 15,
+    "6": 14,
+    "7": 12,
+    "8": 16,
+    "9": 17,
+    "10": 17
+  },
+  "passage_words": {
+    "cloze": 153,
+    "bank": 150,
+    "reading_a": 208,
+    "reading_b": 213,
+    "mixed": 116
+  },
+  "translation_sample_words": {
+    "34": 14,
+    "35": 16
+  },
+  "writing_sample_body_words": 84,
+  "pdf_pages": {
+    "student": 6,
+    "teacher": 7
+  },
+  "pdf_sha256": {
+    "student": "d355abe6c1a4c1337dc16dc11f3346d10e4186d9d8a6e072e36b89f7106d1efa",
+    "teacher": "4ae0cc8d133a44b928dd638ea478aa8a48eb61f3c60394832e64a49a05f9af82"
+  },
+  "limitations": [
+    "語意唯一性與視覺版面另由人工審查；程式通過不等於已施測。",
+    "未具備主課文與聽力教材，不能視為正式共同命題規格合格。"
+  ]
+}

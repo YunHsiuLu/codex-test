@@ -1,0 +1,651 @@
+{
+  "absence": {
+    "lemma": "absence",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 65,
+        "pos": "n.",
+        "level": 2,
+        "entry": "absence n. 2"
+      }
+    ]
+  },
+  "adventure": {
+    "lemma": "adventure",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 65,
+        "pos": "n.",
+        "level": 3,
+        "entry": "adventure n. 3"
+      }
+    ]
+  },
+  "afraid": {
+    "lemma": "afraid",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 66,
+        "pos": "adj.",
+        "level": 1,
+        "entry": "afraid adj. 1"
+      }
+    ]
+  },
+  "ashamed": {
+    "lemma": "ashamed",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 67,
+        "pos": "adj.",
+        "level": 4,
+        "entry": "ashamed adj. 4"
+      }
+    ]
+  },
+  "assistant": {
+    "lemma": "assistant",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 67,
+        "pos": "n.",
+        "level": 3,
+        "entry": "assistant n. 3"
+      }
+    ]
+  },
+  "bitter": {
+    "lemma": "bitter",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 69,
+        "pos": "adj.",
+        "level": 3,
+        "entry": "bitter adj. 3"
+      }
+    ]
+  },
+  "bore": {
+    "lemma": "bore",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 69,
+        "pos": "v./n.",
+        "level": 3,
+        "entry": "bore v./n. 3"
+      }
+    ]
+  },
+  "budget": {
+    "lemma": "budget",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 70,
+        "pos": "n./v.",
+        "level": 3,
+        "entry": "budget n./v. 3"
+      }
+    ]
+  },
+  "burden": {
+    "lemma": "burden",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 70,
+        "pos": "n./v.",
+        "level": 2,
+        "entry": "burden n./v. 2"
+      }
+    ]
+  },
+  "campus": {
+    "lemma": "campus",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 71,
+        "pos": "n.",
+        "level": 3,
+        "entry": "campus n. 3"
+      }
+    ]
+  },
+  "cast": {
+    "lemma": "cast",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 71,
+        "pos": "v./n.",
+        "level": 3,
+        "entry": "cast v./n. 3"
+      }
+    ]
+  },
+  "cheerful": {
+    "lemma": "cheerful",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 72,
+        "pos": "adj.",
+        "level": 3,
+        "entry": "cheerful adj. 3"
+      }
+    ]
+  },
+  "client": {
+    "lemma": "client",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 72,
+        "pos": "n.",
+        "level": 3,
+        "entry": "client n. 3"
+      }
+    ]
+  },
+  "clouds": {
+    "lemma": "cloud",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 73,
+        "pos": "n.",
+        "level": 1,
+        "entry": "cloud n. 1"
+      }
+    ]
+  },
+  "clue": {
+    "lemma": "clue",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 73,
+        "pos": "n.",
+        "level": 3,
+        "entry": "clue n. 3"
+      }
+    ]
+  },
+  "colleague": {
+    "lemma": "colleague",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 73,
+        "pos": "n.",
+        "level": 4,
+        "entry": "colleague n. 4"
+      }
+    ]
+  },
+  "curious": {
+    "lemma": "curious",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 76,
+        "pos": "adj.",
+        "level": 2,
+        "entry": "curious adj. 2"
+      }
+    ]
+  },
+  "distance": {
+    "lemma": "distance",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 78,
+        "pos": "n.",
+        "level": 2,
+        "entry": "distance n. 2"
+      }
+    ]
+  },
+  "draw": {
+    "lemma": "draw",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 79,
+        "pos": "v./n.",
+        "level": 1,
+        "entry": "draw v./n. 1"
+      }
+    ]
+  },
+  "drip": {
+    "lemma": "drip",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 79,
+        "pos": "n./v.",
+        "level": 3,
+        "entry": "drip n./v. 3"
+      }
+    ]
+  },
+  "eager": {
+    "lemma": "eager",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 79,
+        "pos": "adj.",
+        "level": 3,
+        "entry": "eager adj. 3"
+      }
+    ]
+  },
+  "earn": {
+    "lemma": "earn",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 79,
+        "pos": "v.",
+        "level": 2,
+        "entry": "earn v. 2"
+      }
+    ]
+  },
+  "flame": {
+    "lemma": "flame",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 82,
+        "pos": "n./v.",
+        "level": 3,
+        "entry": "flame n./v. 3"
+      }
+    ]
+  },
+  "flames": {
+    "lemma": "flame",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 82,
+        "pos": "n./v.",
+        "level": 3,
+        "entry": "flame n./v. 3"
+      }
+    ]
+  },
+  "fold": {
+    "lemma": "fold",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 83,
+        "pos": "v./n.",
+        "level": 3,
+        "entry": "fold v./n. 3"
+      }
+    ]
+  },
+  "hang": {
+    "lemma": "hang",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 85,
+        "pos": "v.",
+        "level": 1,
+        "entry": "hang v. 1"
+      }
+    ]
+  },
+  "hint": {
+    "lemma": "hint",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 86,
+        "pos": "n./v.",
+        "level": 3,
+        "entry": "hint n./v. 3"
+      }
+    ]
+  },
+  "hold": {
+    "lemma": "hold",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 86,
+        "pos": "v./n.",
+        "level": 1,
+        "entry": "hold v./n. 1"
+      }
+    ]
+  },
+  "judge": {
+    "lemma": "judge",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 89,
+        "pos": "n./v.",
+        "level": 2,
+        "entry": "judge n./v. 2"
+      }
+    ]
+  },
+  "nervous": {
+    "lemma": "nervous",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 94,
+        "pos": "adj.",
+        "level": 2,
+        "entry": "nervous adj. 2"
+      }
+    ]
+  },
+  "passion": {
+    "lemma": "passion",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 97,
+        "pos": "n.",
+        "level": 3,
+        "entry": "passion n. 3"
+      }
+    ]
+  },
+  "policy": {
+    "lemma": "policy",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 98,
+        "pos": "n.",
+        "level": 2,
+        "entry": "policy n. 2"
+      }
+    ]
+  },
+  "pour": {
+    "lemma": "pour",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 99,
+        "pos": "v.",
+        "level": 3,
+        "entry": "pour v. 3"
+      }
+    ]
+  },
+  "presence": {
+    "lemma": "presence",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 99,
+        "pos": "n.",
+        "level": 3,
+        "entry": "presence n. 3"
+      }
+    ]
+  },
+  "press": {
+    "lemma": "press",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 99,
+        "pos": "n./v.",
+        "level": 2,
+        "entry": "press n./v. 2"
+      }
+    ]
+  },
+  "raise": {
+    "lemma": "raise",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 101,
+        "pos": "v./n.",
+        "level": 1,
+        "entry": "raise v./n. 1"
+      }
+    ]
+  },
+  "report": {
+    "lemma": "report",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 102,
+        "pos": "n./v.",
+        "level": 1,
+        "entry": "report n./v. 1"
+      }
+    ]
+  },
+  "reward": {
+    "lemma": "reward",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 103,
+        "pos": "n./v.",
+        "level": 4,
+        "entry": "reward n./v. 4"
+      }
+    ]
+  },
+  "routine": {
+    "lemma": "routine",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 103,
+        "pos": "n./adj.",
+        "level": 3,
+        "entry": "routine n./adj. 3"
+      }
+    ]
+  },
+  "rush": {
+    "lemma": "rush",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 103,
+        "pos": "n./v.",
+        "level": 3,
+        "entry": "rush n./v. 3"
+      }
+    ]
+  },
+  "scratch": {
+    "lemma": "scratch",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 104,
+        "pos": "n./v.",
+        "level": 4,
+        "entry": "scratch n./v. 4"
+      }
+    ]
+  },
+  "scream": {
+    "lemma": "scream",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 104,
+        "pos": "v./n.",
+        "level": 3,
+        "entry": "scream v./n. 3"
+      }
+    ]
+  },
+  "shadows": {
+    "lemma": "shadow",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 105,
+        "pos": "n./v.",
+        "level": 3,
+        "entry": "shadow n./v. 3"
+      }
+    ]
+  },
+  "shake": {
+    "lemma": "shake",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 105,
+        "pos": "v./n.",
+        "level": 1,
+        "entry": "shake v./n. 1"
+      }
+    ]
+  },
+  "silence": {
+    "lemma": "silence",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 105,
+        "pos": "n./v.",
+        "level": 2,
+        "entry": "silence n./v. 2"
+      }
+    ]
+  },
+  "slide": {
+    "lemma": "slide",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 106,
+        "pos": "n./v.",
+        "level": 2,
+        "entry": "slide n./v. 2"
+      }
+    ]
+  },
+  "sparks": {
+    "lemma": "spark",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 107,
+        "pos": "n./v.",
+        "level": 4,
+        "entry": "spark n./v. 4"
+      }
+    ]
+  },
+  "spin": {
+    "lemma": "spin",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 107,
+        "pos": "n./v.",
+        "level": 3,
+        "entry": "spin n./v. 3"
+      }
+    ]
+  },
+  "squeeze": {
+    "lemma": "squeeze",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 107,
+        "pos": "v./n.",
+        "level": 3,
+        "entry": "squeeze v./n. 3"
+      }
+    ]
+  },
+  "stretch": {
+    "lemma": "stretch",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 108,
+        "pos": "n./v.",
+        "level": 2,
+        "entry": "stretch n./v. 2"
+      }
+    ]
+  },
+  "survey": {
+    "lemma": "survey",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 109,
+        "pos": "n./v.",
+        "level": 3,
+        "entry": "survey n./v. 3"
+      }
+    ]
+  },
+  "twist": {
+    "lemma": "twist",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 112,
+        "pos": "n./v.",
+        "level": 3,
+        "entry": "twist n./v. 3"
+      }
+    ]
+  },
+  "unable": {
+    "lemma": "able",
+    "unit13": false,
+    "matches": [
+      {
+        "page": 65,
+        "pos": "adj.",
+        "level": 1,
+        "entry": "able adj. 1"
+      }
+    ],
+    "note": "unable 是 un- 加 able 的否定衍生詞；參考詞彙表 PDF 第７頁原則不另列此類詞。此處級別是 able 的參照級別，並非 unable 的獨立官方級別。"
+  },
+  "wipe": {
+    "lemma": "wipe",
+    "unit13": true,
+    "matches": [
+      {
+        "page": 114,
+        "pos": "v./n.",
+        "level": 3,
+        "entry": "wipe v./n. 3"
+      }
+    ]
+  }
+}
