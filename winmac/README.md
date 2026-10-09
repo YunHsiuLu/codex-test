@@ -1,5 +1,7 @@
 # WinMac Runtime
 
+2026-10-09：**《洛克人 X4》已可遊玩。** 雙擊專案根目錄的 `Play-X4.command`。本版本使用專用 Wine backend，保留原 Rust runtime；使用者已確認可進關卡、正常操作與聲音。啟動、存檔與支援範圍見 [Task 012](docs/task-012-x4.md)。
+
 以 Rust 建立的 Windows PE 檢視器與實驗性 runtime。目前已在 Apple Silicon macOS 上，使用 x86-64 指令直譯器跑通自製的最小 Windows 主控台 EXE。
 
 這是有限功能的可執行原型，尚非一般 Windows 應用程式相容層。
