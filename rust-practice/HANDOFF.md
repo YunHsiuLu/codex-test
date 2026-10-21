@@ -52,3 +52,11 @@ README.md 已改為終端機優先，說明 nano 修改、存檔、執行及第�
 依使用者指示移除根目錄 rust-practice.zip，後續不再產生壓縮包，以 GitHub 版本管理與同步原始檔。前文壓縮包記錄為歷史狀態，已由本次移除取代。未執行 commit 或 push。
 
 換電腦時 clone 對應 repository，進入 rust-practice，執行 `cargo run -- lesson 1` 即可續作；target 已被專案 .gitignore 排除，Cargo.lock 保留。已確認壓縮包不存在，Rust 原始碼未變更，不需重跑編譯測試。
+
+## ２０２６－１０－２１｜README 補齊 GitHub 新使用者安裝入口
+
+README.md 現在直接提供 Windows、macOS、Linux 的下載安裝流程，包含官方連結、Windows MSVC／SDK 前置工具、macOS 命令列工具、Linux Ubuntu／Debian 套件、rustup 指令、版本驗證與 PATH／linker 排錯。已重新查核 Rust 官方安裝頁、Book 安裝章及 MSVC 指南。沒有在本機執行任何安裝指令。
+
+快速開始移除作者個人絕對路徑，改為透過 Git／GitHub Desktop clone 後進入含 Cargo.toml 的專案目錄，區分 repository 根目錄與 rust-practice 子目錄。補充 lesson 與課號需空格，以及獨立 -- 的用途。已檢查三平台章節、Markdown 程式碼區塊配對與無個人路徑。僅修改文件，不需重跑 Rust 測試；Windows／Linux 安裝仍未實機驗證。未製作壓縮包，未執行 commit／push。
+
+下一步：GitHub 新讀者依 README 安裝完成後，執行 `cargo run -- lesson 1` 開始練習。

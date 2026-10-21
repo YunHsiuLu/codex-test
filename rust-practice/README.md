@@ -1,13 +1,80 @@
 # Rust 終端機練習工作室
 
-已經安裝 cargo 與 rustc，直接從第一課開始，不必重新安裝。
+從終端機練習 Rust，包含循序課程、起始程式、提示與參考答案。第一次使用請先依作業系統安裝；已能執行 `cargo --version` 與 `rustc --version` 的人，可直接前往「取得專案並開始練習」。
 
-## 立刻開始
+## 下載與安裝 Rust
 
-在終端機執行：
+本專案採用 Rust 2024 edition，需要 Rust 1.85 以上；初學者請安裝最新 stable 工具鏈。`rustup` 負責安裝與管理 Rust，也會安裝編譯器 `rustc` 及專案工具 `cargo`。
+
+### Windows
+
+１．開啟 [Rust 官方下載頁](https://rust-lang.org/tools/install/)，下載符合電腦架構的 `rustup-init.exe`。一般電腦選 x64，Windows ARM 裝置選 ARM64。
+
+２．執行安裝程式。若提示缺少編譯工具，依畫面指示安裝 Visual Studio 所需元件；手動選擇時，勾選「使用 C++ 的桌面開發」（Desktop development with C++），確認包含對應架構的 MSVC 工具、Windows SDK 與英文語言套件。詳細步驟見 [Rust 官方 Windows MSVC 指南](https://rust-lang.github.io/rustup/installation/windows-msvc.html)。VS Code 編輯器與這些編譯工具是不同的軟體。
+
+３．回到 Rust 安裝流程，選擇預設 stable 設定並完成安裝。
+
+４．關閉並重新開啟 PowerShell，再進行下方的「確認安裝成功」。若使用 WSL，請在 WSL 的 Linux 終端機依 Linux 步驟安裝。
+
+### macOS
+
+１．開啟「終端機」，先安裝 Apple 命令列開發工具，並依跳出的視窗完成安裝。若已安裝，系統會提示，不需要重裝。
 
 ```sh
-cd "/Users/lvyunxiu/codex test/rust-practice"
+xcode-select --install
+```
+
+２．執行官方 rustup 安裝指令，依畫面選擇預設 stable 設定。Apple Silicon 與 Intel Mac 使用相同指令。
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+這行會下載並執行 Rust 官方安裝腳本。
+
+３．完成後重新開啟終端機，再進行下方的「確認安裝成功」。
+
+### Linux
+
+１．先安裝 C 編譯工具、linker 與 curl。以下以 Ubuntu／Debian 為例：
+
+```sh
+sudo apt update
+sudo apt install build-essential curl
+```
+
+其他發行版請依自身套件管理器安裝 GCC 或 Clang 與相關開發工具。
+
+２．執行官方 rustup 安裝指令，選擇預設 stable 設定。這行會下載並執行 Rust 官方安裝腳本。
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+３．完成後重新開啟終端機，再進行下方的「確認安裝成功」。
+
+### 確認安裝成功
+
+三個平台都在終端機逐行執行：
+
+```sh
+rustc --version
+cargo --version
+```
+
+兩行都應顯示版本資訊。接著在本專案含有 `Cargo.toml` 的資料夾執行 `cargo run`，確認實際編譯與啟動成功。
+
+若找不到指令，先重開終端機；macOS／Linux 的 bash 或 zsh 也可執行 `source "$HOME/.cargo/env"`。Windows 請確認 PATH 包含 `%USERPROFILE%\.cargo\bin`。若有 linker／`link.exe` 錯誤，請回頭檢查對應平台的開發工具是否裝好。需要更新既有工具鏈時，執行 `rustup update stable`。
+
+安裝說明依 [The Rust Book 安裝章](https://doc.rust-lang.org/book/ch01-01-installation.html) 與 [Rust 官方安裝頁](https://rust-lang.org/tools/install/) 查核，日期為２０２６－１０－２１；Windows／Linux 尚未實機驗證。
+
+## 取得專案並開始練習
+
+先使用 Git 或 GitHub Desktop clone 此 GitHub repository。clone 需要 Git 或 GitHub Desktop；執行本課程只需要 Rust，不需 Python、Node 或網頁服務。
+
+在終端機切換到本專案中**含有 `Cargo.toml` 的 `rust-practice` 資料夾**。若 repository 根目錄包含多個專案，請再進入其中的 `rust-practice`；若根目錄就是本專案，直接在根目錄執行即可。資料夾位置依你 clone 到的位置而定。
+
+```sh
 cargo run
 cargo run -- lesson 1
 ```
@@ -43,7 +110,7 @@ cargo run -- hint 2
 cargo run -- answer 2
 ```
 
-依序是閱讀題目、執行自己的程式、需要時看提示、完成後比對答案。把課號換成 1 到 12。`cargo run -- lesson 0` 保留三種作業系統的安裝教材，供未來學生使用。
+依序是閱讀題目、執行自己的程式、需要時看提示、完成後比對答案。把課號換成 1 到 12。`lesson` 和課號之間要有空格；獨立的 `--` 表示後面的參數交給本專案程式處理。`cargo run -- lesson 0` 可在安裝 Rust 後重新閱讀環境準備教材；安裝前直接閱讀本 README 即可。
 
 ## 輸入與測試
 
