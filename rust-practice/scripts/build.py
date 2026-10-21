@@ -96,7 +96,7 @@ linker／link.exe 錯誤：回到對應作業系統的編譯工具安裝步驟�
 安裝資訊查核日期：２０２６－１０－２１。依據 [The Rust Book 安裝章](https://doc.rust-lang.org/book/ch01-01-installation.html) 與 [Rust 官方入門](https://rust-lang.org/learn/get-started/)。本次沒有在 Windows／Linux 實機執行安裝。
 '''
 (root/'docs/00-install.md').write_text(install)
-course='# Rust 練習路線：從零開始\n\n每課約３０～５０分鐘；先預測、動手修改、對照驗收，再讀答案。第一輪可安排為１２～１６節高中選修課，仍需依學生實作速度調整。\n\n網頁 index.html 可直接開啟，不需伺服器。網頁筆記與進度僅存在目前瀏覽器，請使用匯出備份。網頁不會自動修改本機 .rs 檔。\n\n'+install+'\n'
+course='# Rust 練習路線：從零開始\n\n已安裝 Rust 的使用者，可在專案資料夾執行 `cargo run` 查看終端機操作方法，並以 `cargo run -- lesson 1` 開始第一課。修改本機 examples 的程式，再用 `cargo run -- run 1` 執行。\n\n每課約３０～５０分鐘；先預測、動手修改、對照驗收，再讀答案。第一輪可安排為１２～１６節高中選修課，仍需依學生實作速度調整。\n\n網頁 index.html 可直接開啟，不需伺服器。網頁筆記與進度僅存在目前瀏覽器，請使用匯出備份。網頁不會自動修改本機 .rs 檔。\n\n'+install+'\n'
 for x in lessons:
     n=x['id']; key=f'step{n:02d}'
     (root/f'examples/{key}.rs').write_text(x['code']+'\n')
@@ -105,9 +105,8 @@ for x in lessons:
 course+='''\n# 教師備課建議\n\n第零步安裝可作為課前作業；第一～四步搭配紙筆追蹤，第五～八步採兩人討論，第九～十二步以個人實作驗收。評量可採正確性４０％、邊界測試２５％、口頭解釋２０％、可讀性１５％。這是教學建議，尚未經學生試教。\n\n期末必做為記憶體內的運動紀錄分析；讀檔、CLI 參數與 CSV 錯誤行號是延伸題，沒有在本版提供完整實作。可先讓學生以三筆手算資料驗證，再寫自動測試。\n\n延伸閱讀：[The Rust Book](https://doc.rust-lang.org/book/)、[標準函式庫](https://doc.rust-lang.org/std/)、[Rust by Example](https://doc.rust-lang.org/rust-by-example/)。\n'''
 (root/'COURSE.md').write_text(course)
 (root/'lessons.js').write_text('window.COURSE = '+json.dumps([dict(id=0,title='下載、安裝與環境驗收',install=install)]+lessons,ensure_ascii=False)+';\n')
-manifest='[package]\nname = "rust-practice"\nversion = "0.1.0"\nedition = "2024"\npublish = false\n\n'
+manifest='[package]\nname = "rust-practice"\nversion = "0.1.0"\nedition = "2024"\npublish = false\ndefault-run = "rust-practice"\n\n'
 for x in lessons:
     manifest+=f'[[example]]\nname = "answer{x["id"]:02d}"\npath = "solutions/step{x["id"]:02d}.rs"\n\n'
 (root/'Cargo.toml').write_text(manifest)
 (root/'.gitignore').write_text('/target/\n.DS_Store\n')
-(root/'README.md').write_text('''# Rust 練習工作室\n\n直接用瀏覽器開啟 index.html。完整課程在 [COURSE.md](COURSE.md)，第零步亦獨立放在 docs/00-install.md。\n\n## 本機練習\n\n安裝 Rust 後，在本資料夾開啟終端機：\n\n```sh\ncargo run --example step01\ncargo test --example step11\n```\n\n修改 examples 中的起始程式；第十一課的測試預設失敗，這就是練習。參考答案獨立放在 solutions。\n\n```sh\ncargo run --example answer01\ncargo test --example answer11\ncargo test --example answer12\n```\n\n網頁編輯器的內容可以下載成 .rs，或開啟 Rust Playground 執行；第六課的互動輸入請用本機。網頁本身不含 Rust 編譯器。進度／筆記／程式碼保存於瀏覽器，請匯出 JSON 備份；不同瀏覽器或不同電腦不會自動同步。\n\n## 維護\n\n課程來源在 scripts/build.py，執行 `python3 scripts/build.py` 會重建 COURSE.md、lessons.js、安裝說明及所有起始／答案程式，會覆寫這些檔案；先備份學生作答再重建。index.html、style.css、app.js 為獨立網頁介面。\n\n可直接雙擊 index.html；若瀏覽器限制本機儲存，可用 `python3 -m http.server 8765 --bind 127.0.0.1`，然後瀏覽 http://127.0.0.1:8765。Python 只用於維護或選用的預覽伺服器。\n''')
