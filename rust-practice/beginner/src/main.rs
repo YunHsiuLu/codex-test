@@ -1,3 +1,6 @@
+mod checks;
+#[path = "../../runner/mod.rs"]
+mod runner;
 use std::{
     env,
     process::{self, Command},
@@ -25,7 +28,7 @@ fn help() {
         println!("  {n:02}  {title}");
     }
     println!(
-        "\n在專案資料夾執行：\n  cargo run -- lesson 1    閱讀觀念、題目與驗收\n  cargo run -- hint 1      只看提示\n  cargo run -- run 1       執行 examples/step01.rs\n  cargo run -- test 11     執行第十一課的測試\n  cargo run -- answer 1    查看參考答案\n\n用你熟悉的編輯器修改 examples/step01.rs，存檔後再次執行。\n第十一課起始測試故意失敗，請依題目修正。\n亦可直接使用：cargo run --example step01\n安裝與網頁閱讀保留為選用功能。"
+        "\n在專案資料夾執行：\n  cargo run -- lesson 1    閱讀觀念、題目與驗收\n  cargo run -- hint 1      只看提示\n  cargo run -- run 1       自動驗收 examples/step01.rs\n  cargo run -- manual 1    手動執行程式，保留互動輸入\n  cargo run -- test 11     執行第十一課的測試\n  cargo run -- answer 1    查看參考答案\n\n用你熟悉的編輯器修改 examples/step01.rs，存檔後再次執行。\n第十一課起始測試故意失敗，請依題目修正。\n亦可直接使用：cargo run --example step01\n安裝與網頁閱讀保留為選用功能。"
     );
 }
 fn number(text: Option<&String>) -> Result<usize, String> {
@@ -105,7 +108,10 @@ fn run() -> Result<(), String> {
         help();
         return Ok(());
     }
-    if !matches!(command, "lesson" | "hint" | "answer" | "run" | "test") {
+    if !matches!(
+        command,
+        "lesson" | "hint" | "answer" | "run" | "manual" | "test"
+    ) {
         return Err(format!("未知指令：{command}。執行 cargo run 查看用法。"));
     }
     if args.len() != 2 {
@@ -113,7 +119,15 @@ fn run() -> Result<(), String> {
     }
     let n = number(args.get(1))?;
     match command {
-        "run" => execute(n, false)?,
+        "run" => {
+            if n == 0 {
+                return Err("第零步沒有練習程式，請從第一課開始。".into());
+            }
+            if !checks::verify(n)? {
+                process::exit(1);
+            }
+        }
+        "manual" => execute(n, false)?,
         "test" => execute(n, true)?,
         _ => show(n, command),
     }

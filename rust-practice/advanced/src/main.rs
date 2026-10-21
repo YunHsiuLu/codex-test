@@ -1,3 +1,6 @@
+mod checks;
+#[path = "../../runner/mod.rs"]
+mod runner;
 use std::{
     env,
     process::{self, Command},
@@ -22,7 +25,7 @@ fn help() {
         println!("{}", text.lines().next().unwrap().trim_start_matches("# "));
     }
     println!(
-        "\n從 rust-practice workspace 根目錄（含 [workspace] 的 Cargo.toml）執行：\n  cargo run -p rust-advanced-course -- lesson 1\n  cargo run -p rust-advanced-course -- hint 1\n  cargo run -p rust-advanced-course -- answer 1\n  cargo run -p rust-advanced-course -- run 1\n  cargo run -p rust-advanced-course -- test 1\n\n課號為 1 到 12。起始習題含 todo!()，請先修改 advanced/examples/labNN.rs。\nrun 可附加程式參數，例如：run 12 advanced/data/motion.csv"
+        "\n從 rust-practice workspace 根目錄（含 [workspace] 的 Cargo.toml）執行：\n  cargo run -p rust-advanced-course -- lesson 1\n  cargo run -p rust-advanced-course -- hint 1\n  cargo run -p rust-advanced-course -- answer 1\n  cargo run -p rust-advanced-course -- run 1\n  cargo run -p rust-advanced-course -- test 1\n\n課號為 1 到 12。起始習題含 todo!()，請先修改 advanced/examples/labNN.rs。\nrun 會自動驗收；手動互動請用 manual 12 advanced/data/motion.csv"
     );
 }
 fn show(n: usize, mode: &str) -> Result<(), String> {
@@ -88,7 +91,10 @@ fn run() -> Result<(), String> {
         help();
         return Ok(());
     }
-    if !matches!(mode, "lesson" | "hint" | "answer" | "run" | "test") {
+    if !matches!(
+        mode,
+        "lesson" | "hint" | "answer" | "run" | "manual" | "test"
+    ) {
         return Err(format!(
             "未知指令：{mode}。執行 cargo run -p rust-advanced-course 查看用法。"
         ));
@@ -98,11 +104,17 @@ fn run() -> Result<(), String> {
         .and_then(|s| s.parse::<usize>().ok())
         .filter(|n| (1..=12).contains(n))
         .ok_or("請提供課號 1 到 12，例如：lesson 1")?;
-    if mode != "run" && args.len() != 2 {
-        return Err("此指令只接受一個課號；只有 run 可附加程式參數。".into());
+    if mode != "manual" && args.len() != 2 {
+        return Err("此指令只接受一個課號；只有 manual 可附加程式參數。".into());
     }
     match mode {
-        "run" => execute(n, false, &args[2..]),
+        "run" => {
+            if !checks::verify(n)? {
+                process::exit(1);
+            }
+            Ok(())
+        }
+        "manual" => execute(n, false, &args[2..]),
         "test" => execute(n, true, &[]),
         _ => show(n, mode),
     }

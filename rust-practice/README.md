@@ -21,7 +21,7 @@ cargo run -- lesson 1
 cargo run -- run 1
 ```
 
-workspace 預設選擇入門課程；也可以進入 beginner 後使用相同指令。修改 beginner/examples/step01.rs，再重新執行。起始課程先直接修改變數初始值來驗收不同案例，第六課才加入鍵盤輸入。
+workspace 預設選擇入門課程；也可以進入 beginner 後使用相同指令。修改 beginner/examples/step01.rs，再用 `run 1` 自動驗收；想手動執行則用 `cargo run -- manual 1`。起始課程先直接修改變數初始值來驗收不同案例，第六課才加入鍵盤輸入。
 
 ### Rust Advanced Course
 
@@ -31,7 +31,7 @@ cargo run -p rust-advanced-course -- lesson 1
 cargo test -p rust-advanced-course --example lab01
 ```
 
-修改 advanced/examples/lab01.rs 後測試。進階起始程式保留 todo!，所以初始測試失敗是預期行為；每章另附 solutions 參考答案。進階課程要求同時交付程式、測試及設計推理，不只判斷輸出是否相符。
+修改 advanced/examples/lab01.rs 後，可用 `cargo run -p rust-advanced-course -- run 1` 自動驗收，或使用上面的原生測試指令。手動執行與輸入請用 `cargo run -p rust-advanced-course -- manual 1`。進階起始程式保留 todo!，所以初始測試失敗是預期行為；每章另附 solutions 參考答案。進階課程要求同時交付程式、測試及設計推理，不只判斷輸出是否相符。
 
 `--` 是 Cargo 與程式參數的分隔線；`lesson` 與課號之間要有空格。`-p` 選擇 workspace 中要執行的課程套件。
 
@@ -114,3 +114,9 @@ rust-practice/
 原本網頁閱讀版保留在 beginner/index.html，顯示 Rust Beginner Course。GitHub 上可直接閱讀兩套 Markdown 教材。終端機作答直接儲存在 .rs 檔，透過 GitHub 提交與同步；瀏覽器筆記另存於瀏覽器，不會自動寫入 .rs。
 
 beginner/scripts/build.py 會覆寫入門起始程式，請勿在作答途中執行。advanced/scripts/build.py 只合併課綱與章節為 COURSE.md，不修改實作檔。兩套教材都尚未經正式試教。不要製作壓縮包，使用 GitHub 管理原始檔；target 已忽略，Cargo.lock 保留。
+
+## 自動驗收
+
+兩門課的 `run N` 都會使用獨立測試資料，驗證輸出或函式行為；互動題會自動餵入資料。`manual N` 保留手動操作。教材測試放在各課程的 checks，stdout 案例放在 src/checks.rs，共用執行器位於 runner/mod.rs。結果顯示 PASS／FAIL 及失敗差異；通過僅代表目前測試案例通過，不代表所有可能輸入都已被證明正確。詳細輸出格式、逾時與前幾課的驗證範圍見各課程 README。
+
+維護者可用 `python3 scripts/verify_courses.py` 驗證全部二十四份參考答案，以 `python3 scripts/verify_runner.py` 測試驗收器的錯誤與逾時路徑。兩者都不修改學生作答；Python 不是學生執行課程的必要依賴。

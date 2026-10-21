@@ -92,3 +92,31 @@ README.md 現在直接提供 Windows、macOS、Linux 的下載安裝流程，包
 維護：advanced/lessons/*.md 與 SYLLABUS.md 是進階教材來源；`python3 advanced/scripts/build.py` 只重建進階 COURSE.md，不碰學生作答。beginner/scripts/build.py 仍會覆寫入門練習，練習期間不要執行。兩套原始程式與設計說明透過 GitHub 管理；網頁筆記另存於瀏覽器，不與檔案同步。
 
 下一步：使用者從入門第二課繼續，遇到不明白的語法可就當前程式討論。進階課程後續依實際閱讀與試教回饋補充圖解、追蹤表及題目難度；本版定位為大學程式設計／Rust 設計原理的基礎路線，不宣稱涵蓋完整 async、unsafe 或形式驗證。
+
+## ２０２６－１０－２１｜每題 run 自動驗收
+
+### 行為與實作
+
+兩套課程的 `cargo run -- run N` 現在自動驗收作答，不再只啟動程式。入門可直接在 workspace 根目錄使用；進階加 `-p rust-advanced-course`。新增 `manual N` 保留原本手動互動；進階 manual 仍接受額外檔案參數。test N 保留學生程式自身的測試功能，與獨立驗收分開。
+
+共用 runner/mod.rs 以本機 rustc 編譯目前純標準函式庫作答與獨立測試，不覆寫來源。輸入由 target 暫存檔提供且有 EOF，輸出捕捉避免 pipe buffer 死鎖；逐組檢查 stdout 及退出碼。一般比對統一 CRLF／LF、忽略末端換行。每組程式 3 秒、整組函式測試 10 秒、編譯 60 秒逾時後停止。暫存目錄依 PID 與時間區隔，完成後清除；診斷顯示最多 64 KiB。使用目前 Cargo 同環境的 rustc，不支援任意外部 crate 的通用編譯。
+
+入門：checks/stepNN.rs 保存第五、七～十二課的獨立函式測試；src/checks.rs 保存前四課輸出政策與第六課七組 stdin 案例。第二課驗證印出的攝氏／華氏關係，因此使用者已改成 100.0 的作答可繼續通過。第一、三、四課僅驗證固定輸出或允許的延伸結果，不宣稱已測所有分支／證明演算法。第三課驗收假設 score=60；第四課接受 15 或 5050。第六課接受原始固定提示行或只有數值答案，浮點以容許誤差比較。README 完整說明限制。
+
+進階：每題 checks/labNN.rs 提供獨立契約測試；第十二課另有四組成功／CRLF／格式錯／空資料 stdin 與退出碼檢查。相關 README、SYLLABUS、十二章及合併 COURSE 已更新。入門 COURSE 與 generator 也更新 run／manual 用法，但沒有執行會覆寫學生作答的 generator。
+
+### 驗證
+
+主代理使用 target 內臨時 probe，將入門十二份參考答案直接傳給 verify_source，全數通過：前四課輸出、第六課七組 stdin、十七個新函式測試加四個答案既有測試。實際使用者的 `run 2` 通過；尚未完成的 `run 8` 正確顯示非空集合失敗並 exit 1。沒有修改或重建任何 beginner／advanced examples，Git 亦未顯示這些作答檔被此次任務修改。
+
+子代理直接驗證進階十二份參考答案，全數通過；二十三個新驗收測試加二十個既有測試共四十三個測試通過，另有四組 stdin／stdout／退出碼通過。進階 starter 自動 run 失敗為 exit 1，manual 保留 todo 的 exit 101；不合法額外 run 參數為 exit 2。五個教材 doctest 仍通過。
+
+`python3 scripts/verify_runner.py` 已實跑通過，覆蓋 CRLF、EOF 正確關閉輸入、錯誤 stdout、異常退出碼、無限迴圈逾時及編譯失敗；測試用錯誤程式在 target 隔離目錄，驗證後清除。新增 scripts/verify_courses.py 可對兩套課程全部二十四份答案重跑相同驗收，仍不修改作答。Python 僅供維護者驗證，學生使用 Cargo 不需要 Python。
+
+### 續作與邊界
+
+學生照原本方式編輯 .rs，改用 run 驗收、manual 探索。驗收失敗顯示輸入／預期／實際，函式題顯示測試名稱與 assertion；成功 exit 0、作答失敗 exit 1、參數錯誤 exit 2。通過僅代表通過有限測試。Windows／Linux 自動驗收尚未實機驗證。未製作壓縮包、未 commit／push。
+
+維護驗收資料時，請先修改 checks／src/checks.rs，再跑 verify_courses 與 verify_runner；新題若引入第三方 crates，需先調整 runner 的編譯機制，不能假定 rustc 單檔驗收仍適用。
+
+補充驗證：新增的 `python3 scripts/verify_courses.py` 已完整實跑成功，輸出 All 24 reference solutions passed；不是僅建立未執行。根目錄 `cargo run -- help` 亦已確認顯示新的 run／manual 用法。最終 Git 檢查確認兩套 examples 無此次修改。

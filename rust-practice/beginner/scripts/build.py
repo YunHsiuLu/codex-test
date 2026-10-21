@@ -96,12 +96,12 @@ linker／link.exe 錯誤：回到對應作業系統的編譯工具安裝步驟�
 安裝資訊查核日期：２０２６－１０－２１。依據 [The Rust Book 安裝章](https://doc.rust-lang.org/book/ch01-01-installation.html) 與 [Rust 官方入門](https://rust-lang.org/learn/get-started/)。本次沒有在 Windows／Linux 實機執行安裝。
 '''
 (root/'docs/00-install.md').write_text(install)
-course='# Rust Beginner Course\n\n已安裝 Rust 的使用者，可在專案資料夾執行 `cargo run` 查看終端機操作方法，並以 `cargo run -- lesson 1` 開始第一課。修改本機 examples 的程式，再用 `cargo run -- run 1` 執行。\n\n每課約３０～５０分鐘；先預測、動手修改、對照驗收，再讀答案。第一輪可安排為１２～１６節高中選修課，仍需依學生實作速度調整。\n\n網頁 index.html 可直接開啟，不需伺服器。網頁筆記與進度僅存在目前瀏覽器，請使用匯出備份。網頁不會自動修改本機 .rs 檔。\n\n'+install+'\n'
+course='# Rust Beginner Course\n\n已安裝 Rust 的使用者，可在專案資料夾執行 `cargo run` 查看終端機操作方法，並以 `cargo run -- lesson 1` 開始第一課。修改本機 examples 的程式，再用 `cargo run -- run 1` 執行。\n\n每題可用 `cargo run -- run N` 自動驗收，或用 `cargo run -- manual N` 手動操作。驗收資料與限制見 README.md。\n\n每課約３０～５０分鐘；先預測、動手修改、對照驗收，再讀答案。第一輪可安排為１２～１６節高中選修課，仍需依學生實作速度調整。\n\n網頁 index.html 可直接開啟，不需伺服器。網頁筆記與進度僅存在目前瀏覽器，請使用匯出備份。網頁不會自動修改本機 .rs 檔。\n\n'+install+'\n'
 for x in lessons:
     n=x['id']; key=f'step{n:02d}'
     (root/f'examples/{key}.rs').write_text(x['code']+'\n')
     (root/f'solutions/{key}.rs').write_text(x['solution']+'\n')
-    course+=f"\n# 第 {n} 步：{x['title']}\n\n## 核心觀念\n\n{x['concept']}\n\n## 起始程式\n\n```rust\n{x['code']}\n```\n\n## 動手練習\n\n{x['task']}\n\n執行：`cargo run --example {key}`\n\n## 提示\n\n{x['hint']}\n\n## 預期結果\n\n```text\n{x['expected']}\n```\n\n驗收：{x['check']}\n\n## 參考答案\n\n```rust\n{x['solution']}\n```\n\n自我解釋：你改了哪裡？為什麼這樣寫？哪個邊界案例最容易漏掉？\n"
+    course+=f"\n# 第 {n} 步：{x['title']}\n\n## 核心觀念\n\n{x['concept']}\n\n## 起始程式\n\n```rust\n{x['code']}\n```\n\n## 動手練習\n\n{x['task']}\n\n自動驗收：`cargo run -- run {n}`。手動執行：`cargo run -- manual {n}`。\n\n## 提示\n\n{x['hint']}\n\n## 預期結果\n\n```text\n{x['expected']}\n```\n\n驗收：{x['check']}\n\n## 參考答案\n\n```rust\n{x['solution']}\n```\n\n自我解釋：你改了哪裡？為什麼這樣寫？哪個邊界案例最容易漏掉？\n"
 course+='''\n# 教師備課建議\n\n第零步安裝可作為課前作業；第一～四步搭配紙筆追蹤，第五～八步採兩人討論，第九～十二步以個人實作驗收。評量可採正確性４０％、邊界測試２５％、口頭解釋２０％、可讀性１５％。這是教學建議，尚未經學生試教。\n\n期末必做為記憶體內的運動紀錄分析；讀檔、CLI 參數與 CSV 錯誤行號是延伸題，沒有在本版提供完整實作。可先讓學生以三筆手算資料驗證，再寫自動測試。\n\n延伸閱讀：[The Rust Book](https://doc.rust-lang.org/book/)、[標準函式庫](https://doc.rust-lang.org/std/)、[Rust by Example](https://doc.rust-lang.org/rust-by-example/)。\n'''
 (root/'COURSE.md').write_text(course)
 (root/'lessons.js').write_text('window.COURSE = '+json.dumps([dict(id=0,title='下載、安裝與環境驗收',install=install)]+lessons,ensure_ascii=False)+';\n')

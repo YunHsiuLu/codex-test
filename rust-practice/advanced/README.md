@@ -27,15 +27,21 @@ cargo test -p rust-advanced-course --example solution01
 cargo run -p rust-advanced-course --example solution01
 ```
 
-第十二章接受檔案或標準輸入。課程入口的 `run` 會把目前工作目錄保留給程式，並轉交額外參數：
+第十二章接受檔案或標準輸入。課程入口的 `manual` 會把目前工作目錄保留給程式，並轉交額外參數：
 
 ```sh
-cargo run -p rust-advanced-course -- run 12 advanced/data/motion.csv
-cargo run -p rust-advanced-course -- run 12 -
+cargo run -p rust-advanced-course -- manual 12 advanced/data/motion.csv
+cargo run -p rust-advanced-course -- manual 12 -
 cargo run -p rust-advanced-course --example solution12 -- advanced/data/motion.csv
 ```
 
-stdin 模式輸入資料後，macOS／Linux 用 Ctrl+D 結束；Windows 通常用 Ctrl+Z 後 Enter。資料格式、錯誤退出碼及完整規格見 [第十二章](lessons/12.md)。`run`／`test` 使用繼承的 stdin、stdout、stderr，並保留子程序失敗退出碼。
+stdin 模式輸入資料後，macOS／Linux 用 Ctrl+D 結束；Windows 通常用 Ctrl+Z 後 Enter。資料格式、錯誤退出碼及完整規格見 [第十二章](lessons/12.md)。`manual`／`test` 使用繼承的 stdin、stdout、stderr，並保留子程序失敗退出碼。
+
+## 自動驗收與手動模式
+
+`cargo run -p rust-advanced-course -- run 1` 會自動編譯並檢查第一題，不需另外準備輸入。每章有不依賴學生檔案內測試的外部契約測試，期末專案另檢查多組 stdin、stdout 及退出碼。成功退出碼為０，答案未通過為１。`run` 只接受課號；互動與檔案參數請使用 `manual`。
+
+驗收保留學生作答，使用 workspace target 內的獨立暫存目錄。執行有逾時限制，但不是安全沙盒，僅適合你信任的練習程式。測試未涵蓋的輸入、演算法複雜度與設計品質，仍需人工推理與評量。輸出比較統一 CRLF 換行並忽略最後的換行，其餘空白、數值與行序仍需符合案例。
 
 ## 學習成果與驗證
 

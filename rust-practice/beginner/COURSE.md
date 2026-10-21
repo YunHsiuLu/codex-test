@@ -2,6 +2,8 @@
 
 已安裝 Rust 的使用者，可在專案資料夾執行 `cargo run` 查看終端機操作方法，並以 `cargo run -- lesson 1` 開始第一課。修改本機 examples 的程式，再用 `cargo run -- run 1` 執行。
 
+每題可用 `cargo run -- run N` 自動驗收，或用 `cargo run -- manual N` 手動操作。驗收資料與限制見 README.md。
+
 每課約３０～５０分鐘；先預測、動手修改、對照驗收，再讀答案。第一輪可安排為１２～１６節高中選修課，仍需依學生實作速度調整。
 
 網頁 index.html 可直接開啟，不需伺服器。網頁筆記與進度僅存在目前瀏覽器，請使用匯出備份。網頁不會自動修改本機 .rs 檔。
@@ -104,7 +106,7 @@ fn main() {
 
 讓程式依序輸出「Hello, Rust!」及「我正在學 Rust」。先預測目前程式會印出幾行。
 
-執行：`cargo run --example step01`
+自動驗收：`cargo run -- run 1`。手動執行：`cargo run -- manual 1`。
 
 ## 提示
 
@@ -150,7 +152,7 @@ fn main() {
 
 將攝氏換為華氏：F = C × 9／5 ＋ 32。測試 0、25、100 度。
 
-執行：`cargo run --example step02`
+自動驗收：`cargo run -- run 2`。手動執行：`cargo run -- manual 2`。
 
 ## 提示
 
@@ -196,7 +198,7 @@ fn main() {
 
 成績大於等於 60 印出「及格」，否則印出「再試一次」。測試 59、60、100。
 
-執行：`cargo run --example step03`
+自動驗收：`cargo run -- run 3`。手動執行：`cargo run -- manual 3`。
 
 ## 提示
 
@@ -244,7 +246,7 @@ fn main() {
 
 計算 1 到 5 的整數總和，再改成 1 到 100。
 
-執行：`cargo run --example step04`
+自動驗收：`cargo run -- run 4`。手動執行：`cargo run -- manual 4`。
 
 ## 提示
 
@@ -291,7 +293,7 @@ fn main() {
 
 完成 speed，100 公尺、20 秒得到 5 m/s。加入 assert! 檢查 time > 0.0，觀察傳入 0 時的錯誤。
 
-執行：`cargo run --example step05`
+自動驗收：`cargo run -- run 5`。手動執行：`cargo run -- manual 5`。
 
 ## 提示
 
@@ -339,7 +341,7 @@ fn main() {
 
 將輸入轉為 f64 後換算華氏；輸入 abc 時顯示「請輸入數字」，不要直接崩潰。Playground 不適合本課互動輸入，請在本機終端機操作。
 
-執行：`cargo run --example step06`
+自動驗收：`cargo run -- run 6`。手動執行：`cargo run -- manual 6`。
 
 ## 提示
 
@@ -393,7 +395,7 @@ fn main() {
 
 將 count 改成接收 &str，並在計算後輸出原始 name。先嘗試直接輸出已被移動的 name，閱讀編譯器提示。
 
-執行：`cargo run --example step07`
+自動驗收：`cargo run -- run 7`。手動執行：`cargo run -- manual 7`。
 
 ## 提示
 
@@ -442,7 +444,7 @@ fn main() {
 
 完成平均值函式；空切片回傳 None，其餘回傳 Some。用浮點除法避免截斷。
 
-執行：`cargo run --example step08`
+自動驗收：`cargo run -- run 8`。手動執行：`cargo run -- manual 8`。
 
 ## 提示
 
@@ -494,7 +496,7 @@ fn main() {
 
 完成 Motion::speed，並檢查時間為正。新增第二筆 50 公尺、5 秒的資料。
 
-執行：`cargo run --example step09`
+自動驗收：`cargo run -- run 9`。手動執行：`cargo run -- manual 9`。
 
 ## 提示
 
@@ -547,7 +549,7 @@ fn main() { println!("{:?}", parse_time("2.5")); }
 
 把文字轉成正且有限的秒數；拒絕 0、負數、abc、NaN、inf。
 
-執行：`cargo run --example step10`
+自動驗收：`cargo run -- run 10`。手動執行：`cargo run -- manual 10`。
 
 ## 提示
 
@@ -597,7 +599,7 @@ mod tests {
 
 先執行測試並閱讀失敗訊息，再修正換算公式，新增沸點與負 40 度測試。
 
-執行：`cargo run --example step11`
+自動驗收：`cargo run -- run 11`。手動執行：`cargo run -- manual 11`。
 
 ## 提示
 
@@ -655,7 +657,7 @@ fn main() {
 
 完成平均速度；空資料、非有限位移、非正或非有限時間必須回傳 Err。測試往返運動與兩段時間不相等的情況。進階：讀取文字檔，每行「位移,秒數」。
 
-執行：`cargo run --example step12`
+自動驗收：`cargo run -- run 12`。手動執行：`cargo run -- manual 12`。
 
 ## 提示
 
