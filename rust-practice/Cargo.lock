@@ -3,5 +3,9 @@
 version = 4
 
 [[package]]
-name = "rust-practice"
+name = "rust-advanced-course"
+version = "0.1.0"
+
+[[package]]
+name = "rust-beginner-course"
 version = "0.1.0"

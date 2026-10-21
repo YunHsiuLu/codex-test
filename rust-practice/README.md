@@ -1,6 +1,39 @@
-# Rust 終端機練習工作室
+# Rust Courses
 
-從終端機練習 Rust，包含循序課程、起始程式、提示與參考答案。第一次使用請先依作業系統安裝；已能執行 `cargo --version` 與 `rustc --version` 的人，可直接前往「取得專案並開始練習」。
+這個專案包含兩套獨立學習路線，皆以終端機操作為主，教材使用繁體中文，課程名稱使用英文。
+
+| 課程 | 適合對象 | 學習重點 | 課程入口 |
+| --- | --- | --- | --- |
+| Rust Beginner Course | 初學者 | 語法、型別、控制流程、基本輸入輸出與短程式練習 | [README](beginner/README.md) ／ [完整教材](beginner/COURSE.md) |
+| Rust Advanced Course | 已具備入門能力者 | 規格、數值表示、正確性、所有權、抽象化、錯誤處理與並行設計 | [README](advanced/README.md) ／ [課綱](advanced/SYLLABUS.md) ／ [完整教材](advanced/COURSE.md) |
+
+原本的入門教材已移至 beginner，既有作答仍保存在 beginner/examples。進階課程位於 advanced/examples，兩套練習檔互相獨立。不需先完成進階課程就能練習入門。
+
+## 從終端機開始
+
+clone 此 GitHub repository 後，進入含 workspace Cargo.toml 的 rust-practice 資料夾。若 repository 根目錄就是這份專案，直接在根目錄執行。
+
+### Rust Beginner Course
+
+```sh
+cargo run
+cargo run -- lesson 1
+cargo run -- run 1
+```
+
+workspace 預設選擇入門課程；也可以進入 beginner 後使用相同指令。修改 beginner/examples/step01.rs，再重新執行。起始課程先直接修改變數初始值來驗收不同案例，第六課才加入鍵盤輸入。
+
+### Rust Advanced Course
+
+```sh
+cargo run -p rust-advanced-course
+cargo run -p rust-advanced-course -- lesson 1
+cargo test -p rust-advanced-course --example lab01
+```
+
+修改 advanced/examples/lab01.rs 後測試。進階起始程式保留 todo!，所以初始測試失敗是預期行為；每章另附 solutions 參考答案。進階課程要求同時交付程式、測試及設計推理，不只判斷輸出是否相符。
+
+`--` 是 Cargo 與程式參數的分隔線；`lesson` 與課號之間要有空格。`-p` 選擇 workspace 中要執行的課程套件。
 
 ## 下載與安裝 Rust
 
@@ -68,78 +101,16 @@ cargo --version
 
 安裝說明依 [The Rust Book 安裝章](https://doc.rust-lang.org/book/ch01-01-installation.html) 與 [Rust 官方安裝頁](https://rust-lang.org/tools/install/) 查核，日期為２０２６－１０－２１；Windows／Linux 尚未實機驗證。
 
-## 取得專案並開始練習
+## 專案結構與維護
 
-先使用 Git 或 GitHub Desktop clone 此 GitHub repository。clone 需要 Git 或 GitHub Desktop；執行本課程只需要 Rust，不需 Python、Node 或網頁服務。
-
-在終端機切換到本專案中**含有 `Cargo.toml` 的 `rust-practice` 資料夾**。若 repository 根目錄包含多個專案，請再進入其中的 `rust-practice`；若根目錄就是本專案，直接在根目錄執行即可。資料夾位置依你 clone 到的位置而定。
-
-```sh
-cargo run
-cargo run -- lesson 1
+```text
+rust-practice/
+├── Cargo.toml       # workspace，預設啟動入門課程
+├── beginner/        # Rust Beginner Course
+├── advanced/        # Rust Advanced Course
+└── HANDOFF.md       # 交接、驗證與續作紀錄
 ```
 
-`cargo run` 顯示課程目錄與操作方法。`lesson 1` 會在終端機印出第一課的觀念、起始程式、題目與驗收標準，不會提前顯示答案。
+原本網頁閱讀版保留在 beginner/index.html，顯示 Rust Beginner Course。GitHub 上可直接閱讀兩套 Markdown 教材。終端機作答直接儲存在 .rs 檔，透過 GitHub 提交與同步；瀏覽器筆記另存於瀏覽器，不會自動寫入 .rs。
 
-用你熟悉的編輯器開啟 `examples/step01.rs`。若想全程用終端機編輯，可使用已安裝的 nano 或 vim，例如：
-
-```sh
-nano examples/step01.rs
-```
-
-nano 中修改後按 Ctrl+O、Enter 儲存，再按 Ctrl+X 離開。接著執行：
-
-```sh
-cargo run -- run 1
-```
-
-也可以直接使用標準 Cargo 指令：
-
-```sh
-cargo run --example step01
-```
-
-修改、存檔、再執行，就是整套課程的練習方式。程式錯誤直接閱讀終端機中的編譯器訊息。
-
-## 每課使用流程
-
-```sh
-cargo run -- lesson 2
-cargo run -- run 2
-cargo run -- hint 2
-cargo run -- answer 2
-```
-
-依序是閱讀題目、執行自己的程式、需要時看提示、完成後比對答案。把課號換成 1 到 12。`lesson` 和課號之間要有空格；獨立的 `--` 表示後面的參數交給本專案程式處理。`cargo run -- lesson 0` 可在安裝 Rust 後重新閱讀環境準備教材；安裝前直接閱讀本 README 即可。
-
-## 輸入與測試
-
-第六課直接在終端機輸入資料：
-
-```sh
-cargo run -- run 6
-```
-
-第十一課練習測試：
-
-```sh
-cargo run -- test 11
-```
-
-第十一課的起始測試故意失敗；完成函式後再測一次。其他多數起始程式沒有自動測試，請依課程所列的輸入／輸出手動驗收；顯示「0 tests」不代表完成題目。
-
-執行參考答案或測試答案：
-
-```sh
-cargo run --example answer01
-cargo test --example answer11
-cargo test --example answer12
-```
-
-## 教材與續作
-
-完整文字在 COURSE.md，網頁 index.html 保留作為閱讀輔助。網頁筆記與終端機作答不會自動同步；終端機練習直接修改本機 examples 中的檔案，透過 GitHub 提交與同步原始檔即可搬移作答，不需製作壓縮包。換電腦時 clone 對應 repository，進入 rust-practice 後執行 `cargo run`。
-
-本專案使用 Rust 2024 edition，最低需要 Rust 1.85，無第三方 Rust 套件。不需 Python、Node 或網頁服務就能練習。Windows／Linux 請先切換到自己放置此專案的位置，其餘 Cargo 指令相同；nano 是選用編輯器。
-
-維護來源為 scripts/build.py；`python3 scripts/build.py` 會重建 COURSE.md、lessons.js、安裝說明、Cargo.toml 與所有起始／答案程式，會覆寫作答，執行前務必先備份。README.md 與 src/main.rs 獨立維護。交接記錄在 HANDOFF.md。
+beginner/scripts/build.py 會覆寫入門起始程式，請勿在作答途中執行。advanced/scripts/build.py 只合併課綱與章節為 COURSE.md，不修改實作檔。兩套教材都尚未經正式試教。不要製作壓縮包，使用 GitHub 管理原始檔；target 已忽略，Cargo.lock 保留。

@@ -20,7 +20,7 @@ const TITLES: [&str; 13] = [
     "期末小專案：運動紀錄分析",
 ];
 fn help() {
-    println!("Rust 終端機練習工作室\n\n你已安裝 Rust，可以直接從第一課開始。\n");
+    println!("Rust Beginner Course\n\n你已安裝 Rust，可以直接從第一課開始。\n");
     for (n, title) in TITLES.iter().enumerate() {
         println!("  {n:02}  {title}");
     }

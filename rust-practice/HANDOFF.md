@@ -60,3 +60,35 @@ README.md 現在直接提供 Windows、macOS、Linux 的下載安裝流程，包
 快速開始移除作者個人絕對路徑，改為透過 Git／GitHub Desktop clone 後進入含 Cargo.toml 的專案目錄，區分 repository 根目錄與 rust-practice 子目錄。補充 lesson 與課號需空格，以及獨立 -- 的用途。已檢查三平台章節、Markdown 程式碼區塊配對與無個人路徑。僅修改文件，不需重跑 Rust 測試；Windows／Linux 安裝仍未實機驗證。未製作壓縮包，未執行 commit／push。
 
 下一步：GitHub 新讀者依 README 安裝完成後，執行 `cargo run -- lesson 1` 開始練習。
+
+## ２０２６－１０－２１｜分為 Rust Beginner Course 與 Rust Advanced Course
+
+### 已完成與檔案位置
+
+原教材已移至 beginner，正式名稱為 Rust Beginner Course；README、完整教材、CLI、頁面及教材生成器均更新名稱。新課程位於 advanced，名稱為 Rust Advanced Course。根目錄 Cargo.toml 改為 workspace，預設成員 beginner，因此在 rust-practice 執行 `cargo run` 仍啟動入門課程。Cargo.lock 由 Cargo 更新，target 共用並持續忽略。
+
+根 README 為雙課程總覽，保留 Windows／macOS／Linux 安裝說明。進階包含十二章理論與實作：規格契約、浮點表示、迴圈正確性、資源生命週期、借用、lifetime、資料建模、trait／泛型、iterator、錯誤邊界、並行與運動資料分析器。每章包含推理實驗、規格、測試、設計說明、提示、參考答案與官方閱讀來源。advanced/SYLLABUS.md 提供先修、課時與評量；各章在 advanced/lessons，合併讀本為 advanced/COURSE.md，起始程式為 examples/labNN.rs，答案為 solutions/labNN.rs。五個教材程式範例由 rustdoc 驗證。
+
+使用者明確要求子代理協作，好讓其同時繼續討論與練習入門。子代理接手 advanced 終端入口、課綱整合及驗證；主代理整理雙課程入口、入門名稱、搬移完整性與總交接。
+
+### 本次驗證
+
+- 主代理實際執行 beginner 的 lesson 1、run 1，以及 workspace 根目錄 list，皆成功；目前第一課已有兩行輸出。
+- 比對搬移前 Git HEAD：十二份入門練習內容全部相同，未重建或覆寫作答；使用者已開始自行練習，後續不得用 generator 重置 examples。
+- 根、入門、進階三份 README 的相對連結及程式碼圍欄檢查通過。
+- 子代理驗證進階十二份答案成功執行，共二十個測試通過；`cargo test -p rust-advanced-course --doc` 的五個範例通過，其中四個必須不能編譯。
+- 子代理驗證十二章 lesson／hint／answer 共三十六個介面、無效課號／未知指令 exit 2；起始程式 run／test 的 todo 失敗退出碼 101 正確傳遞。
+- 子代理驗證期末檔案、CRLF stdin 均產生 count=2、displacement=60、seconds=30、velocity=2；空輸入、第二行格式錯誤、缺檔、多參數皆 stderr 與 exit 1。
+- 所有新程式僅用 Rust 標準函式庫，未安裝工具、未建立壓縮包、未 commit／push。Windows／Linux 未實機驗證，課程尚未試教；原頁面截圖為搬移前的歷史預覽，非新標題的 UI 驗證。
+
+### 新啟動與續作
+
+根目錄：`/Users/lvyunxiu/codex test/rust-practice`。
+
+入門：`cd beginner`，`cargo run -- lesson 1`，編輯 examples/step01.rs，`cargo run -- run 1`。也可直接在 workspace 根目錄執行相同 Cargo 指令。
+
+進階：workspace 根目錄執行 `cargo run -p rust-advanced-course -- lesson 1`；修改 advanced/examples/lab01.rs 後，執行 `cargo test -p rust-advanced-course --example lab01`。答案驗收用 `cargo test -p rust-advanced-course --example solution01`。起始 todo 測試初始會失敗，屬練習預期狀態。
+
+維護：advanced/lessons/*.md 與 SYLLABUS.md 是進階教材來源；`python3 advanced/scripts/build.py` 只重建進階 COURSE.md，不碰學生作答。beginner/scripts/build.py 仍會覆寫入門練習，練習期間不要執行。兩套原始程式與設計說明透過 GitHub 管理；網頁筆記另存於瀏覽器，不與檔案同步。
+
+下一步：使用者從入門第二課繼續，遇到不明白的語法可就當前程式討論。進階課程後續依實際閱讀與試教回饋補充圖解、追蹤表及題目難度；本版定位為大學程式設計／Rust 設計原理的基礎路線，不宣稱涵蓋完整 async、unsafe 或形式驗證。

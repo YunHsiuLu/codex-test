@@ -1,4 +1,4 @@
-# Rust 練習路線：從零開始
+# Rust Beginner Course
 
 已安裝 Rust 的使用者，可在專案資料夾執行 `cargo run` 查看終端機操作方法，並以 `cargo run -- lesson 1` 開始第一課。修改本機 examples 的程式，再用 `cargo run -- run 1` 執行。
 

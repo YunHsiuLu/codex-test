@@ -1,0 +1,78 @@
+use std::io::{self, Read};
+#[derive(Debug, PartialEq)]
+struct Summary {
+    count: usize,
+    displacement: f64,
+    seconds: f64,
+}
+impl Summary {
+    fn velocity(&self) -> f64 {
+        self.displacement / self.seconds
+    }
+}
+#[derive(Debug, PartialEq)]
+enum AnalysisError {
+    Empty,
+    Line { number: usize, reason: &'static str },
+    Overflow,
+}
+fn analyze(text: &str) -> Result<Summary, AnalysisError> {
+    todo!("依規格實作；保留 CLI 與測試，讓錯誤逐步轉為成功")
+}
+fn main() {
+    if let Err(e) = cli() {
+        eprintln!("{e}");
+        std::process::exit(1);
+    }
+}
+fn cli() -> Result<(), String> {
+    let args: Vec<_> = std::env::args().skip(1).collect();
+    if args.len() > 1 {
+        return Err("用法：程式 [檔案路徑或 -]".into());
+    }
+    let text = match args.first().map(String::as_str) {
+        Some(path) if path != "-" => {
+            std::fs::read_to_string(path).map_err(|e| format!("讀檔失敗：{e}"))?
+        }
+        _ => {
+            let mut s = String::new();
+            io::stdin()
+                .read_to_string(&mut s)
+                .map_err(|e| e.to_string())?;
+            s
+        }
+    };
+    let s = analyze(&text).map_err(|e| format!("分析失敗：{e:?}"))?;
+    println!(
+        "count={} displacement_m={} seconds={} velocity_m_s={}",
+        s.count,
+        s.displacement,
+        s.seconds,
+        s.velocity()
+    );
+    Ok(())
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn weighted_and_round_trip() {
+        assert_eq!(analyze("100,10\n-40,20\n").unwrap().velocity(), 2.0);
+        assert_eq!(analyze("10,2\n-10,3").unwrap().velocity(), 0.0);
+    }
+    #[test]
+    fn rejects_bad_records_with_line() {
+        assert_eq!(analyze(""), Err(AnalysisError::Empty));
+        for row in ["a,1", "1,0", "NaN,1", "1,inf", "1,2,3", ""] {
+            assert!(matches!(
+                analyze(&format!("1,1\n{row}\n")),
+                Err(AnalysisError::Line { number: 2, .. })
+            ));
+        }
+    }
+    #[test]
+    fn overflow_is_error() {
+        assert_eq!(analyze("1e308,1\n1e308,1"), Err(AnalysisError::Overflow));
+        assert_eq!(analyze("1,5e-324"), Err(AnalysisError::Overflow));
+    }
+}

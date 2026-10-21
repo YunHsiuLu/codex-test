@@ -1,0 +1,54 @@
+[package]
+name = "rust-advanced-course"
+version = "0.1.0"
+edition = "2024"
+publish = false
+default-run = "rust-advanced-course"
+
+[[example]]
+name = "solution01"
+path = "solutions/lab01.rs"
+
+[[example]]
+name = "solution02"
+path = "solutions/lab02.rs"
+
+[[example]]
+name = "solution03"
+path = "solutions/lab03.rs"
+
+[[example]]
+name = "solution04"
+path = "solutions/lab04.rs"
+
+[[example]]
+name = "solution05"
+path = "solutions/lab05.rs"
+
+[[example]]
+name = "solution06"
+path = "solutions/lab06.rs"
+
+[[example]]
+name = "solution07"
+path = "solutions/lab07.rs"
+
+[[example]]
+name = "solution08"
+path = "solutions/lab08.rs"
+
+[[example]]
+name = "solution09"
+path = "solutions/lab09.rs"
+
+[[example]]
+name = "solution10"
+path = "solutions/lab10.rs"
+
+[[example]]
+name = "solution11"
+path = "solutions/lab11.rs"
+
+[[example]]
+name = "solution12"
+path = "solutions/lab12.rs"
