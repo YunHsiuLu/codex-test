@@ -120,3 +120,5 @@ beginner/scripts/build.py 會覆寫入門起始程式，請勿在作答途中執
 兩門課的 `run N` 都會使用獨立測試資料，驗證輸出或函式行為；互動題會自動餵入資料。`manual N` 保留手動操作。教材測試放在各課程的 checks，stdout 案例放在 src/checks.rs，共用執行器位於 runner/mod.rs。結果顯示 PASS／FAIL 及失敗差異；通過僅代表目前測試案例通過，不代表所有可能輸入都已被證明正確。詳細輸出格式、逾時與前幾課的驗證範圍見各課程 README。
 
 維護者可用 `python3 scripts/verify_courses.py` 驗證全部二十四份參考答案，以 `python3 scripts/verify_runner.py` 測試驗收器的錯誤與逾時路徑。兩者都不修改學生作答；Python 不是學生執行課程的必要依賴。
+
+每題至少十項具名驗收，詳見 [入門案例目錄](beginner/TEST_CASES.md) 與 [進階案例目錄](advanced/TEST_CASES.md)。有參數的題目使用不同資料；沒有參數的固定輸出／資源追蹤題使用十項契約性質，並明確標示相關性，避免把相同輸入重複執行當作十種資料。第二～四課以受控暫存副本代入十筆設定，原始作答不修改。維護驗證腳本會逐題檢查實際驗收總數至少為十。

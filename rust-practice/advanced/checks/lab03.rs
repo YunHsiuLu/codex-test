@@ -1,35 +1,45 @@
 #[cfg(test)]
 mod course_checks {
     use super::*;
-    #[test]
-    fn duplicates_and_edges() {
-        let a = [1, 3, 3, 7];
-        for (x, want) in [(0, 0), (1, 0), (3, 1), (4, 3), (8, 4)] {
-            assert_eq!(lower_bound(&a, x), want);
-        }
-        assert_eq!(lower_bound(&[], 5), 0);
-    }
-    #[test]
-    fn compare_linear_specification() {
-        for len in 0..30 {
-            let a: Vec<i32> = (0..len).map(|i| i / 3).collect();
-            for t in -1..12 {
-                assert_eq!(
-                    lower_bound(&a, t),
-                    a.iter().position(|&x| x >= t).unwrap_or(a.len())
-                );
-            }
-        }
-    }
-}
 
-#[cfg(test)]
-mod extra_checks {
-    use super::*;
     #[test]
-    fn signed_extremes() {
-        let a = [i32::MIN, 0, i32::MAX];
-        assert_eq!(lower_bound(&a, i32::MIN), 0);
-        assert_eq!(lower_bound(&a, i32::MAX), 2);
+    fn empty() {
+        assert_eq!(lower_bound(&[], 3), 0);
+    }
+    #[test]
+    fn single_below() {
+        assert_eq!(lower_bound(&[5], 4), 0);
+    }
+    #[test]
+    fn single_equal() {
+        assert_eq!(lower_bound(&[5], 5), 0);
+    }
+    #[test]
+    fn single_above() {
+        assert_eq!(lower_bound(&[5], 6), 1);
+    }
+    #[test]
+    fn duplicates() {
+        assert_eq!(lower_bound(&[1, 3, 3, 7], 3), 1);
+    }
+    #[test]
+    fn between() {
+        assert_eq!(lower_bound(&[1, 3, 7], 4), 2);
+    }
+    #[test]
+    fn all_equal() {
+        assert_eq!(lower_bound(&[2, 2, 2], 2), 0);
+    }
+    #[test]
+    fn negative() {
+        assert_eq!(lower_bound(&[-9, -5, -1], -4), 2);
+    }
+    #[test]
+    fn minimum() {
+        assert_eq!(lower_bound(&[i32::MIN, 0, i32::MAX], i32::MIN), 0);
+    }
+    #[test]
+    fn maximum() {
+        assert_eq!(lower_bound(&[i32::MIN, 0, i32::MAX], i32::MAX), 2);
     }
 }

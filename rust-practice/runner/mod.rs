@@ -22,6 +22,7 @@ impl Drop for Scratch {
         let _ = fs::remove_dir_all(&self.0);
     }
 }
+#[derive(Clone)]
 struct Captured {
     status: ExitStatus,
     stdout: String,
@@ -145,6 +146,7 @@ pub fn check_validated(
     let tests = scratch.0.join(format!("tests{}", env::consts::EXE_SUFFIX));
     let mut passed = 0;
     let mut total = 0;
+    let mut cache = std::collections::HashMap::new();
     if !cases.is_empty() {
         println!("編譯作答並驗證輸入／輸出……");
         if !compile(&source, &program, false, &scratch.0)? {
@@ -152,9 +154,16 @@ pub fn check_validated(
         }
         for case in cases {
             total += 1;
-            let mut command = Command::new(&program);
-            command.current_dir(course_dir).args(case.args);
-            let result = capture(command, case.input, &scratch.0, 3)?;
+            let key = (case.input.to_owned(), case.args.to_vec());
+            let result = if let Some(previous) = cache.get(&key) {
+                Captured::clone(previous)
+            } else {
+                let mut command = Command::new(&program);
+                command.current_dir(course_dir).args(case.args);
+                let result = capture(command, case.input, &scratch.0, 3)?;
+                cache.insert(key, result.clone());
+                result
+            };
             let comparison = if let Some(validate) = validator {
                 validate(case, &result.stdout)
             } else if normalize(&result.stdout) == normalize(case.expected) {
@@ -191,7 +200,6 @@ pub fn check_validated(
         }
     }
     if !harness.trim().is_empty() {
-        total += 1;
         let wrapper = scratch.0.join("checks.rs");
         fs::write(
             &wrapper,
@@ -202,15 +210,38 @@ pub fn check_validated(
         if !compile(&wrapper, &tests, true, &scratch.0)? {
             return Ok(false);
         }
+        let mut listing = Command::new(&tests);
+        listing.args(["--list", "--format", "terse"]);
+        let listed = capture(listing, "", &scratch.0, 3)?;
+        if !listed.status.success() || listed.timed_out {
+            return Err("無法取得驗收測試清單。".into());
+        }
+        let test_count = listed
+            .stdout
+            .lines()
+            .filter(|line| line.ends_with(": test"))
+            .count();
+        if test_count == 0 {
+            return Err("驗收測試清單為空，不能視為通過。".into());
+        }
+        total += test_count;
         let mut command = Command::new(&tests);
-        command
-            .current_dir(course_dir)
-            .args(["--nocapture", "--test-threads=1"]);
+        command.current_dir(course_dir).args([
+            "--nocapture",
+            "--test-threads=1",
+            "--include-ignored",
+        ]);
         let result = capture(command, "", &scratch.0, 10)?;
         print!("{}", result.stdout);
         if result.status.success() && !result.timed_out {
-            passed += 1;
+            passed += test_count;
         } else {
+            passed += result
+                .stdout
+                .lines()
+                .filter(|line| line.starts_with("test ") && line.ends_with(" ... ok"))
+                .count()
+                .min(test_count);
             if result.timed_out {
                 println!("FAIL：函式測試超過 10 秒，已停止。");
             }

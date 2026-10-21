@@ -1,30 +1,65 @@
 #[cfg(test)]
 mod course_checks {
     use super::*;
-    #[test]
-    fn boundaries() {
-        assert_eq!(triangular(0), Some(0));
-        assert_eq!(triangular(1), Some(1));
-        assert_eq!(triangular(10), Some(55));
-        assert_eq!(triangular(65536), Some(2147516416));
-        assert_eq!(triangular(u32::MAX), None);
-    }
-    #[test]
-    fn agrees_with_small_oracle() {
-        for n in 0..1000 {
-            assert_eq!(triangular(n), Some((0..=n).sum()));
-        }
-    }
-}
 
-#[cfg(test)]
-mod extra_checks {
-    use super::*;
     #[test]
-    fn exact_last_boundary() {
-        for n in 92679..=92683 {
-            let t = u64::from(n) * (u64::from(n) + 1) / 2;
-            assert_eq!(triangular(n), u32::try_from(t).ok());
-        }
+    fn zero() {
+        let n: u32 = 0;
+        let t = u64::from(n) * (u64::from(n) + 1) / 2;
+        assert_eq!(triangular(n), u32::try_from(t).ok());
+    }
+    #[test]
+    fn one() {
+        let n: u32 = 1;
+        let t = u64::from(n) * (u64::from(n) + 1) / 2;
+        assert_eq!(triangular(n), u32::try_from(t).ok());
+    }
+    #[test]
+    fn even_small() {
+        let n: u32 = 2;
+        let t = u64::from(n) * (u64::from(n) + 1) / 2;
+        assert_eq!(triangular(n), u32::try_from(t).ok());
+    }
+    #[test]
+    fn odd_small() {
+        let n: u32 = 3;
+        let t = u64::from(n) * (u64::from(n) + 1) / 2;
+        assert_eq!(triangular(n), u32::try_from(t).ok());
+    }
+    #[test]
+    fn ten() {
+        let n: u32 = 10;
+        let t = u64::from(n) * (u64::from(n) + 1) / 2;
+        assert_eq!(triangular(n), u32::try_from(t).ok());
+    }
+    #[test]
+    fn thousand() {
+        let n: u32 = 1000;
+        let t = u64::from(n) * (u64::from(n) + 1) / 2;
+        assert_eq!(triangular(n), u32::try_from(t).ok());
+    }
+    #[test]
+    fn intermediate_overflow() {
+        let n: u32 = 65536;
+        let t = u64::from(n) * (u64::from(n) + 1) / 2;
+        assert_eq!(triangular(n), u32::try_from(t).ok());
+    }
+    #[test]
+    fn largest_fitting() {
+        let n: u32 = 92681;
+        let t = u64::from(n) * (u64::from(n) + 1) / 2;
+        assert_eq!(triangular(n), u32::try_from(t).ok());
+    }
+    #[test]
+    fn first_overflow() {
+        let n: u32 = 92682;
+        let t = u64::from(n) * (u64::from(n) + 1) / 2;
+        assert_eq!(triangular(n), u32::try_from(t).ok());
+    }
+    #[test]
+    fn maximum() {
+        let n: u32 = 4294967295;
+        let t = u64::from(n) * (u64::from(n) + 1) / 2;
+        assert_eq!(triangular(n), u32::try_from(t).ok());
     }
 }

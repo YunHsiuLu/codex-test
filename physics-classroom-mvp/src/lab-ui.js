@@ -1,5 +1,5 @@
 import {motionComponents,MOTION_ARROWS} from './motion-components.js';
-import {DEFAULT_COMPARISON} from './comparison.js';
+import {DEFAULT_COMPARISON,comparisonFromProjectile} from './comparison.js';
 import {mountComparison} from './comparison-ui.js';
 import {VELOCITY_ARROW_SECONDS} from './velocity-arrow.js';
 import { DEFAULT_LAB, AXES, algebra, norm, vec, particleMetrics, validateLab, simulationTime, simulationDuration, simulationParameters, isMechanics, vectorRelation, flightTime } from './physics.js';
@@ -10,7 +10,7 @@ export function mountLab({teacher,scene,write,getNow,report}) {
   const container=document.querySelector('#lab-panel');
   container.innerHTML=`<h2>教學模型</h2><label for="mode">場景模式</label><select id="mode" ${teacher?'':'disabled'}><option value="vectors">自由向量</option><option value="algebra">向量運算</option><option value="lorentz">帶電粒子・電磁場</option><option value="projectile">拋體運動</option><option value="oscillator">簡諧運動</option><option value="comparison">多物體拋體比較</option></select>
   <section id="comparison-panel" hidden></section><section id="algebra-panel" hidden><div class="pair"><label>A<select id="vector-a"></select></label><label>B<select id="vector-b"></select></label></div><label>運算<select id="operation"><option value="add">A＋B（首尾相接）</option><option value="subtract">A−B（加上負向量）</option><option value="cross">A×B（右手定則）</option><option value="angle">A、B 夾角</option><option value="projection">A 在 B 上的投影</option></select></label><p class="hint">採用向量分量，統一移到原點比較。</p><output id="algebra-result"></output>${teacher?'<button id="apply-algebra" class="wide">顯示運算結果</button>':''}</section>
-  <section id="mechanics-panel" hidden><p id="mechanics-formula" class="formula"></p><p id="mechanics-assumptions" class="hint"></p><section id="projectile-components" hidden aria-label="斜拋速度分解"><p class="formula">vₓ＝v₀ cosθ（固定）<br>v_z＝v₀ sinθ−gt</p><output id="component-values"></output><p class="hint">橘色：水平分量；藍色：垂直分量；綠色：合速度。虛線顯示兩分量相加；三支箭頭共用比例尺。垂直分量向上為正、向下為負。</p></section><form id="mechanics-form">${[
+  <section id="mechanics-panel" hidden>${teacher?'<button type="button" id="add-projectile" class="secondary wide">加入第二個物體・比較相對運動</button><p id="add-projectile-note" class="hint">保留已套用設定為Ａ；Ｂ先採同初速、仰角相差１５度，可再編輯。切換會歸零。質量不影響無阻力拋體的相對運動。</p>':''}<p id="mechanics-formula" class="formula"></p><p id="mechanics-assumptions" class="hint"></p><section id="projectile-components" hidden aria-label="斜拋速度分解"><p class="formula">vₓ＝v₀ cosθ（固定）<br>v_z＝v₀ sinθ−gt</p><output id="component-values"></output><p class="hint">橘色：水平分量；藍色：垂直分量；綠色：合速度。虛線顯示兩分量相加；三支箭頭共用比例尺。垂直分量向上為正、向下為負。</p></section><form id="mechanics-form">${[
     ['height','初始高度（m）',0,100,'projectile'],['speed','初速率（m/s）',0,100,'projectile'],['angle','仰角（度）',-90,90,'projectile'],['gravity','重力加速度（m/s²）',.01,100,'projectile'],
     ['amplitude','振幅（m）',0,100,'oscillator'],['omega','角頻率（rad/s）',.01,100,'oscillator'],['phase','初相位（度）',-360,360,'oscillator'],
     ['mass','質量（kg）',.001,1000,'both'],['duration','模擬總時間（s）',.01,1000,'both'],['rate','每秒播放的物理時間（s）',.001,100,'both'],['scale','顯示倍率',.001,10,'both']
@@ -55,6 +55,7 @@ export function mountLab({teacher,scene,write,getNow,report}) {
   async function save(next){try{validateLab(next);await write(next);dirty=false;}catch(e){report(e.message,true);}}
   const resetClock=()=>({playing:false,elapsed:0,startedAt:0});
   if(teacher){
+    $('add-projectile').onclick=()=>{try{if(dirty){report('請先套用目前的力學參數，再加入第二個物體。',true);return;}const comparison=comparisonFromProjectile(lab.mechanics);save({...lab,mode:'comparison',comparison,clock:resetClock()});}catch(e){report(e.message,true);}};
     $('mode').onchange=()=>save({...lab,mechanics:lab.mechanics||structuredClone(DEFAULT_LAB.mechanics),...($('mode').value==='comparison'?{comparison:lab.comparison||structuredClone(DEFAULT_COMPARISON)}:{}),mode:$('mode').value,clock:resetClock()});
     $('mechanics-form').oninput=()=>{dirty=true;report('力學參數尚未套用。');};
     $('mechanics-form').onsubmit=event=>{event.preventDefault();const mechanics=Object.fromEntries(Object.keys(DEFAULT_LAB.mechanics).map(k=>[k,$('mech-'+k).valueAsNumber]));save({...lab,mechanics,clock:resetClock()});};
@@ -111,7 +112,7 @@ export function mountLab({teacher,scene,write,getNow,report}) {
       $('algebra-panel').hidden=lab.mode!=='algebra';$('particle-panel').hidden=lab.mode!=='lorentz';
       document.querySelector('#vector-section').hidden=lab.mode==='lorentz'||isMechanics(lab)||lab.mode==='comparison';
       $('mechanics-panel').hidden=!isMechanics(lab);transport.hidden=!isMechanics(lab)&&lab.mode!=='lorentz'&&lab.mode!=='comparison';
-      $('projectile-components').hidden=lab.mode!=='projectile';
+      $('projectile-components').hidden=lab.mode!=='projectile';if(teacher){$('add-projectile').hidden=lab.mode!=='projectile';$('add-projectile-note').hidden=lab.mode!=='projectile';}
       $('mechanics-formula').textContent=lab.mode==='projectile'?'z＝h＋v₀ sinθ t−½gt²':'x＝A cos（ωt＋φ）';
       $('mechanics-assumptions').textContent=lab.mode==='projectile'?'在 XZ 平面運動，Z 軸向上；忽略空氣阻力，落地即停止，不模擬反彈。':'沿 X 軸作無阻尼簡諧運動，平衡點為原點；k＝mω²。';
       container.querySelectorAll('[data-mechanics-mode]').forEach(e=>e.hidden=e.dataset.mechanicsMode!=='both'&&e.dataset.mechanicsMode!==lab.mode);

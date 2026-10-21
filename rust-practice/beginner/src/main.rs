@@ -1,6 +1,7 @@
 mod checks;
 #[path = "../../runner/mod.rs"]
 mod runner;
+mod variants;
 use std::{
     env,
     process::{self, Command},

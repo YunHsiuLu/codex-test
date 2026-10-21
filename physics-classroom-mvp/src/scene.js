@@ -1,6 +1,6 @@
 import {motionComponents,MOTION_ARROWS} from './motion-components.js';
 import {segmentHitsRect} from './label-layout.js';
-import {BODY_COLORS,comparisonMetrics,comparisonState} from './comparison.js';
+import {BODY_COLORS,comparisonMetrics,comparisonState,comparisonFrameState,comparisonDuration} from './comparison.js';
 import * as THREE from 'three';
 import {Line2} from 'three/addons/lines/Line2.js';
 import {LineGeometry} from 'three/addons/lines/LineGeometry.js';
@@ -126,7 +126,7 @@ export function createScene(container) {
     });
     leaderGeometry.attributes.position.needsUpdate=true;leaderGeometry.setDrawRange(0,leaderCount/3);
   }
-  let vectors={},lab=structuredClone(DEFAULT_LAB),clock=()=>Date.now(),tick=()=>{},particle,trail,dynamic=[],componentGuides=[],comparisonBodies=[],comparisonFocus='p0',currentView='3d',orthoHalfHeight=10,lastTick=0;
+  let vectors={},lab=structuredClone(DEFAULT_LAB),clock=()=>Date.now(),tick=()=>{},particle,trail,dynamic=[],componentGuides=[],comparisonBodies=[],comparisonFocus='p0',comparisonReference='ground',currentView='3d',orthoHalfHeight=10,lastTick=0;
   const visible={E:true,B:true,v:true,vx:true,vz:true,vxB:false,FE:false,FB:false,F:true,a:false,at:false,an:false,Ft:false,Fn:false,predictions:true};
   let dragId=null,dragPart='components',dragAllowed=false,onDrag=()=>{},dragStart=null;
   const handle=new THREE.Object3D();scene.add(handle);
@@ -194,14 +194,15 @@ export function createScene(container) {
     }
     if(lab.mode==='comparison'){
       const c=lab.comparison;
+      if(!c.objects[comparisonReference])comparisonReference='ground';
       for(const [id,b] of Object.entries(c.objects)){
         const metrics=comparisonMetrics(c,b),color=BODY_COLORS[id],points=[];
-        for(let i=0;i<=300;i++){const point=V(mul(comparisonState(c,b,b.delay+metrics.flight*i/300).position,c.scale));points.push(point);contentBounds.expandByPoint(point);}
+        for(let i=0;i<=300;i++){const point=V(mul(comparisonFrameState(c,id,comparisonDuration(c)*i/300,comparisonReference).position,c.scale));points.push(point);contentBounds.expandByPoint(point);}
         const positions=points.flatMap(p=>p.toArray());
         const prediction=trajectory(positions,color),trace=trajectory(positions,color,true);
         const dot=new THREE.Mesh(new THREE.SphereGeometry(.18,16,10),new THREE.MeshBasicMaterial({color}));objects.add(dot);
         const name=label(b.name,color);objects.add(name);
-        const arrows={v:arrow(vec(),vec(1),color,b.name+' v'),vx:arrow(vec(),vec(1),'#af5700',b.name+' v_x'),vz:arrow(vec(),vec(1),'#245cc3',b.name+' v_z')};
+        const arrows={v:arrow(vec(),vec(1),color,b.name+(comparisonReference==='ground'?' v':' v 相對')),vx:arrow(vec(),vec(1),'#af5700',b.name+' v_x'),vz:arrow(vec(),vec(1),'#245cc3',b.name+' v_z')};
         comparisonBodies.push({id,b,metrics,prediction,trace,dot,name,arrows});
       }
     }
@@ -212,6 +213,8 @@ export function createScene(container) {
         objects.add(guide);componentGuides.push(guide);
       }
     }
+    const heading=document.querySelector('.stage-heading');if(heading)heading.hidden=lab.mode==='comparison';
+    const badge=document.querySelector('#reference-badge');if(badge){badge.hidden=lab.mode!=='comparison';badge.textContent=comparisonReference==='ground'?'地面參考系':`跟著 ${lab.comparison?.objects[comparisonReference]?.name||''} ｜ 相對位置・相對速度`;}
     rebuildGrid();syncHandle();
     container.dataset.vectorCount=String(Object.keys(vectors).length);container.dataset.mode=lab.mode;
   }
@@ -220,18 +223,18 @@ export function createScene(container) {
     if(comparisonBodies.length){
       const t=simulationTime(lab,clock()),c=lab.comparison,states={};
       for(const body of comparisonBodies){
-        const state=comparisonState(c,body.b,t),position=V(mul(state.position,c.scale)),parts={v:state.velocity,...projectileVelocityComponents(state.velocity)};
+        const state=comparisonFrameState(c,body.id,t,comparisonReference),position=V(mul(state.position,c.scale)),parts={v:state.velocity,...projectileVelocityComponents(state.velocity)};
         body.dot.position.copy(position);body.dot.scale.setScalar(Math.max(1,unitsPerPixel(position)*7/.18));body.name.position.copy(position);
         body.prediction.visible=visible.predictions;
-        body.trace.visible=t>=body.b.delay;
-        body.trace.geometry.instanceCount=Math.floor(Math.min(1,Math.max(0,(t-body.b.delay)/(body.metrics.flight||1)))*body.trace.userData.segmentCount);
+        body.trace.visible=true;
+        body.trace.geometry.instanceCount=Math.floor(Math.min(1,Math.max(0,t/(comparisonDuration(c)||1)))*body.trace.userData.segmentCount);
         for(const [key,{arrow:a,label:l}] of Object.entries(body.arrows)){
           const n=norm(parts[key]),shown=visible[key]&&n>1e-12&&(key==='v'||body.id===comparisonFocus);a.visible=l.visible=shown;
           if(shown){const scaled=velocityArrowVector(parts[key],c.scale);a.position.copy(position);a.setDirection(V(parts[key]).normalize());a.setLength(norm(scaled));l.position.copy(position).add(V(scaled));}
         }
         states[body.id]=state;
       }
-      if(performance.now()-lastTick>100){tick(t,{});lastTick=performance.now();container.dataset.time=String(t);container.dataset.comparisonStates=JSON.stringify(states);}
+      if(performance.now()-lastTick>100){tick(t,{});lastTick=performance.now();container.dataset.time=String(t);container.dataset.comparisonStates=JSON.stringify(states);container.dataset.reference= comparisonReference;}
     }
     if(particle){
       const t=simulationTime(lab,clock()),p=simulationParameters(lab),s=stateAt(lab,t),position=V(mul(s.position,p.scale));particle.position.copy(position);
@@ -293,6 +296,7 @@ export function createScene(container) {
   }
   return {
     showLabels:on=>{labelsShown=on;container.dataset.labels=String(on);},
+    referenceComparison:id=>{const next=lab.comparison?.objects[id]?id:'ground';if(next===comparisonReference)return;comparisonReference=next;if(lab.mode==='comparison'){rebuild();fitView();}},
     focusComparison:id=>{comparisonFocus=id;},
     setDrag:(id,part,allowed,callback)=>{dragId=id;dragPart=part;dragAllowed=allowed;onDrag=callback;syncHandle();},
     update:data=>{vectors=data;rebuild();},

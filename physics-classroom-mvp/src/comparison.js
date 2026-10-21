@@ -40,3 +40,15 @@ export function validateComparison(c){
  }
  return c;
 }
+
+// Translating, non-rotating frame. Each historic point uses its own simultaneous reference position.
+export function comparisonFrameState(c,id,t,reference='ground'){
+ const state=comparisonState(c,c.objects[id],t),anchor=c.objects[reference]?comparisonState(c,c.objects[reference],t):null;
+ const subtract=(a,b)=>({x:a.x-(b?.x||0),y:a.y-(b?.y||0),z:a.z-(b?.z||0)});
+ const acceleration=s=>({x:0,y:0,z:s.phase==='flying'?-c.gravity:0});
+ return {...state,position:subtract(state.position,anchor?.position),velocity:subtract(state.velocity,anchor?.velocity),acceleration:subtract(acceleration(state),anchor?acceleration(anchor):null)};
+}
+export function comparisonFromProjectile(p){
+ const a={name:'A',speed:p.speed,angle:p.angle,height:p.height,x0:0,delay:0};
+ return validateComparison({gravity:p.gravity,rate:p.rate,scale:p.scale,objects:{p0:a,p1:{...a,name:'B',angle:p.angle>60?p.angle-15:p.angle+15}}});
+}

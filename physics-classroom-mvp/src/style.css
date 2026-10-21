@@ -20,3 +20,7 @@ select{display:block;width:100%;font:inherit;color:#24364b;background:#ffffff;bo
 input[type=checkbox],input[type=range]{accent-color:#087f72}button:disabled{opacity:.55}input:disabled,select:disabled{color:#53657b;-webkit-text-fill-color:#53657b}.comparison-table thead{background:#eef3f9}.stage-heading{text-shadow:0 1px 3px #fff}.stage-toolbar button{box-shadow:0 1px 4px #20344c18}
 
 #motion-components{border:1px solid #cbd7e4;border-radius:10px;padding:12px;margin-top:14px;background:#f7f9fc}#motion-values{display:block;white-space:pre-line;line-height:1.9;font-size:12px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+.relative-panel{border:1px solid #b4d8d1;background:#edf8f5;padding:12px;border-radius:10px;margin:16px 0}#relative-values{display:block;white-space:pre-line;font-size:12px;line-height:1.9;font-variant-numeric:tabular-nums}
+
+.reference-badge{position:absolute;top:24px;left:32px;padding:8px 12px;border:1px solid #b4d8d1;border-radius:8px;background:#edf8f5;color:#176154;font-size:12px;pointer-events:none;max-width:calc(100% - 64px)}

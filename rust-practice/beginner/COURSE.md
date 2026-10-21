@@ -2,7 +2,7 @@
 
 已安裝 Rust 的使用者，可在專案資料夾執行 `cargo run` 查看終端機操作方法，並以 `cargo run -- lesson 1` 開始第一課。修改本機 examples 的程式，再用 `cargo run -- run 1` 執行。
 
-每題可用 `cargo run -- run N` 自動驗收，或用 `cargo run -- manual N` 手動操作。驗收資料與限制見 README.md。
+每題可用 `cargo run -- run N` 自動驗收，或用 `cargo run -- manual N` 手動操作。每題至少十項具名驗收；第二～四課會在暫存副本代入不同設定，不修改作答。完整資料與無參數題的契約檢查說明見 TEST_CASES.md，限制見 README.md。
 
 每課約３０～５０分鐘；先預測、動手修改、對照驗收，再讀答案。第一輪可安排為１２～１６節高中選修課，仍需依學生實作速度調整。
 

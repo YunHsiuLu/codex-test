@@ -120,3 +120,36 @@ README.md 現在直接提供 Windows、macOS、Linux 的下載安裝流程，包
 維護驗收資料時，請先修改 checks／src/checks.rs，再跑 verify_courses 與 verify_runner；新題若引入第三方 crates，需先調整 runner 的編譯機制，不能假定 rustc 單檔驗收仍適用。
 
 補充驗證：新增的 `python3 scripts/verify_courses.py` 已完整實跑成功，輸出 All 24 reference solutions passed；不是僅建立未執行。根目錄 `cargo run -- help` 亦已確認顯示新的 run／manual 用法。最終 Git 檢查確認兩套 examples 無此次修改。
+
+## ２０２６－１０－２１｜每題至少十項具名案例
+
+### 本次完成
+
+兩套二十四題皆已補到至少十項具名驗收。入門第五、七～十二課的外部函式測試已拆成各十至十五個獨立 #[test]；第六課十四筆 stdin。進階十二章共有一百二十七個外部具名測試，第十二章另有四筆 stdin。
+
+不能製造假輸入來湊數：入門第一課為固定兩行輸出，使用十項輸出契約（完整文字、行數、順序、空白、控制字元、英文半形與中文字元數），部分相關；進階第四章 scope_trace 同樣是十項固定資源追蹤契約，不宣稱十筆不同輸入。相同程式、stdin 與參數的結果由驗收器共用一次執行，不是同一筆資料重跑十次。
+
+入門第二～四課已從舊版單次輸出驗證升級：新增 beginner/src/variants.rs，只在 target 暫存副本替換 celsius、score 或 for 的範圍，公式／條件／累加內容保留學生作答。第二課十筆攝氏包含冰點、沸點、負溫、絕對零度與小數；第三課十筆成績包含 59／60／61；第四課十筆上限包含空範圍、單元素與 100。原始檔的設定完全不改。這項明示政策取代前文「不以副本改變初始值」的舊限制。
+
+這個副本機制只支援原題基本結構，需保留 let celsius、let score 與 for ... in 1..=...；它不是完整 Rust 解析器。較自由的寫法仍可用 manual 執行，若要改題型須調整驗收。一般字串及註解的假變數不會被誤認；不支援的模板會回報缺少設定或編譯錯誤。進階課程以函式契約測試，不使用這種來源替換。
+
+兩套 TEST_CASES.md 已逐題列案例、目的與預期 assertion，README／課綱／COURSE 與入門 generator 維護文字已同步，沒有執行會覆寫學生程式的入門 generator。runner 現在列出實際 Rust 測試數並依實際數量統計，沒有把整組十個測試顯示為 1/1，也拒絕把 0 tests 視為通過。
+
+### 驗證證據
+
+`python3 scripts/verify_courses.py` 全部通過，並新增強制檢查二十四題實際數量均至少十；外部 checks 每檔亦需至少十個獨立 #[test]，不讓參考答案內的舊測試掩蓋缺少外部案例。參考答案實際驗收總數（含原檔既有測試及 I/O）如下：
+
+| 課程／題號 | 01 | 02 | 03 | 04 | 05 | 06 | 07 | 08 | 09 | 10 | 11 | 12 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Beginner | 10 | 10 | 10 | 10 | 10 | 14 | 11 | 11 | 10 | 15 | 12 | 18 |
+| Advanced | 12 | 13 | 12 | 11 | 12 | 12 | 12 | 11 | 12 | 12 | 12 | 20 |
+
+共二百九十二項執行通過，數字包含原本測試與相關契約性質，不宣稱全都是獨立輸入。
+
+`cargo test -p rust-beginner-course --bin rust-beginner-course --offline` 四個副本處理回歸測試通過，涵蓋註解、字串、mut 初始值、範圍與未支援模板。`python3 scripts/verify_runner.py` 再次實跑通過，新增刻意錯誤答案：華氏硬編碼、score > 60、累加零，均被多筆資料抓出；另保留 CRLF、EOF、錯誤輸出、退出碼、無限迴圈與語法錯誤測試。實際使用者的 run 2 顯示 10/10。
+
+最終 Git 檢查：beginner／advanced 的 examples 與 solutions 皆無本次修改。未安裝工具、未製作壓縮包、未 commit／push。
+
+### 續作
+
+學生指令保持 `cargo run -- run N`（入門）及 `cargo run -p rust-advanced-course -- run N`（進階）；manual N 手動探索。維護案例後執行 verify_courses 與 verify_runner，並更新 TEST_CASES.md。Windows／Linux 仍未實機驗證；有限案例與彼此相關的契約檢查不是一般性正確性證明。

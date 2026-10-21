@@ -96,7 +96,7 @@ linker／link.exe 錯誤：回到對應作業系統的編譯工具安裝步驟�
 安裝資訊查核日期：２０２６－１０－２１。依據 [The Rust Book 安裝章](https://doc.rust-lang.org/book/ch01-01-installation.html) 與 [Rust 官方入門](https://rust-lang.org/learn/get-started/)。本次沒有在 Windows／Linux 實機執行安裝。
 '''
 (root/'docs/00-install.md').write_text(install)
-course='# Rust Beginner Course\n\n已安裝 Rust 的使用者，可在專案資料夾執行 `cargo run` 查看終端機操作方法，並以 `cargo run -- lesson 1` 開始第一課。修改本機 examples 的程式，再用 `cargo run -- run 1` 執行。\n\n每題可用 `cargo run -- run N` 自動驗收，或用 `cargo run -- manual N` 手動操作。驗收資料與限制見 README.md。\n\n每課約３０～５０分鐘；先預測、動手修改、對照驗收，再讀答案。第一輪可安排為１２～１６節高中選修課，仍需依學生實作速度調整。\n\n網頁 index.html 可直接開啟，不需伺服器。網頁筆記與進度僅存在目前瀏覽器，請使用匯出備份。網頁不會自動修改本機 .rs 檔。\n\n'+install+'\n'
+course='# Rust Beginner Course\n\n已安裝 Rust 的使用者，可在專案資料夾執行 `cargo run` 查看終端機操作方法，並以 `cargo run -- lesson 1` 開始第一課。修改本機 examples 的程式，再用 `cargo run -- run 1` 執行。\n\n每題可用 `cargo run -- run N` 自動驗收，或用 `cargo run -- manual N` 手動操作。每題至少十項具名驗收；第二～四課會在暫存副本代入不同設定，不修改作答。完整資料與無參數題的契約檢查說明見 TEST_CASES.md，限制見 README.md。\n\n每課約３０～５０分鐘；先預測、動手修改、對照驗收，再讀答案。第一輪可安排為１２～１６節高中選修課，仍需依學生實作速度調整。\n\n網頁 index.html 可直接開啟，不需伺服器。網頁筆記與進度僅存在目前瀏覽器，請使用匯出備份。網頁不會自動修改本機 .rs 檔。\n\n'+install+'\n'
 for x in lessons:
     n=x['id']; key=f'step{n:02d}'
     (root/f'examples/{key}.rs').write_text(x['code']+'\n')
