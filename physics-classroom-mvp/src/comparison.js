@@ -1,11 +1,13 @@
+export const BODY_KINDS={ball:'小球',apple:'蘋果',arrow:'箭'};
 export const BODY_COLORS={p0:'#087f72',p1:'#af5700',p2:'#7041bc',p3:'#bf3154'};
 const body=(name,speed,angle,height=0)=>({name,speed,angle,height,x0:0,delay:0});
 export const DEFAULT_COMPARISON={gravity:9.81,rate:1,scale:1,objects:{p0:body('A',20,30),p1:body('B',20,60)}};
 export const COMPARISON_PRESETS={
- speed:'同初速，不同仰角',complement:'互餘角：同初速、同射程',range:'射程皆為３０ m，比較所需初速',vx:'同水平初速度，不同鉛直分量',vz:'同鉛直初速度，比較飛行時間',drop:'同高度：自由落下與水平拋射'
+ apple:'射向落下的蘋果',speed:'同初速，不同仰角',complement:'互餘角：同初速、同射程',range:'射程皆為３０ m，比較所需初速',vx:'同水平初速度，不同鉛直分量',vz:'同鉛直初速度，比較飛行時間',drop:'同高度：自由落下與水平拋射'
 };
 export function comparisonPreset(key){
  const c=structuredClone(DEFAULT_COMPARISON),g=c.gravity;
+ if(key==='apple')c.objects={p0:{...body('箭',20,Math.atan2(9,12)*180/Math.PI,1),kind:'arrow'},p1:{...body('蘋果',0,0,10),x0:12,kind:'apple'}};
  if(key==='speed')c.objects={p0:body('A',20,30),p1:body('B',20,45),p2:body('C',20,60)};
 
  if(key==='range')c.objects=Object.fromEntries([30,45,60].map((a,i)=>['p'+i,body('ABC'[i],Math.sqrt(30*g/Math.sin(2*a*Math.PI/180)),a)]));
@@ -33,7 +35,8 @@ export function validateComparison(c){
  if(!c.objects||!c.objects.p0||!c.objects.p1||Object.keys(c.objects).some(k=>!/^p[0-3]$/.test(k)))throw new Error('請保留Ａ、Ｂ兩個物體，最多四個物體。');
  const ranges={speed:[0,100],angle:[-90,90],height:[0,100],x0:[-100,100],delay:[0,30]};
  for(const b of Object.values(c.objects)){
-  if(!b||typeof b.name!=='string'||!b.name.trim()||b.name.length>24||Object.keys(b).some(k=>!['name',...Object.keys(ranges)].includes(k)))throw new Error('物體名稱或欄位不正確。');
+  if(!b||typeof b.name!=='string'||!b.name.trim()||b.name.length>24||Object.keys(b).some(k=>!['name','kind',...Object.keys(ranges)].includes(k)))throw new Error('物體名稱或欄位不正確。');
+  if(b.kind!==undefined&&!Object.hasOwn(BODY_KINDS,b.kind))throw new Error('物體外觀不正確。');
   for(const [k,[lo,hi]] of Object.entries(ranges))if(!bounded(b[k],lo,hi))throw new Error(`物體 ${b.name} 的 ${k} 超出範圍。`);
   const m=comparisonMetrics(c,b);
   if(m.arrival>1000||Math.max(Math.abs(b.x0),Math.abs(m.landingX),m.peak)*c.scale>1000)throw new Error('比較軌跡超過１０００座標單位或１０００秒，請調整參數。');

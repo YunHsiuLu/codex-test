@@ -180,3 +180,17 @@ npm test 通過３１項單元測試與７０項權限規則斷言。新增 test
 ### 正式部署完成
 
 ２０２６－１０－２１執行 npm run firebase -- deploy --only hosting 成功，紀錄 work/relative-deploy.log。正式 app-CnE7hodK.js 以 curl 下載後與 dist 逐位元組比較一致。Chrome 訪客開啟正式 student.html?room=PHYS01，顯示「已連線」、學生只讀與現有拋體場景，力／加速度分解呈現正常；未更動正式房間資料。正式雙物體互動流程沿用已通過的本機雙端驗收，未登入正式教師帳號重做。系統 Python urllib 憑證鏈驗證失敗；改用正常驗證憑證的 curl 成功，沒有停用 TLS 驗證。
+
+## ２０２６－１０－２２：加入物體 → 設定位置 → 開始運動
+
+完成物體外觀與配置流程，沿用 comparison，２～４物體與ＸＺ平面。src/comparison-ui.js 新增 kind 選擇、每物體外觀、老師預設展開設定、套用位置預覽及套用並開始按鈕；src/lab-ui.js 使用同一次 write 同步比較參數與 playing=true 的歸零時鐘，store.js 原有 serverTimestamp 處理不變。仍可使用下方播放／歸零。更改草稿需套用才會顯示。
+
+src/comparison.js：BODY_KINDS、可選 kind 驗證及 apple 範例。src/body-visual.js 用 Three 幾何生成小球／紅蘋果（梗、葉）／箭（桿、尖、尾羽）。scene.js 按對地速度調整箭朝向，靜止發射前用仰角，落地保持終端方向；相對系不改實際箭身方向。圖示為可辨識尺寸，不是物理半徑，沒有命中／碰撞判定。舊資料缺 kind 仍是小球，快照保留 kind。
+
+database.rules.json 只增加可選 kind 的三值白名單，未改讀寫權限。npm test：３２單元測試、７４安全規則斷言全通過，work/objects-tests.log。新增測試確認 apple 範例０．７５秒相遇、快照保存外觀、非法 kind 被拒、學生不能寫。最後箭落地朝向調整由部署 build 驗證。git diff --check 通過。
+
+IAB 本機 UI 驗收：本機 Auth 測試帳號登入、切 comparison、載入 apple、套用位置、增加第三個蘋果，改Ｘ＝６／Ｚ＝８，按開始；RTDB 確認三個物體、kind、位置與 playing=true／serverTimestamp。歸零後學生頁只讀同步三物體；XZ 畫面看到紅蘋果、箭及軌跡。老師頁 console error 為空。截圖 work/objects-scene-2026-10-22.png。未實測 iPad、Safari，未修改正式 PHYS01 資料。初次 IAB 開啟早於 emulator 就緒而連線失敗；啟動完成後新頁成功。
+
+啟動 npm ci → npm run emulators（本機5055／9000／9099，使用 work/jdk）；發布 npm run deploy（hosting,database）。交接沿用既有 Firebase 專案與 CLI 登入，不記錄正式密碼。不作 git commit／push。
+
+發布完成：work/objects-deploy.log 顯示 Hosting 與 RTDB 規則成功發布；正式 student.html 所引用 /assets/app-BMO6mqk3.js 已下載並與 dist 逐位元組比對一致。

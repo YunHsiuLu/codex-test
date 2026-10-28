@@ -34,3 +34,12 @@ test('comparison rejects excess bodies and nonphysical inputs; snapshot preserve
  const old=makeSnapshot('舊版',{},DEFAULT_LAB);assert.equal(old.lab.comparison,undefined);
  const zero=comparisonPreset('drop');for(const b of Object.values(zero.objects)){b.height=0;b.speed=0;}near(comparisonDuration(zero),0);assert.equal(comparisonState(zero,zero.objects.p0,0).phase,'landed');
 });
+
+test('apple scene meets at simultaneous ballistic position and preserves typed snapshot',()=>{
+ const c=comparisonPreset('apple');validateComparison(c);
+ const a=comparisonState(c,c.objects.p0,.75),b=comparisonState(c,c.objects.p1,.75);
+ near(a.position.x,b.position.x);near(a.position.z,b.position.z);assert.equal(a.phase,'flying');assert.equal(b.phase,'flying');
+ const lab={...structuredClone(DEFAULT_LAB),mode:'comparison',comparison:c};
+ assert.equal(validateSnapshot(makeSnapshot('蘋果',{},lab)).lab.comparison.objects.p0.kind,'arrow');
+ c.objects.p0.kind='unknown';assert.throws(()=>validateComparison(c));
+});

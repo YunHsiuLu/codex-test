@@ -70,5 +70,10 @@ try {
  }
  await fail(remove(ref(teacher,path+'/lab/comparison/objects/p1')));
  await pass(update(ref(teacher,path),{lab:comparison,'vectors/v0':null}));
+ const apple={...structuredClone(DEFAULT_LAB),mode:'comparison',comparison:comparisonPreset('apple')};
+ await pass(set(ref(teacher,path+'/lab'),apple));
+ await fail(set(ref(guest,path+'/lab'),apple));
+ await fail(set(ref(teacher,path+'/lab/comparison/objects/p0/kind'),'unknown'));
+ await pass(set(ref(teacher,path+'/lab/comparison/objects/p0/kind'),'ball'));
  console.log(`Security rules：${count} assertions passed (including guest / wrong teacher / unverified / forged provider).`);
 } finally {await env.cleanup();}

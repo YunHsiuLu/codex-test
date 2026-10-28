@@ -1,3 +1,4 @@
+import {bodyVisual} from './body-visual.js';
 import {motionComponents,MOTION_ARROWS} from './motion-components.js';
 import {segmentHitsRect} from './label-layout.js';
 import {BODY_COLORS,comparisonMetrics,comparisonState,comparisonFrameState,comparisonDuration} from './comparison.js';
@@ -200,7 +201,7 @@ export function createScene(container) {
         for(let i=0;i<=300;i++){const point=V(mul(comparisonFrameState(c,id,comparisonDuration(c)*i/300,comparisonReference).position,c.scale));points.push(point);contentBounds.expandByPoint(point);}
         const positions=points.flatMap(p=>p.toArray());
         const prediction=trajectory(positions,color),trace=trajectory(positions,color,true);
-        const dot=new THREE.Mesh(new THREE.SphereGeometry(.18,16,10),new THREE.MeshBasicMaterial({color}));objects.add(dot);
+        const dot=bodyVisual(b.kind,color);objects.add(dot);
         const name=label(b.name,color);objects.add(name);
         const arrows={v:arrow(vec(),vec(1),color,b.name+(comparisonReference==='ground'?' v':' v 相對')),vx:arrow(vec(),vec(1),'#af5700',b.name+' v_x'),vz:arrow(vec(),vec(1),'#245cc3',b.name+' v_z')};
         comparisonBodies.push({id,b,metrics,prediction,trace,dot,name,arrows});
@@ -224,6 +225,7 @@ export function createScene(container) {
       const t=simulationTime(lab,clock()),c=lab.comparison,states={};
       for(const body of comparisonBodies){
         const state=comparisonFrameState(c,body.id,t,comparisonReference),position=V(mul(state.position,c.scale)),parts={v:state.velocity,...projectileVelocityComponents(state.velocity)};
+        if(body.b.kind==='arrow'){const ground=comparisonState(c,body.b,t),v=ground.velocity;const angle=ground.phase==='landed'?Math.atan2(body.metrics.vz-c.gravity*body.metrics.flight,body.metrics.vx):Math.hypot(v.x,v.z)>1e-10?Math.atan2(v.z,v.x):body.b.angle*Math.PI/180;body.dot.rotation.y=-angle;}
         body.dot.position.copy(position);body.dot.scale.setScalar(Math.max(1,unitsPerPixel(position)*7/.18));body.name.position.copy(position);
         body.prediction.visible=visible.predictions;
         body.trace.visible=true;

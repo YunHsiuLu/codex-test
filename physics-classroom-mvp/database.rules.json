@@ -228,6 +228,9 @@
                 },
                 "$other": {
                   ".validate": false
+                },
+                "kind": {
+                  ".validate": "newData.val() == 'ball' || newData.val() == 'apple' || newData.val() == 'arrow'"
                 }
               }
             },
