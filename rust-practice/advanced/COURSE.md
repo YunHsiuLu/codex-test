@@ -4,7 +4,7 @@
 
 ## 前置知識與操作環境
 
-先完成 [Rust Beginner Course](../beginner/README.md)，能獨立使用變數、判斷、迴圈、函式、基本所有權、Vec、Option、Result 與測試。熟悉終端機、Cargo 與編輯器；不要求 C++ 背景。需要支援 Rust 2024 edition 的工具鏈（Rust １．８５ 以上），建議使用目前 stable。安裝見 [跨平台說明](../beginner/README.md)。所有命令除另註外由 rust-practice workspace 根目錄（含 [workspace] 的 Cargo.toml）執行。
+先完成 [Rust Beginner Course](../beginner/README.md)，能獨立使用變數、判斷、迴圈、函式、基本所有權、Vec、Option、Result 與測試。熟悉終端機、Cargo 與編輯器；不要求 C++ 背景。需要支援 Rust 2024 edition 的工具鏈（Rust １．８５ 以上），建議使用目前 stable。安裝見 [跨平台說明](../beginner/README.md)。所有命令除另註外，先進入 advanced 資料夾再執行。
 
 ## 十二章學習路線
 
@@ -52,7 +52,7 @@
 
 ## 教材與維護
 
-各章 `lessons/NN.md` 與程式檔是維護來源。修改章節後執行 `python3 advanced/scripts/build.py` 重建 COURSE.md；此動作不會覆寫學生程式。`cargo test -p rust-advanced-course --doc` 檢查教材中的 Rust 與預期編譯失敗範例。參考來源列於每章末。
+各章 `lessons/NN.md` 與程式檔是維護來源。修改章節後執行 `python3 scripts/build.py` 重建 COURSE.md；此動作不會覆寫學生程式。`cargo test --doc` 檢查教材中的 Rust 與預期編譯失敗範例。參考來源列於每章末。
 
 
 ---
@@ -86,8 +86,8 @@
 起始檔：`examples/lab01.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab01
-cargo run -p rust-advanced-course --example lab01
+cargo test --example lab01
+cargo run --example lab01
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -97,12 +97,12 @@ cargo run -p rust-advanced-course --example lab01
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 1
+cargo run -- run 1
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 1`；原本的 `cargo test -p rust-advanced-course --example lab01` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 1`；原本的 `cargo test --example lab01` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -119,7 +119,7 @@ cargo run -p rust-advanced-course -- run 1
 完成後閱讀 `solutions/lab01.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution01
+cargo test --example solution01
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -166,8 +166,8 @@ assert!(((f64::MAX + f64::MAX) / 2.0).is_infinite());
 起始檔：`examples/lab02.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab02
-cargo run -p rust-advanced-course --example lab02
+cargo test --example lab02
+cargo run --example lab02
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -177,12 +177,12 @@ cargo run -p rust-advanced-course --example lab02
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 2
+cargo run -- run 2
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 2`；原本的 `cargo test -p rust-advanced-course --example lab02` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 2`；原本的 `cargo test --example lab02` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -199,7 +199,7 @@ cargo run -p rust-advanced-course -- run 2
 完成後閱讀 `solutions/lab02.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution02
+cargo test --example solution02
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -240,8 +240,8 @@ lower_bound 的輸入是非遞減排序切片，輸出第一個大於等於 targ
 起始檔：`examples/lab03.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab03
-cargo run -p rust-advanced-course --example lab03
+cargo test --example lab03
+cargo run --example lab03
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -251,12 +251,12 @@ cargo run -p rust-advanced-course --example lab03
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 3
+cargo run -- run 3
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 3`；原本的 `cargo test -p rust-advanced-course --example lab03` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 3`；原本的 `cargo test --example lab03` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -273,7 +273,7 @@ cargo run -p rust-advanced-course -- run 3
 完成後閱讀 `solutions/lab03.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution03
+cargo test --example solution03
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -320,8 +320,8 @@ println!("{source} {destination}");
 起始檔：`examples/lab04.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab04
-cargo run -p rust-advanced-course --example lab04
+cargo test --example lab04
+cargo run --example lab04
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -331,12 +331,12 @@ cargo run -p rust-advanced-course --example lab04
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 4
+cargo run -- run 4
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。本題沒有輸入參數，十項檢查分別觀察固定事件序列的契約性質，部分性質互相關聯，不是十種輸入資料。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 4`；原本的 `cargo test -p rust-advanced-course --example lab04` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 4`；原本的 `cargo test --example lab04` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -353,7 +353,7 @@ cargo run -p rust-advanced-course -- run 4
 完成後閱讀 `solutions/lab04.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution04
+cargo test --example solution04
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -401,8 +401,8 @@ let y = &mut values[1];
 起始檔：`examples/lab05.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab05
-cargo run -p rust-advanced-course --example lab05
+cargo test --example lab05
+cargo run --example lab05
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -412,12 +412,12 @@ cargo run -p rust-advanced-course --example lab05
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 5
+cargo run -- run 5
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 5`；原本的 `cargo test -p rust-advanced-course --example lab05` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 5`；原本的 `cargo test --example lab05` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -434,7 +434,7 @@ cargo run -p rust-advanced-course -- run 5
 完成後閱讀 `solutions/lab05.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution05
+cargo test --example solution05
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -482,8 +482,8 @@ fn broken<'a>() -> &'a str {
 起始檔：`examples/lab06.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab06
-cargo run -p rust-advanced-course --example lab06
+cargo test --example lab06
+cargo run --example lab06
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -493,12 +493,12 @@ cargo run -p rust-advanced-course --example lab06
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 6
+cargo run -- run 6
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 6`；原本的 `cargo test -p rust-advanced-course --example lab06` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 6`；原本的 `cargo test --example lab06` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -515,7 +515,7 @@ cargo run -p rust-advanced-course -- run 6
 完成後閱讀 `solutions/lab06.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution06
+cargo test --example solution06
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -554,8 +554,8 @@ cargo test -p rust-advanced-course --example solution06
 起始檔：`examples/lab07.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab07
-cargo run -p rust-advanced-course --example lab07
+cargo test --example lab07
+cargo run --example lab07
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -565,12 +565,12 @@ cargo run -p rust-advanced-course --example lab07
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 7
+cargo run -- run 7
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 7`；原本的 `cargo test -p rust-advanced-course --example lab07` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 7`；原本的 `cargo test --example lab07` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -587,7 +587,7 @@ cargo run -p rust-advanced-course -- run 7
 完成後閱讀 `solutions/lab07.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution07
+cargo test --example solution07
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -626,8 +626,8 @@ cargo test -p rust-advanced-course --example solution07
 起始檔：`examples/lab08.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab08
-cargo run -p rust-advanced-course --example lab08
+cargo test --example lab08
+cargo run --example lab08
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -637,12 +637,12 @@ cargo run -p rust-advanced-course --example lab08
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 8
+cargo run -- run 8
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 8`；原本的 `cargo test -p rust-advanced-course --example lab08` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 8`；原本的 `cargo test --example lab08` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -659,7 +659,7 @@ cargo run -p rust-advanced-course -- run 8
 完成後閱讀 `solutions/lab08.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution08
+cargo test --example solution08
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -700,8 +700,8 @@ cargo test -p rust-advanced-course --example solution08
 起始檔：`examples/lab09.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab09
-cargo run -p rust-advanced-course --example lab09
+cargo test --example lab09
+cargo run --example lab09
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -711,12 +711,12 @@ cargo run -p rust-advanced-course --example lab09
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 9
+cargo run -- run 9
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 9`；原本的 `cargo test -p rust-advanced-course --example lab09` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 9`；原本的 `cargo test --example lab09` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -733,7 +733,7 @@ iter().copied().filter(...).take(...).map(...)，把 i64::from 放在乘法之�
 完成後閱讀 `solutions/lab09.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution09
+cargo test --example solution09
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -772,8 +772,8 @@ panic 適合指出某些程式內部預期被破壞的情況，不適合把每�
 起始檔：`examples/lab10.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab10
-cargo run -p rust-advanced-course --example lab10
+cargo test --example lab10
+cargo run --example lab10
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -783,12 +783,12 @@ cargo run -p rust-advanced-course --example lab10
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 10
+cargo run -- run 10
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 10`；原本的 `cargo test -p rust-advanced-course --example lab10` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 10`；原本的 `cargo test --example lab10` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -805,7 +805,7 @@ cargo run -p rust-advanced-course -- run 10
 完成後閱讀 `solutions/lab10.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution10
+cargo test --example solution10
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -854,8 +854,8 @@ thread::spawn(move || println!("{data}"));
 起始檔：`examples/lab11.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab11
-cargo run -p rust-advanced-course --example lab11
+cargo test --example lab11
+cargo run --example lab11
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -865,12 +865,12 @@ cargo run -p rust-advanced-course --example lab11
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 11
+cargo run -- run 11
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 11`；原本的 `cargo test -p rust-advanced-course --example lab11` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 11`；原本的 `cargo test --example lab11` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -887,7 +887,7 @@ cargo run -p rust-advanced-course -- run 11
 完成後閱讀 `solutions/lab11.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution11
+cargo test --example solution11
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。
@@ -924,13 +924,13 @@ cargo test -p rust-advanced-course --example solution11
 完成後執行：
 
 ```sh
-cargo run -p rust-advanced-course --example lab12 -- advanced/data/motion.csv
+cargo run --example lab12 -- data/motion.csv
 ```
 
-上述命令從 workspace 根目錄執行；若目前在 advanced 資料夾，路徑改成 data/motion.csv。stdin 模式先輸入各行，macOS／Linux 以 Ctrl+D 結束；Windows PowerShell／CMD 通常以 Ctrl+Z 後 Enter 結束。
+上述命令從 advanced 資料夾執行，資料檔位於 data/motion.csv。stdin 模式先輸入各行，macOS／Linux 以 Ctrl+D 結束；Windows PowerShell／CMD 通常以 Ctrl+Z 後 Enter 結束。
 
 ```sh
-cargo run -p rust-advanced-course --example lab12 -- -
+cargo run --example lab12 -- -
 ```
 
 ## 實作規格
@@ -940,8 +940,8 @@ cargo run -p rust-advanced-course --example lab12 -- -
 起始檔：`examples/lab12.rs`。先閱讀測試，再修改函式。
 
 ```sh
-cargo test -p rust-advanced-course --example lab12
-cargo run -p rust-advanced-course --example lab12
+cargo test --example lab12
+cargo run --example lab12
 ```
 
 起始程式中的 `todo!()` 可編譯，但執行或相關測試會 panic，這是刻意保留的待完成工作；通過編譯不代表通過規格。
@@ -951,12 +951,12 @@ cargo run -p rust-advanced-course --example lab12
 完成作答後執行：
 
 ```sh
-cargo run -p rust-advanced-course -- run 12
+cargo run -- run 12
 ```
 
 此命令自動編譯學生程式並執行至少十項獨立具名的函式契約檢查（清單見 `TEST_CASES.md`），不需手動輸入測試值。第十二章另有多組標準輸入／輸出與退出碼案例。驗收在暫存檔附加測試，不會修改你的程式或使用參考答案替換作答；失敗退出碼為１。起始程式中的 `todo!()` 會使驗收失敗。
 
-需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -p rust-advanced-course -- manual 12`；原本的 `cargo test -p rust-advanced-course --example lab12` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
+需要自行輸入、觀察輸出或附加檔案路徑時，使用 `cargo run -- manual 12`；原本的 `cargo test --example lab12` 仍可執行檔案內測試。自動驗收有逾時限制，但不是執行不受信任程式的安全沙盒；有限測試也無法代替設計推理、複雜度分析與個別口頭說明。
 
 ## 驗收與設計說明
 
@@ -973,7 +973,7 @@ cargo run -p rust-advanced-course -- run 12
 完成後閱讀 `solutions/lab12.rs`。執行答案的測試：
 
 ```sh
-cargo test -p rust-advanced-course --example solution12
+cargo test --example solution12
 ```
 
 答案是一種可行設計，不是唯一寫法；請根據契約判斷其他實作是否同樣正確。

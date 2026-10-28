@@ -153,3 +153,114 @@ README.md 現在直接提供 Windows、macOS、Linux 的下載安裝流程，包
 ### 續作
 
 學生指令保持 `cargo run -- run N`（入門）及 `cargo run -p rust-advanced-course -- run N`（進階）；manual N 手動探索。維護案例後執行 verify_courses 與 verify_runner，並更新 TEST_CASES.md。Windows／Linux 仍未實機驗證；有限案例與彼此相關的契約檢查不是一般性正確性證明。
+
+## ２０２６－１０－２８｜依資料夾選擇課程
+
+移除 workspace 的 default-members=[beginner]，根目錄不再默認啟動入門課程。學習者先進入 beginner 或 advanced，再使用相同的 `cargo run -- lesson N`／run／manual 指令；根目錄仍允許用 -p 明確選擇課程。未增加會攔截 Cargo 的根程式或自訂包裝器，根目錄不指定 -p 時使用 Cargo 原生的多 binary 選擇錯誤。
+
+已同步根 README、兩課程 README、CLI 提示、進階大綱及十二章範例，進階資料檔路徑改為在 advanced 內的 data/motion.csv，維護腳本改為 scripts/build.py。已用進階非破壞性 build 重建 COURSE；入門僅改教材與 generator 文字，未執行會覆寫學生作答的 generator。
+
+驗證：根目錄直接 cargo run -- lesson 1 正確拒絕自動選課；beginner 與 advanced 中的 cargo run 及 lesson 1 皆通過；根目錄明確 -p 選擇兩套課程也通過。本次為入口選擇與說明調整，未改判題邏輯，不重跑既有全部答案測試。使用者持續修改 beginner/examples/step03.rs、step04.rs，本次未接觸這些作答。未 commit、push 或建立壓縮包。
+
+續作：workspace 根目錄先 cd beginner；切換到進階使用 cd ../advanced。每個課程資料夾中的 examples 與 lesson 課號相互對應。Windows／Linux 新入口仍未實機驗證。
+
+## ２０２６－１０－２８｜第四課 for 迴圈子題
+
+### 完成與設計
+
+新增 4-1 到 4-7：範圍輸出、偶數加總、倍數計數／continue、rev 倒數、break 找第一個達門檻的平方、巢狀迴圈乘法表、陣列／enumerate。每題有 beginner/lessons/04-N.md、examples/step04_0N.rs 與 solutions/step04_0N.rs。所有起始程式可編譯但輸出待完成，學生不需提前學函式或鍵盤輸入。既有 step04.rs 完整保留，未改動使用者已完成的 total += n。
+
+CLI 的 lesson／hint／run／manual／test／answer 都接受 4-1 等課號。子題 test 是自動驗收別名，避免 main 沒有 unit test 而顯示零測試；原主課 test 行為不改。list／help 與 lesson 4 列出子題。學習者在 beginner 資料夾執行；根目錄仍沒有預設課程。
+
+beginner/lessons/sublessons.json 是可擴充的子題 registry 與測資來源，七題共七十筆不同參數。新增 scripts/build_sublessons.py（非破壞性）生成 src/sublessons_data.rs 與 lessons/SUBLESSON_TEST_CASES.md，不覆寫學生檔案。src/sublessons.rs 負責讀題與執行，沿用共用 runner；variants.rs 新增多個 let 設定的副本替換，並修正含內部分號的陣列重複初始值之結尾辨識。空陣列、空範圍、不同表格維度及搜尋無解都有案例。
+
+Cargo 登錄 answer04_01 到 answer04_07；主 generator 亦會保留這些登錄，但未執行會覆寫既有練習的 build.py。README、COURSE 及案例目錄已補上子題入口。子代理只建立新題目／答案／教材，主代理處理 CLI、測資、副本機制、維護腳本、文件與交接。
+
+### 驗證
+
+- scripts/verify_courses.py 已擴為原本二十四題加七子題，共三十一份參考答案，全部通過；每份實際驗收數至少十。
+- 新增七十筆子題資料均驗證通過，參數組合互異且每題至少十筆，由 build_sublessons.py 強制檢查。
+- beginner binary 七個 unit tests 通過：課號解析及錯誤格式、原本副本功能，以及含內部分號的陣列初始值替換。
+- 七題 lesson／hint／answer／manual／run 均實際操作；lesson 不顯示參考解法，預期結果僅顯示一次。manual 起始輸出待完成、exit 0，run 正確 FAIL、exit 1；test 4-1 同樣 FAIL；未知 4-8 為 exit 2。
+- 所有七份 Cargo answer04_0N 均成功執行，預設 stdout 與各題規格一致；lesson 4 及 help 可看到子題。
+- 未修改學生既有 examples/step01..12 或既有 solutions；Git 中 step03／step04 的差異為使用者本來的作答，沒有回復或覆寫。沒有 commit／push 或壓縮包。
+
+### 啟動與續作
+
+在 beginner 執行 `cargo run -- lesson 4-1`，編輯 examples/step04_01.rs，存檔後 `cargo run -- run 4-1`。使用 hint／manual／answer 搭配相同子題號；下一題改成 4-2。副本評測要求保留題目提供的 let 參數名稱；不會要求學生先學 read_line。4-7 的最小陣列與 enumerate 概念由該題就地介紹。
+
+維護新子題時，在 sublessons.json 註冊、提供教材與程式，執行 build_sublessons.py，再執行根 scripts/verify_courses.py。目前驗證腳本的已知題數為十九入門（含七子題）加十二進階；若繼續增題應同步改驗證筆數。Windows／Linux 仍未實機驗證。
+
+## ２０２６－１０－２８｜第五課先教 assert! 再要求使用
+
+使用者指出第五課要求 assert!，前面卻未介紹。新增 beginner/lessons/05-assert.md，放在第五課任務與起始程式之前：由 bool 條件、assert! 語法與訊息、true 繼續／false 觸發 panic，搭配兩個完整 main 示範，再解釋函式前置條件、與 if／使用者錯誤處理的區別、為何先檢查才除法，以及預期 panic 的驗收意義。特別說明浮點除零可能產生無限大／NaN，不會自動替本題拒絕零秒；一般 assert! 在 release 也會檢查。
+
+同步 COURSE.md、lessons.js、網頁 preparation 顯示、README 與 scripts/build.py。生成器新增 preparation 欄位並讀取補課文件，確保未來重建仍先教再練。本次只更新第五課教材與來源，不執行會覆寫作答的 generator；既有學生 step05.rs 已完成 assert 與公式，保留原樣。
+
+驗證：cargo run -- lesson 5 的補課在任務之前，沒有提前顯示參考答案；成功示範編譯後印兩行，失敗示範可編譯但執行只印第一行並觸發指定訊息；-O 最佳化版本亦正確觸發 assert。cargo run -- run 5 十項驗收全過。所有既有 examples／solutions 在修改前後的 SHA-256 相同。app.js 通過 node --check、生成器通過 AST 檢查；網頁資料與顯示來源已同步，本次未重新進行瀏覽器 UI 操作驗證。
+
+官方 assert! 文件已於本次查核：https://doc.rust-lang.org/std/macro.assert.html 。沒有新增待作答題目、修改評測要求或安裝工具，也未 commit／push。下一步：在 beginner 重新執行 cargo run -- lesson 5，先讀補課再練；後續新語法也應在任務前說明用途與執行行為。
+
+## ２０２６－１０－２８｜第五課拆分為 5-1 主線與 5-2 補充
+
+依使用者調整，將第五課長段 assert 補課移出主線。lesson 5 現在只顯示兩個入口；5-1 為原本函式與速度實作，模板直接提供 assert! 並要求完成回傳公式；5-2 集中講解 assert!、assert_eq!、assert_ne!、panic! 與 debug_assert!。新檔為 lessons/05-1.md、05-2.md、05-overview.md；05-assert.md 保留為指向新位置的說明。
+
+5-1 沿用 examples/step05.rs、solutions/step05.rs 及 checks/step05.rs 十項驗收，不搬移或另建作答。run 5-1／test 5-1 共用原測試；manual／hint／answer 5-1 正常使用。舊 run 5／manual 5 保留，hint／answer 5 指向 5-1。5-2 是閱讀教材，不列為實作題、不需要十筆測資、不產生假造的驗收；對它執行 run／test／manual／answer／hint 會給閱讀指引。
+
+sublessons registry 新增 Variants／Main／Reading 類型，明確區分七個迴圈子題、主課實作別名與補充閱讀。build_sublessons.py 生成九個閱讀入口，但仍只有原七個迴圈實作的七十筆新資料。verify_courses.py 只把 Variants 計為額外實作，避免將第五課別名重複算一次或把補充閱讀當成測試。原本三十一份獨立參考答案數不變。
+
+同步 README、COURSE、網頁課程資料與生成來源；主 generator 的第五課以 overview 組裝，不再重新插入補課。初始模板加入 assert!，但本次未執行會覆寫學生作答的 generator；所有既有 examples／solutions 在修改前後的 SHA-256 相同。
+
+驗證：第五課總覽、5-1 實作與5-2閱讀全部實跑；5-1 run／test 十項通過，補充章的所有非 lesson 指令不會顯示通過數；lesson 4 不誤列第五課分節，未知5-3為exit2。四個完整示範程式已編譯執行，成功／預期失敗符合說明；八個CLI／副本單元測試通過。全三十一份參考答案驗證再次通過。Markdown連結檢查修正 overview 來源與合併文件之相對路徑差異；app.js語法檢查通過，未重做瀏覽器UI測試。assert_eq／assert_ne／debug_assert官方文件已查核。
+
+續作：beginner 內 `cargo run -- lesson 5-1` 做原本函式題，以 run 5-1 驗收；`cargo run -- lesson 5-2` 閱讀補充。未 commit／push，未打包。
+
+## ２０２６－１０－２８｜Beginner 教學銜接只讀審查
+
+使用者要求先列出其他課程的斷層，待其確認是否補充。本次只讀 COURSE、第四課子題、5-1／5-2、README、答案與驗收，沒有改動教材、作答、判題或生成器。子代理協助審查第六至十二課，主代理對照前置課與子題，避免把已教但簡略的內容誤報為完全未教。
+
+補充候選：第二課輸出佔位符與變數型別／賦值；第三課 if 表達式與分號；4-7 陣列／配對解構／方法鏈雖已提及但可深化；5-1 函式呼叫、參數與回傳流程；第六課輸入模板與 Result／match 解析；第七課 String／&String／&str 與移動借用；第八課集合／切片／Option，以及 sum::<i32>、as f64、提早 return；第九課 struct／實例／impl／&self；第十課 map_err／closure／? 與布林運算；第十一課測試框架及浮點容許誤差；第十二課 Debug／into 等簡寫與非有限總和的完整驗收契約。最優先建議第六、八、十、十一課，其次第七課。
+
+已明確排除誤報：5-2 已介紹 assert_eq／assert_ne，不再視為未教；4-2已解釋餘數、4-3已解釋continue、4-4已解釋rev、4-6已解釋print及巢狀迴圈，這些不需再列成缺課。4-7已簡述array／iter／enumerate／配對，屬學習負載偏高而非完全沒教。另用target暫存檔實際編譯確認4-7的空陣列 as [i32;0] 示範合法，未錯列為程式錯誤，暫存已清除。
+
+附帶發現：COURSE 第零步仍有回到 rust-practice 根目錄的舊指示，與現行須進入 beginner／advanced 的 README 不一致；這是操作文件同步問題，先向使用者列出，未擅自修改。
+
+驗證範圍為教材靜態銜接審查，不是學生試教或學習成效實驗；未重跑無關的全套測試。下一步等待使用者挑選要補的主題，再依其選擇新增補充節次，保留現有作答。未 commit／push。
+
+## ２０２６－１０－２８｜lesson 無課號顯示總覽
+
+兩套 CLI 新增 `cargo run -- lesson`：不帶課號時顯示目前課程完整章節；beginner 亦列出所有子題（4-1～4-7、5-1、5-2）。抽出 overview 供 help 共用；lesson X 仍顯示指定內容。README 已同步。
+
+實測兩套課程的空課號 lesson、lesson 1、help、list、原本無參數 cargo run 均成功；hint 缺課號、lesson 多參數與未知99仍回傳exit2。workspace根目錄仍由Cargo要求明確選擇課程，不會預設進入入門。沒有更動教材內容、學生作答或驗收規則，也未補上仍待使用者確認的銜接教材。
+
+續作：cd beginner 或 cd advanced，執行 cargo run -- lesson 選章節，再接上課號閱讀。未 commit／push。
+
+## ２０２６－１０－２８｜補齊 Beginner 全部銜接教材
+
+### 課程內容
+
+使用者已確認補上先前審查項目。新增十九節補充閱讀：2-1輸出格式、2-2變數型別與作用域、3-1if表達式／分號／布林運算、4-8陣列方法與配對、5-3函式呼叫與回傳、6-1輸入模板、6-2parse與match、7-1所有權移動複製、7-2文字型別借用與Unicode長度、8-1集合與切片、8-2Option、8-3逐步平均值與iterator對照、9-1struct與方法、10-1完整match的Result、10-2?／map_err／closure、11-1測試模板、11-2浮點誤差、12-1期末簡寫、12-2完整數值契約。加上原有5-2，現在共有二十節Reading。
+
+每節有模型、展開或追蹤表、完整示範、預期與自我檢核答案；不是只補術語清單。主線仍用原 examples/stepNN.rs；沒有增加待繳交的實作，也不假報十筆測資。七個第四課實作子題及原三十一份獨立參考解法均保留。兩位子代理只撰寫指定補充md，主代理負責其他前段教材、閱讀路線、生成器與驗證整合。
+
+主線任務前新增閱讀路線，CLI lesson總覽以【補充】【練習】【實作入口】區分節次，lesson N 列出相關子節。Reading的非lesson指令會回到自己的主課，不再一律導向5-1。第八課提示改成先for逐步加總再比較sum；第十課先完整match再簡寫；第十二課明寫總和及最後比值也需有限。零步操作已修正到 beginner，與目前 workspace 設計一致。
+
+### 維護結構與安全重建
+
+主線文字來源已從長串Python常值抽出至 beginner/lessons/main/01.md..12.md；補充仍在 lessons/NN-part.md；原始模板資料為 lessons/course_data.json；登錄為 lessons/sublessons.json。新版 scripts/build.py 預設只重建 COURSE.md、lessons.js 及登錄／案例清單，保留所有作答與答案；只有顯式 --reset-exercises 才會重置主線程式。這項新行為取代前文不能在作答中執行build.py的舊警告，README已同步。
+
+合併教材會依各來源位置改寫相對連結，確保單獨Markdown與COURSE都能閱讀。網站資料的閱讀路線同步指向新節次，但本次未重新進行瀏覽器UI操作驗證；app.js語法已檢查。
+
+### 實際驗證
+
+- 新增 scripts/verify_readings.py，涵蓋目前全部二十節補充。五十七個Rust示範編譯並執行成功（其中一個如預期panic），三個compile_fail反例確實拒絕編譯，三組內嵌測試通過。子代理另對輸入示範餵入25與abc、對後段範例以bin與test雙模式確認。
+- scripts/verify_courses.py：全部三十一份既有參考解法再次通過，每題至少十項驗收。
+- Beginner binary八項CLI／副本單元測試通過；新增3-1與4-8已是合法節次，舊的非法課號測試改為真正不存在的3-99與4-99。
+- 二十節Reading均實際用lesson讀取，並確認run不顯示假的通過數且指回正確父章；十二個主課lesson均可閱讀且不提前洩漏參考答案。所有教材Markdown圍欄與內部連結通過。
+- 以預設build.py前後即時雜湊比較，所有examples與solutions完全相同，證明正常重建不覆寫作答。任務期間使用者自行完成／修改step04_07.rs，並有編輯器swap檔；沒有回復、刪除或覆寫這些使用者狀態。從任務開始到結束，只有使用者正在編輯的該作答雜湊改變，其餘既有程式未改。
+
+### 續作
+
+在 beginner 執行 cargo run -- lesson 查看全路線；例如先 lesson 6-1、6-2 再回主課6，先8-1／8-2／8-3再做平均值，先10-1再10-2，先11-1再11-2。閱讀不要求交作業；原run N驗收保持。修改教材後可直接執行python3 scripts/build.py安全重建，再於workspace根目錄執行scripts/verify_readings.py及scripts/verify_courses.py。
+
+尚未正式試教或在Windows／Linux實機驗證；新增深度後時數須依學生節奏調整，已移除合併教材中把每課三十至五十分鐘視為固定時程的描述。未commit／push，未建立壓縮包，未更新跨任務記憶。

@@ -64,7 +64,7 @@ rustc --version
 cargo --version
 ```
 
-兩行都應顯示版本資訊。接著在本專案含有 `Cargo.toml` 的資料夾執行 `cargo run`，確認實際編譯與啟動成功。
+兩行都應顯示版本資訊。接著先進入本課程的 beginner 資料夾，再執行 `cargo run`，確認實際編譯與啟動成功。
 
 若找不到指令，先重開終端機；macOS／Linux 的 bash 或 zsh 也可執行 `source "$HOME/.cargo/env"`。Windows 請確認 PATH 包含 `%USERPROFILE%\.cargo\bin`。若有 linker／`link.exe` 錯誤，請回頭檢查對應平台的開發工具是否裝好。需要更新既有工具鏈時，執行 `rustup update stable`。
 
@@ -74,7 +74,7 @@ cargo --version
 
 先使用 Git 或 GitHub Desktop clone 此 GitHub repository。clone 需要 Git 或 GitHub Desktop；執行本課程只需要 Rust，不需 Python、Node 或網頁服務。
 
-在終端機切換到本專案中**含有入門課程 `Cargo.toml` 的 `beginner` 資料夾**。這份資料夾位於 `rust-practice/beginner`；若 repository 根目錄就是 rust-practice，請進入 beginner。你也可以在 workspace 根目錄執行相同指令，預設會選擇入門課程。資料夾位置依你 clone 到的位置而定。
+在終端機切換到本專案中**含有入門課程 `Cargo.toml` 的 `beginner` 資料夾**。這份資料夾位於 `rust-practice/beginner`；若 repository 根目錄就是 rust-practice，請進入 beginner。workspace 根目錄不預設選擇課程，請先進入 beginner；進階則進入 ../advanced。資料夾位置依你 clone 到的位置而定。
 
 ```sh
 cargo run
@@ -102,6 +102,37 @@ cargo run --example step01
 ```
 
 修改、存檔、再執行，就是整套課程的練習方式。程式錯誤直接閱讀終端機中的編譯器訊息。
+
+## 第四課：for 迴圈加強練習
+
+原本第四課與 examples/step04.rs 保留；新增七個獨立子題，無須重做或覆蓋既有作答：
+
+| 子題 | 主題 | 起始檔 |
+| --- | --- | --- |
+| 4-1 | 範圍與逐項輸出 | examples/step04_01.rs |
+| 4-2 | 偶數加總與條件篩選 | examples/step04_02.rs |
+| 4-3 | 倍數計數與 continue | examples/step04_03.rs |
+| 4-4 | 反向走訪與倒數 | examples/step04_04.rs |
+| 4-5 | 搜尋第一個結果與 break | examples/step04_05.rs |
+| 4-6 | 巢狀迴圈與乘法表 | examples/step04_06.rs |
+| 4-7 | 陣列走訪與 enumerate | examples/step04_07.rs |
+
+在 beginner 資料夾操作，`4-1` 是單一課號參數，左右不要加空格；lesson 和課號之間仍需空格：
+
+```sh
+cargo run -- lesson 4-1
+cargo run -- hint 4-1
+cargo run -- run 4-1
+cargo run -- manual 4-1
+cargo run -- test 4-1
+cargo run -- answer 4-1
+```
+
+先讀題目，再編輯對應 examples 檔。run 與 test 在子題中都是自動驗收；manual 執行目前初始值、不評分。主課程的 test 仍維持原本執行作答檔內測試的功能。也能直接 `cargo run --example step04_01`，或 `cargo run --example answer04_01` 執行參考答案。
+
+七題共七十筆不同參數，每題十筆，涵蓋空範圍、單元素、邊界、無解、不同表格大小與空陣列。完整輸入設定與預期輸出見 [子題測試清單](lessons/SUBLESSON_TEST_CASES.md)。評測只在 target 副本替換題目提供的 let 參數，保留學生的計算、迴圈與輸出；請勿更名或移除這些參數。零列輸出必須完全沒有字元，其他輸出忽略 CRLF 差異與末端換行。
+
+教材維護來源為 lessons/04-*.md 與 lessons/sublessons.json，`python3 scripts/build_sublessons.py` 會重建終端機 registry 與測試清單，不改動起始或答案程式。scripts/build.py 現在預設也保留作答，只有明確加上 --reset-exercises 才會重置主線檔案。
 
 ## 每課使用流程
 
@@ -169,4 +200,62 @@ cargo run -- manual 6
 
 本專案使用 Rust 2024 edition，最低需要 Rust 1.85，無第三方 Rust 套件。不需 Python、Node 或網頁服務就能練習。Windows／Linux 請先切換到自己放置此專案的位置，其餘 Cargo 指令相同；nano 是選用編輯器。
 
-維護來源為 scripts/build.py；`python3 scripts/build.py` 會重建 COURSE.md、lessons.js、安裝說明、Cargo.toml 與所有起始／答案程式，會覆寫作答，執行前務必先備份。README.md 與 src/main.rs 獨立維護。交接記錄在 ../HANDOFF.md。
+維護主線文字於 lessons/main/*.md、補充文字於 lessons/*.md、章節登錄於 lessons/sublessons.json，原始模板資料在 lessons/course_data.json。`python3 scripts/build.py` 預設只重建 COURSE.md、lessons.js 與登錄／清單，保留所有作答及答案。只有明確加上 `--reset-exercises` 才會覆寫主線起始／答案檔，使用前必須自行備份；平常不需要這個選項。README.md 與 CLI 獨立維護，交接記錄在 ../HANDOFF.md。
+
+## 第五課：主線實作與補充教材分開
+
+`cargo run -- lesson 5` 顯示入口總覽，不在主線插入整段補課。
+
+| 節次 | 內容 | 操作 |
+| --- | --- | --- |
+| [5-1](lessons/05-1.md) | 原本函式與速度題，模板直接使用 assert! | lesson／hint／run／manual／test／answer 5-1 |
+| [5-2](lessons/05-2.md) | assert!、assert_eq!、assert_ne!、panic!、debug_assert! 的用途、例子與取捨 | lesson 5-2 |
+
+```sh
+cargo run -- lesson 5-1
+cargo run -- run 5-1
+cargo run -- lesson 5-2
+```
+
+5-1 沿用 examples/step05.rs，不另外搬移或建立 step05_01.rs；十項驗收也與舊的 run 5 共用。5-2 是補充閱讀，沒有作答檔、獨立答案或評分；在這一節執行 run／test／manual／answer／hint 會顯示閱讀指引，不會誤報通過。舊的 05-assert.md 保留為轉址說明。
+
+
+## 顯示課程總覽
+
+先進入本課程資料夾，再執行：
+
+```sh
+cargo run -- lesson
+```
+
+不帶課號時列出本課程全部章節與已登錄子題（包含 4-1～4-7、5-1、5-2）；要閱讀指定內容，接上課號，例如 `cargo run -- lesson 1`。原本 `cargo run`、`help` 與 `list` 仍可使用。
+
+## 銜接補充與建議閱讀順序
+
+主課程與原有作答位置不變。`cargo run -- lesson` 會用【補充】、【練習】與【實作入口】標示不同節次。補充教材只閱讀與示範，不假報評分；閱讀後再回原主線實作。
+
+| 節次 | 補充主題 |
+| --- | --- |
+| [2-1](lessons/02-1.md) | 輸出格式 |
+| [2-2](lessons/02-2.md) | 變數、型別與作用域 |
+| [3-1](lessons/03-1.md) | if表達式與布林運算 |
+| [4-8](lessons/04-8.md) | 陣列、方法與配對 |
+| [5-3](lessons/05-3.md) | 函式呼叫與回傳 |
+| [6-1](lessons/06-1.md) | 輸入模板 |
+| [6-2](lessons/06-2.md) | parse與match |
+| [7-1](lessons/07-1.md) | 所有權與移動 |
+| [7-2](lessons/07-2.md) | 文字型別與借用 |
+| [8-1](lessons/08-1.md) | 集合與切片 |
+| [8-2](lessons/08-2.md) | Option |
+| [8-3](lessons/08-3.md) | 平均值與轉型 |
+| [9-1](lessons/09-1.md) | struct與方法 |
+| [10-1](lessons/10-1.md) | Result與完整match |
+| [10-2](lessons/10-2.md) | ?、map_err與閉包 |
+| [11-1](lessons/11-1.md) | 測試模板 |
+| [11-2](lessons/11-2.md) | 浮點誤差 |
+| [12-1](lessons/12-1.md) | 期末語法整理 |
+| [12-2](lessons/12-2.md) | 完整數值契約 |
+
+例如，第六課可依序讀 `lesson 6-1`、`lesson 6-2`，再做 `lesson 6`；第八課先看8-1、8-2，再用8-3的for版本完成平均值；第十課先match再?；第十一課先模板再誤差。5-2仍保留assert系列，原本4-1到4-7仍是七十筆資料驗收的實作子題。
+
+維護者在workspace根目錄可執行 `python3 scripts/verify_readings.py` 檢查補充示範，及 `python3 scripts/verify_courses.py` 檢查三十一份既有參考解法。兩者不修改學生程式。

@@ -11,29 +11,32 @@
 
 ## 從終端機開始
 
-clone 此 GitHub repository 後，進入含 workspace Cargo.toml 的 rust-practice 資料夾。若 repository 根目錄就是這份專案，直接在根目錄執行。
+clone 此 GitHub repository 後，進入含 workspace Cargo.toml 的 rust-practice 資料夾。若 repository 根目錄就是這份專案，這裡就是 workspace 根目錄。請先進入要學習的課程資料夾，再執行課程指令。
 
 ### Rust Beginner Course
 
 ```sh
+cd beginner
 cargo run
 cargo run -- lesson 1
 cargo run -- run 1
 ```
 
-workspace 預設選擇入門課程；也可以進入 beginner 後使用相同指令。修改 beginner/examples/step01.rs，再用 `run 1` 自動驗收；想手動執行則用 `cargo run -- manual 1`。起始課程先直接修改變數初始值來驗收不同案例，第六課才加入鍵盤輸入。
+在 beginner 內，課號對應入門課程，修改 examples/step01.rs，再用 `run 1` 自動驗收；想手動執行則用 `cargo run -- manual 1`。起始課程先直接修改變數初始值來驗收不同案例，第六課才加入鍵盤輸入。
 
 ### Rust Advanced Course
 
 ```sh
-cargo run -p rust-advanced-course
-cargo run -p rust-advanced-course -- lesson 1
-cargo test -p rust-advanced-course --example lab01
+# 從 workspace 根目錄進入；若目前在 beginner，改用 cd ../advanced
+cd advanced
+cargo run
+cargo run -- lesson 1
+cargo run -- run 1
 ```
 
-修改 advanced/examples/lab01.rs 後，可用 `cargo run -p rust-advanced-course -- run 1` 自動驗收，或使用上面的原生測試指令。手動執行與輸入請用 `cargo run -p rust-advanced-course -- manual 1`。進階起始程式保留 todo!，所以初始測試失敗是預期行為；每章另附 solutions 參考答案。進階課程要求同時交付程式、測試及設計推理，不只判斷輸出是否相符。
+在 advanced 內修改 examples/lab01.rs 後，用 `cargo run -- run 1` 自動驗收，或用 `cargo test --example lab01`。手動執行與輸入請用 `cargo run -- manual 1`。進階起始程式保留 todo!，所以初始測試失敗是預期行為；每章另附 solutions 參考答案。進階課程要求同時交付程式、測試及設計推理，不只判斷輸出是否相符。
 
-`--` 是 Cargo 與程式參數的分隔線；`lesson` 與課號之間要有空格。`-p` 選擇 workspace 中要執行的課程套件。
+`--` 是 Cargo 與程式參數的分隔線；`lesson` 與課號之間要有空格。根目錄不預設選擇任何課程，直接 `cargo run -- lesson 1` 會由 Cargo 提示無法決定執行哪個程式。若刻意留在根目錄，也可以明確指定 `cargo run -p rust-beginner-course -- lesson 1` 或 `cargo run -p rust-advanced-course -- lesson 1`；`-p` 是明確選擇課程套件的選項。
 
 ## 下載與安裝 Rust
 
@@ -95,7 +98,7 @@ rustc --version
 cargo --version
 ```
 
-兩行都應顯示版本資訊。接著在本專案含有 `Cargo.toml` 的資料夾執行 `cargo run`，確認實際編譯與啟動成功。
+兩行都應顯示版本資訊。接著先進入 beginner 或 advanced 資料夾，再執行 `cargo run`，確認實際編譯與啟動成功。
 
 若找不到指令，先重開終端機；macOS／Linux 的 bash 或 zsh 也可執行 `source "$HOME/.cargo/env"`。Windows 請確認 PATH 包含 `%USERPROFILE%\.cargo\bin`。若有 linker／`link.exe` 錯誤，請回頭檢查對應平台的開發工具是否裝好。需要更新既有工具鏈時，執行 `rustup update stable`。
 
@@ -105,7 +108,7 @@ cargo --version
 
 ```text
 rust-practice/
-├── Cargo.toml       # workspace，預設啟動入門課程
+├── Cargo.toml       # workspace，不預設選擇課程
 ├── beginner/        # Rust Beginner Course
 ├── advanced/        # Rust Advanced Course
 └── HANDOFF.md       # 交接、驗證與續作紀錄
@@ -113,12 +116,20 @@ rust-practice/
 
 原本網頁閱讀版保留在 beginner/index.html，顯示 Rust Beginner Course。GitHub 上可直接閱讀兩套 Markdown 教材。終端機作答直接儲存在 .rs 檔，透過 GitHub 提交與同步；瀏覽器筆記另存於瀏覽器，不會自動寫入 .rs。
 
-beginner/scripts/build.py 會覆寫入門起始程式，請勿在作答途中執行。advanced/scripts/build.py 只合併課綱與章節為 COURSE.md，不修改實作檔。兩套教材都尚未經正式試教。不要製作壓縮包，使用 GitHub 管理原始檔；target 已忽略，Cargo.lock 保留。
+beginner/scripts/build.py 預設只更新教材並保留作答；明確指定 --reset-exercises 才會覆寫主線起始／答案，平常不需要此選項。advanced/scripts/build.py 只合併課綱與章節為 COURSE.md，不修改實作檔。兩套教材都尚未經正式試教。不要製作壓縮包，使用 GitHub 管理原始檔；target 已忽略，Cargo.lock 保留。
 
 ## 自動驗收
 
 兩門課的 `run N` 都會使用獨立測試資料，驗證輸出或函式行為；互動題會自動餵入資料。`manual N` 保留手動操作。教材測試放在各課程的 checks，stdout 案例放在 src/checks.rs，共用執行器位於 runner/mod.rs。結果顯示 PASS／FAIL 及失敗差異；通過僅代表目前測試案例通過，不代表所有可能輸入都已被證明正確。詳細輸出格式、逾時與前幾課的驗證範圍見各課程 README。
 
-維護者可用 `python3 scripts/verify_courses.py` 驗證全部二十四份參考答案，以 `python3 scripts/verify_runner.py` 測試驗收器的錯誤與逾時路徑。兩者都不修改學生作答；Python 不是學生執行課程的必要依賴。
+維護者可用 `python3 scripts/verify_courses.py` 驗證全部三十一份參考答案，以 `python3 scripts/verify_runner.py` 測試驗收器的錯誤與逾時路徑。兩者都不修改學生作答；Python 不是學生執行課程的必要依賴。
 
-每題至少十項具名驗收，詳見 [入門案例目錄](beginner/TEST_CASES.md) 與 [進階案例目錄](advanced/TEST_CASES.md)。有參數的題目使用不同資料；沒有參數的固定輸出／資源追蹤題使用十項契約性質，並明確標示相關性，避免把相同輸入重複執行當作十種資料。第二～四課以受控暫存副本代入十筆設定，原始作答不修改。維護驗證腳本會逐題檢查實際驗收總數至少為十。
+每題至少十項具名驗收，詳見 [入門案例目錄](beginner/TEST_CASES.md) 與 [進階案例目錄](advanced/TEST_CASES.md)。有參數的題目使用不同資料；沒有參數的固定輸出／資源追蹤題使用十項契約性質，並明確標示相關性，避免把相同輸入重複執行當作十種資料。第二～四課以受控暫存副本代入十筆設定，原始作答不修改。維護驗證腳本會逐題檢查實際驗收總數至少為十，包含新增的七個子題。
+
+入門第四課另有七個 for 迴圈小練習，可在 beginner 內使用 `cargo run -- lesson 4-1` 到 `4-7`，並以對應的 run／hint／manual／test／answer 操作。每題十筆測資，詳見 [子題說明](beginner/README.md#第四課for-迴圈加強練習)。維護驗證現在涵蓋原本二十四題與七個子題，共三十一份參考解法。
+
+第五課另分 [5-1 函式與速度實作](beginner/lessons/05-1.md) 與 [5-2 assert 相關補充](beginner/lessons/05-2.md)。在 beginner 用 lesson 5 看入口；5-1 沿用原作答與驗收，5-2 為不評分的閱讀教材，不計為新增實作或測資。
+
+在 beginner 或 advanced 內，使用 `cargo run -- lesson` 查看目前課程的章節總覽，接上課號才閱讀內文，例如 `cargo run -- lesson 1`。入門總覽也包含子題。
+
+Beginner 已補齊十九節銜接教材，含輸入模板、match、借用、集合／Option、錯誤處理與測試等。完整路線見 [補充目錄](beginner/README.md#銜接補充與建議閱讀順序)。在 beginner 執行 `cargo run -- lesson` 可看到所有節次；範例的維護驗證為 `python3 scripts/verify_readings.py`（在workspace根目錄）。

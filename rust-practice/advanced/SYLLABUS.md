@@ -4,7 +4,7 @@
 
 ## 前置知識與操作環境
 
-先完成 [Rust Beginner Course](../beginner/README.md)，能獨立使用變數、判斷、迴圈、函式、基本所有權、Vec、Option、Result 與測試。熟悉終端機、Cargo 與編輯器；不要求 C++ 背景。需要支援 Rust 2024 edition 的工具鏈（Rust １．８５ 以上），建議使用目前 stable。安裝見 [跨平台說明](../beginner/README.md)。所有命令除另註外由 rust-practice workspace 根目錄（含 [workspace] 的 Cargo.toml）執行。
+先完成 [Rust Beginner Course](../beginner/README.md)，能獨立使用變數、判斷、迴圈、函式、基本所有權、Vec、Option、Result 與測試。熟悉終端機、Cargo 與編輯器；不要求 C++ 背景。需要支援 Rust 2024 edition 的工具鏈（Rust １．８５ 以上），建議使用目前 stable。安裝見 [跨平台說明](../beginner/README.md)。所有命令除另註外，先進入 advanced 資料夾再執行。
 
 ## 十二章學習路線
 
@@ -52,4 +52,4 @@
 
 ## 教材與維護
 
-各章 `lessons/NN.md` 與程式檔是維護來源。修改章節後執行 `python3 advanced/scripts/build.py` 重建 COURSE.md；此動作不會覆寫學生程式。`cargo test -p rust-advanced-course --doc` 檢查教材中的 Rust 與預期編譯失敗範例。參考來源列於每章末。
+各章 `lessons/NN.md` 與程式檔是維護來源。修改章節後執行 `python3 scripts/build.py` 重建 COURSE.md；此動作不會覆寫學生程式。`cargo test --doc` 檢查教材中的 Rust 與預期編譯失敗範例。參考來源列於每章末。

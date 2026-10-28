@@ -1,6 +1,7 @@
 mod checks;
 #[path = "../../runner/mod.rs"]
 mod runner;
+mod sublessons;
 mod variants;
 use std::{
     env,
@@ -14,7 +15,7 @@ const TITLES: [&str; 13] = [
     "變數與溫度換算",
     "條件判斷與邊界",
     "迴圈與累加",
-    "函式與速度",
+    "函式與檢查",
     "輸入與字串轉數字",
     "所有權與借用",
     "Vec 與 Option",
@@ -23,19 +24,59 @@ const TITLES: [&str; 13] = [
     "用測試保護程式",
     "期末小專案：運動紀錄分析",
 ];
-fn help() {
-    println!("Rust Beginner Course\n\n你已安裝 Rust，可以直接從第一課開始。\n");
+fn overview() {
+    println!("Rust Beginner Course\n\n課程總覽\n");
     for (n, title) in TITLES.iter().enumerate() {
         println!("  {n:02}  {title}");
+        for exercise in sublessons::all()
+            .iter()
+            .filter(|e| e.id.starts_with(&format!("{n}-")))
+        {
+            let category = match exercise.kind {
+                sublessons::Kind::Reading => "補充",
+                sublessons::Kind::Main(_) => "實作入口",
+                sublessons::Kind::Variants => "練習",
+            };
+            println!("      {}  {}【{}】", exercise.id, exercise.title, category);
+        }
     }
+    println!("\n閱讀課程：cargo run -- lesson 1\n閱讀子題：cargo run -- lesson 4-1");
+}
+fn help() {
+    overview();
     println!(
-        "\n在專案資料夾執行：\n  cargo run -- lesson 1    閱讀觀念、題目與驗收\n  cargo run -- hint 1      只看提示\n  cargo run -- run 1       自動驗收 examples/step01.rs\n  cargo run -- manual 1    手動執行程式，保留互動輸入\n  cargo run -- test 11     執行第十一課的測試\n  cargo run -- answer 1    查看參考答案\n\n用你熟悉的編輯器修改 examples/step01.rs，存檔後再次執行。\n第十一課起始測試故意失敗，請依題目修正。\n亦可直接使用：cargo run --example step01\n安裝與網頁閱讀保留為選用功能。"
+        "\n在 beginner 資料夾執行：\n  cargo run -- lesson      顯示課程總覽\n  cargo run -- lesson 1    閱讀觀念、題目與驗收\n  cargo run -- hint 1      只看提示\n  cargo run -- run 1       自動驗收 examples/step01.rs\n  cargo run -- manual 1    手動執行程式，保留互動輸入\n  cargo run -- test 11     執行第十一課的測試\n  cargo run -- answer 1    查看參考答案\n  cargo run -- lesson 4-1  閱讀第四課小練習（4-1 到 4-7）\n  cargo run -- run 4-1     自動驗收子題\n\n用你熟悉的編輯器修改 examples/step01.rs，存檔後再次執行。\n第十一課起始測試故意失敗，請依題目修正。\n亦可直接使用：cargo run --example step01\n安裝與網頁閱讀保留為選用功能。"
     );
 }
-fn number(text: Option<&String>) -> Result<usize, String> {
-    text.and_then(|s| s.parse::<usize>().ok())
-        .filter(|n| *n <= 12)
-        .ok_or_else(|| "請提供課號 0 到 12，例如 cargo run -- lesson 1".into())
+#[derive(Debug, PartialEq)]
+struct LessonId {
+    major: usize,
+    minor: Option<usize>,
+}
+fn number(text: Option<&String>) -> Result<LessonId, String> {
+    let text = text.ok_or("請提供課號，例如 4 或 4-1。")?;
+    if let Some((major, minor)) = text.split_once('-') {
+        let major = major
+            .parse::<usize>()
+            .map_err(|_| "課號格式錯誤，例如 4-1。")?;
+        let minor = minor
+            .parse::<usize>()
+            .map_err(|_| "子題格式錯誤，例如 4-1。")?;
+        if sublessons::find(major, minor).is_none() {
+            return Err("找不到這個子題。請用 cargo run -- lesson 查看目前所有章節與子題。".into());
+        }
+        Ok(LessonId {
+            major,
+            minor: Some(minor),
+        })
+    } else {
+        let major = text
+            .parse::<usize>()
+            .ok()
+            .filter(|n| *n <= 12)
+            .ok_or("請提供課號 0 到 12，或使用 cargo run -- lesson 查看可用子題。")?;
+        Ok(LessonId { major, minor: None })
+    }
 }
 fn section(n: usize) -> String {
     if n == 0 {
@@ -61,6 +102,16 @@ fn show(n: usize, command: &str) {
                     "\n## 預期結果\n{}",
                     tail.split("\n## 參考答案").next().unwrap()
                 );
+            }
+            let related: Vec<_> = sublessons::all()
+                .iter()
+                .filter(|e| e.id.starts_with(&format!("{n}-")))
+                .collect();
+            if !related.is_empty() {
+                println!("\n本課相關節次（補充閱讀不另交作業）：");
+                for exercise in related {
+                    println!("  {}  {}", exercise.id, exercise.title);
+                }
             }
             if n > 0 {
                 println!("\n提示：cargo run -- hint {n}\n參考答案：cargo run -- answer {n}");
@@ -109,6 +160,10 @@ fn run() -> Result<(), String> {
         help();
         return Ok(());
     }
+    if command == "lesson" && args.len() == 1 {
+        overview();
+        return Ok(());
+    }
     if !matches!(
         command,
         "lesson" | "hint" | "answer" | "run" | "manual" | "test"
@@ -118,7 +173,14 @@ fn run() -> Result<(), String> {
     if args.len() != 2 {
         return Err("用法：cargo run -- lesson 1（每次提供一個課號）".into());
     }
-    let n = number(args.get(1))?;
+    let id = number(args.get(1))?;
+    if let Some(part) = id.minor {
+        return sublessons::dispatch(sublessons::find(id.major, part).unwrap(), command);
+    }
+    let n = id.major;
+    if n == 5 && matches!(command, "hint" | "answer") {
+        return sublessons::dispatch(sublessons::find(5, 1).unwrap(), command);
+    }
     match command {
         "run" => {
             if n == 0 {
@@ -138,5 +200,62 @@ fn main() {
     if let Err(message) = run() {
         eprintln!("{message}");
         process::exit(2);
+    }
+}
+
+#[cfg(test)]
+mod cli_tests {
+    use super::*;
+    fn parse(s: &str) -> Result<LessonId, String> {
+        number(Some(&s.to_string()))
+    }
+    #[test]
+    fn accepts_main_and_sublesson() {
+        assert_eq!(
+            parse("4").unwrap(),
+            LessonId {
+                major: 4,
+                minor: None
+            }
+        );
+        assert_eq!(
+            parse("4-1").unwrap(),
+            LessonId {
+                major: 4,
+                minor: Some(1)
+            }
+        );
+        assert_eq!(
+            parse("4-7").unwrap(),
+            LessonId {
+                major: 4,
+                minor: Some(7)
+            }
+        );
+    }
+    #[test]
+    fn accepts_split_fifth_lesson() {
+        assert_eq!(
+            parse("5-1").unwrap(),
+            LessonId {
+                major: 5,
+                minor: Some(1)
+            }
+        );
+        assert_eq!(
+            parse("5-2").unwrap(),
+            LessonId {
+                major: 5,
+                minor: Some(2)
+            }
+        );
+    }
+    #[test]
+    fn rejects_unknown_and_malformed() {
+        for input in [
+            "4-0", "4-99", "3-99", "5-0", "5-99", "13", "-1", "4-1-2", "4-", "x",
+        ] {
+            assert!(parse(input).is_err(), "{input}");
+        }
     }
 }

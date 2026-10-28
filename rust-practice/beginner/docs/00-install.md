@@ -60,7 +60,7 @@ cargo run
 
 ## 開始這份練習專案
 
-回到下載的 rust-practice 資料夾（不是 hello_rust），以編輯器開啟整個資料夾。可以使用熟悉的純文字編輯器；若使用 VS Code，可加裝 rust-analyzer。在含 Cargo.toml 的位置執行：
+進入下載專案中的 beginner 資料夾（不是 hello_rust，也不是 workspace 根目錄），以編輯器開啟整個資料夾。可以使用熟悉的純文字編輯器；若使用 VS Code，可加裝 rust-analyzer。確認目前位於 beginner、其中有課程自己的 Cargo.toml，再執行：
 
 ```sh
 cargo run --example step01
@@ -72,7 +72,7 @@ cargo run --example step01
 
 找不到 cargo：重開終端機，檢查 PATH 是否包含使用者目錄中的 `.cargo/bin`（Windows 為 `.cargo\bin`）。macOS／Linux 亦可執行 `source "$HOME/.cargo/env"`。
 linker／link.exe 錯誤：回到對應作業系統的編譯工具安裝步驟，單看 cargo 版本還不代表 linker 可用。
-找不到 Cargo.toml：目前所在資料夾不正確，請切換到本專案根目錄。
+找不到 Cargo.toml：目前所在資料夾不正確，請切換到 beginner 資料夾；進階課程則進入 advanced。
 更新工具鏈：`rustup update stable`。離線官方文件：`rustup doc`。
 
 安裝資訊查核日期：２０２６－１０－２１。依據 [The Rust Book 安裝章](https://doc.rust-lang.org/book/ch01-01-installation.html) 與 [Rust 官方入門](https://rust-lang.org/learn/get-started/)。本次沒有在 Windows／Linux 實機執行安裝。

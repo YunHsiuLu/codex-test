@@ -53,3 +53,31 @@ path = "solutions/step11.rs"
 name = "answer12"
 path = "solutions/step12.rs"
 
+
+[[example]]
+name = "answer04_01"
+path = "solutions/step04_01.rs"
+
+[[example]]
+name = "answer04_02"
+path = "solutions/step04_02.rs"
+
+[[example]]
+name = "answer04_03"
+path = "solutions/step04_03.rs"
+
+[[example]]
+name = "answer04_04"
+path = "solutions/step04_04.rs"
+
+[[example]]
+name = "answer04_05"
+path = "solutions/step04_05.rs"
+
+[[example]]
+name = "answer04_06"
+path = "solutions/step04_06.rs"
+
+[[example]]
+name = "answer04_07"
+path = "solutions/step04_07.rs"

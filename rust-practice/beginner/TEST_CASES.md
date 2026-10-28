@@ -566,3 +566,7 @@ assert!(average_velocity(&[Record {displacement:1.0,seconds:1e308},Record {displ
 assert!(average_velocity(&[Record {displacement:1.0,seconds:5e-324}]).is_err());
 ```
 
+
+## 第四課延伸子題
+
+新增 4-1 到 4-7，每題十筆不同參數，共七十筆；輸入設定與預期 stdout 逐筆列在 [子題測資清單](lessons/SUBLESSON_TEST_CASES.md)。原本第四課十筆範圍驗收仍保留。

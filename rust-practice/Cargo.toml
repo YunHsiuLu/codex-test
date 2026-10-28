@@ -1,4 +1,3 @@
 [workspace]
 members = ["beginner", "advanced"]
-default-members = ["beginner"]
 resolver = "3"

@@ -19,13 +19,17 @@ const LESSONS: [&str; 12] = [
     include_str!("../lessons/11.md"),
     include_str!("../lessons/12.md"),
 ];
-fn help() {
-    println!("Rust Advanced Course\n");
+fn overview() {
+    println!("Rust Advanced Course\n\n課程總覽\n");
     for text in LESSONS {
         println!("{}", text.lines().next().unwrap().trim_start_matches("# "));
     }
+    println!("\n閱讀課程：cargo run -- lesson 1");
+}
+fn help() {
+    overview();
     println!(
-        "\n從 rust-practice workspace 根目錄（含 [workspace] 的 Cargo.toml）執行：\n  cargo run -p rust-advanced-course -- lesson 1\n  cargo run -p rust-advanced-course -- hint 1\n  cargo run -p rust-advanced-course -- answer 1\n  cargo run -p rust-advanced-course -- run 1\n  cargo run -p rust-advanced-course -- test 1\n\n課號為 1 到 12。起始習題含 todo!()，請先修改 advanced/examples/labNN.rs。\nrun 會自動驗收；手動互動請用 manual 12 advanced/data/motion.csv"
+        "\n在 advanced 資料夾執行（從 workspace 根目錄先 cd advanced）：\n  cargo run -- lesson      顯示課程總覽\n  cargo run -- lesson 1\n  cargo run -- hint 1\n  cargo run -- answer 1\n  cargo run -- run 1\n  cargo run -- test 1\n\n課號為 1 到 12。起始習題含 todo!()，請先修改 examples/labNN.rs。\nrun 會自動驗收；手動互動請用 manual 12 data/motion.csv"
     );
 }
 fn show(n: usize, mode: &str) -> Result<(), String> {
@@ -33,9 +37,7 @@ fn show(n: usize, mode: &str) -> Result<(), String> {
     match mode {
         "lesson" => {
             println!("{}", text.split("\n## 提示\n").next().unwrap());
-            println!(
-                "\n提示：cargo run -p rust-advanced-course -- hint {n}\n答案：cargo run -p rust-advanced-course -- answer {n}"
-            );
+            println!("\n提示：cargo run -- hint {n}\n答案：cargo run -- answer {n}");
         }
         "hint" => println!(
             "{}",
@@ -50,7 +52,7 @@ fn show(n: usize, mode: &str) -> Result<(), String> {
             let path = format!("{}/solutions/lab{n:02}.rs", env!("CARGO_MANIFEST_DIR"));
             println!("{}", text.split_once("\n## 參考解法\n").unwrap().1);
             println!(
-                "\n設計理由：advanced/lessons/{n:02}.md 的「理論與設計理由」。\n\n```rust\n{}\n```",
+                "\n設計理由：lessons/{n:02}.md 的「理論與設計理由」。\n\n```rust\n{}\n```",
                 std::fs::read_to_string(path).map_err(|e| e.to_string())?
             );
         }
@@ -91,13 +93,15 @@ fn run() -> Result<(), String> {
         help();
         return Ok(());
     }
+    if mode == "lesson" && args.len() == 1 {
+        overview();
+        return Ok(());
+    }
     if !matches!(
         mode,
         "lesson" | "hint" | "answer" | "run" | "manual" | "test"
     ) {
-        return Err(format!(
-            "未知指令：{mode}。執行 cargo run -p rust-advanced-course 查看用法。"
-        ));
+        return Err(format!("未知指令：{mode}。執行 cargo run 查看用法。"));
     }
     let n = args
         .get(1)

@@ -95,9 +95,20 @@ fn replace_binding(source: &str, binding: &str, value: &str) -> Result<String, S
             .take_while(|&j| ts[j].text != ";")
             .find(|&j| ts[j].text == "=")
             .ok_or_else(|| format!("找不到 {binding} 的初始值。"))?;
-        let end = (eq + 1..ts.len())
-            .find(|&j| ts[j].text == ";")
-            .ok_or("初始值後需要分號。")?;
+        let mut depth = 0;
+        let mut end = None;
+        for j in eq + 1..ts.len() {
+            match ts[j].text.as_str() {
+                "(" | "[" | "{" => depth += 1,
+                ")" | "]" | "}" => depth -= 1,
+                ";" if depth == 0 => {
+                    end = Some(j);
+                    break;
+                }
+                _ => {}
+            }
+        }
+        let end = end.ok_or("初始值後需要分號。")?;
         let mut result = source.to_owned();
         result.replace_range(ts[eq].end..ts[end].start, &format!(" {value}"));
         return Ok(result);
@@ -154,13 +165,43 @@ pub fn prepare(
     values: &[&str],
 ) -> Result<Variants, String> {
     let original = fs::read_to_string(source).map_err(|e| e.to_string())?;
+    let mut bodies = Vec::new();
+    for value in values {
+        bodies.push(match n {
+            2 => replace_binding(&original, "celsius", value)?,
+            3 => replace_binding(&original, "score", value)?,
+            4 => replace_limit(&original, value)?,
+            _ => return Err("不支援的暫存題型。".into()),
+        });
+    }
+    emit(course, &bodies)
+}
+
+pub fn prepare_parameters(
+    course: &Path,
+    source: &Path,
+    parameters: &[&[(&str, &str)]],
+) -> Result<Variants, String> {
+    let original = fs::read_to_string(source).map_err(|e| e.to_string())?;
+    let mut bodies = Vec::new();
+    for settings in parameters {
+        let mut body = original.clone();
+        for (name, value) in *settings {
+            body = replace_binding(&body, name, value)?;
+        }
+        bodies.push(body);
+    }
+    emit(course, &bodies)
+}
+
+fn emit(course: &Path, bodies: &[String]) -> Result<Variants, String> {
     let stamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map_err(|e| e.to_string())?
         .as_nanos();
     let dir = course
         .parent()
-        .unwrap()
+        .ok_or("找不到 workspace")?
         .join("target")
         .join(format!("variants-{}-{stamp}", std::process::id()));
     fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
@@ -169,19 +210,13 @@ pub fn prepare(
         dir,
     };
     let mut generated = String::new();
-    for (i, value) in values.iter().enumerate() {
-        let body = match n {
-            2 => replace_binding(&original, "celsius", value)?,
-            3 => replace_binding(&original, "score", value)?,
-            4 => replace_limit(&original, value)?,
-            _ => return Err("不支援的暫存題型。".into()),
-        };
+    for (i, body) in bodies.iter().enumerate() {
         generated.push_str(&format!(
             "mod variant_{i} {{\n{body}\npub fn run_case() {{ main(); }}\n}}\n"
         ));
     }
     generated.push_str("fn main(){match std::env::args().nth(1).as_deref(){\n");
-    for i in 0..values.len() {
+    for i in 0..bodies.len() {
         generated.push_str(&format!("Some(\"{i}\")=>variant_{i}::run_case(),\n"));
     }
     generated.push_str("_=>std::process::exit(2),}}\n");
@@ -214,6 +249,12 @@ mod tests {
         let out = replace_limit(s, "0").unwrap();
         assert!(out.contains("for n in 1..=0 {sum+=n;}"));
         assert!(s.contains("1..=100"));
+    }
+    #[test]
+    fn array_repeat_initializer_keeps_statement_boundary() {
+        let source = "fn main(){let values = [0_i32; 0];println!(\"{:?}\", values);}";
+        let output = replace_binding(source, "values", "[1,2,3]").unwrap();
+        assert!(output.contains("let values = [1,2,3];println!"));
     }
     #[test]
     fn unsupported_templates_report_errors() {
