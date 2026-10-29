@@ -2,6 +2,8 @@
 
 以 Rust 深入學習程式設計：從規格與正確性推理，走到所有權、型別建模、演算法成本與可靠終端機程式。先修與完整路線見 [SYLLABUS.md](SYLLABUS.md)，連續閱讀見 [COURSE.md](COURSE.md)。
 
+本課接續新版 Beginner 單元０～１２；先完成三十七份實作與兩份專案設計，再按 [銜接檢查](PREREQUISITES.md)判斷是否需要複習。這裡深化規格、成本與設計推理，不必為進階語法延後入門的基本資料處理。
+
 尚未安裝 Rust，請先依 [Windows／macOS／Linux 安裝說明](../beginner/README.md) 完成環境設定。本課程需要 Rust １．８５ 以上，建議 stable。
 
 ## 在終端機開始
@@ -35,7 +37,9 @@ cargo run -- manual 12 -
 cargo run --example solution12 -- data/motion.csv
 ```
 
-stdin 模式輸入資料後，macOS／Linux 用 Ctrl+D 結束；Windows 通常用 Ctrl+Z 後 Enter。資料格式、錯誤退出碼及完整規格見 [第十二章](lessons/12.md)。`manual`／`test` 使用繼承的 stdin、stdout、stderr，並保留子程序失敗退出碼。
+stdin 模式輸入資料後，macOS／Linux 用 Ctrl+D 結束；Windows 通常用 Ctrl+Z 後 Enter。資料格式、錯誤退出碼及完整規格見 [第十二章](lessons/12.md)。`manual` 使用繼承的 stdin、stdout、stderr，並保留子程序失敗退出碼。
+
+兩套課程現在統一 `test` 與 `run` 為自動驗收同義命令。要只執行自己檔案內的測試，使用原生 `cargo test --example lab01` 等；沒有找到測試不能視為完成課程。
 
 ## 自動驗收與手動模式
 

@@ -1,135 +1,106 @@
 # Rust Courses
 
-這個專案包含兩套獨立學習路線，皆以終端機操作為主，教材使用繁體中文，課程名稱使用英文。
+以 Rust 學習程式設計。繁體中文教材可直接在 GitHub 閱讀，以本機終端機作答，不需要網頁服務、Node 或壓縮包。
 
-| 課程 | 適合對象 | 學習重點 | 課程入口 |
-| --- | --- | --- | --- |
-| Rust Beginner Course | 初學者 | 語法、型別、控制流程、基本輸入輸出與短程式練習 | [README](beginner/README.md) ／ [完整教材](beginner/COURSE.md) |
-| Rust Advanced Course | 已具備入門能力者 | 規格、數值表示、正確性、所有權、抽象化、錯誤處理與並行設計 | [README](advanced/README.md) ／ [課綱](advanced/SYLLABUS.md) ／ [完整教材](advanced/COURSE.md) |
+| 路線 | 定位 | 入口 |
+| --- | --- | --- |
+| **Rust Beginner Course** | 正式入門主線：單元０～１２、三十七份實作，從零基礎到獨立專案 | [操作與安裝](beginner/README.md)｜[課綱](beginner/SYLLABUS.md)｜[完整教材](beginner/COURSE.md) |
+| **Rust Advanced Course** | 完成主線後深化契約、不變量、資源、生命週期、抽象化與並行 | [操作說明](advanced/README.md)｜[課綱](advanced/SYLLABUS.md)｜[完整教材](advanced/COURSE.md) |
 
-原本的入門教材已移至 beginner，既有作答仍保存在 beginner/examples。進階課程位於 advanced/examples，兩套練習檔互相獨立。不需先完成進階課程就能練習入門。
-
-## 從終端機開始
-
-clone 此 GitHub repository 後，進入含 workspace Cargo.toml 的 rust-practice 資料夾。若 repository 根目錄就是這份專案，這裡就是 workspace 根目錄。請先進入要學習的課程資料夾，再執行課程指令。
-
-### Rust Beginner Course
-
-```sh
-cd beginner
-cargo run
-cargo run -- lesson 1
-cargo run -- run 1
-```
-
-在 beginner 內，課號對應入門課程，修改 examples/step01.rs，再用 `run 1` 自動驗收；想手動執行則用 `cargo run -- manual 1`。起始課程先直接修改變數初始值來驗收不同案例，第六課才加入鍵盤輸入。
-
-### Rust Advanced Course
-
-```sh
-# 從 workspace 根目錄進入；若目前在 beginner，改用 cd ../advanced
-cd advanced
-cargo run
-cargo run -- lesson 1
-cargo run -- run 1
-```
-
-在 advanced 內修改 examples/lab01.rs 後，用 `cargo run -- run 1` 自動驗收，或用 `cargo test --example lab01`。手動執行與輸入請用 `cargo run -- manual 1`。進階起始程式保留 todo!，所以初始測試失敗是預期行為；每章另附 solutions 參考答案。進階課程要求同時交付程式、測試及設計推理，不只判斷輸出是否相符。
-
-`--` 是 Cargo 與程式參數的分隔線；`lesson` 與課號之間要有空格。根目錄不預設選擇任何課程，直接 `cargo run -- lesson 1` 會由 Cargo 提示無法決定執行哪個程式。若刻意留在根目錄，也可以明確指定 `cargo run -p rust-beginner-course -- lesson 1` 或 `cargo run -p rust-advanced-course -- lesson 1`；`-p` 是明確選擇課程套件的選項。
+教師先讀 [課程設計與評量指南](beginner/TEACHING_GUIDE.md)。能力對照以問題拆解、資料處理、除錯與驗證為主，不把 C++／Python 語法逐字翻成 Rust。
 
 ## 下載與安裝 Rust
 
-本專案採用 Rust 2024 edition，需要 Rust 1.85 以上；初學者請安裝最新 stable 工具鏈。`rustup` 負責安裝與管理 Rust，也會安裝編譯器 `rustc` 及專案工具 `cargo`。
+使用 Rust 2024 edition，最低 Rust 1.85，建議目前 stable。`rustup` 管理工具鏈，`rustc` 是編譯器，`cargo` 管理專案、編譯、執行與測試。
 
 ### Windows
 
-１．開啟 [Rust 官方下載頁](https://rust-lang.org/tools/install/)，下載符合電腦架構的 `rustup-init.exe`。一般電腦選 x64，Windows ARM 裝置選 ARM64。
+１．到 [Rust 官方安裝頁](https://rust-lang.org/tools/install/)下載對應架構的 rustup-init.exe，一般 x64，Windows ARM 裝置選 ARM64。
 
-２．執行安裝程式。若提示缺少編譯工具，依畫面指示安裝 Visual Studio 所需元件；手動選擇時，勾選「使用 C++ 的桌面開發」（Desktop development with C++），確認包含對應架構的 MSVC 工具、Windows SDK 與英文語言套件。詳細步驟見 [Rust 官方 Windows MSVC 指南](https://rust-lang.github.io/rustup/installation/windows-msvc.html)。VS Code 編輯器與這些編譯工具是不同的軟體。
+２．執行安裝程式，依提示準備 Visual Studio「使用 C++ 的桌面開發」元件，包括對應架構 MSVC 工具、Windows SDK 與需要的英文語言套件。依 [官方 MSVC 指南](https://rust-lang.github.io/rustup/installation/windows-msvc.html)操作。VS Code 編輯器與編譯工具是不同軟體。
 
-３．回到 Rust 安裝流程，選擇預設 stable 設定並完成安裝。
-
-４．關閉並重新開啟 PowerShell，再進行下方的「確認安裝成功」。若使用 WSL，請在 WSL 的 Linux 終端機依 Linux 步驟安裝。
+３．採預設 stable 完成安裝，重新開啟 PowerShell。WSL 使用者在 WSL 內按 Linux 流程安裝。
 
 ### macOS
 
-１．開啟「終端機」，先安裝 Apple 命令列開發工具，並依跳出的視窗完成安裝。若已安裝，系統會提示，不需要重裝。
+先準備 Apple 命令列工具，依跳出的視窗完成安裝：
 
 ```sh
 xcode-select --install
 ```
 
-２．執行官方 rustup 安裝指令，依畫面選擇預設 stable 設定。Apple Silicon 與 Intel Mac 使用相同指令。
+再執行官方 rustup 指令；Apple Silicon／Intel 使用同一行：
 
 ```sh
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-這行會下載並執行 Rust 官方安裝腳本。
-
-３．完成後重新開啟終端機，再進行下方的「確認安裝成功」。
+這行會下載並執行官方腳本，完成後重新開啟終端機。
 
 ### Linux
 
-１．先安裝 C 編譯工具、linker 與 curl。以下以 Ubuntu／Debian 為例：
+先準備 C 編譯器、linker 與 curl。Ubuntu／Debian：
 
 ```sh
 sudo apt update
 sudo apt install build-essential curl
 ```
 
-其他發行版請依自身套件管理器安裝 GCC 或 Clang 與相關開發工具。
-
-２．執行官方 rustup 安裝指令，選擇預設 stable 設定。這行會下載並執行 Rust 官方安裝腳本。
+其他發行版使用自身套件管理器準備對應工具，再執行官方腳本：
 
 ```sh
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-３．完成後重新開啟終端機，再進行下方的「確認安裝成功」。
+完成後重新開啟終端機。詳細操作與錯誤排除見 [單元０](beginner/units/00.md)。
 
-### 確認安裝成功
-
-三個平台都在終端機逐行執行：
+### 確認工具與取得課程
 
 ```sh
 rustc --version
 cargo --version
 ```
 
-兩行都應顯示版本資訊。接著先進入 beginner 或 advanced 資料夾，再執行 `cargo run`，確認實際編譯與啟動成功。
+版本成功還不代表 linker 完整，請依單元０建立並執行 Hello world。安裝說明按官方文件查核，日期２０２６－１０－２９；Windows／Linux 尚待實機驗證。
 
-若找不到指令，先重開終端機；macOS／Linux 的 bash 或 zsh 也可執行 `source "$HOME/.cargo/env"`。Windows 請確認 PATH 包含 `%USERPROFILE%\.cargo\bin`。若有 linker／`link.exe` 錯誤，請回頭檢查對應平台的開發工具是否裝好。需要更新既有工具鏈時，執行 `rustup update stable`。
+透過 Git 或 GitHub Desktop clone repository，切換到下載位置中的 rust-practice 資料夾，再執行：
 
-安裝說明依 [The Rust Book 安裝章](https://doc.rust-lang.org/book/ch01-01-installation.html) 與 [Rust 官方安裝頁](https://rust-lang.org/tools/install/) 查核，日期為２０２６－１０－２１；Windows／Linux 尚未實機驗證。
-
-## 專案結構與維護
-
-```text
-rust-practice/
-├── Cargo.toml       # workspace，不預設選擇課程
-├── beginner/        # Rust Beginner Course
-├── advanced/        # Rust Advanced Course
-└── HANDOFF.md       # 交接、驗證與續作紀錄
+```sh
+cd beginner
+cargo run -- lesson
+cargo run -- lesson 1
+cargo run -- lesson 1-1
 ```
 
-原本網頁閱讀版保留在 beginner/index.html，顯示 Rust Beginner Course。GitHub 上可直接閱讀兩套 Markdown 教材。終端機作答直接儲存在 .rs 檔，透過 GitHub 提交與同步；瀏覽器筆記另存於瀏覽器，不會自動寫入 .rs。
+## 修改、執行與驗收
 
-beginner/scripts/build.py 預設只更新教材並保留作答；明確指定 --reset-exercises 才會覆寫主線起始／答案，平常不需要此選項。advanced/scripts/build.py 只合併課綱與章節為 COURSE.md，不修改實作檔。兩套教材都尚未經正式試教。不要製作壓縮包，使用 GitHub 管理原始檔；target 已忽略，Cargo.lock 保留。
+在 beginner 編輯 `examples/unit01_01.rs`，存檔後：
 
-## 自動驗收
+```sh
+cargo run -- manual 1-1
+cargo run -- run 1-1
+```
 
-兩門課的 `run N` 都會使用獨立測試資料，驗證輸出或函式行為；互動題會自動餵入資料。`manual N` 保留手動操作。教材測試放在各課程的 checks，stdout 案例放在 src/checks.rs，共用執行器位於 runner/mod.rs。結果顯示 PASS／FAIL 及失敗差異；通過僅代表目前測試案例通過，不代表所有可能輸入都已被證明正確。詳細輸出格式、逾時與前幾課的驗證範圍見各課程 README。
+`lesson 1` 是完整單元；`lesson 1-1` 是作業規格。`run 1-1` 驗一題，`run 2` 驗第二單元全部作業。`test` 是 `run` 的同義命令；`hint` 看提示，`answer` 才看解法。
 
-維護者可用 `python3 scripts/verify_courses.py` 驗證全部三十一份參考答案，以 `python3 scripts/verify_runner.py` 測試驗收器的錯誤與逾時路徑。兩者都不修改學生作答；Python 不是學生執行課程的必要依賴。
+原生 Cargo 也能執行：`cargo run --example unit01_01`。獨立的 `--` 把後面的參數交給課程程式；lesson 與第二個 run 是本程式定義的命令。完整逐項解釋放在單元０。
 
-每題至少十項具名驗收，詳見 [入門案例目錄](beginner/TEST_CASES.md) 與 [進階案例目錄](advanced/TEST_CASES.md)。有參數的題目使用不同資料；沒有參數的固定輸出／資源追蹤題使用十項契約性質，並明確標示相關性，避免把相同輸入重複執行當作十種資料。第二～四課以受控暫存副本代入十筆設定，原始作答不修改。維護驗證腳本會逐題檢查實際驗收總數至少為十，包含新增的七個子題。
+根目錄是 workspace，沒有預設課程。先進入 beginner／advanced，或明確使用 `cargo run -p rust-beginner-course -- lesson`。第十二單元兩個專案也有獨立 Cargo.toml。
 
-入門第四課另有七個 for 迴圈小練習，可在 beginner 內使用 `cargo run -- lesson 4-1` 到 `4-7`，並以對應的 run／hint／manual／test／answer 操作。每題十筆測資，詳見 [子題說明](beginner/README.md#第四課for-迴圈加強練習)。維護驗證現在涵蓋原本二十四題與七個子題，共三十一份參考解法。
+## 課程新版與維護
 
-第五課另分 [5-1 函式與速度實作](beginner/lessons/05-1.md) 與 [5-2 assert 相關補充](beginner/lessons/05-2.md)。在 beginner 用 lesson 5 看入口；5-1 沿用原作答與驗收，5-2 為不評分的閱讀教材，不計為新增實作或測資。
+２０２６－１０－２９已依課程設計需求全面重製 Beginner。舊 stepNN、舊補充課號與舊網頁筆記介面已退場；本次重新建立作答、模板與答案。之後正常重建教材不會重置學生程式。
 
-在 beginner 或 advanced 內，使用 `cargo run -- lesson` 查看目前課程的章節總覽，接上課號才閱讀內文，例如 `cargo run -- lesson 1`。入門總覽也包含子題。
+每份實作至少十項具名驗收：[Beginner 案例](beginner/TEST_CASES.md)／[Advanced 案例](advanced/TEST_CASES.md)。固定輸出與測試設計題會明說性質，不冒充不同鍵盤輸入。函式測試與輸出檢查分開，人工評量另看設計、自訂測試與推理。
 
-Beginner 已補齊十九節銜接教材，含輸入模板、match、借用、集合／Option、錯誤處理與測試等。完整路線見 [補充目錄](beginner/README.md#銜接補充與建議閱讀順序)。在 beginner 執行 `cargo run -- lesson` 可看到所有節次；範例的維護驗證為 `python3 scripts/verify_readings.py`（在workspace根目錄）。
+學生只需 Rust；維護者額外使用 Python 3：
+
+```sh
+python3 beginner/scripts/build.py
+python3 advanced/scripts/build.py
+python3 scripts/verify_courses.py
+python3 scripts/verify_readings.py
+python3 scripts/verify_runner.py
+```
+
+兩個 build 都不覆寫作答。驗證使用參考答案或暫存副本，不把答案複製到學生檔案。來源結構與重置單題方式見 [Beginner README](beginner/README.md)，跨電腦續作見 [HANDOFF.md](HANDOFF.md)。課程尚未正式試教，實際驗證界線以交接文件為準。

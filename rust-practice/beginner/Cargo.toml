@@ -1,83 +1,146 @@
 [package]
 name = "rust-beginner-course"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 publish = false
 default-run = "rust-beginner-course"
 
 [[example]]
-name = "answer01"
-path = "solutions/step01.rs"
+name = "answer1_1"
+path = "solutions/unit01_01.rs"
 
 [[example]]
-name = "answer02"
-path = "solutions/step02.rs"
+name = "answer2_1"
+path = "solutions/unit02_01.rs"
 
 [[example]]
-name = "answer03"
-path = "solutions/step03.rs"
+name = "answer2_2"
+path = "solutions/unit02_02.rs"
 
 [[example]]
-name = "answer04"
-path = "solutions/step04.rs"
+name = "answer2_3"
+path = "solutions/unit02_03.rs"
 
 [[example]]
-name = "answer05"
-path = "solutions/step05.rs"
+name = "answer3_1"
+path = "solutions/unit03_01.rs"
 
 [[example]]
-name = "answer06"
-path = "solutions/step06.rs"
+name = "answer3_2"
+path = "solutions/unit03_02.rs"
 
 [[example]]
-name = "answer07"
-path = "solutions/step07.rs"
+name = "answer3_3"
+path = "solutions/unit03_03.rs"
 
 [[example]]
-name = "answer08"
-path = "solutions/step08.rs"
+name = "answer4_1"
+path = "solutions/unit04_01.rs"
 
 [[example]]
-name = "answer09"
-path = "solutions/step09.rs"
+name = "answer4_2"
+path = "solutions/unit04_02.rs"
 
 [[example]]
-name = "answer10"
-path = "solutions/step10.rs"
+name = "answer4_3"
+path = "solutions/unit04_03.rs"
 
 [[example]]
-name = "answer11"
-path = "solutions/step11.rs"
+name = "answer4_4"
+path = "solutions/unit04_04.rs"
 
 [[example]]
-name = "answer12"
-path = "solutions/step12.rs"
-
-
-[[example]]
-name = "answer04_01"
-path = "solutions/step04_01.rs"
+name = "answer4_5"
+path = "solutions/unit04_05.rs"
 
 [[example]]
-name = "answer04_02"
-path = "solutions/step04_02.rs"
+name = "answer5_1"
+path = "solutions/unit05_01.rs"
 
 [[example]]
-name = "answer04_03"
-path = "solutions/step04_03.rs"
+name = "answer5_2"
+path = "solutions/unit05_02.rs"
 
 [[example]]
-name = "answer04_04"
-path = "solutions/step04_04.rs"
+name = "answer5_3"
+path = "solutions/unit05_03.rs"
 
 [[example]]
-name = "answer04_05"
-path = "solutions/step04_05.rs"
+name = "answer6_1"
+path = "solutions/unit06_01.rs"
 
 [[example]]
-name = "answer04_06"
-path = "solutions/step04_06.rs"
+name = "answer6_2"
+path = "solutions/unit06_02.rs"
 
 [[example]]
-name = "answer04_07"
-path = "solutions/step04_07.rs"
+name = "answer6_3"
+path = "solutions/unit06_03.rs"
+
+[[example]]
+name = "answer6_4"
+path = "solutions/unit06_04.rs"
+
+[[example]]
+name = "answer7_1"
+path = "solutions/unit07_01.rs"
+
+[[example]]
+name = "answer7_2"
+path = "solutions/unit07_02.rs"
+
+[[example]]
+name = "answer7_3"
+path = "solutions/unit07_03.rs"
+
+[[example]]
+name = "answer8_1"
+path = "solutions/unit08_01.rs"
+
+[[example]]
+name = "answer8_2"
+path = "solutions/unit08_02.rs"
+
+[[example]]
+name = "answer8_3"
+path = "solutions/unit08_03.rs"
+
+[[example]]
+name = "answer8_4"
+path = "solutions/unit08_04.rs"
+
+[[example]]
+name = "answer8_5"
+path = "solutions/unit08_05.rs"
+
+[[example]]
+name = "answer9_1"
+path = "solutions/unit09_01.rs"
+
+[[example]]
+name = "answer9_2"
+path = "solutions/unit09_02.rs"
+
+[[example]]
+name = "answer9_3"
+path = "solutions/unit09_03.rs"
+
+[[example]]
+name = "answer10_1"
+path = "solutions/unit10_01.rs"
+
+[[example]]
+name = "answer10_2"
+path = "solutions/unit10_02.rs"
+
+[[example]]
+name = "answer10_3"
+path = "solutions/unit10_03.rs"
+
+[[example]]
+name = "answer12_1"
+path = "solutions/projects/motion/main.rs"
+
+[[example]]
+name = "answer12_2"
+path = "solutions/projects/gradebook/main.rs"

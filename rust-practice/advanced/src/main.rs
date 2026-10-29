@@ -112,14 +112,13 @@ fn run() -> Result<(), String> {
         return Err("此指令只接受一個課號；只有 manual 可附加程式參數。".into());
     }
     match mode {
-        "run" => {
+        "run" | "test" => {
             if !checks::verify(n)? {
                 process::exit(1);
             }
             Ok(())
         }
         "manual" => execute(n, false, &args[2..]),
-        "test" => execute(n, true, &[]),
         _ => show(n, mode),
     }
 }

@@ -1,261 +1,197 @@
-mod checks;
+mod catalog;
 #[path = "../../runner/mod.rs"]
+#[allow(dead_code)]
 mod runner;
-mod sublessons;
-mod variants;
+use runner::course::{Exercise, Kind};
 use std::{
-    env,
+    env, fs,
+    path::Path,
     process::{self, Command},
 };
 
-const COURSE: &str = include_str!("../COURSE.md");
-const TITLES: [&str; 13] = [
-    "下載、安裝與環境驗收",
-    "讓程式說話",
-    "變數與溫度換算",
-    "條件判斷與邊界",
-    "迴圈與累加",
-    "函式與檢查",
-    "輸入與字串轉數字",
-    "所有權與借用",
-    "Vec 與 Option",
-    "結構與方法",
-    "Result 與可恢復錯誤",
-    "用測試保護程式",
-    "期末小專案：運動紀錄分析",
-];
 fn overview() {
-    println!("Rust Beginner Course\n\n課程總覽\n");
-    for (n, title) in TITLES.iter().enumerate() {
-        println!("  {n:02}  {title}");
-        for exercise in sublessons::all()
-            .iter()
-            .filter(|e| e.id.starts_with(&format!("{n}-")))
-        {
-            let category = match exercise.kind {
-                sublessons::Kind::Reading => "補充",
-                sublessons::Kind::Main(_) => "實作入口",
-                sublessons::Kind::Variants => "練習",
+    println!("Rust Beginner Course｜Rust 程式設計課程\n");
+    for unit in catalog::UNITS {
+        println!("{:02}  {}", unit.id, unit.title);
+        for item in catalog::EXERCISES.iter().filter(|e| e.unit == unit.id) {
+            let mode = match item.kind {
+                Kind::Program => "程式輸入輸出",
+                Kind::Function => "函式契約",
+                Kind::TestDesign => "測試設計",
+                Kind::Project => "整合專案",
             };
-            println!("      {}  {}【{}】", exercise.id, exercise.title, category);
+            println!("    {}  {}【{}】", item.id, item.title, mode);
         }
     }
-    println!("\n閱讀課程：cargo run -- lesson 1\n閱讀子題：cargo run -- lesson 4-1");
-}
-fn help() {
-    overview();
     println!(
-        "\n在 beginner 資料夾執行：\n  cargo run -- lesson      顯示課程總覽\n  cargo run -- lesson 1    閱讀觀念、題目與驗收\n  cargo run -- hint 1      只看提示\n  cargo run -- run 1       自動驗收 examples/step01.rs\n  cargo run -- manual 1    手動執行程式，保留互動輸入\n  cargo run -- test 11     執行第十一課的測試\n  cargo run -- answer 1    查看參考答案\n  cargo run -- lesson 4-1  閱讀第四課小練習（4-1 到 4-7）\n  cargo run -- run 4-1     自動驗收子題\n\n用你熟悉的編輯器修改 examples/step01.rs，存檔後再次執行。\n第十一課起始測試故意失敗，請依題目修正。\n亦可直接使用：cargo run --example step01\n安裝與網頁閱讀保留為選用功能。"
+        "\n閱讀單元：cargo run -- lesson 2\n閱讀作業：cargo run -- lesson 2-1\n自動驗收：cargo run -- run 2-1\n手動操作：cargo run -- manual 2-1\n提示／答案：cargo run -- hint 2-1 ／ cargo run -- answer 2-1\nrun 2 可驗收該單元全部作業；test 與 run 同義。\n原生工具：cargo run --example unit02_01\n這些 lesson／run 是本課程程式定義的命令，-- 把參數交給它。"
     );
 }
-#[derive(Debug, PartialEq)]
-struct LessonId {
-    major: usize,
-    minor: Option<usize>,
+fn find(id: &str) -> Result<&'static Exercise, String> {
+    catalog::EXERCISES.iter().find(|e|e.id==id).ok_or_else(||format!("找不到作業 {id}。請用 cargo run -- lesson 查看課號；新版作業例如 2-1，舊 stepNN 已重製。"))
 }
-fn number(text: Option<&String>) -> Result<LessonId, String> {
-    let text = text.ok_or("請提供課號，例如 4 或 4-1。")?;
-    if let Some((major, minor)) = text.split_once('-') {
-        let major = major
-            .parse::<usize>()
-            .map_err(|_| "課號格式錯誤，例如 4-1。")?;
-        let minor = minor
-            .parse::<usize>()
-            .map_err(|_| "子題格式錯誤，例如 4-1。")?;
-        if sublessons::find(major, minor).is_none() {
-            return Err("找不到這個子題。請用 cargo run -- lesson 查看目前所有章節與子題。".into());
+fn manual(root: &Path, item: &Exercise, args: &[String]) -> Result<i32, String> {
+    let mut command = Command::new(env::var_os("CARGO").unwrap_or_else(|| "cargo".into()));
+    command.current_dir(root);
+    if item.kind == Kind::Project {
+        command.args(["run", "--manifest-path", item.target]);
+    } else if item.kind == Kind::TestDesign {
+        command.args(["test", "--example", item.target]);
+        if !args.is_empty() {
+            return Err("測試設計作業的 manual 不接受程式參數。".into());
         }
-        Ok(LessonId {
-            major,
-            minor: Some(minor),
-        })
     } else {
-        let major = text
-            .parse::<usize>()
-            .ok()
-            .filter(|n| *n <= 12)
-            .ok_or("請提供課號 0 到 12，或使用 cargo run -- lesson 查看可用子題。")?;
-        Ok(LessonId { major, minor: None })
+        command.args(["run", "--example", item.target]);
     }
-}
-fn section(n: usize) -> String {
-    if n == 0 {
-        return include_str!("../docs/00-install.md").to_owned();
+    if !args.is_empty() {
+        command.arg("--").args(args);
     }
-    let heading = format!("# 第 {n} 步：");
-    COURSE
-        .split_once(&heading)
-        .expect("教材缺少課程")
-        .1
-        .split("\n# ")
-        .next()
-        .map(|s| format!("{heading}{s}"))
-        .unwrap()
-}
-fn show(n: usize, command: &str) {
-    let text = section(n);
-    match command {
-        "lesson" => {
-            println!("{}", text.split("\n## 提示").next().unwrap());
-            if let Some((_, tail)) = text.split_once("\n## 預期結果\n") {
-                println!(
-                    "\n## 預期結果\n{}",
-                    tail.split("\n## 參考答案").next().unwrap()
-                );
-            }
-            let related: Vec<_> = sublessons::all()
-                .iter()
-                .filter(|e| e.id.starts_with(&format!("{n}-")))
-                .collect();
-            if !related.is_empty() {
-                println!("\n本課相關節次（補充閱讀不另交作業）：");
-                for exercise in related {
-                    println!("  {}  {}", exercise.id, exercise.title);
-                }
-            }
-            if n > 0 {
-                println!("\n提示：cargo run -- hint {n}\n參考答案：cargo run -- answer {n}");
-            }
-        }
-        "hint" => println!(
-            "{}",
-            text.split_once("\n## 提示\n")
-                .map(|(_, s)| s.split("\n## 預期結果").next().unwrap())
-                .unwrap_or("第零步請直接閱讀安裝說明。")
-        ),
-        "answer" => println!(
-            "{}",
-            text.split_once("\n## 參考答案\n")
-                .map(|(_, s)| s)
-                .unwrap_or("第零步沒有程式答案。")
-        ),
-        _ => unreachable!(),
-    }
-}
-fn execute(n: usize, test: bool) -> Result<(), String> {
-    if n == 0 {
-        return Err("第零步是環境準備，請執行 cargo run -- lesson 0".into());
-    }
-    let status = Command::new(env::var_os("CARGO").unwrap_or_else(|| "cargo".into()))
-        .current_dir(env!("CARGO_MANIFEST_DIR"))
-        .args([
-            if test { "test" } else { "run" },
-            "--example",
-            &format!("step{n:02}"),
-        ])
+    Ok(command
         .status()
-        .map_err(|e| format!("無法啟動 Cargo：{e}"))?;
-    if !status.success() {
-        process::exit(status.code().unwrap_or(1));
+        .map_err(|e| format!("無法啟動 Cargo：{e}"))?
+        .code()
+        .unwrap_or(1))
+}
+fn answer(root: &Path, item: &Exercise) -> Result<(), String> {
+    let path = root.join(item.solution);
+    println!("參考答案只是一種設計；請先完成並解釋自己的程式。\n");
+    if item.kind == Kind::Project {
+        let mut files: Vec<_> = fs::read_dir(path.parent().ok_or("答案路徑錯誤")?)
+            .map_err(|e| e.to_string())?
+            .filter_map(Result::ok)
+            .map(|e| e.path())
+            .filter(|p| matches!(p.extension().and_then(|s| s.to_str()), Some("rs" | "md")))
+            .collect();
+        files.sort();
+        for file in files {
+            println!(
+                "\n{}\n```{}\n{}\n```",
+                file.file_name().unwrap().to_string_lossy(),
+                if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+                    "rust"
+                } else {
+                    "markdown"
+                },
+                fs::read_to_string(&file).map_err(|e| e.to_string())?
+            );
+        }
+    } else {
+        println!(
+            "```rust\n{}\n```",
+            fs::read_to_string(path).map_err(|e| e.to_string())?
+        );
     }
     Ok(())
 }
-fn run() -> Result<(), String> {
-    let args: Vec<String> = env::args().skip(1).collect();
-    let command = args.first().map(String::as_str).unwrap_or("help");
-    if matches!(command, "help" | "--help" | "-h" | "list") {
+fn run() -> Result<i32, String> {
+    let args: Vec<_> = env::args().skip(1).collect();
+    let mode = args.first().map(String::as_str).unwrap_or("help");
+    if matches!(mode, "help" | "list" | "--help" | "-h") || (mode == "lesson" && args.len() == 1) {
         if args.len() > 1 {
-            return Err("這個指令不需要其他參數。".into());
+            return Err("總覽指令不接受額外參數。".into());
         }
-        help();
-        return Ok(());
-    }
-    if command == "lesson" && args.len() == 1 {
         overview();
-        return Ok(());
+        return Ok(0);
+    }
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    if mode == "verify-solutions" {
+        if args.len() > 1 {
+            return Err("verify-solutions 不接受額外參數。".into());
+        }
+        let mut passed = 0;
+        for item in catalog::EXERCISES {
+            if runner::course::check(root, item, true)? {
+                passed += 1;
+            }
+        }
+        println!("REFERENCE {passed}/{}", catalog::EXERCISES.len());
+        return Ok(if passed == catalog::EXERCISES.len() {
+            0
+        } else {
+            1
+        });
     }
     if !matches!(
-        command,
-        "lesson" | "hint" | "answer" | "run" | "manual" | "test"
+        mode,
+        "lesson" | "run" | "test" | "manual" | "hint" | "answer"
     ) {
-        return Err(format!("未知指令：{command}。執行 cargo run 查看用法。"));
+        return Err(format!(
+            "未知指令 {mode}。請用 cargo run -- lesson 查看用法。"
+        ));
     }
-    if args.len() != 2 {
-        return Err("用法：cargo run -- lesson 1（每次提供一個課號）".into());
+    let id = args
+        .get(1)
+        .ok_or("請提供單元或作業課號，例如 lesson 2 或 run 2-1。")?;
+    if mode != "manual" && args.len() != 2 {
+        return Err("這個指令只能接一個課號；例如 lesson 2-1。".into());
     }
-    let id = number(args.get(1))?;
-    if let Some(part) = id.minor {
-        return sublessons::dispatch(sublessons::find(id.major, part).unwrap(), command);
-    }
-    let n = id.major;
-    if n == 5 && matches!(command, "hint" | "answer") {
-        return sublessons::dispatch(sublessons::find(5, 1).unwrap(), command);
-    }
-    match command {
-        "run" => {
-            if n == 0 {
-                return Err("第零步沒有練習程式，請從第一課開始。".into());
-            }
-            if !checks::verify(n)? {
-                process::exit(1);
-            }
+    if let Ok(unit) = id.parse::<usize>() {
+        let lesson = catalog::UNITS
+            .iter()
+            .find(|u| u.id == unit)
+            .ok_or("單元為 0～12。")?;
+        if mode == "lesson" {
+            println!("{}", lesson.text);
+            return Ok(0);
         }
-        "manual" => execute(n, false)?,
-        "test" => execute(n, true)?,
-        _ => show(n, command),
+        if matches!(mode, "run" | "test") {
+            let items: Vec<_> = catalog::EXERCISES
+                .iter()
+                .filter(|e| e.unit == unit)
+                .collect();
+            if items.is_empty() {
+                return Err("本單元是環境準備，請依單元中的人工驗收清單操作。".into());
+            }
+            let mut okay = true;
+            for item in items {
+                okay = runner::course::check(root, item, false)? && okay;
+            }
+            return Ok(if okay { 0 } else { 1 });
+        }
+        return Err(format!("{mode} 請指定作業課號，例如 {unit}-1。"));
     }
-    Ok(())
+    let item = find(id)?;
+    match mode {
+        "lesson" => println!("{}", item.prompt),
+        "hint" => println!("{}", item.hint),
+        "answer" => answer(root, item)?,
+        "manual" => return manual(root, item, &args[2..]),
+        "run" | "test" => {
+            return Ok(if runner::course::check(root, item, false)? {
+                0
+            } else {
+                1
+            });
+        }
+        _ => unreachable!(),
+    }
+    Ok(0)
 }
 fn main() {
-    if let Err(message) = run() {
-        eprintln!("{message}");
-        process::exit(2);
+    match run() {
+        Ok(code) => process::exit(code),
+        Err(message) => {
+            eprintln!("{message}");
+            process::exit(2);
+        }
     }
 }
 
 #[cfg(test)]
-mod cli_tests {
+mod tests {
     use super::*;
-    fn parse(s: &str) -> Result<LessonId, String> {
-        number(Some(&s.to_string()))
+    #[test]
+    fn all_exercises_have_unique_ids() {
+        let mut seen = std::collections::HashSet::new();
+        for e in catalog::EXERCISES {
+            assert!(seen.insert(e.id));
+            assert!((1..=12).contains(&e.unit));
+        }
     }
     #[test]
-    fn accepts_main_and_sublesson() {
-        assert_eq!(
-            parse("4").unwrap(),
-            LessonId {
-                major: 4,
-                minor: None
-            }
-        );
-        assert_eq!(
-            parse("4-1").unwrap(),
-            LessonId {
-                major: 4,
-                minor: Some(1)
-            }
-        );
-        assert_eq!(
-            parse("4-7").unwrap(),
-            LessonId {
-                major: 4,
-                minor: Some(7)
-            }
-        );
-    }
-    #[test]
-    fn accepts_split_fifth_lesson() {
-        assert_eq!(
-            parse("5-1").unwrap(),
-            LessonId {
-                major: 5,
-                minor: Some(1)
-            }
-        );
-        assert_eq!(
-            parse("5-2").unwrap(),
-            LessonId {
-                major: 5,
-                minor: Some(2)
-            }
-        );
-    }
-    #[test]
-    fn rejects_unknown_and_malformed() {
-        for input in [
-            "4-0", "4-99", "3-99", "5-0", "5-99", "13", "-1", "4-1-2", "4-", "x",
-        ] {
-            assert!(parse(input).is_err(), "{input}");
+    fn unknown_exercises_are_rejected() {
+        for id in ["99-1", "4-99", "4--1", "4-01", ""] {
+            assert!(find(id).is_err());
         }
     }
 }

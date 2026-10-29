@@ -1,0 +1,3192 @@
+{
+  "version": 2,
+  "units": [
+    {
+      "id": 0,
+      "title": "環境準備與程式執行模型",
+      "path": "units/00.md"
+    },
+    {
+      "id": 1,
+      "title": "輸出、程式結構與第一次除錯",
+      "path": "units/01.md"
+    },
+    {
+      "id": 2,
+      "title": "變數、型別與數值運算",
+      "path": "units/02.md"
+    },
+    {
+      "id": 3,
+      "title": "條件判斷與布林推理",
+      "path": "units/03.md"
+    },
+    {
+      "id": 4,
+      "title": "迴圈、狀態追蹤與終止",
+      "path": "units/04.md"
+    },
+    {
+      "id": 5,
+      "title": "函式分解、契約與早期測試",
+      "path": "units/05.md"
+    },
+    {
+      "id": 6,
+      "title": "標準輸入、解析與互動流程",
+      "path": "units/06.md"
+    },
+    {
+      "id": 7,
+      "title": "所有權、借用與文字處理",
+      "path": "units/07.md"
+    },
+    {
+      "id": 8,
+      "title": "集合、資料處理與基本演算法",
+      "path": "units/08.md"
+    },
+    {
+      "id": 9,
+      "title": "結構、列舉與資料建模",
+      "path": "units/09.md"
+    },
+    {
+      "id": 10,
+      "title": "Result與可恢復錯誤",
+      "path": "units/10.md"
+    },
+    {
+      "id": 11,
+      "title": "測試設計、浮點誤差與除錯",
+      "path": "units/11.md"
+    },
+    {
+      "id": 12,
+      "title": "檔案、模組與獨立整合專案",
+      "path": "units/12.md"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "1-1",
+      "unit": 1,
+      "title": "兩行自我介紹",
+      "kind": "program",
+      "source": "examples/unit01_01.rs",
+      "solution": "solutions/unit01_01.rs",
+      "target": "unit01_01",
+      "support": false,
+      "hint": "println! 每次在內容後換行。兩行各放一個呼叫即可。",
+      "cases": [
+        {
+          "name": "完整文字",
+          "input": "",
+          "output": "Hello, Rust!\n我正在學程式設計\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "greeting:0"
+        },
+        {
+          "name": "第一行問候",
+          "input": "",
+          "output": "Hello, Rust!\n我正在學程式設計\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "greeting:1"
+        },
+        {
+          "name": "第二行學習文字",
+          "input": "",
+          "output": "Hello, Rust!\n我正在學程式設計\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "greeting:2"
+        },
+        {
+          "name": "恰好兩行",
+          "input": "",
+          "output": "Hello, Rust!\n我正在學程式設計\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "greeting:3"
+        },
+        {
+          "name": "沒有空白行",
+          "input": "",
+          "output": "Hello, Rust!\n我正在學程式設計\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "greeting:4"
+        },
+        {
+          "name": "行首無多餘空白",
+          "input": "",
+          "output": "Hello, Rust!\n我正在學程式設計\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "greeting:5"
+        },
+        {
+          "name": "行尾無多餘空白",
+          "input": "",
+          "output": "Hello, Rust!\n我正在學程式設計\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "greeting:6"
+        },
+        {
+          "name": "無控制字元",
+          "input": "",
+          "output": "Hello, Rust!\n我正在學程式設計\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "greeting:7"
+        },
+        {
+          "name": "英文標點",
+          "input": "",
+          "output": "Hello, Rust!\n我正在學程式設計\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "greeting:8"
+        },
+        {
+          "name": "中文內容與數量",
+          "input": "",
+          "output": "Hello, Rust!\n我正在學程式設計\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "greeting:9"
+        }
+      ]
+    },
+    {
+      "id": "2-1",
+      "unit": 2,
+      "title": "攝氏換華氏",
+      "kind": "program",
+      "source": "examples/unit02_01.rs",
+      "solution": "solutions/unit02_01.rs",
+      "target": "unit02_01",
+      "support": true,
+      "hint": "讓每個運算元都使用浮點型別；檢查乘除優先於加法。",
+      "cases": [
+        {
+          "name": "攝氏 -273.15",
+          "input": "-273.15\n",
+          "output": "-459.66999999999996",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "攝氏 -40",
+          "input": "-40\n",
+          "output": "-40.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "攝氏 -10",
+          "input": "-10\n",
+          "output": "14.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "攝氏 0",
+          "input": "0\n",
+          "output": "32.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "攝氏 1",
+          "input": "1\n",
+          "output": "33.8",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "攝氏 12.5",
+          "input": "12.5\n",
+          "output": "54.5",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "攝氏 25",
+          "input": "25\n",
+          "output": "77.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "攝氏 37",
+          "input": "37\n",
+          "output": "98.6",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "攝氏 50",
+          "input": "50\n",
+          "output": "122.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "攝氏 100",
+          "input": "100\n",
+          "output": "212.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        }
+      ]
+    },
+    {
+      "id": "2-2",
+      "unit": 2,
+      "title": "秒數拆成時分秒",
+      "kind": "program",
+      "source": "examples/unit02_02.rs",
+      "solution": "solutions/unit02_02.rs",
+      "target": "unit02_02",
+      "support": true,
+      "hint": "整數除法求完整單位，餘數保留尚未分配的部分。",
+      "cases": [
+        {
+          "name": "0 秒",
+          "input": "0\n",
+          "output": "0 0 0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "1 秒",
+          "input": "1\n",
+          "output": "0 0 1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "59 秒",
+          "input": "59\n",
+          "output": "0 0 59",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "60 秒",
+          "input": "60\n",
+          "output": "0 1 0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "61 秒",
+          "input": "61\n",
+          "output": "0 1 1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "3599 秒",
+          "input": "3599\n",
+          "output": "0 59 59",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "3600 秒",
+          "input": "3600\n",
+          "output": "1 0 0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "3661 秒",
+          "input": "3661\n",
+          "output": "1 1 1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "86399 秒",
+          "input": "86399\n",
+          "output": "23 59 59",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "100000 秒",
+          "input": "100000\n",
+          "output": "27 46 40",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "2-3",
+      "unit": 2,
+      "title": "加權成績",
+      "kind": "program",
+      "source": "examples/unit02_03.rs",
+      "solution": "solutions/unit02_03.rs",
+      "target": "unit02_03",
+      "support": true,
+      "hint": "先為三個輸入取有意義的名稱，再逐項乘上權重。",
+      "cases": [
+        {
+          "name": "權重資料 1",
+          "input": "0\n0\n0\n",
+          "output": "0.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "權重資料 2",
+          "input": "100\n100\n100\n",
+          "output": "100.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "權重資料 3",
+          "input": "60\n70\n80\n",
+          "output": "73.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "權重資料 4",
+          "input": "100\n0\n0\n",
+          "output": "20.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "權重資料 5",
+          "input": "0\n100\n0\n",
+          "output": "30.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "權重資料 6",
+          "input": "0\n0\n100\n",
+          "output": "50.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "權重資料 7",
+          "input": "59\n60\n61\n",
+          "output": "60.3",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "權重資料 8",
+          "input": "90\n80\n70\n",
+          "output": "77.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "權重資料 9",
+          "input": "12.5\n33.5\n77.5\n",
+          "output": "51.3",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        },
+        {
+          "name": "權重資料 10",
+          "input": "80\n80\n20\n",
+          "output": "50.0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "number"
+        }
+      ]
+    },
+    {
+      "id": "3-1",
+      "unit": 3,
+      "title": "成績級距",
+      "kind": "program",
+      "source": "examples/unit03_01.rs",
+      "solution": "solutions/unit03_01.rs",
+      "target": "unit03_01",
+      "support": true,
+      "hint": "由高門檻往低門檻判斷，前一分支失敗已提供了什麼資訊？",
+      "cases": [
+        {
+          "name": "級距邊界 0",
+          "input": "0\n",
+          "output": "F",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "級距邊界 59",
+          "input": "59\n",
+          "output": "F",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "級距邊界 60",
+          "input": "60\n",
+          "output": "D",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "級距邊界 69",
+          "input": "69\n",
+          "output": "D",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "級距邊界 70",
+          "input": "70\n",
+          "output": "C",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "級距邊界 79",
+          "input": "79\n",
+          "output": "C",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "級距邊界 80",
+          "input": "80\n",
+          "output": "B",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "級距邊界 89",
+          "input": "89\n",
+          "output": "B",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "級距邊界 90",
+          "input": "90\n",
+          "output": "A",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "級距邊界 100",
+          "input": "100\n",
+          "output": "A",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "3-2",
+      "unit": 3,
+      "title": "閏年規則",
+      "kind": "program",
+      "source": "examples/unit03_02.rs",
+      "solution": "solutions/unit03_02.rs",
+      "target": "unit03_02",
+      "support": true,
+      "hint": "先各自命名三個整除條件，再用括號組合規則。",
+      "cases": [
+        {
+          "name": "年份 1600",
+          "input": "1600\n",
+          "output": "yes",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "年份 1700",
+          "input": "1700\n",
+          "output": "no",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "年份 1800",
+          "input": "1800\n",
+          "output": "no",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "年份 1900",
+          "input": "1900\n",
+          "output": "no",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "年份 1996",
+          "input": "1996\n",
+          "output": "yes",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "年份 1999",
+          "input": "1999\n",
+          "output": "no",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "年份 2000",
+          "input": "2000\n",
+          "output": "yes",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "年份 2001",
+          "input": "2001\n",
+          "output": "no",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "年份 2024",
+          "input": "2024\n",
+          "output": "yes",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "年份 2100",
+          "input": "2100\n",
+          "output": "no",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "3-3",
+      "unit": 3,
+      "title": "三角形有效性",
+      "kind": "program",
+      "source": "examples/unit03_03.rs",
+      "solution": "solutions/unit03_03.rs",
+      "target": "unit03_03",
+      "support": true,
+      "hint": "先檢查每個邊長的領域，再檢查三個方向的不等式。",
+      "cases": [
+        {
+          "name": "三邊 3,4,5",
+          "input": "3\n4\n5\n",
+          "output": "valid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "三邊 1,1,1",
+          "input": "1\n1\n1\n",
+          "output": "valid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "三邊 1,2,3",
+          "input": "1\n2\n3\n",
+          "output": "invalid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "三邊 0,2,2",
+          "input": "0\n2\n2\n",
+          "output": "invalid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "三邊 -1,2,2",
+          "input": "-1\n2\n2\n",
+          "output": "invalid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "三邊 10,2,3",
+          "input": "10\n2\n3\n",
+          "output": "invalid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "三邊 2,10,3",
+          "input": "2\n10\n3\n",
+          "output": "invalid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "三邊 2,3,10",
+          "input": "2\n3\n10\n",
+          "output": "invalid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "三邊 2,2,3",
+          "input": "2\n2\n3\n",
+          "output": "valid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "三邊 999999,999999,1000000",
+          "input": "999999\n999999\n1000000\n",
+          "output": "valid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "4-1",
+      "unit": 4,
+      "title": "範圍累加與空範圍",
+      "kind": "program",
+      "source": "examples/unit04_01.rs",
+      "solution": "solutions/unit04_01.rs",
+      "target": "unit04_01",
+      "support": true,
+      "hint": "累加器放在迴圈外，每輪保留前面累積的結果。",
+      "cases": [
+        {
+          "name": "上限 0",
+          "input": "0\n",
+          "output": "0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "上限 1",
+          "input": "1\n",
+          "output": "1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "上限 2",
+          "input": "2\n",
+          "output": "3",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "上限 3",
+          "input": "3\n",
+          "output": "6",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "上限 5",
+          "input": "5\n",
+          "output": "15",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "上限 10",
+          "input": "10\n",
+          "output": "55",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "上限 20",
+          "input": "20\n",
+          "output": "210",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "上限 50",
+          "input": "50\n",
+          "output": "1275",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "上限 100",
+          "input": "100\n",
+          "output": "5050",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "上限 1000",
+          "input": "1000\n",
+          "output": "500500",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "4-2",
+      "unit": 4,
+      "title": "篩選與計數",
+      "kind": "program",
+      "source": "examples/unit04_02.rs",
+      "solution": "solutions/unit04_02.rs",
+      "target": "unit04_02",
+      "support": true,
+      "hint": "計數器每符合一次只加一。continue 可先略過不合格的當輪。",
+      "cases": [
+        {
+          "name": "篩選上限 0",
+          "input": "0\n",
+          "output": "0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "篩選上限 1",
+          "input": "1\n",
+          "output": "0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "篩選上限 3",
+          "input": "3\n",
+          "output": "1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "篩選上限 5",
+          "input": "5\n",
+          "output": "1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "篩選上限 9",
+          "input": "9\n",
+          "output": "3",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "篩選上限 10",
+          "input": "10\n",
+          "output": "3",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "篩選上限 15",
+          "input": "15\n",
+          "output": "4",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "篩選上限 30",
+          "input": "30\n",
+          "output": "8",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "篩選上限 50",
+          "input": "50\n",
+          "output": "13",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "篩選上限 100",
+          "input": "100\n",
+          "output": "27",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "4-3",
+      "unit": 4,
+      "title": "while 與十進位位數",
+      "kind": "program",
+      "source": "examples/unit04_03.rs",
+      "solution": "solutions/unit04_03.rs",
+      "target": "unit04_03",
+      "support": true,
+      "hint": "從一位開始，每刪去一個十進位尾數，就多確認一位。",
+      "cases": [
+        {
+          "name": "位數 0",
+          "input": "0\n",
+          "output": "1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "位數 1",
+          "input": "1\n",
+          "output": "1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "位數 9",
+          "input": "9\n",
+          "output": "1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "位數 10",
+          "input": "10\n",
+          "output": "2",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "位數 99",
+          "input": "99\n",
+          "output": "2",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "位數 100",
+          "input": "100\n",
+          "output": "3",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "位數 101",
+          "input": "101\n",
+          "output": "3",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "位數 9999",
+          "input": "9999\n",
+          "output": "4",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "位數 10000",
+          "input": "10000\n",
+          "output": "5",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "位數 1000000000",
+          "input": "1000000000\n",
+          "output": "10",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "4-4",
+      "unit": 4,
+      "title": "loop、更新狀態與 break",
+      "kind": "program",
+      "source": "examples/unit04_04.rs",
+      "solution": "solutions/unit04_04.rs",
+      "target": "unit04_04",
+      "support": true,
+      "hint": "每輪先判斷是否達標，尚未達標就把候選值加倍。",
+      "cases": [
+        {
+          "name": "門檻 0",
+          "input": "0\n",
+          "output": "1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "門檻 1",
+          "input": "1\n",
+          "output": "1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "門檻 2",
+          "input": "2\n",
+          "output": "2",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "門檻 3",
+          "input": "3\n",
+          "output": "4",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "門檻 4",
+          "input": "4\n",
+          "output": "4",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "門檻 5",
+          "input": "5\n",
+          "output": "8",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "門檻 8",
+          "input": "8\n",
+          "output": "8",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "門檻 9",
+          "input": "9\n",
+          "output": "16",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "門檻 100",
+          "input": "100\n",
+          "output": "128",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "門檻 1000000",
+          "input": "1000000\n",
+          "output": "1048576",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "4-5",
+      "unit": 4,
+      "title": "巢狀迴圈與輸出格式",
+      "kind": "program",
+      "source": "examples/unit04_05.rs",
+      "solution": "solutions/unit04_05.rs",
+      "target": "unit04_05",
+      "support": true,
+      "hint": "外層決定列，內層決定欄；分隔符可以只在第二欄開始前印。",
+      "cases": [
+        {
+          "name": "表格 0x0",
+          "input": "0\n",
+          "output": "",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "表格 1x1",
+          "input": "1\n",
+          "output": "1\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "表格 2x2",
+          "input": "2\n",
+          "output": "1 2\n2 4\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "表格 3x3",
+          "input": "3\n",
+          "output": "1 2 3\n2 4 6\n3 6 9\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "表格 4x4",
+          "input": "4\n",
+          "output": "1 2 3 4\n2 4 6 8\n3 6 9 12\n4 8 12 16\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "表格 5x5",
+          "input": "5\n",
+          "output": "1 2 3 4 5\n2 4 6 8 10\n3 6 9 12 15\n4 8 12 16 20\n5 10 15 20 25\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "表格 6x6",
+          "input": "6\n",
+          "output": "1 2 3 4 5 6\n2 4 6 8 10 12\n3 6 9 12 15 18\n4 8 12 16 20 24\n5 10 15 20 25 30\n6 12 18 24 30 36\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "表格 7x7",
+          "input": "7\n",
+          "output": "1 2 3 4 5 6 7\n2 4 6 8 10 12 14\n3 6 9 12 15 18 21\n4 8 12 16 20 24 28\n5 10 15 20 25 30 35\n6 12 18 24 30 36 42\n7 14 21 28 35 42 49\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "表格 8x8",
+          "input": "8\n",
+          "output": "1 2 3 4 5 6 7 8\n2 4 6 8 10 12 14 16\n3 6 9 12 15 18 21 24\n4 8 12 16 20 24 28 32\n5 10 15 20 25 30 35 40\n6 12 18 24 30 36 42 48\n7 14 21 28 35 42 49 56\n8 16 24 32 40 48 56 64\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "表格 9x9",
+          "input": "9\n",
+          "output": "1 2 3 4 5 6 7 8 9\n2 4 6 8 10 12 14 16 18\n3 6 9 12 15 18 21 24 27\n4 8 12 16 20 24 28 32 36\n5 10 15 20 25 30 35 40 45\n6 12 18 24 30 36 42 48 54\n7 14 21 28 35 42 49 56 63\n8 16 24 32 40 48 56 64 72\n9 18 27 36 45 54 63 72 81\n",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "5-1",
+      "unit": 5,
+      "title": "設計布林函式",
+      "kind": "function",
+      "source": "examples/unit05_01.rs",
+      "solution": "solutions/unit05_01.rs",
+      "target": "unit05_01",
+      "support": false,
+      "hint": "回傳 bool，不要把文字 true 印出來當作回傳。",
+      "checks": [
+        {
+          "name": "parity_1",
+          "check": "assert_eq!(is_even(-100), true);"
+        },
+        {
+          "name": "parity_2",
+          "check": "assert_eq!(is_even(-3), false);"
+        },
+        {
+          "name": "parity_3",
+          "check": "assert_eq!(is_even(-2), true);"
+        },
+        {
+          "name": "parity_4",
+          "check": "assert_eq!(is_even(-1), false);"
+        },
+        {
+          "name": "parity_5",
+          "check": "assert_eq!(is_even(0), true);"
+        },
+        {
+          "name": "parity_6",
+          "check": "assert_eq!(is_even(1), false);"
+        },
+        {
+          "name": "parity_7",
+          "check": "assert_eq!(is_even(2), true);"
+        },
+        {
+          "name": "parity_8",
+          "check": "assert_eq!(is_even(3), false);"
+        },
+        {
+          "name": "parity_9",
+          "check": "assert_eq!(is_even(100), true);"
+        },
+        {
+          "name": "parity_10",
+          "check": "assert_eq!(is_even(9223372036854775807), false);"
+        }
+      ]
+    },
+    {
+      "id": "5-2",
+      "unit": 5,
+      "title": "範圍限制與前置條件",
+      "kind": "function",
+      "source": "examples/unit05_02.rs",
+      "solution": "solutions/unit05_02.rs",
+      "target": "unit05_02",
+      "support": false,
+      "hint": "先檢查 low<=high，再處理低於範圍、高於範圍與原值。測試端點。",
+      "checks": [
+        {
+          "name": "clamp_1",
+          "check": "assert_eq!(clamp(-1,0,10),0);"
+        },
+        {
+          "name": "clamp_2",
+          "check": "assert_eq!(clamp(0,0,10),0);"
+        },
+        {
+          "name": "clamp_3",
+          "check": "assert_eq!(clamp(5,0,10),5);"
+        },
+        {
+          "name": "clamp_4",
+          "check": "assert_eq!(clamp(10,0,10),10);"
+        },
+        {
+          "name": "clamp_5",
+          "check": "assert_eq!(clamp(11,0,10),10);"
+        },
+        {
+          "name": "clamp_6",
+          "check": "assert_eq!(clamp(-20,-10,-5),-10);"
+        },
+        {
+          "name": "clamp_7",
+          "check": "assert_eq!(clamp(-7,-10,-5),-7);"
+        },
+        {
+          "name": "clamp_8",
+          "check": "assert_eq!(clamp(9,2,2),2);"
+        },
+        {
+          "name": "clamp_9",
+          "check": "assert_eq!(clamp(0,2,2),2);"
+        },
+        {
+          "name": "clamp_10",
+          "check": "assert!(std::panic::catch_unwind(|| clamp(3,5,4)).is_err());"
+        }
+      ]
+    },
+    {
+      "id": "5-3",
+      "unit": 5,
+      "title": "把問題拆成可重用函式",
+      "kind": "function",
+      "source": "examples/unit05_03.rs",
+      "solution": "solutions/unit05_03.rs",
+      "target": "unit05_03",
+      "support": false,
+      "hint": "先獨立驗證面積函式，再把它的回傳值交給費用計算。",
+      "checks": [
+        {
+          "name": "cost_1",
+          "check": "assert_eq!(rectangle_area(0,5),0); assert_eq!(paint_cost(0,5,10),0);"
+        },
+        {
+          "name": "cost_2",
+          "check": "assert_eq!(rectangle_area(5,0),0); assert_eq!(paint_cost(5,0,10),0);"
+        },
+        {
+          "name": "cost_3",
+          "check": "assert_eq!(rectangle_area(1,1),1); assert_eq!(paint_cost(1,1,1),1);"
+        },
+        {
+          "name": "cost_4",
+          "check": "assert_eq!(rectangle_area(2,3),6); assert_eq!(paint_cost(2,3,4),24);"
+        },
+        {
+          "name": "cost_5",
+          "check": "assert_eq!(rectangle_area(3,2),6); assert_eq!(paint_cost(3,2,4),24);"
+        },
+        {
+          "name": "cost_6",
+          "check": "assert_eq!(rectangle_area(10,20),200); assert_eq!(paint_cost(10,20,0),0);"
+        },
+        {
+          "name": "cost_7",
+          "check": "assert_eq!(rectangle_area(10,20),200); assert_eq!(paint_cost(10,20,5),1000);"
+        },
+        {
+          "name": "cost_8",
+          "check": "assert_eq!(rectangle_area(100,100),10000); assert_eq!(paint_cost(100,100,2),20000);"
+        },
+        {
+          "name": "cost_9",
+          "check": "assert_eq!(rectangle_area(7,9),63); assert_eq!(paint_cost(7,9,13),819);"
+        },
+        {
+          "name": "cost_10",
+          "check": "assert_eq!(rectangle_area(1000000,1000000),1000000000000); assert_eq!(paint_cost(1000000,1000000,1000000),1000000000000000000);"
+        }
+      ]
+    },
+    {
+      "id": "6-1",
+      "unit": 6,
+      "title": "從標準輸入取得文字",
+      "kind": "program",
+      "source": "examples/unit06_01.rs",
+      "solution": "solutions/unit06_01.rs",
+      "target": "unit06_01",
+      "support": false,
+      "hint": "read_line 寫入 String；trim 回傳借看的文字。先判斷是否為空。",
+      "cases": [
+        {
+          "name": "姓名案例 1",
+          "input": "Amy\n",
+          "output": "Hello, Amy!",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "姓名案例 2",
+          "input": "  Amy  \n",
+          "output": "Hello, Amy!",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "姓名案例 3",
+          "input": "昀修\n",
+          "output": "Hello, 昀修!",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "姓名案例 4",
+          "input": "\n",
+          "output": "empty",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "姓名案例 5",
+          "input": " \t\n",
+          "output": "empty",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "姓名案例 6",
+          "input": "",
+          "output": "empty",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "姓名案例 7",
+          "input": "Rust learner\n",
+          "output": "Hello, Rust learner!",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "姓名案例 8",
+          "input": "A\r\n",
+          "output": "Hello, A!",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "姓名案例 9",
+          "input": "42",
+          "output": "Hello, 42!",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "姓名案例 10",
+          "input": "é\n",
+          "output": "Hello, é!",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "6-2",
+      "unit": 6,
+      "title": "重試、quit 與 EOF",
+      "kind": "program",
+      "source": "examples/unit06_02.rs",
+      "solution": "solutions/unit06_02.rs",
+      "target": "unit06_02",
+      "support": false,
+      "hint": "先判斷 read_line 的位元組數，再判斷 quit，最後解析並檢查正數。match guard 可以改成分支內 if。",
+      "cases": [
+        {
+          "name": "重試序列 1",
+          "input": "1\n",
+          "output": "ok: 1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 2",
+          "input": " 42 \n",
+          "output": "ok: 42",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 3",
+          "input": "0\n7\n",
+          "output": "retry\nok: 7",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 4",
+          "input": "-2\n3\n",
+          "output": "retry\nok: 3",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 5",
+          "input": "abc\n5\n",
+          "output": "retry\nok: 5",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 6",
+          "input": "\n9\n",
+          "output": "retry\nok: 9",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 7",
+          "input": "quit\n",
+          "output": "bye",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 8",
+          "input": "",
+          "output": "bye",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 9",
+          "input": "bad\n",
+          "output": "retry\nbye",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 10",
+          "input": "1e2\n0\nquit\n",
+          "output": "retry\nretry\nbye",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 11",
+          "input": "2\r\n",
+          "output": "ok: 2",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "重試序列 12",
+          "input": "9223372036854775808\n1\n",
+          "output": "retry\nok: 1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "6-3",
+      "unit": 6,
+      "title": "一行多個數值",
+      "kind": "program",
+      "source": "examples/unit06_03.rs",
+      "solution": "solutions/unit06_03.rs",
+      "target": "unit06_03",
+      "support": false,
+      "hint": "不必先建立 Vec；每個 token 成功後才更新累加器，失敗就提前結束。",
+      "cases": [
+        {
+          "name": "多值案例 1",
+          "input": "1 2 3\n",
+          "output": "sum: 6",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多值案例 2",
+          "input": "-1 1\n",
+          "output": "sum: 0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多值案例 3",
+          "input": "0\n",
+          "output": "sum: 0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多值案例 4",
+          "input": "  2\t3  \n",
+          "output": "sum: 5",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多值案例 5",
+          "input": "\n",
+          "output": "empty",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多值案例 6",
+          "input": "",
+          "output": "empty",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多值案例 7",
+          "input": "1 x 3\n",
+          "output": "invalid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多值案例 8",
+          "input": "1.5 2\n",
+          "output": "invalid",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多值案例 9",
+          "input": "1000000 -1000000 8\n",
+          "output": "sum: 8",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多值案例 10",
+          "input": "+2 -3\r\n",
+          "output": "sum: -1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多值案例 11",
+          "input": "7 8 9 10\n",
+          "output": "sum: 34",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "6-4",
+      "unit": 6,
+      "title": "多行資料到 EOF",
+      "kind": "program",
+      "source": "examples/unit06_04.rs",
+      "solution": "solutions/unit06_04.rs",
+      "target": "unit06_04",
+      "support": false,
+      "hint": "累加器放在讀取迴圈外；clear 只清讀取字串，不清累加器。",
+      "cases": [
+        {
+          "name": "多行資料 1",
+          "input": "",
+          "output": "count: 0\nsum: 0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多行資料 2",
+          "input": "1\n",
+          "output": "count: 1\nsum: 1",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多行資料 3",
+          "input": "1\n2\n3\n",
+          "output": "count: 3\nsum: 6",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多行資料 4",
+          "input": "\n \n",
+          "output": "count: 0\nsum: 0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多行資料 5",
+          "input": "-1\n1\n",
+          "output": "count: 2\nsum: 0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多行資料 6",
+          "input": "x\n5\n",
+          "output": "invalid\ncount: 1\nsum: 5",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多行資料 7",
+          "input": "1 2\n3\n",
+          "output": "invalid\ncount: 1\nsum: 3",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多行資料 8",
+          "input": "4\r\n5\r\n",
+          "output": "count: 2\nsum: 9",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多行資料 9",
+          "input": "1\nx\n2\ny\n",
+          "output": "invalid\ninvalid\ncount: 2\nsum: 3",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "多行資料 10",
+          "input": "1000000\n-1000000",
+          "output": "count: 2\nsum: 0",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "7-1",
+      "unit": 7,
+      "title": "只讀借用與文字單位",
+      "kind": "function",
+      "source": "examples/unit07_01.rs",
+      "solution": "solutions/unit07_01.rs",
+      "target": "unit07_01",
+      "support": false,
+      "hint": "len 的單位是 UTF-8 位元組。選對要計算的單位。",
+      "checks": [
+        {
+          "name": "scalar_1",
+          "check": "let text=String::from(\"\"); assert_eq!(scalar_count(&text),0); assert_eq!(text,\"\");"
+        },
+        {
+          "name": "scalar_2",
+          "check": "let text=String::from(\"Rust\"); assert_eq!(scalar_count(&text),4); assert_eq!(text,\"Rust\");"
+        },
+        {
+          "name": "scalar_3",
+          "check": "let text=String::from(\"物理\"); assert_eq!(scalar_count(&text),2); assert_eq!(text,\"物理\");"
+        },
+        {
+          "name": "scalar_4",
+          "check": "let text=String::from(\"a b\"); assert_eq!(scalar_count(&text),3); assert_eq!(text,\"a b\");"
+        },
+        {
+          "name": "scalar_5",
+          "check": "let text=String::from(\"12345\"); assert_eq!(scalar_count(&text),5); assert_eq!(text,\"12345\");"
+        },
+        {
+          "name": "scalar_6",
+          "check": "let text=String::from(\"\\n\"); assert_eq!(scalar_count(&text),1); assert_eq!(text,\"\\n\");"
+        },
+        {
+          "name": "scalar_7",
+          "check": "let text=String::from(\"🦀\"); assert_eq!(scalar_count(&text),1); assert_eq!(text,\"🦀\");"
+        },
+        {
+          "name": "scalar_8",
+          "check": "let text=String::from(\"é\"); assert_eq!(scalar_count(&text),2); assert_eq!(text,\"é\");"
+        },
+        {
+          "name": "scalar_9",
+          "check": "let text=String::from(\"Rust物理\"); assert_eq!(scalar_count(&text),6); assert_eq!(text,\"Rust物理\");"
+        },
+        {
+          "name": "scalar_10",
+          "check": "let text=String::from(\"é\"); assert_eq!(scalar_count(&text),1); assert_eq!(text,\"é\");"
+        }
+      ]
+    },
+    {
+      "id": "7-2",
+      "unit": 7,
+      "title": "透過可變借用更新資料",
+      "kind": "function",
+      "source": "examples/unit07_02.rs",
+      "solution": "solutions/unit07_02.rs",
+      "target": "unit07_02",
+      "support": false,
+      "hint": "&mut i64 是修改權限，*score 是要更新的值；不要只改區域副本。",
+      "checks": [
+        {
+          "name": "bonus_1",
+          "check": "let mut score=0;add_bonus(&mut score,0);assert_eq!(score,0);"
+        },
+        {
+          "name": "bonus_2",
+          "check": "let mut score=0;add_bonus(&mut score,10);assert_eq!(score,10);"
+        },
+        {
+          "name": "bonus_3",
+          "check": "let mut score=100;add_bonus(&mut score,0);assert_eq!(score,100);"
+        },
+        {
+          "name": "bonus_4",
+          "check": "let mut score=100;add_bonus(&mut score,1);assert_eq!(score,100);"
+        },
+        {
+          "name": "bonus_5",
+          "check": "let mut score=50;add_bonus(&mut score,20);assert_eq!(score,70);"
+        },
+        {
+          "name": "bonus_6",
+          "check": "let mut score=50;add_bonus(&mut score,-20);assert_eq!(score,30);"
+        },
+        {
+          "name": "bonus_7",
+          "check": "let mut score=10;add_bonus(&mut score,-100);assert_eq!(score,0);"
+        },
+        {
+          "name": "bonus_8",
+          "check": "let mut score=90;add_bonus(&mut score,100);assert_eq!(score,100);"
+        },
+        {
+          "name": "bonus_9",
+          "check": "let mut score=0;add_bonus(&mut score,-1);assert_eq!(score,0);"
+        },
+        {
+          "name": "bonus_10",
+          "check": "let mut score=100;add_bonus(&mut score,-100);assert_eq!(score,0);"
+        }
+      ]
+    },
+    {
+      "id": "7-3",
+      "unit": 7,
+      "title": "文字清理與建立新字串",
+      "kind": "function",
+      "source": "examples/unit07_03.rs",
+      "solution": "solutions/unit07_03.rs",
+      "target": "unit07_03",
+      "support": false,
+      "hint": "用 String 累積新內容；只在已有詞時才加入分隔空格。",
+      "checks": [
+        {
+          "name": "spaces_1",
+          "check": "assert_eq!(normalize_spaces(\"\"),\"\");"
+        },
+        {
+          "name": "spaces_2",
+          "check": "assert_eq!(normalize_spaces(\" \"),\"\");"
+        },
+        {
+          "name": "spaces_3",
+          "check": "assert_eq!(normalize_spaces(\"Rust\"),\"Rust\");"
+        },
+        {
+          "name": "spaces_4",
+          "check": "assert_eq!(normalize_spaces(\"  Rust  \"),\"Rust\");"
+        },
+        {
+          "name": "spaces_5",
+          "check": "assert_eq!(normalize_spaces(\"a  b\"),\"a b\");"
+        },
+        {
+          "name": "spaces_6",
+          "check": "assert_eq!(normalize_spaces(\"a\\tb\\nc\"),\"a b c\");"
+        },
+        {
+          "name": "spaces_7",
+          "check": "assert_eq!(normalize_spaces(\"物理  課程\"),\"物理 課程\");"
+        },
+        {
+          "name": "spaces_8",
+          "check": "assert_eq!(normalize_spaces(\" a　b \"),\"a b\");"
+        },
+        {
+          "name": "spaces_9",
+          "check": "assert_eq!(normalize_spaces(\"one two three\"),\"one two three\");"
+        },
+        {
+          "name": "spaces_10",
+          "check": "assert_eq!(normalize_spaces(\"\\n\\t\"),\"\");"
+        }
+      ]
+    },
+    {
+      "id": "8-1",
+      "unit": 8,
+      "title": "線性搜尋與沒有答案",
+      "kind": "function",
+      "source": "examples/unit08_01.rs",
+      "solution": "solutions/unit08_01.rs",
+      "target": "unit08_01",
+      "support": false,
+      "hint": "第一個命中就 return；完整走過仍無命中再回傳 None。",
+      "checks": [
+        {
+          "name": "find_1",
+          "check": "assert_eq!(first_index(&[],1),None);"
+        },
+        {
+          "name": "find_2",
+          "check": "assert_eq!(first_index(&[1],1),Some(0));"
+        },
+        {
+          "name": "find_3",
+          "check": "assert_eq!(first_index(&[1],0),None);"
+        },
+        {
+          "name": "find_4",
+          "check": "assert_eq!(first_index(&[2, 1, 2],2),Some(0));"
+        },
+        {
+          "name": "find_5",
+          "check": "assert_eq!(first_index(&[2, 1, 2],1),Some(1));"
+        },
+        {
+          "name": "find_6",
+          "check": "assert_eq!(first_index(&[1, 2, 3],3),Some(2));"
+        },
+        {
+          "name": "find_7",
+          "check": "assert_eq!(first_index(&[-3, 0, 3],-3),Some(0));"
+        },
+        {
+          "name": "find_8",
+          "check": "assert_eq!(first_index(&[0, 0],0),Some(0));"
+        },
+        {
+          "name": "find_9",
+          "check": "assert_eq!(first_index(&[1, 2, 3],9),None);"
+        },
+        {
+          "name": "find_10",
+          "check": "assert_eq!(first_index(&[9, 8, 7, 6],7),Some(2));"
+        }
+      ]
+    },
+    {
+      "id": "8-2",
+      "unit": 8,
+      "title": "移除集合中的指定值",
+      "kind": "function",
+      "source": "examples/unit08_02.rs",
+      "solution": "solutions/unit08_02.rs",
+      "target": "unit08_02",
+      "support": false,
+      "hint": "remove 會讓後面的元素向前移；移除後不要立刻跳過同一索引的新元素。",
+      "checks": [
+        {
+          "name": "remove_1",
+          "check": "let mut values=vec![];assert_eq!(remove_value(&mut values,0),0);assert_eq!(values,vec![]);"
+        },
+        {
+          "name": "remove_2",
+          "check": "let mut values=vec![1];assert_eq!(remove_value(&mut values,1),1);assert_eq!(values,vec![]);"
+        },
+        {
+          "name": "remove_3",
+          "check": "let mut values=vec![1];assert_eq!(remove_value(&mut values,2),0);assert_eq!(values,vec![1]);"
+        },
+        {
+          "name": "remove_4",
+          "check": "let mut values=vec![2, 2, 2];assert_eq!(remove_value(&mut values,2),3);assert_eq!(values,vec![]);"
+        },
+        {
+          "name": "remove_5",
+          "check": "let mut values=vec![1, 2, 1, 3];assert_eq!(remove_value(&mut values,1),2);assert_eq!(values,vec![2, 3]);"
+        },
+        {
+          "name": "remove_6",
+          "check": "let mut values=vec![1, 2, 3];assert_eq!(remove_value(&mut values,2),1);assert_eq!(values,vec![1, 3]);"
+        },
+        {
+          "name": "remove_7",
+          "check": "let mut values=vec![0, -1, 0];assert_eq!(remove_value(&mut values,0),2);assert_eq!(values,vec![-1]);"
+        },
+        {
+          "name": "remove_8",
+          "check": "let mut values=vec![1, 2, 3];assert_eq!(remove_value(&mut values,9),0);assert_eq!(values,vec![1, 2, 3]);"
+        },
+        {
+          "name": "remove_9",
+          "check": "let mut values=vec![5, 5, 1, 5];assert_eq!(remove_value(&mut values,5),3);assert_eq!(values,vec![1]);"
+        },
+        {
+          "name": "remove_10",
+          "check": "let mut values=vec![1, 1, 2, 2];assert_eq!(remove_value(&mut values,2),2);assert_eq!(values,vec![1, 1]);"
+        }
+      ]
+    },
+    {
+      "id": "8-3",
+      "unit": 8,
+      "title": "集合統計與平均值",
+      "kind": "function",
+      "source": "examples/unit08_03.rs",
+      "solution": "solutions/unit08_03.rs",
+      "target": "unit08_03",
+      "support": false,
+      "hint": "先決定空資料，再做加總與浮點除法。資料範圍可保證i64總和不溢位。",
+      "checks": [
+        {
+          "name": "average_1",
+          "check": "assert_eq!(average(&[]),None);"
+        },
+        {
+          "name": "average_2",
+          "check": "let actual=average(&[0]).expect(\"非空應有平均\");assert!(actual.is_finite());assert!((actual-(0.0_f64)).abs()<1e-9);"
+        },
+        {
+          "name": "average_3",
+          "check": "let actual=average(&[60, 80, 100]).expect(\"非空應有平均\");assert!(actual.is_finite());assert!((actual-(80.0_f64)).abs()<1e-9);"
+        },
+        {
+          "name": "average_4",
+          "check": "let actual=average(&[60, 61]).expect(\"非空應有平均\");assert!(actual.is_finite());assert!((actual-(60.5_f64)).abs()<1e-9);"
+        },
+        {
+          "name": "average_5",
+          "check": "let actual=average(&[-1, 1]).expect(\"非空應有平均\");assert!(actual.is_finite());assert!((actual-(0.0_f64)).abs()<1e-9);"
+        },
+        {
+          "name": "average_6",
+          "check": "let actual=average(&[-3, -2]).expect(\"非空應有平均\");assert!(actual.is_finite());assert!((actual-(-2.5_f64)).abs()<1e-9);"
+        },
+        {
+          "name": "average_7",
+          "check": "let actual=average(&[1000000, -1000000]).expect(\"非空應有平均\");assert!(actual.is_finite());assert!((actual-(0.0_f64)).abs()<1e-9);"
+        },
+        {
+          "name": "average_8",
+          "check": "let actual=average(&[1, 2, 3, 4]).expect(\"非空應有平均\");assert!(actual.is_finite());assert!((actual-(2.5_f64)).abs()<1e-9);"
+        },
+        {
+          "name": "average_9",
+          "check": "let actual=average(&[100, 0, 0]).expect(\"非空應有平均\");assert!(actual.is_finite());assert!((actual-(33.333333333333336_f64)).abs()<1e-9);"
+        },
+        {
+          "name": "average_10",
+          "check": "let actual=average(&[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]).expect(\"非空應有平均\");assert!(actual.is_finite());assert!((actual-(7.0_f64)).abs()<1e-9);"
+        }
+      ]
+    },
+    {
+      "id": "8-4",
+      "unit": 8,
+      "title": "排序、去重與來源不變",
+      "kind": "function",
+      "source": "examples/unit08_04.rs",
+      "solution": "solutions/unit08_04.rs",
+      "target": "unit08_04",
+      "support": false,
+      "hint": "對新Vec排序，再移除相鄰重複；先想清楚去重為何依賴排序。",
+      "checks": [
+        {
+          "name": "sort_1",
+          "check": "let input=vec![];assert_eq!(sorted_unique(&input),vec![]);assert_eq!(input,vec![]);"
+        },
+        {
+          "name": "sort_2",
+          "check": "let input=vec![1];assert_eq!(sorted_unique(&input),vec![1]);assert_eq!(input,vec![1]);"
+        },
+        {
+          "name": "sort_3",
+          "check": "let input=vec![2, 1];assert_eq!(sorted_unique(&input),vec![1, 2]);assert_eq!(input,vec![2, 1]);"
+        },
+        {
+          "name": "sort_4",
+          "check": "let input=vec![1, 1];assert_eq!(sorted_unique(&input),vec![1]);assert_eq!(input,vec![1, 1]);"
+        },
+        {
+          "name": "sort_5",
+          "check": "let input=vec![3, 1, 2, 1];assert_eq!(sorted_unique(&input),vec![1, 2, 3]);assert_eq!(input,vec![3, 1, 2, 1]);"
+        },
+        {
+          "name": "sort_6",
+          "check": "let input=vec![-2, 0, -2, 3];assert_eq!(sorted_unique(&input),vec![-2, 0, 3]);assert_eq!(input,vec![-2, 0, -2, 3]);"
+        },
+        {
+          "name": "sort_7",
+          "check": "let input=vec![5, 4, 3, 2, 1];assert_eq!(sorted_unique(&input),vec![1, 2, 3, 4, 5]);assert_eq!(input,vec![5, 4, 3, 2, 1]);"
+        },
+        {
+          "name": "sort_8",
+          "check": "let input=vec![0, 0, 0];assert_eq!(sorted_unique(&input),vec![0]);assert_eq!(input,vec![0, 0, 0]);"
+        },
+        {
+          "name": "sort_9",
+          "check": "let input=vec![9, -9, 9, -9];assert_eq!(sorted_unique(&input),vec![-9, 9]);assert_eq!(input,vec![9, -9, 9, -9]);"
+        },
+        {
+          "name": "sort_10",
+          "check": "let input=vec![9223372036854775807, -9223372036854775808, 0];assert_eq!(sorted_unique(&input),vec![-9223372036854775808, 0, 9223372036854775807]);assert_eq!(input,vec![9223372036854775807, -9223372036854775808, 0]);"
+        }
+      ]
+    },
+    {
+      "id": "8-5",
+      "unit": 8,
+      "title": "單字頻率與對應表",
+      "kind": "function",
+      "source": "examples/unit08_05.rs",
+      "solution": "solutions/unit08_05.rs",
+      "target": "unit08_05",
+      "support": false,
+      "hint": "entry 查找同一個詞的儲存位置；or_insert 提供第一次出現的起始值。",
+      "checks": [
+        {
+          "name": "words_1",
+          "check": "let expected: HashMap<String,usize> = [].into_iter().collect();assert_eq!(word_counts(\"\"),expected);"
+        },
+        {
+          "name": "words_2",
+          "check": "let expected: HashMap<String,usize> = [(String::from(\"one\"),1_usize)].into_iter().collect();assert_eq!(word_counts(\"one\"),expected);"
+        },
+        {
+          "name": "words_3",
+          "check": "let expected: HashMap<String,usize> = [(String::from(\"one\"),2_usize)].into_iter().collect();assert_eq!(word_counts(\"one one\"),expected);"
+        },
+        {
+          "name": "words_4",
+          "check": "let expected: HashMap<String,usize> = [(String::from(\"a\"),2_usize), (String::from(\"b\"),1_usize)].into_iter().collect();assert_eq!(word_counts(\"a b a\"),expected);"
+        },
+        {
+          "name": "words_5",
+          "check": "let expected: HashMap<String,usize> = [(String::from(\"A\"),2_usize), (String::from(\"a\"),1_usize)].into_iter().collect();assert_eq!(word_counts(\"A a A\"),expected);"
+        },
+        {
+          "name": "words_6",
+          "check": "let expected: HashMap<String,usize> = [(String::from(\"物理\"),2_usize), (String::from(\"Rust\"),1_usize)].into_iter().collect();assert_eq!(word_counts(\"物理 物理 Rust\"),expected);"
+        },
+        {
+          "name": "words_7",
+          "check": "let expected: HashMap<String,usize> = [(String::from(\"a\"),2_usize), (String::from(\"b\"),1_usize)].into_iter().collect();assert_eq!(word_counts(\"a\\tb\\na\"),expected);"
+        },
+        {
+          "name": "words_8",
+          "check": "let expected: HashMap<String,usize> = [(String::from(\"word,\"),1_usize), (String::from(\"word\"),1_usize)].into_iter().collect();assert_eq!(word_counts(\"word, word\"),expected);"
+        },
+        {
+          "name": "words_9",
+          "check": "let expected: HashMap<String,usize> = [(String::from(\"x\"),1_usize), (String::from(\"y\"),1_usize), (String::from(\"z\"),1_usize)].into_iter().collect();assert_eq!(word_counts(\"x y z\"),expected);"
+        },
+        {
+          "name": "words_10",
+          "check": "let expected: HashMap<String,usize> = [(String::from(\"a\"),2_usize), (String::from(\"b\"),1_usize)].into_iter().collect();assert_eq!(word_counts(\"  a　b a \"),expected);"
+        }
+      ]
+    },
+    {
+      "id": "9-1",
+      "unit": 9,
+      "title": "帳戶狀態與修改方法",
+      "kind": "function",
+      "source": "examples/unit09_01.rs",
+      "solution": "solutions/unit09_01.rs",
+      "target": "unit09_01",
+      "support": false,
+      "hint": "先檢查所有失敗條件，再修改狀態，避免失敗後還需要把餘額改回。",
+      "checks": [
+        {
+          "name": "new_zero",
+          "check": "assert_eq!(Account::new(0).balance,0);"
+        },
+        {
+          "name": "new_balance",
+          "check": "assert_eq!(Account::new(100).balance,100);"
+        },
+        {
+          "name": "deposit",
+          "check": "let mut a=Account::new(10);assert!(a.deposit(5));assert_eq!(a.balance,15);"
+        },
+        {
+          "name": "deposit_zero",
+          "check": "let mut a=Account::new(10);assert!(!a.deposit(0));assert_eq!(a.balance,10);"
+        },
+        {
+          "name": "deposit_negative",
+          "check": "let mut a=Account::new(10);assert!(!a.deposit(-1));assert_eq!(a.balance,10);"
+        },
+        {
+          "name": "withdraw",
+          "check": "let mut a=Account::new(10);assert!(a.withdraw(3));assert_eq!(a.balance,7);"
+        },
+        {
+          "name": "withdraw_all",
+          "check": "let mut a=Account::new(10);assert!(a.withdraw(10));assert_eq!(a.balance,0);"
+        },
+        {
+          "name": "insufficient",
+          "check": "let mut a=Account::new(10);assert!(!a.withdraw(11));assert_eq!(a.balance,10);"
+        },
+        {
+          "name": "invalid_withdraw",
+          "check": "let mut a=Account::new(10);assert!(!a.withdraw(0));assert!(!a.withdraw(-1));assert_eq!(a.balance,10);"
+        },
+        {
+          "name": "sequence",
+          "check": "let mut a=Account::new(0);assert!(a.deposit(50));assert!(a.withdraw(20));assert!(!a.withdraw(40));assert_eq!(a.balance,30);"
+        },
+        {
+          "name": "reject_initial",
+          "check": "assert!(std::panic::catch_unwind(|| Account::new(-1)).is_err());"
+        }
+      ]
+    },
+    {
+      "id": "9-2",
+      "unit": 9,
+      "title": "用 enum 表達指令",
+      "kind": "function",
+      "source": "examples/unit09_02.rs",
+      "solution": "solutions/unit09_02.rs",
+      "target": "unit09_02",
+      "support": false,
+      "hint": "match同時辨認變體並取出攜帶的資料；不要用任意數字代碼代表不同動作。",
+      "checks": [
+        {
+          "name": "action_1",
+          "check": "assert_eq!(apply(0,Action::Add(3)),3);"
+        },
+        {
+          "name": "action_2",
+          "check": "assert_eq!(apply(5,Action::Add(-2)),3);"
+        },
+        {
+          "name": "action_3",
+          "check": "assert_eq!(apply(-5,Action::Add(2)),-3);"
+        },
+        {
+          "name": "action_4",
+          "check": "assert_eq!(apply(0,Action::Multiply(8)),0);"
+        },
+        {
+          "name": "action_5",
+          "check": "assert_eq!(apply(5,Action::Multiply(0)),0);"
+        },
+        {
+          "name": "action_6",
+          "check": "assert_eq!(apply(-3,Action::Multiply(-2)),6);"
+        },
+        {
+          "name": "action_7",
+          "check": "assert_eq!(apply(7,Action::Reset),0);"
+        },
+        {
+          "name": "action_8",
+          "check": "assert_eq!(apply(-7,Action::Reset),0);"
+        },
+        {
+          "name": "action_9",
+          "check": "assert_eq!(apply(1000,Action::Multiply(1000)),1000000);"
+        },
+        {
+          "name": "action_10",
+          "check": "assert_eq!(apply(-1000,Action::Add(-1000)),-2000);"
+        }
+      ]
+    },
+    {
+      "id": "9-3",
+      "unit": 9,
+      "title": "一筆學生資料的查詢與更新",
+      "kind": "function",
+      "source": "examples/unit09_03.rs",
+      "solution": "solutions/unit09_03.rs",
+      "target": "unit09_03",
+      "support": false,
+      "hint": "查詢只需要 &self；新增成績需要 &mut self。沿用前面學過的空資料與平均模型。",
+      "checks": [
+        {
+          "name": "student_1",
+          "check": "let mut s=Student{name:String::from(\"A\"),scores:vec![]};assert_eq!(s.add_score(0),true);assert_eq!(s.scores,vec![0]);assert!((s.average().unwrap()-(0.0_f64)).abs()<1e-9);assert_eq!(s.name,\"A\");"
+        },
+        {
+          "name": "student_2",
+          "check": "let mut s=Student{name:String::from(\"A\"),scores:vec![]};assert_eq!(s.add_score(100),true);assert_eq!(s.scores,vec![100]);assert!((s.average().unwrap()-(100.0_f64)).abs()<1e-9);assert_eq!(s.name,\"A\");"
+        },
+        {
+          "name": "student_3",
+          "check": "let mut s=Student{name:String::from(\"A\"),scores:vec![]};assert_eq!(s.add_score(50),true);assert_eq!(s.scores,vec![50]);assert!((s.average().unwrap()-(50.0_f64)).abs()<1e-9);assert_eq!(s.name,\"A\");"
+        },
+        {
+          "name": "student_4",
+          "check": "let mut s=Student{name:String::from(\"A\"),scores:vec![60]};assert_eq!(s.add_score(80),true);assert_eq!(s.scores,vec![60, 80]);assert!((s.average().unwrap()-(70.0_f64)).abs()<1e-9);assert_eq!(s.name,\"A\");"
+        },
+        {
+          "name": "student_5",
+          "check": "let mut s=Student{name:String::from(\"A\"),scores:vec![0, 100]};assert_eq!(s.add_score(50),true);assert_eq!(s.scores,vec![0, 100, 50]);assert!((s.average().unwrap()-(50.0_f64)).abs()<1e-9);assert_eq!(s.name,\"A\");"
+        },
+        {
+          "name": "student_6",
+          "check": "let mut s=Student{name:String::from(\"A\"),scores:vec![60, 61]};assert_eq!(s.add_score(70),true);assert_eq!(s.scores,vec![60, 61, 70]);assert!((s.average().unwrap()-(63.666666666666664_f64)).abs()<1e-9);assert_eq!(s.name,\"A\");"
+        },
+        {
+          "name": "student_7",
+          "check": "let mut s=Student{name:String::from(\"A\"),scores:vec![80]};assert_eq!(s.add_score(-1),false);assert_eq!(s.scores,vec![80]);assert!((s.average().unwrap()-(80.0_f64)).abs()<1e-9);assert_eq!(s.name,\"A\");"
+        },
+        {
+          "name": "student_8",
+          "check": "let mut s=Student{name:String::from(\"A\"),scores:vec![80]};assert_eq!(s.add_score(101),false);assert_eq!(s.scores,vec![80]);assert!((s.average().unwrap()-(80.0_f64)).abs()<1e-9);assert_eq!(s.name,\"A\");"
+        },
+        {
+          "name": "student_9",
+          "check": "let mut s=Student{name:String::from(\"A\"),scores:vec![]};assert_eq!(s.add_score(999),false);assert_eq!(s.scores,vec![]);assert_eq!(s.average(),None);assert_eq!(s.name,\"A\");"
+        },
+        {
+          "name": "student_10",
+          "check": "let mut s=Student{name:String::from(\"A\"),scores:vec![1, 2, 3]};assert_eq!(s.add_score(4),true);assert_eq!(s.scores,vec![1, 2, 3, 4]);assert!((s.average().unwrap()-(2.5_f64)).abs()<1e-9);assert_eq!(s.name,\"A\");"
+        },
+        {
+          "name": "empty_average",
+          "check": "let s=Student{name:String::from(\"A\"),scores:vec![]};assert_eq!(s.average(),None);"
+        }
+      ]
+    },
+    {
+      "id": "10-1",
+      "unit": 10,
+      "title": "可恢復的解析錯誤",
+      "kind": "function",
+      "source": "examples/unit10_01.rs",
+      "solution": "solutions/unit10_01.rs",
+      "target": "unit10_01",
+      "support": false,
+      "hint": "先用完整match取出成功數字，再檢查領域；簡寫不是必要條件。",
+      "checks": [
+        {
+          "name": "positive_1",
+          "check": "let actual=parse_positive(\"1\").expect(\"應成功\");assert!(actual.is_finite() && actual>0.0);assert!((actual-(1.0_f64)).abs()<=f64::EPSILON*(1.0_f64).abs().max(f64::MIN_POSITIVE));"
+        },
+        {
+          "name": "positive_2",
+          "check": "let actual=parse_positive(\" 2.5 \").expect(\"應成功\");assert!(actual.is_finite() && actual>0.0);assert!((actual-(2.5_f64)).abs()<=f64::EPSILON*(2.5_f64).abs().max(f64::MIN_POSITIVE));"
+        },
+        {
+          "name": "positive_3",
+          "check": "assert!(parse_positive(\"0\").is_err());"
+        },
+        {
+          "name": "positive_4",
+          "check": "assert!(parse_positive(\"-1\").is_err());"
+        },
+        {
+          "name": "positive_5",
+          "check": "assert!(parse_positive(\"abc\").is_err());"
+        },
+        {
+          "name": "positive_6",
+          "check": "assert!(parse_positive(\"\").is_err());"
+        },
+        {
+          "name": "positive_7",
+          "check": "assert!(parse_positive(\"NaN\").is_err());"
+        },
+        {
+          "name": "positive_8",
+          "check": "assert!(parse_positive(\"inf\").is_err());"
+        },
+        {
+          "name": "positive_9",
+          "check": "assert!(parse_positive(\"-inf\").is_err());"
+        },
+        {
+          "name": "positive_10",
+          "check": "let actual=parse_positive(\"1e2\").expect(\"應成功\");assert!(actual.is_finite() && actual>0.0);assert!((actual-(100.0_f64)).abs()<=f64::EPSILON*(100.0_f64).abs().max(f64::MIN_POSITIVE));"
+        },
+        {
+          "name": "positive_11",
+          "check": "let actual=parse_positive(\"5e-324\").expect(\"應成功\");assert!(actual.is_finite() && actual>0.0);assert!((actual-(5e-324_f64)).abs()<=f64::EPSILON*(5e-324_f64).abs().max(f64::MIN_POSITIVE));"
+        },
+        {
+          "name": "positive_12",
+          "check": "assert!(parse_positive(\"1e309\").is_err());"
+        }
+      ]
+    },
+    {
+      "id": "10-2",
+      "unit": 10,
+      "title": "錯誤種類也用型別表示",
+      "kind": "function",
+      "source": "examples/unit10_02.rs",
+      "solution": "solutions/unit10_02.rs",
+      "target": "unit10_02",
+      "support": false,
+      "hint": "依Empty→解析→領域的順序檢查，同一文字才有明確分類。",
+      "checks": [
+        {
+          "name": "score_error_1",
+          "check": "assert_eq!(parse_score(\"\"),Err(ParseError::Empty));"
+        },
+        {
+          "name": "score_error_2",
+          "check": "assert_eq!(parse_score(\" \\t\"),Err(ParseError::Empty));"
+        },
+        {
+          "name": "score_error_3",
+          "check": "assert_eq!(parse_score(\"abc\"),Err(ParseError::NotInteger));"
+        },
+        {
+          "name": "score_error_4",
+          "check": "assert_eq!(parse_score(\"1.5\"),Err(ParseError::NotInteger));"
+        },
+        {
+          "name": "score_error_5",
+          "check": "assert_eq!(parse_score(\"9223372036854775808\"),Err(ParseError::NotInteger));"
+        },
+        {
+          "name": "score_error_6",
+          "check": "assert_eq!(parse_score(\"-1\"),Err(ParseError::OutOfRange));"
+        },
+        {
+          "name": "score_error_7",
+          "check": "assert_eq!(parse_score(\"101\"),Err(ParseError::OutOfRange));"
+        },
+        {
+          "name": "score_error_8",
+          "check": "assert_eq!(parse_score(\"0\"),Ok(0));"
+        },
+        {
+          "name": "score_error_9",
+          "check": "assert_eq!(parse_score(\"100\"),Ok(100));"
+        },
+        {
+          "name": "score_error_10",
+          "check": "assert_eq!(parse_score(\" 75 \"),Ok(75));"
+        },
+        {
+          "name": "score_error_11",
+          "check": "assert_eq!(parse_score(\"+60\"),Ok(60));"
+        },
+        {
+          "name": "score_error_12",
+          "check": "assert_eq!(parse_score(\"1 2\"),Err(ParseError::NotInteger));"
+        }
+      ]
+    },
+    {
+      "id": "10-3",
+      "unit": 10,
+      "title": "組合解析與錯誤傳遞",
+      "kind": "function",
+      "source": "examples/unit10_03.rs",
+      "solution": "solutions/unit10_03.rs",
+      "target": "unit10_03",
+      "support": false,
+      "hint": "先確認欄位數，再解析各欄，最後檢查有限性與右值。?只負責把錯誤傳出去。",
+      "checks": [
+        {
+          "name": "pair_1",
+          "check": "assert_eq!(parse_pair(\"1,2\"),Ok((1.0_f64,2.0_f64)));"
+        },
+        {
+          "name": "pair_2",
+          "check": "assert_eq!(parse_pair(\" -3 , 4 \"),Ok((-3.0_f64,4.0_f64)));"
+        },
+        {
+          "name": "pair_3",
+          "check": "assert_eq!(parse_pair(\"0,0.5\"),Ok((0.0_f64,0.5_f64)));"
+        },
+        {
+          "name": "pair_4",
+          "check": "assert!(parse_pair(\"\").is_err());"
+        },
+        {
+          "name": "pair_5",
+          "check": "assert!(parse_pair(\"1\").is_err());"
+        },
+        {
+          "name": "pair_6",
+          "check": "assert!(parse_pair(\"1,2,3\").is_err());"
+        },
+        {
+          "name": "pair_7",
+          "check": "assert!(parse_pair(\",2\").is_err());"
+        },
+        {
+          "name": "pair_8",
+          "check": "assert!(parse_pair(\"1,\").is_err());"
+        },
+        {
+          "name": "pair_9",
+          "check": "assert!(parse_pair(\"abc,2\").is_err());"
+        },
+        {
+          "name": "pair_10",
+          "check": "assert!(parse_pair(\"1,0\").is_err());"
+        },
+        {
+          "name": "pair_11",
+          "check": "assert!(parse_pair(\"1,-2\").is_err());"
+        },
+        {
+          "name": "pair_12",
+          "check": "assert!(parse_pair(\"NaN,2\").is_err());"
+        },
+        {
+          "name": "pair_13",
+          "check": "assert!(parse_pair(\"1,inf\").is_err());"
+        },
+        {
+          "name": "pair_14",
+          "check": "assert_eq!(parse_pair(\"1e2,2e1\"),Ok((100.0_f64,20.0_f64)));"
+        }
+      ]
+    },
+    {
+      "id": "11-1",
+      "unit": 11,
+      "title": "測試能抓出邊界錯誤",
+      "kind": "test_design",
+      "source": "exercises/code/11-1.rs",
+      "solution": "solutions/unit11_01.rs",
+      "target": "unit11_01",
+      "support": false,
+      "hint": "先寫出所有分界的兩側與代表值；執行 manual 看正確版，再用 run 看仍存活的故障版。",
+      "subject": "testing/subjects/ticket.rs",
+      "mutations": [
+        {
+          "name": "六歲邊界",
+          "path": "testing/mutants/11-1/01.rs"
+        },
+        {
+          "name": "十八歲邊界",
+          "path": "testing/mutants/11-1/02.rs"
+        },
+        {
+          "name": "六十五歲邊界",
+          "path": "testing/mutants/11-1/03.rs"
+        },
+        {
+          "name": "五歲被收費",
+          "path": "testing/mutants/11-1/04.rs"
+        },
+        {
+          "name": "十七歲提早成人",
+          "path": "testing/mutants/11-1/05.rs"
+        },
+        {
+          "name": "六十四歲提早敬老",
+          "path": "testing/mutants/11-1/06.rs"
+        },
+        {
+          "name": "學生價格錯誤",
+          "path": "testing/mutants/11-1/07.rs"
+        },
+        {
+          "name": "成人價格錯誤",
+          "path": "testing/mutants/11-1/08.rs"
+        },
+        {
+          "name": "敬老價格錯誤",
+          "path": "testing/mutants/11-1/09.rs"
+        }
+      ]
+    },
+    {
+      "id": "11-2",
+      "unit": 11,
+      "title": "浮點測試與測試品質",
+      "kind": "test_design",
+      "source": "exercises/code/11-2.rs",
+      "solution": "solutions/unit11_02.rs",
+      "target": "unit11_02",
+      "support": false,
+      "hint": "先寫出所有分界的兩側與代表值；執行 manual 看正確版，再用 run 看仍存活的故障版。",
+      "subject": "testing/subjects/c_to_f.rs",
+      "mutations": [
+        {
+          "name": "少了偏移",
+          "path": "testing/mutants/11-2/01.rs"
+        },
+        {
+          "name": "錯誤倍率",
+          "path": "testing/mutants/11-2/02.rs"
+        },
+        {
+          "name": "整數倍率",
+          "path": "testing/mutants/11-2/03.rs"
+        },
+        {
+          "name": "固定冰點",
+          "path": "testing/mutants/11-2/04.rs"
+        },
+        {
+          "name": "負號遺失",
+          "path": "testing/mutants/11-2/05.rs"
+        },
+        {
+          "name": "輸出先取整",
+          "path": "testing/mutants/11-2/06.rs"
+        },
+        {
+          "name": "偏移錯一度",
+          "path": "testing/mutants/11-2/07.rs"
+        },
+        {
+          "name": "乘除次序錯誤",
+          "path": "testing/mutants/11-2/08.rs"
+        },
+        {
+          "name": "漏掉小數輸入",
+          "path": "testing/mutants/11-2/09.rs"
+        }
+      ]
+    },
+    {
+      "id": "12-1",
+      "unit": 12,
+      "title": "運動紀錄分析器",
+      "kind": "project",
+      "source": "projects/motion/src/main.rs",
+      "solution": "solutions/projects/motion/main.rs",
+      "target": "projects/motion/Cargo.toml",
+      "support": false,
+      "hint": "先在紙上列出錯誤優先順序與資料模型，把讀取、解析與計算分開。先完成一筆資料，再擴充多筆與檔案。",
+      "cases": [
+        {
+          "name": "兩段不同時間",
+          "input": "100,10\n-40,20\n",
+          "output": "records: 2\nvelocity: 2.000",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "靜止",
+          "input": "0,2\n",
+          "output": "records: 1\nvelocity: 0.000",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "負速度",
+          "input": "-12,3\n",
+          "output": "records: 1\nvelocity: -4.000",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "往返",
+          "input": "10,2\n-10,3\n",
+          "output": "records: 2\nvelocity: 0.000",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "空白列與CRLF",
+          "input": "\r\n 6 , 2 \r\n\r\n",
+          "output": "records: 1\nvelocity: 3.000",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "無資料",
+          "input": "",
+          "output": "",
+          "stderr": "error: no data",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "錯誤欄數",
+          "input": "1,2,3\n",
+          "output": "",
+          "stderr": "error: line 1",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "時間零",
+          "input": "1,2\n3,0\n",
+          "output": "",
+          "stderr": "error: line 2",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "非有限位移",
+          "input": "NaN,2\n",
+          "output": "",
+          "stderr": "error: line 1",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "累加溢位",
+          "input": "1e308,1\n1e308,1\n",
+          "output": "",
+          "stderr": "error: numeric range",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "相除溢位",
+          "input": "1,5e-324\n",
+          "output": "",
+          "stderr": "error: numeric range",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "資料檔案",
+          "input": "",
+          "output": "records: 2\nvelocity: 2.000",
+          "stderr": "",
+          "exit": 0,
+          "args": [
+            "data/motion.csv"
+          ],
+          "rule": "text"
+        },
+        {
+          "name": "缺少檔案",
+          "input": "",
+          "output": "",
+          "stderr": "error: cannot read",
+          "exit": 1,
+          "args": [
+            "data/does-not-exist.csv"
+          ],
+          "rule": "text"
+        },
+        {
+          "name": "多餘參數",
+          "input": "",
+          "output": "",
+          "stderr": "usage: motion [path]",
+          "exit": 2,
+          "args": [
+            "a",
+            "b"
+          ],
+          "rule": "text"
+        },
+        {
+          "name": "小數顯示",
+          "input": "1,3\n",
+          "output": "records: 1\nvelocity: 0.333",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "原始行號含空白",
+          "input": "\n1,2\n\nx,4\n",
+          "output": "",
+          "stderr": "error: line 4",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "負時間",
+          "input": "1,-2\n",
+          "output": "",
+          "stderr": "error: line 1",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "總時間溢位",
+          "input": "1,1e308\n2,1e308\n",
+          "output": "",
+          "stderr": "error: numeric range",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "非UTF8檔案",
+          "input": "",
+          "output": "",
+          "stderr": "error: cannot read",
+          "exit": 1,
+          "args": [
+            "data/invalid-utf8.bin"
+          ],
+          "rule": "text"
+        },
+        {
+          "name": "只有空白資料",
+          "input": "\n \t\n",
+          "output": "",
+          "stderr": "error: no data",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    },
+    {
+      "id": "12-2",
+      "unit": 12,
+      "title": "成績彙整與跨情境遷移",
+      "kind": "project",
+      "source": "projects/gradebook/src/main.rs",
+      "solution": "solutions/projects/gradebook/main.rs",
+      "target": "projects/gradebook/Cargo.toml",
+      "support": false,
+      "hint": "先在紙上列出錯誤優先順序與資料模型，把讀取、解析與計算分開。先完成一筆資料，再擴充多筆與檔案。",
+      "cases": [
+        {
+          "name": "多人成績",
+          "input": "Amy,60\nBo,90\nAmy,100\n",
+          "output": "name,average\nAmy,80.00\nBo,90.00",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "排序",
+          "input": "Zoe,70\nAmy,90\n",
+          "output": "name,average\nAmy,90.00\nZoe,70.00",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "零分",
+          "input": "A,0\n",
+          "output": "name,average\nA,0.00",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "滿分",
+          "input": "A,100\n",
+          "output": "name,average\nA,100.00",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "空白與CRLF",
+          "input": "\r\n A , 80 \r\nA,81\r\n",
+          "output": "name,average\nA,80.50",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "無資料",
+          "input": "",
+          "output": "",
+          "stderr": "error: no data",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "空姓名",
+          "input": ",80\n",
+          "output": "",
+          "stderr": "error: line 1",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "負分",
+          "input": "A,-1\n",
+          "output": "",
+          "stderr": "error: line 1",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "超過滿分",
+          "input": "A,101\n",
+          "output": "",
+          "stderr": "error: line 1",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "非數字",
+          "input": "A,abc\n",
+          "output": "",
+          "stderr": "error: line 1",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "非有限",
+          "input": "A,NaN\n",
+          "output": "",
+          "stderr": "error: line 1",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "欄位過多",
+          "input": "A,80,90\n",
+          "output": "",
+          "stderr": "error: line 1",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "同名分組",
+          "input": "Amy,10\nAmy,20\nAmy,30\n",
+          "output": "name,average\nAmy,20.00",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "資料檔案",
+          "input": "",
+          "output": "name,average\nAmy,80.00\nBo,90.00",
+          "stderr": "",
+          "exit": 0,
+          "args": [
+            "data/grades.csv"
+          ],
+          "rule": "text"
+        },
+        {
+          "name": "缺少檔案",
+          "input": "",
+          "output": "",
+          "stderr": "error: cannot read",
+          "exit": 1,
+          "args": [
+            "data/does-not-exist.csv"
+          ],
+          "rule": "text"
+        },
+        {
+          "name": "多餘參數",
+          "input": "",
+          "output": "",
+          "stderr": "usage: gradebook [path]",
+          "exit": 2,
+          "args": [
+            "a",
+            "b"
+          ],
+          "rule": "text"
+        },
+        {
+          "name": "原始行號",
+          "input": "\nA,80\n\nB,101\n",
+          "output": "",
+          "stderr": "error: line 4",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "Unicode姓名",
+          "input": "物理,60\n化學,80\n物理,100\n",
+          "output": "name,average\n化學,80.00\n物理,80.00",
+          "stderr": "",
+          "exit": 0,
+          "args": [],
+          "rule": "text"
+        },
+        {
+          "name": "非UTF8檔案",
+          "input": "",
+          "output": "",
+          "stderr": "error: cannot read",
+          "exit": 1,
+          "args": [
+            "data/invalid-utf8.bin"
+          ],
+          "rule": "text"
+        },
+        {
+          "name": "只有空白資料",
+          "input": "\n \t\n",
+          "output": "",
+          "stderr": "error: no data",
+          "exit": 1,
+          "args": [],
+          "rule": "text"
+        }
+      ]
+    }
+  ]
+}

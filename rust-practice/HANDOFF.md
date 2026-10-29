@@ -1,5 +1,17 @@
 # Rust 練習工作室交接日誌
 
+## 目前基準｜２０２６－１０－２９全面重製版
+
+以下歷史記錄保留決策過程；舊stepNN、舊補充節次、網頁筆記與先前審查文件均已由新版取代。請以本節與文末最新記錄續作，不依舊指令重建舊檔案。
+
+- 主線：[Rust Beginner Course課綱](beginner/SYLLABUS.md)，單元０～１２，三十七份實作、四百零三項具名驗收；教材在beginner/units，登錄與案例在beginner/curriculum.json。
+- 教師入口：[TEACHING_GUIDE.md](beginner/TEACHING_GUIDE.md)；教材使用GitHub Markdown，終端機編輯.rs；舊HTML介面已移除。
+- 啟動：從workspace根目錄 `cd beginner`，再 `cargo run -- lesson`；`lesson 2`看單元、`lesson 2-1`看題目、`run 2-1`驗一題、`manual 2-1`手動執行。兩套課程的test皆與run同義；原生檔內測試用cargo test --example。
+- 第十二單元專案：beginner/projects/motion與gradebook，兩者都是workspace member；各有Cargo.toml、src/main.rs、DESIGN.md。`manual 12-1 data/motion.csv`可轉交檔案參數。
+- Advanced保留十二章深化內容，同步新版先備與命令語意；銜接在advanced/PREREQUISITES.md。
+- 維護：`python3 beginner/scripts/build.py`與`python3 advanced/scripts/build.py`不重置學生作答。根scripts的verify_courses、verify_readings、verify_runner、verify_documents檢查參考答案、教材與拒絕錯誤路徑；後者可加--check-generated隔離重建。
+- 環境：macOS、rustc／cargo 1.99.0，學生只需Rust；Python僅供維護。未實跑Windows／Linux及最低Rust 1.85，未正式試教。未commit／push，未製作壓縮包或部署網站。
+
 ## ２０２６－１０－２１｜初版
 
 ### 已完成
@@ -264,3 +276,57 @@ sublessons registry 新增 Variants／Main／Reading 類型，明確區分七個
 在 beginner 執行 cargo run -- lesson 查看全路線；例如先 lesson 6-1、6-2 再回主課6，先8-1／8-2／8-3再做平均值，先10-1再10-2，先11-1再11-2。閱讀不要求交作業；原run N驗收保持。修改教材後可直接執行python3 scripts/build.py安全重建，再於workspace根目錄執行scripts/verify_readings.py及scripts/verify_courses.py。
 
 尚未正式試教或在Windows／Linux實機驗證；新增深度後時數須依學生節奏調整，已移除合併教材中把每課三十至五十分鐘視為固定時程的描述。未commit／push，未建立壓縮包，未更新跨任務記憶。
+
+## ２０２６－１０－２９｜以一般程式設計課為目標的 Beginner 盤點
+
+使用者希望將一般 C++／Python 程式設計課轉為 Rust，而非只學會本專案範例。新增 beginner/CURRICULUM_REVIEW.md，逐課盤點第零至十二課、全部二十八個子節登錄，區分現有能力、先備順序、操作練習與新目標所需主題。確認十二個主線加七個迴圈實作，共十九份獨立作答；二十節 Reading；5-1 為別名，不重複算實作。
+
+主要發現：5-1／5-2／5-3 編號順序不是先備順序；第六課暫用的 &mut 尚未在第七課完成核心模型；多個必讀補充直接給出原題完整解法，缺少不同情境的遷移作業；尚缺 while／loop、多筆輸入與重試／EOF、可變借用、集合修改與字串處理實作、一般集合搜尋排序、基本 enum、正式檔案與模組教學，以及從空白專案整合資料流程的結業任務。已有 push／索引／解參照與範圍搜尋的局部示範，不誤報為完全未教。HashMap／HashSet、遞迴依課綱時數定位，不把所有大學或 Python／C++ 課綱視為同一份要求。
+
+驗收範圍實驗：在 target 下建立暫存解法，沿用真正 checks::verify_source，未編輯學生檔案。第七課正確 count 加空 main 仍十一項通過；第九課正確 Motion::speed 加空 main 仍十項通過；第十一課正確公式、空 main、僅起始 freezing 測試仍十二項通過。這證明函式驗收未覆蓋學生 main 的輸出／新增資料與自行新增測試要求；並非指函式測試無效。暫存程式自動清除，本機紀錄 target/curriculum-audit-probe.log，完整實驗設定與結果已寫入審查文件，不依賴忽略檔交接。
+
+參考官方 Rust 借用、Vec 與命令列 I/O 專案，以及 Harvard CS50P、MIT 二〇一一年 C++ 入門課目標、Python Tutorial。來源連結與比較限制列於審查文件。未把舊 C++ 課綱安裝資訊當現行安裝指南，亦標明 Python Tutorial 原先預設已有程式經驗。
+
+驗證：審查文件全部本機 Markdown 連結存在，全部二十八個子節 ID 均有涵蓋，登錄數量與分類核對通過。此任務只有盤點與新增審查／交接文件，未改課程、作答、答案、判題或重建器；沒有重跑無關的全套參考答案測試。未試教，未 commit／push。
+
+續作：先依 CURRICULUM_REVIEW.md 確認必修範圍與優先順序，再實作課程改版。優先處理先備動線、必讀／選讀、示範與作業分離，以及互動輸入、可變借用、集合與獨立任務。保持既有作答可用，不直接重編號或覆寫學生檔案。學習者仍進入 beginner，執行 cargo run -- lesson 查看現有課程；新審查文件不是已新增的可執行章節。
+
+## ２０２６－１０－２９｜十三單元正式程式設計課程重製
+
+### 授權與範圍
+
+使用者明確授權刪除原檔案重製，將專案用途由個人入門練習提升為課程設計，主線固定單元０加原先討論的十二單元，可自行拆小節。本次依此替換舊Beginner教材、作答、答案、判題與網頁資產；不保留舊stepNN作答作為新版學生狀態，也沒有把刪除範圍擴及其他專案。先前CURRICULUM_REVIEW已被新課綱與教師指南吸收，該舊盤點文件退場。
+
+### 完成的課程與檔案
+
+- units/00.md～12.md為十三個完整單元，約四千行教材，含學習成果、先備、小節、設計理由、完整示範、追蹤、反例、自我檢核及官方來源。示範採不同於作業的問題，沒有直接把原作業全解放在必讀正文。
+- 三十七份作業：十六份程式輸入輸出、十七份函式契約、兩份測試設計、兩份獨立整合專案。每份至少十項具名檢查，共四百零三項。第一題固定輸出與測試設計題清楚標示性質，不宣稱四百零三種鍵盤輸入。
+- 單元０正式解釋cargo run -- lesson 1各token、一般編譯與執行、專案目錄與workspace；三平台安裝均可在GitHub未安裝Rust前閱讀。
+- 第二～四單元使用已提供的support::read_i64/read_f64，以真實stdin做驗收；第五單元回收函式，第六單元拆解輸入，第七單元回收可變借用。第五單元先用整數建立測試習慣，十一單元深化測試品質。
+- 補入多分支、while／loop、EOF與重試、多值多行、修改借用與集合、Unicode、搜尋排序、HashMap、enum與狀態模型、正式檔案讀寫與模組。詳細trait、生命週期及並行留在Advanced。
+- 第十一單元學生編寫測試，正確版須通過、九個故障版須被抓到；零測試、永遠失敗、編譯失敗與逾時不冒充有效測試。
+- 兩個第十二單元獨立Cargo專案分別分析有號位移／時間與同名成績；來源為stdin或檔案，檢查stdout、stderr、退出碼、行號、非UTF8檔案、格式、領域與數值範圍。兩份各二十組資料。學生自行拆模組並完成DESIGN；人工評量另看推理、分工、自訂測試及成本。
+- 新增SYLLABUS與TEACHING_GUIDE，重寫根與Beginner README，COURSE與TEST_CASES由安全builder生成。curriculum.json為登錄與獨立案例規格；templates為起始備份；solutions與學生作答分離。正常build不覆寫以上來源，也不提供預設整體重置。
+- Advanced十二章原有深入理論與實作保留，更新先備與銜接檢查、重新合併COURSE；兩套課程統一test為run別名，原生Cargo檔內測試仍可使用。
+
+### 獨立審查與修正
+
+兩位既有子代理分工撰寫教材與驗證工具，主代理負責全部作業／案例／答案、專案、CLI、判題器、整合與交接。另行只讀審查找出enumerate舊先備假設、split/collect未拆解、Read匯入與if let首次集中、todo未解釋；皆已補最小示範與說明，不以更多進階語法補洞。文件中的作業連結統一不帶前導零。
+
+### 實際驗證
+
+- scripts/verify_courses.py：Beginner三十七份參考程式四百零三項全過；Advanced十二份一百五十一項全過，共四十九份、五百五十四項。包含函式、I/O、性質與故障版，不把總數當成獨立輸入數。
+- scripts/verify_readings.py：九十四個Rust圍欄，八十份完整程式實際編譯執行，九十三種執行情境（含一個預期panic）；十四個compile_fail正確拒絕；三組內嵌測試共六項通過。二十五個非Rust圍欄明列SKIP，不計通過。輸入、EOF、重試、檔案、缺檔、參數與寫檔錯誤有實際情境；普通示範未逐條比對所有敘述stdout。
+- scripts/verify_documents.py --check-generated：七十五份現行canonical文件、一百六十六個本機連結、二百一十七個圍欄、十三單元與三十七作業規格檢查通過；Advanced十二份外部契約結構每份至少十項。兩份COURSE排除於canonical計數，HANDOFF歷史也不當現行教材。
+- 上述文件驗證在target隔離副本執行builder兩次，二十一份衍生檔具冪等性且與本版一致，一百四十六個保護來源雜湊未變；另在真checkout前後即時比較一百二十七份作答／模板／答案檔，正常build逐位元保持。
+- scripts/verify_runner.py：真實判題器接受正確問候，拒絕錯誤輸出、多餘stderr、錯誤退出碼、無限迴圈、語法錯誤、NaN、零學生測試、弱測試與永遠失敗測試；Advanced舊執行器EOF、CRLF與退出碼路徑仍正確。
+- Beginner binary六個單元測試通過，含空stdout必須真正為空、數值拒絕非有限與額外文字、CRLF與空白、課號；Advanced五個doctest（含四編譯失敗例）通過。
+- 實際CLI：十三個單元與三十七份lesson／hint／answer入口可讀；無效課號、多餘參數、未知命令為exit2；workspace根目錄不會默認選課。manual試跑第十一課正確版弱測試會過，但完整故障版驗收會拒絕，與教學目標一致。
+- 原生Cargo實跑answer6_2的重試序列，以及兩份專案的資料檔，stdout與退出碼符合契約；Beginner起始1-1如預期FAIL，兩套run／test行為一致。
+- cargo check --workspace --all-targets --offline、cargo fmt --all -- --check、git diff --check通過。起始程式尚未完成的未使用變數等警告屬預期，不能據此宣稱已完成作答。
+
+### 續作與邊界
+
+從beginner/SYLLABUS.md與TEACHING_GUIDE.md檢視課程設計；在beginner執行cargo run -- lesson選單元，先讀完整概念再做lesson N-M。修改教材或案例後跑build與四支verify；更改判題或程式才重跑相關全套。學生作答直接編輯題目指定.rs；不再使用舊stepNN或網頁localStorage筆記。
+
+目前環境macOS、rustc 1.99.0、cargo 1.99.0；Rust 2024最低工具鏈是教材要求，沒有另裝1.85實跑。Windows／Linux尚未實機驗證，外網URL與頁內anchor未由本機連結腳本驗證，沒有正式試教或學習成效校準。有限測試不能評完演算法推理與設計品質。沒有安裝工具、建立壓縮包、commit、push或部署外部網站；未修改跨任務記憶。

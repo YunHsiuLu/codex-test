@@ -4,7 +4,7 @@
 
 ## 前置知識與操作環境
 
-先完成 [Rust Beginner Course](../beginner/README.md)，能獨立使用變數、判斷、迴圈、函式、基本所有權、Vec、Option、Result 與測試。熟悉終端機、Cargo 與編輯器；不要求 C++ 背景。需要支援 Rust 2024 edition 的工具鏈（Rust １．８５ 以上），建議使用目前 stable。安裝見 [跨平台說明](../beginner/README.md)。所有命令除另註外，先進入 advanced 資料夾再執行。
+先完成新版 [Rust Beginner Course](../beginner/SYLLABUS.md)單元０～１２，能獨立使用控制流程、函式、基本所有權與可變借用、Vec、struct／enum、Option／Result、測試及檔案／模組。應已完成兩份整合專案與自己的設計說明；可用 [銜接檢查](PREREQUISITES.md)複習。熟悉終端機、Cargo 與編輯器，不要求 C++ 背景。需要支援 Rust 2024 edition 的工具鏈（Rust １．８５ 以上），建議 stable。安裝見 [跨平台說明](../beginner/units/00.md)。所有命令除另註外，先進入 advanced 資料夾再執行。
 
 ## 十二章學習路線
 
@@ -31,7 +31,7 @@
 
 每章外部驗收至少十個獨立具名檢查，清單見 [TEST_CASES.md](TEST_CASES.md)。第四章固定事件序列為十項契約性質檢查，不宣稱十種不同輸入。
 
-每章用 `cargo run -p rust-advanced-course -- run N` 自動驗收函式契約；第十二章另測多組標準輸入、輸出及退出碼。`manual N [args...]` 保留手動互動，`test N` 執行原檔測試。驗收不修改作答，有逾時限制但不是安全沙盒；它提供有限案例的證據，無法自動判定推理、複雜度與設計品質。
+每章用 `cargo run -p rust-advanced-course -- run N` 自動驗收函式契約；第十二章另測多組標準輸入、輸出及退出碼。`manual N [args...]` 保留手動互動，`test N` 與run同為自動驗收；原檔測試使用 `cargo test --example labNN`。驗收不修改作答，有逾時限制但不是安全沙盒；它提供有限案例的證據，無法自動判定推理、複雜度與設計品質。
 
 每章繳交程式、驗證紀錄與一頁設計說明，回答：規格是什麼？不變量是什麼？哪些錯誤由型別防止、哪些須執行期處理？時間與額外空間成本是多少？測試沒有證明什麼？
 

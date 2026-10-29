@@ -1,4 +1,6 @@
 //! Local course checks. Student sources are never edited.
+#[allow(dead_code)]
+pub mod course;
 use std::{
     env, fs,
     path::{Path, PathBuf},

@@ -3,9 +3,17 @@
 version = 4
 
 [[package]]
+name = "course-gradebook"
+version = "0.1.0"
+
+[[package]]
+name = "course-motion"
+version = "0.1.0"
+
+[[package]]
 name = "rust-advanced-course"
 version = "0.1.0"
 
 [[package]]
 name = "rust-beginner-course"
-version = "0.1.0"
+version = "0.2.0"
