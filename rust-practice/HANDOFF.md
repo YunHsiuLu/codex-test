@@ -4,9 +4,10 @@
 
 以下歷史記錄保留決策過程；舊stepNN、舊補充節次、網頁筆記與先前審查文件均已由新版取代。請以本節與文末最新記錄續作，不依舊指令重建舊檔案。
 
-- 主線：[Rust Beginner Course課綱](beginner/SYLLABUS.md)，單元０～１２，三十七份實作、四百零三項具名驗收；教材在beginner/units，登錄與案例在beginner/curriculum.json。
+- 主線：[Rust Beginner Course課綱](beginner/SYLLABUS.md)，單元０～１２，三十九份實作、四百三十項具名驗收；教材在beginner/units，登錄與案例在beginner/curriculum.json。第五單元已加入基本遞迴與5-4／5-5實作。
 - 教師入口：[TEACHING_GUIDE.md](beginner/TEACHING_GUIDE.md)；教材使用GitHub Markdown，終端機編輯.rs；舊HTML介面已移除。
 - 啟動：從workspace根目錄 `cd beginner`，再 `cargo run -- lesson`；`lesson 2`看單元、`lesson 2-1`看題目、`run 2-1`驗一題、`manual 2-1`手動執行。兩套課程的test皆與run同義；原生檔內測試用cargo test --example。
+- ２０２６－１０－３０顯示更新：兩套課程的I/O案例在PASS時也列出實際stdin／stdout，多行逐行呈現，空內容標示（空）；│為報告框線，檔案參數、非空stderr與非零退出碼另顯示。判題規則不變。
 - 第十二單元專案：beginner/projects/motion與gradebook，兩者都是workspace member；各有Cargo.toml、src/main.rs、DESIGN.md。`manual 12-1 data/motion.csv`可轉交檔案參數。
 - Advanced保留十二章深化內容，同步新版先備與命令語意；銜接在advanced/PREREQUISITES.md。
 - 維護：`python3 beginner/scripts/build.py`與`python3 advanced/scripts/build.py`不重置學生作答。根scripts的verify_courses、verify_readings、verify_runner、verify_documents檢查參考答案、教材與拒絕錯誤路徑；後者可加--check-generated隔離重建。
@@ -330,3 +331,57 @@ sublessons registry 新增 Variants／Main／Reading 類型，明確區分七個
 從beginner/SYLLABUS.md與TEACHING_GUIDE.md檢視課程設計；在beginner執行cargo run -- lesson選單元，先讀完整概念再做lesson N-M。修改教材或案例後跑build與四支verify；更改判題或程式才重跑相關全套。學生作答直接編輯題目指定.rs；不再使用舊stepNN或網頁localStorage筆記。
 
 目前環境macOS、rustc 1.99.0、cargo 1.99.0；Rust 2024最低工具鏈是教材要求，沒有另裝1.85實跑。Windows／Linux尚未實機驗證，外網URL與頁內anchor未由本機連結腳本驗證，沒有正式試教或學習成效校準。有限測試不能評完演算法推理與設計品質。沒有安裝工具、建立壓縮包、commit、push或部署外部網站；未修改跨任務記憶。
+
+## ２０２６－１０－３０｜通過測資也顯示實際程式輸出
+
+使用者指出2-2驗收只看到PASS與案例名稱，無法觀察輸出樣式。共用runner新增成功案例的輸入輸出報告，Beginner的runner/course.rs與Advanced沿用的runner/mod.rs皆接入。每筆PASS顯示實際stdin與stdout；內容按行排列，保留頭尾空白，│只屬報告框線；空字串與空白行分別顯示，避免把沒有輸出與印一個換行混淆。CRLF轉成一般顯示換行，tab、單獨CR與終端控制字元以跳脫文字顯示，不讓控制碼破壞報告。檔案題顯示args，非空stderr及非零退出碼也列出。既有失敗診斷與判題規則維持。
+
+兩套README補上說明，Beginner提供3661秒的實際顯示例。更新verify_runner，對公開判題流程新增2-2、4-5與12-1參考答案檢查，並斷言PASS報告包含真實單行、多行、空stdout、檔案參數及預期錯誤stderr／退出碼，另確認Advanced共用路徑的CRLF／EOF顯示。
+
+驗證：Beginner binary九項單元測試通過（新增三項報告契約）；使用目前學生的2-2作答實跑cargo run -- run 2-2，十筆全部PASS且顯示每組stdout，例如3661→1 1 1、100000→27 46 40。scripts/verify_runner.py全部回歸通過，包含既有錯誤拒絕與逾時；scripts/verify_documents.py現行文件與案例檢查通過；git diff --check通過。本次只改顯示、README與對應回歸，不重跑未變更的全部參考解法或教材程式。
+
+本次未編輯學生作答。任務開始時已有unit01_01.rs、unit02_01.rs、unit02_02.rs的學生修改，以及未追蹤的examples/unit01_01執行檔，均保留，沒有清除或重置。未commit／push。續作：在beginner重新執行cargo run -- run 2-2即可看到新報告，其他I/O題自動套用；函式契約仍回報Rust具名測試，不假造未執行main的stdout。Windows／Linux尚未實機驗證本次終端顯示。
+
+## ２０２６－１０－３０｜釐清單檔rustc與課程函式庫連結
+
+使用者在beginner/examples執行rustc unit04_04.rs，遇到E0433找不到rust_beginner_course。原因為第二～四單元依賴本課src/lib.rs提供的support輸入工具，直接rustc不會自動建置及連結它；編譯器提示extern crate不代表加一行就能完成連結，也不需要下載第三方同名套件。
+
+README與units/00新增具體排除方式、獨立標準函式庫程式的rustc --edition=2024示例，以及Cargo在examples向上找到Cargo.toml的行為。手動執行cargo run --example unit04_04、只編譯cargo build --example unit04_04、自動對答案cargo run -- run 4-4，日常無需手動--extern。安全build同步COURSE。
+
+實際在使用者同樣的beginner/examples位置，以目前作答分別執行原生Cargo與課程manual 4-4，輸入1皆成功輸出1，作答SHA-256前後相同。這項驗證只確認建置、連結與這一筆手動輸入，不宣稱4-4演算法已符合全部案例。verify_documents及git diff --check通過；沒有修改任何學生程式、安裝套件或commit／push。
+
+## ２０２６－１０－３０｜重寫5-2作業的回傳與輸出規格
+
+使用者指出5-2敘述讓學習者不知道要輸出什麼。本次將題名改為「把數值限制在範圍內」，重寫exercises/5-2.md：以音量限制說明clamp用途，逐項定義value／low／high／回傳型別，明列低於／範圍內／高於時的回傳，端點、負範圍與low==high皆合法，low>high必須assert panic；不要求讀鍵盤、在函式裡println或特定panic文字。
+
+題目新增八個呼叫與預期行為，並附可自行替換main的三次呼叫示例及實際stdout 0／5／10三行。說清楚main留空時manual無輸出屬正常、run直接驗函式回傳與預期panic，main觀察示範不是額外評分要求。沒有提供clamp完整實作。同步curriculum題名、單元５作業導引，安全build更新COURSE／CLI目錄／案例標題。
+
+驗證：使用目前學生clamp作答建立target暫存呼叫器，實際印出0、5、10；run 5-2十項通過。CLI lesson 5-2已顯示新敘述與範例；verify_documents及git diff --check通過。build前後即時比對作答、模板、答案、學生測試與專案檔案雜湊，均未變更；本次未修改學生已完成的函式或main。驗收規則及十項資料不變，未commit／push。
+
+續作：beginner內重新cargo run -- lesson 5-2即可閱讀完整規格；想目視輸出時自行使用題目的可選main，作業仍以cargo run -- run 5-2驗收函式。
+
+## ２０２６－１０－３０｜題面公開範例限制為兩組
+
+使用者要求各題呼叫範例與預期回傳只給兩組，以保留自行推演的難度。本次統一Beginner三十七份題面：三十六題各兩組，1-1只有固定輸出而無可變輸入，保留一組，不編造第二種要求。程式題清楚列stdin／stdout，函式題列呼叫與預期回傳或狀態，專案題另標stderr與退出碼。保留完整規格與資料範圍，不靠隱藏需求增加難度。
+
+5-2原八組呼叫刪減為兩組，main觀察示範也只重用相同兩組，預期stdout為10／15兩行，避免題面之外再提供第三組。其他題目原來沒有例子的地方改為兩組具體範例，不再要求先去完整TEST_CASES挑資料。第十一課的公開範例只顯示兩個正確函式結果，其他測試仍由學生自行設計。
+
+TEACHING_GUIDE與README記錄題面最多兩組、講義概念示範按需要、驗收每題仍至少十項的區分。verify_documents加入公開範例標題數量檢查，避免未來維護又增加過多已揭露案例。Advanced目前實作規格沒有超過兩組的呼叫／預期範例表，沒有為此刪除其必要理論、資料契約或推理活動。
+
+驗證：三十七份題面公開範例數符合規則；verify_documents --check-generated通過，仍為十三單元、三十七題、四百零三項具名驗收，隔離重建具冪等性且保護來源未變；git diff --check通過。單元正文與實作邏輯未變，不重跑全部解法／教材執行。題面修改前後對學生作答、模板、答案、測試作答與專案檔案做雜湊比較，均相同。curriculum驗收資料與判題規則未減少，run仍顯示執行結果。未commit／push。
+
+續作：重新cargo run -- lesson 5-2或其他N-M即可看兩組題面例子；教師新增題目沿用同一範例上限，其他邊界讓學習者推演。完整測資目錄仍供維護查核與驗收後比對。
+
+## ２０２６－１０－３０｜第五單元加入正式遞迴教材與實作
+
+使用者確認補充遞迴，將先前課綱的選擇性擴充改為Beginner正式必讀。單元５新增5.10～5.14：遞迴與基底情況、獨立參數及呼叫堆疊、逐層返回、終止進展、遞迴與迴圈的工作／額外空間比較，以及階乘和歐幾里得演算法的數學模型。完整示範使用分層點數累加，沒有提供兩份作業全解；明確討論堆疊有限、不依賴尾呼叫最佳化，以及遞迴不一定更快。
+
+新增5-4 factorial(n:u32)->u64與5-5 gcd(a:u64,b:u64)->u64，各有作答、起始模板、答案、題面與獨立驗收。階乘合法範圍0～20，超出必須先assert panic，十三項資料；gcd接受全部u64、零、兩者皆零（API約定0），十四項資料。獨立預期由Python math.factorial／math.gcd產生後明列於curriculum.json，非使用學生函式自算答案。兩題各只列兩組公開範例，main可留空，回傳與stdout分清楚。
+
+題目要求採用遞迴；自動驗收只證明目前函式結果及契約，是否遞迴及能否說明終止／返回另由程式閱讀與呼叫追蹤評量，不以搜尋字樣假造設計驗證。保留舊5-1～5-3與所有已完成作答。同步課綱、教師指南、兩套README的課程數、Advanced先備與銜接、CLI登錄、兩套COURSE與案例清單。現在Beginner三十九題、四百三十項；原本三十七題的案例未減少或改動。
+
+驗證：verify_courses全部通過，Beginner三十九份／四百三十項，Advanced十二份／一百五十一項。verify_readings九十六個Rust圍欄中八十二份完整程式、九十五種執行情境、十四個預期編譯失敗與三組六項測試通過；二十八個非Rust圍欄明列SKIP。新示範的遞迴與迴圈版本皆assert相同結果。verify_documents --check-generated通過：兩題各兩組公開範例、二十三份衍生檔重建具冪等性，一百五十二個保護來源未改。
+
+實際CLI lesson 5及5-4／5-5可讀，新起始TODO題驗收如預期exit1；原生answer5_4輸出120、answer5_5輸出6。cargo check --workspace --all-targets --offline通過；新檔及生成Rust檔的rustfmt --check、git diff --check通過。全workspace fmt檢查指出使用者既有unit03_03與unit04_04格式差異，未擅自格式化這些作答。另對全部作答／模板／答案／測試作答／專案做正常builder前後雜湊比對，皆相同。
+
+續作：在beginner先cargo run -- lesson 5讀新增5.10～5.14，再lesson 5-4／5-5讀題；編輯examples/unit05_04.rs／unit05_05.rs，run同課號驗收。全套課程數已同步為三十九，後續再增題時繼續更新活躍課綱與驗證，歷史日誌保留原計數。未commit／push、未安裝工具、未改跨任務記憶；尚未試教或做Windows／Linux實機驗證。

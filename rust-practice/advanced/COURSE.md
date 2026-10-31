@@ -4,7 +4,7 @@
 
 ## 前置知識與操作環境
 
-先完成新版 [Rust Beginner Course](../beginner/SYLLABUS.md)單元０～１２，能獨立使用控制流程、函式、基本所有權與可變借用、Vec、struct／enum、Option／Result、測試及檔案／模組。應已完成兩份整合專案與自己的設計說明；可用 [銜接檢查](PREREQUISITES.md)複習。熟悉終端機、Cargo 與編輯器，不要求 C++ 背景。需要支援 Rust 2024 edition 的工具鏈（Rust １．８５ 以上），建議 stable。安裝見 [跨平台說明](../beginner/units/00.md)。所有命令除另註外，先進入 advanced 資料夾再執行。
+先完成新版 [Rust Beginner Course](../beginner/SYLLABUS.md)單元０～１２，能獨立使用控制流程、函式與基本遞迴、基本所有權與可變借用、Vec、struct／enum、Option／Result、測試及檔案／模組。應已完成兩份整合專案與自己的設計說明；可用 [銜接檢查](PREREQUISITES.md)複習。熟悉終端機、Cargo 與編輯器，不要求 C++ 背景。需要支援 Rust 2024 edition 的工具鏈（Rust １．８５ 以上），建議 stable。安裝見 [跨平台說明](../beginner/units/00.md)。所有命令除另註外，先進入 advanced 資料夾再執行。
 
 ## 十二章學習路線
 

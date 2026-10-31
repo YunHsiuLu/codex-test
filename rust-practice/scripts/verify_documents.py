@@ -147,6 +147,11 @@ def check_registry():
             protected.add(path)
         kind = task["kind"]
         counts[kind] += 1
+        prompt = (BEGINNER / f"exercises/{key}.md").read_text()
+        public_samples = re.findall(r"^### 範例([0-9]+)\s*$", prompt, re.MULTILINE)
+        expected_samples = ["1"] if key == "1-1" else ["1", "2"]
+        ensure(public_samples == expected_samples,
+               f"{key}: expected public sample headings {expected_samples}, got {public_samples}")
         if kind == "function":
             cases = task["checks"]
             ensure(len(cases) >= 10, f"{key}: fewer than ten function cases")

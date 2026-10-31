@@ -202,7 +202,7 @@
 - `parity_9`：`assert_eq!(is_even(100), true);`
 - `parity_10`：`assert_eq!(is_even(9223372036854775807), false);`
 
-## 5-2：範圍限制與前置條件
+## 5-2：把數值限制在範圍內
 
 作答：`examples/unit05_02.rs`。題目：[規格](exercises/5-2.md)。
 
@@ -231,6 +231,43 @@
 - `cost_8`：`assert_eq!(rectangle_area(100,100),10000); assert_eq!(paint_cost(100,100,2),20000);`
 - `cost_9`：`assert_eq!(rectangle_area(7,9),63); assert_eq!(paint_cost(7,9,13),819);`
 - `cost_10`：`assert_eq!(rectangle_area(1000000,1000000),1000000000000); assert_eq!(paint_cost(1000000,1000000,1000000),1000000000000000000);`
+
+## 5-4：遞迴階乘
+
+作答：`examples/unit05_04.rs`。題目：[規格](exercises/5-4.md)。
+
+- `factorial_0`：`assert_eq!(factorial(0), 1_u64);`
+- `factorial_1`：`assert_eq!(factorial(1), 1_u64);`
+- `factorial_2`：`assert_eq!(factorial(2), 2_u64);`
+- `factorial_3`：`assert_eq!(factorial(3), 6_u64);`
+- `factorial_4`：`assert_eq!(factorial(4), 24_u64);`
+- `factorial_5`：`assert_eq!(factorial(5), 120_u64);`
+- `factorial_8`：`assert_eq!(factorial(8), 40320_u64);`
+- `factorial_10`：`assert_eq!(factorial(10), 3628800_u64);`
+- `factorial_15`：`assert_eq!(factorial(15), 1307674368000_u64);`
+- `factorial_19`：`assert_eq!(factorial(19), 121645100408832000_u64);`
+- `factorial_20`：`assert_eq!(factorial(20), 2432902008176640000_u64);`
+- `reject_twenty_one`：`assert!(std::panic::catch_unwind(|| factorial(21)).is_err());`
+- `reject_maximum_input`：`assert!(std::panic::catch_unwind(|| factorial(u32::MAX)).is_err());`
+
+## 5-5：遞迴最大公因數
+
+作答：`examples/unit05_05.rs`。題目：[規格](exercises/5-5.md)。
+
+- `gcd_case_1`：`assert_eq!(gcd(48_u64, 18_u64), 6_u64);`
+- `gcd_case_2`：`assert_eq!(gcd(35_u64, 14_u64), 7_u64);`
+- `gcd_case_3`：`assert_eq!(gcd(0_u64, 9_u64), 9_u64);`
+- `gcd_case_4`：`assert_eq!(gcd(9_u64, 0_u64), 9_u64);`
+- `gcd_case_5`：`assert_eq!(gcd(0_u64, 0_u64), 0_u64);`
+- `gcd_case_6`：`assert_eq!(gcd(12_u64, 12_u64), 12_u64);`
+- `gcd_case_7`：`assert_eq!(gcd(18_u64, 48_u64), 6_u64);`
+- `gcd_case_8`：`assert_eq!(gcd(100_u64, 25_u64), 25_u64);`
+- `gcd_case_9`：`assert_eq!(gcd(270_u64, 192_u64), 6_u64);`
+- `gcd_case_10`：`assert_eq!(gcd(1_u64, 18446744073709551615_u64), 1_u64);`
+- `gcd_case_11`：`assert_eq!(gcd(18446744073709551615_u64, 0_u64), 18446744073709551615_u64);`
+- `gcd_case_12`：`assert_eq!(gcd(18446744073709551615_u64, 18446744073709551615_u64), 18446744073709551615_u64);`
+- `gcd_case_13`：`assert_eq!(gcd(18446744073709551615_u64, 18446744073709551614_u64), 1_u64);`
+- `gcd_case_14`：`assert_eq!(gcd(9223372036854775808_u64, 4611686018427387904_u64), 4611686018427387904_u64);`
 
 ## 6-1：從標準輸入取得文字
 

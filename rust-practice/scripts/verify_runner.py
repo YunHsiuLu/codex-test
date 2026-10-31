@@ -26,6 +26,9 @@ fn main(){
  let path=std::env::args().nth(1).unwrap();let temp=Path::new(&path);
  let root=Path::new(env!("CARGO_MANIFEST_DIR"));
  let task=|id:&str|catalog::EXERCISES.iter().find(|e|e.id==id).unwrap();
+ for id in ["2-2","4-5","12-1"]{
+  assert!(runner::course::check(root,task(id),true).unwrap());
+ }
  assert!(runner::course::check_source(root,task("1-1"),&temp.join("greeting.rs")).unwrap());
  for name in ["wrong","stderr","exit","hang","syntax"]{
   assert!(!runner::course::check_source(root,task("1-1"),&temp.join(format!("{name}.rs"))).unwrap(),"must reject {name}");
@@ -52,4 +55,15 @@ fn main(){
  (TARGET/'verify-runner.log').write_text(result.stdout+result.stderr)
  if result.returncode or 'REGRESSION PASSED' not in result.stdout:
   print(result.stdout);print(result.stderr);raise SystemExit('Grader regression failed.')
+ # Assert the public PASS report, not just the formatting helper in isolation.
+ for expected in [
+  '  PASS  3661 秒\n    stdin：\n      │ 3661\n    stdout：\n      │ 1 1 1\n',
+  '  PASS  表格 0x0\n    stdin：\n      │ 0\n    stdout：\n      （空）\n',
+  '  PASS  表格 2x2\n    stdin：\n      │ 2\n    stdout：\n      │ 1 2\n      │ 2 4\n',
+  '    stderr：\n      │ error: no data\n    退出碼：1',
+  '    args（程式參數）：["data/motion.csv"]',
+  '    stdin：\n      │ abc\n    stdout：\n      │ abc\n',
+ ]:
+  assert expected in result.stdout, f'Missing I/O report: {expected!r}'
 print('Graders reject wrong output, stderr, exit, timeout, compile errors, NaN, empty/weak/always-failing student tests; legacy EOF/CRLF verified.')
+print('PASS reports show real stdin/stdout, multiline layout, empty output, file arguments, and expected error stderr/exit.')

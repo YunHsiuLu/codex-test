@@ -1,8 +1,10 @@
 # Rust Beginner Course
 
-以零程式經驗為起點的程式設計課，單元０～１２、三十七份實作。使用 GitHub Markdown 閱讀，以本機終端機作答；目標是能自行拆解、實作、測試小型應用程式。
+以零程式經驗為起點的程式設計課，單元０～１２、三十九份實作。使用 GitHub Markdown 閱讀，以本機終端機作答；目標是能自行拆解、實作、測試小型應用程式。
 
 [課綱](SYLLABUS.md)｜[完整教材](COURSE.md)｜[驗收案例](TEST_CASES.md)｜[教師指南](TEACHING_GUIDE.md)
+
+各題題面最多提供兩組呼叫／輸入與預期結果，其他情況請依完整規格自行推演；固定輸出題只列一組。每題自動驗收仍至少十項，題面範例不等於全部測資。
 
 ## Windows／macOS／Linux 安裝
 
@@ -41,6 +43,8 @@ cargo run -- run 1-1
 
 原生執行方式：`cargo run --example unit01_01`。提示／答案使用 `cargo run -- hint 1-1`／`cargo run -- answer 1-1`。
 
+若在examples資料夾用 `rustc unit04_04.rs` 遇到E0433、找不到rust_beginner_course，請直接改用 `cargo run --example unit04_04`；不必離開examples，Cargo會向上找到套件設定。第二～四單元依賴本課src/lib.rs中的輸入工具，Cargo會一起建置與連結；只加extern crate或重新安裝Rust無法補上這個建置流程。只編譯可用 `cargo build --example unit04_04`，自動對答案用 `cargo run -- run 4-4`。完整說明見 [單元０](units/00.md)。
+
 `run 2` 一次驗收第二單元全部作業，`run 2-1` 只驗一題。`test` 與 run 同義；若要跑自己檔案內的原生 Rust 測試，用 `cargo test --example unit05_01` 等。沒有找到測試不能視為完成作業。
 
 workspace 根目錄不預設選課；先 cd beginner，或明確使用 `-p rust-beginner-course`。`cargo run -- lesson 1` 每個部分的意義在單元０。
@@ -59,6 +63,18 @@ workspace 根目錄不預設選課；先 cd beginner，或明確使用 `-p rust-
 `cargo run -- manual 2-1` 啟動後輸入25再按Enter；`cargo run -- run 2-1` 自動餵完整資料，不需手動輸入。第十一單元 manual 只跑學生對正確版的測試，run 才檢查故障版本。
 
 每題至少十項具名驗收；第一題是十項相關輸出性質，測試設計題是正確版加九個故障版，均明確標示。其他程式題使用不同stdin／參數，函式題為獨立案例。比對與範圍見各題及TEST_CASES。
+
+程式輸入輸出題每筆PASS也會顯示實際stdin與stdout，方便對照。例如第二單元的3661秒：
+
+```text
+  PASS  3661 秒
+    stdin：
+      │ 3661
+    stdout：
+      │ 1 1 1
+```
+
+左側的│是驗收報告框線，不是程式輸出的字元；多行輸出逐行顯示，空輸出標示「（空）」，單一空白行仍保留一行框線。CRLF以一般換行呈現，tab等其他控制字元顯示為跳脫文字。檔案題另顯示程式參數；預期錯誤案例會顯示實際stderr及非零退出碼。
 
 編譯上限六十秒，每組程式三秒，函式／學生測試每次十秒；逾時停止並限制顯示診斷長度。本機課程工具不是隔離任意不可信程式的安全服務。有限驗收無法代替解釋與設計評量。
 

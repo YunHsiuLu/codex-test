@@ -1,4 +1,8 @@
 fn is_even(value: i64) -> bool {
-    todo!("判斷偶數")
+    if value % 2 == 0 {
+        return true;
+    } else {
+        return false;
+    }
 }
 fn main() {}

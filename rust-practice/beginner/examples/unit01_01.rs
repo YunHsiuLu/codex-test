@@ -1,4 +1,4 @@
 fn main() {
     println!("Hello, Rust!");
-    // 新增第二行輸出。
+    println!("我正在學程式設計");
 }

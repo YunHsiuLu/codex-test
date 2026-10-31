@@ -66,6 +66,14 @@ name = "answer5_3"
 path = "solutions/unit05_03.rs"
 
 [[example]]
+name = "answer5_4"
+path = "solutions/unit05_04.rs"
+
+[[example]]
+name = "answer5_5"
+path = "solutions/unit05_05.rs"
+
+[[example]]
 name = "answer6_1"
 path = "solutions/unit06_01.rs"
 

@@ -90,6 +90,39 @@ fn capture(
 fn normalize(text: &str) -> String {
     text.replace("\r\n", "\n").trim_end_matches('\n').to_owned()
 }
+// The left border belongs to the report, not to the learner program's output.
+fn stream_block(label: &str, text: &str) -> String {
+    let mut block = format!("    {label}：\n");
+    if text.is_empty() {
+        block.push_str("      （空）\n");
+    } else {
+        for line in text.replace("\r\n", "\n").split_terminator('\n') {
+            block.push_str("      │ ");
+            for ch in line.chars() {
+                if ch.is_control() {
+                    block.extend(ch.escape_default());
+                } else {
+                    block.push(ch);
+                }
+            }
+            block.push('\n');
+        }
+    }
+    block
+}
+fn show_success_io(input: &str, args: &[&str], stdout: &str, stderr: &str, exit: i32) {
+    if !args.is_empty() {
+        println!("    args（程式參數）：{args:?}");
+    }
+    print!("{}", stream_block("stdin", input));
+    print!("{}", stream_block("stdout", stdout));
+    if !stderr.is_empty() {
+        print!("{}", stream_block("stderr", stderr));
+    }
+    if exit != 0 {
+        println!("    退出碼：{exit}");
+    }
+}
 fn rustc() -> Command {
     Command::new(env::var_os("RUSTC").unwrap_or_else(|| "rustc".into()))
 }
@@ -176,6 +209,13 @@ pub fn check_validated(
             if !result.timed_out && result.status.code() == Some(case.exit) && comparison.is_ok() {
                 passed += 1;
                 println!("  PASS  {}", case.name);
+                show_success_io(
+                    case.input,
+                    case.args,
+                    &result.stdout,
+                    &result.stderr,
+                    case.exit,
+                );
             } else {
                 println!("  FAIL  {}", case.name);
                 if result.timed_out {
@@ -264,4 +304,41 @@ pub fn check_validated(
         }
     );
     Ok(passed == total)
+}
+
+#[cfg(test)]
+mod output_report_tests {
+    use super::stream_block;
+
+    #[test]
+    fn report_shows_real_single_and_multiple_output_lines() {
+        assert_eq!(
+            stream_block("stdout", "1 1 1\n"),
+            "    stdout：\n      │ 1 1 1\n"
+        );
+        assert_eq!(
+            stream_block("stdout", "1 2\r\n2 4\r\n"),
+            "    stdout：\n      │ 1 2\n      │ 2 4\n"
+        );
+    }
+    #[test]
+    fn report_distinguishes_empty_output_and_a_blank_line() {
+        assert_eq!(stream_block("stdout", ""), "    stdout：\n      （空）\n");
+        assert_eq!(stream_block("stdout", "\n"), "    stdout：\n      │ \n");
+        assert_eq!(
+            stream_block("stdout", "a\n\n"),
+            "    stdout：\n      │ a\n      │ \n"
+        );
+    }
+    #[test]
+    fn report_preserves_spaces_and_unicode_and_exposes_control_characters() {
+        assert_eq!(
+            stream_block("stdout", "  物理  \n"),
+            "    stdout：\n      │   物理  \n"
+        );
+        assert_eq!(
+            stream_block("stdout", "a\tb\r\u{1b}"),
+            "    stdout：\n      │ a\\tb\\r\\u{1b}\n"
+        );
+    }
 }

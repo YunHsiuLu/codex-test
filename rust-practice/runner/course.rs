@@ -280,6 +280,13 @@ pub fn check_source(root: &Path, exercise: &Exercise, source: &Path) -> Result<b
         if okay {
             passed += 1;
             println!("  PASS  {}", case.name);
+            super::show_success_io(
+                case.input,
+                case.args,
+                &result.stdout,
+                &result.stderr,
+                case.exit,
+            );
         } else {
             println!(
                 "  FAIL  {}\n    stdin={:?} args={:?}\n    預期 stdout={:?} stderr={:?} exit={}\n    實際 stdout={:?} stderr={:?} exit={:?}{}",

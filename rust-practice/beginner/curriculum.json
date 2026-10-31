@@ -28,7 +28,7 @@
     },
     {
       "id": 5,
-      "title": "函式分解、契約與早期測試",
+      "title": "函式、遞迴、契約與早期測試",
       "path": "units/05.md"
     },
     {
@@ -1360,7 +1360,7 @@
     {
       "id": "5-2",
       "unit": 5,
-      "title": "範圍限制與前置條件",
+      "title": "把數值限制在範圍內",
       "kind": "function",
       "source": "examples/unit05_02.rs",
       "solution": "solutions/unit05_02.rs",
@@ -1460,6 +1460,140 @@
         {
           "name": "cost_10",
           "check": "assert_eq!(rectangle_area(1000000,1000000),1000000000000); assert_eq!(paint_cost(1000000,1000000,1000000),1000000000000000000);"
+        }
+      ]
+    },
+    {
+      "id": "5-4",
+      "unit": 5,
+      "title": "遞迴階乘",
+      "kind": "function",
+      "source": "examples/unit05_04.rs",
+      "solution": "solutions/unit05_04.rs",
+      "target": "unit05_04",
+      "support": false,
+      "hint": "先驗證n的範圍，找出不需要再呼叫的情況；其他情況等待較小階乘的結果後，才完成本層乘法。",
+      "checks": [
+        {
+          "name": "factorial_0",
+          "check": "assert_eq!(factorial(0), 1_u64);"
+        },
+        {
+          "name": "factorial_1",
+          "check": "assert_eq!(factorial(1), 1_u64);"
+        },
+        {
+          "name": "factorial_2",
+          "check": "assert_eq!(factorial(2), 2_u64);"
+        },
+        {
+          "name": "factorial_3",
+          "check": "assert_eq!(factorial(3), 6_u64);"
+        },
+        {
+          "name": "factorial_4",
+          "check": "assert_eq!(factorial(4), 24_u64);"
+        },
+        {
+          "name": "factorial_5",
+          "check": "assert_eq!(factorial(5), 120_u64);"
+        },
+        {
+          "name": "factorial_8",
+          "check": "assert_eq!(factorial(8), 40320_u64);"
+        },
+        {
+          "name": "factorial_10",
+          "check": "assert_eq!(factorial(10), 3628800_u64);"
+        },
+        {
+          "name": "factorial_15",
+          "check": "assert_eq!(factorial(15), 1307674368000_u64);"
+        },
+        {
+          "name": "factorial_19",
+          "check": "assert_eq!(factorial(19), 121645100408832000_u64);"
+        },
+        {
+          "name": "factorial_20",
+          "check": "assert_eq!(factorial(20), 2432902008176640000_u64);"
+        },
+        {
+          "name": "reject_twenty_one",
+          "check": "assert!(std::panic::catch_unwind(|| factorial(21)).is_err());"
+        },
+        {
+          "name": "reject_maximum_input",
+          "check": "assert!(std::panic::catch_unwind(|| factorial(u32::MAX)).is_err());"
+        }
+      ]
+    },
+    {
+      "id": "5-5",
+      "unit": 5,
+      "title": "遞迴最大公因數",
+      "kind": "function",
+      "source": "examples/unit05_05.rs",
+      "solution": "solutions/unit05_05.rs",
+      "target": "unit05_05",
+      "support": false,
+      "hint": "先處理b為0；其他情況用餘數建立下一組參數，指出新b比原本b小。",
+      "checks": [
+        {
+          "name": "gcd_case_1",
+          "check": "assert_eq!(gcd(48_u64, 18_u64), 6_u64);"
+        },
+        {
+          "name": "gcd_case_2",
+          "check": "assert_eq!(gcd(35_u64, 14_u64), 7_u64);"
+        },
+        {
+          "name": "gcd_case_3",
+          "check": "assert_eq!(gcd(0_u64, 9_u64), 9_u64);"
+        },
+        {
+          "name": "gcd_case_4",
+          "check": "assert_eq!(gcd(9_u64, 0_u64), 9_u64);"
+        },
+        {
+          "name": "gcd_case_5",
+          "check": "assert_eq!(gcd(0_u64, 0_u64), 0_u64);"
+        },
+        {
+          "name": "gcd_case_6",
+          "check": "assert_eq!(gcd(12_u64, 12_u64), 12_u64);"
+        },
+        {
+          "name": "gcd_case_7",
+          "check": "assert_eq!(gcd(18_u64, 48_u64), 6_u64);"
+        },
+        {
+          "name": "gcd_case_8",
+          "check": "assert_eq!(gcd(100_u64, 25_u64), 25_u64);"
+        },
+        {
+          "name": "gcd_case_9",
+          "check": "assert_eq!(gcd(270_u64, 192_u64), 6_u64);"
+        },
+        {
+          "name": "gcd_case_10",
+          "check": "assert_eq!(gcd(1_u64, 18446744073709551615_u64), 1_u64);"
+        },
+        {
+          "name": "gcd_case_11",
+          "check": "assert_eq!(gcd(18446744073709551615_u64, 0_u64), 18446744073709551615_u64);"
+        },
+        {
+          "name": "gcd_case_12",
+          "check": "assert_eq!(gcd(18446744073709551615_u64, 18446744073709551615_u64), 18446744073709551615_u64);"
+        },
+        {
+          "name": "gcd_case_13",
+          "check": "assert_eq!(gcd(18446744073709551615_u64, 18446744073709551614_u64), 1_u64);"
+        },
+        {
+          "name": "gcd_case_14",
+          "check": "assert_eq!(gcd(9223372036854775808_u64, 4611686018427387904_u64), 4611686018427387904_u64);"
         }
       ]
     },

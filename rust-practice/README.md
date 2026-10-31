@@ -4,7 +4,7 @@
 
 | 路線 | 定位 | 入口 |
 | --- | --- | --- |
-| **Rust Beginner Course** | 正式入門主線：單元０～１２、三十七份實作，從零基礎到獨立專案 | [操作與安裝](beginner/README.md)｜[課綱](beginner/SYLLABUS.md)｜[完整教材](beginner/COURSE.md) |
+| **Rust Beginner Course** | 正式入門主線：單元０～１２、三十九份實作，從零基礎到獨立專案 | [操作與安裝](beginner/README.md)｜[課綱](beginner/SYLLABUS.md)｜[完整教材](beginner/COURSE.md) |
 | **Rust Advanced Course** | 完成主線後深化契約、不變量、資源、生命週期、抽象化與並行 | [操作說明](advanced/README.md)｜[課綱](advanced/SYLLABUS.md)｜[完整教材](advanced/COURSE.md) |
 
 教師先讀 [課程設計與評量指南](beginner/TEACHING_GUIDE.md)。能力對照以問題拆解、資料處理、除錯與驗證為主，不把 C++／Python 語法逐字翻成 Rust。
