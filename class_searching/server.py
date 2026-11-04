@@ -46,7 +46,12 @@ def load_adjustments():
 
 
 def save_adjustments(payload):
-    write_json(ADJUSTMENTS_PATH, payload)
+    temporary_path = ADJUSTMENTS_PATH.with_name(ADJUSTMENTS_PATH.name + ".tmp")
+    try:
+        write_json(temporary_path, payload)
+        temporary_path.replace(ADJUSTMENTS_PATH)
+    finally:
+        temporary_path.unlink(missing_ok=True)
 
 
 def parse_iso_date(value: str) -> date:
@@ -112,15 +117,17 @@ def adjustment_matches_database(adjustment, data, database_path: Path):
 def adjustment_in_week(adjustment, selected_week):
     if selected_week is None:
         return False
-    start, end = selected_week
-    dates = [adjustment.get("date"), adjustment.get("swap_date")]
-    for raw_date in dates:
-        if not raw_date:
-            continue
-        current = parse_iso_date(raw_date)
-        if start <= current <= end:
-            return True
-    return False
+    return any(date_in_week(value, selected_week) for value in adjustment_dates(adjustment))
+
+
+def adjustment_dates(adjustment):
+    if adjustment.get("type") == "triangle_swap":
+        return [slot["date"] for slot in adjustment["slots"]]
+    return [value for value in (adjustment.get("date"), adjustment.get("swap_date")) if value]
+
+
+def triangle_moves(slots):
+    return zip(slots, slots[1:] + slots[:1])
 
 
 def date_in_week(value: str, selected_week):
@@ -148,6 +155,14 @@ def adjustment_at_teacher_slot(data, teacher_name: str, event_date: str, period:
                 adjustment.get("swap_teacher"),
             }:
                 return adjustment
+        elif adjustment.get("type") == "triangle_swap":
+            for source, destination in triangle_moves(adjustment["slots"]):
+                if (
+                    destination["date"] == event_date
+                    and destination["period"] == period
+                    and teacher_name in (source["teacher"], destination["teacher"])
+                ):
+                    return adjustment
     return None
 
 
@@ -293,6 +308,22 @@ def apply_swap(data, adjustment, selected_week):
         apply_swap_leg(data, adjustment, original_leg=False)
 
 
+def apply_triangle_swap(data, adjustment, selected_week):
+    if not adjustment_in_week(adjustment, selected_week):
+        return
+    klass = find_class(data, adjustment["class"])
+    slots = adjustment["slots"]
+    teachers = {slot["teacher"]: find_teacher(data, slot["teacher"]) for slot in slots}
+    if not klass or not all(teachers.values()):
+        return
+    for source, destination in triangle_moves(slots):
+        day_key, period = destination["day_key"], destination["period"]
+        lesson = normalize_lesson(source["lesson"])
+        get_slot(teachers[destination["teacher"]], day_key, period)["lesson"] = None
+        get_slot(teachers[source["teacher"]], day_key, period)["lesson"] = lesson
+        get_slot(klass, day_key, period)["lesson"] = lesson
+
+
 def apply_adjustments(data, database_path: Path, selected_date: str | None):
     selected_week = week_range(selected_date)
     payload = load_adjustments()
@@ -311,6 +342,8 @@ def apply_adjustments(data, database_path: Path, selected_date: str | None):
             apply_substitute(data, adjustment)
         elif adjustment.get("type") == "swap":
             apply_swap(data, adjustment, selected_week)
+        elif adjustment.get("type") == "triangle_swap":
+            apply_triangle_swap(data, adjustment, selected_week)
 
     recalc_teacher_counts(data)
     data["adjustments"] = active
@@ -326,34 +359,22 @@ def upcoming_adjustments(adjustments, data, database_path: Path):
             continue
         if not adjustment_matches_database(adjustment, data, database_path):
             continue
-        future_dates = [
-            parse_iso_date(raw_date)
-            for raw_date in (adjustment.get("date"), adjustment.get("swap_date"))
-            if raw_date and parse_iso_date(raw_date) >= today
-        ]
-        if not future_dates:
-            continue
-        rows.append(adjustment)
-    return sorted(
-        rows,
-        key=lambda item: (
-            min(
-                parse_iso_date(raw_date)
-                for raw_date in (item.get("date"), item.get("swap_date"))
-                if raw_date and parse_iso_date(raw_date) >= today
-            ),
-            item["period"],
-        ),
-    )
+        future_dates = [value for value in map(parse_iso_date, adjustment_dates(adjustment)) if value >= today]
+        if future_dates:
+            rows.append((min(future_dates), adjustment))
+    rows.sort(key=lambda row: (row[0], row[1]["period"]))
+    return [adjustment for _, adjustment in rows]
 
 
 def validate_adjustment(raw, data, database_path: Path, target_data=None):
     adjustment_type = raw.get("type")
-    if adjustment_type not in {"substitute", "swap"}:
-        raise ValueError("type 必須是 substitute 或 swap。")
+    if adjustment_type not in {"substitute", "swap", "triangle_swap"}:
+        raise ValueError("type 必須是 substitute、swap 或 triangle_swap。")
 
     event_date = raw.get("date", "")
     validate_event_date(data, event_date)
+    if adjustment_type == "triangle_swap":
+        event_date = parse_iso_date(event_date).isoformat()
     day_key = day_key_for_date(event_date)
     period = int(raw.get("period", 0))
     if period < 1 or period > len(data["periods"]):
@@ -364,13 +385,14 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
     if not applicant:
         raise ValueError("找不到申請人老師。")
     applicant_slot = get_slot(applicant, day_key, period)
-    require_adjustable_slot(applicant_slot, adjustment_type)
+    lock_type = "substitute" if adjustment_type == "substitute" else "swap"
+    require_adjustable_slot(applicant_slot, lock_type)
     if not applicant_slot.get("lesson"):
         raise ValueError("申請人該時段沒有課，無法建立調代課。")
     require_unadjusted_teacher_slot(data, applicant["teacher"], event_date, period, "原時段")
     source_class_slot = class_slot_for_lesson(data, applicant_slot['lesson'], day_key, period)
     if source_class_slot and source_class_slot.get('lesson'):
-        require_adjustable_slot(source_class_slot, adjustment_type)
+        require_adjustable_slot(source_class_slot, lock_type)
         class_teachers = source_class_slot['lesson'].get('teachers') or [source_class_slot['lesson'].get('teacher')]
         if applicant['teacher'] not in class_teachers:
             raise ValueError('申請人與班級授課資料不一致，請先確認課表。')
@@ -399,9 +421,24 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
             raise ValueError("找不到代課老師。")
         if get_slot(substitute_teacher, day_key, period).get("lesson"):
             raise ValueError("代課老師該時段不是空堂。")
+        existing = adjustment_at_teacher_slot(data, substitute_name, event_date, period)
+        if existing and existing["type"] == "triangle_swap":
+            raise ValueError("代課老師該時段已有三角調課紀錄。")
         adjustment["substitute_teacher"] = substitute_teacher["teacher"]
         adjustment["class"] = applicant_slot["lesson"].get("class", "")
         return adjustment
+
+    if adjustment_type == "triangle_swap":
+        requested = raw.get("targets")
+        for candidate in find_triangle_swap_candidates(raw, data):
+            targets = [
+                {key: slot[key] for key in ("date", "period", "teacher")}
+                for slot in candidate["slots"][1:]
+            ]
+            if requested == targets:
+                adjustment.update(candidate)
+                return adjustment
+        raise ValueError("這個三角調課組合目前無法登記，請重新查詢。")
 
     swap_date = raw.get("swap_date", "")
     validate_event_date(data, swap_date)
@@ -454,6 +491,72 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
         }
     )
     return adjustment
+
+
+def find_triangle_swap_candidates(raw, data):
+    event_date = raw.get("date", "")
+    validate_event_date(data, event_date)
+    event_date = parse_iso_date(event_date).isoformat()
+    period = int(raw.get("period", 0))
+    if not 1 <= period <= len(data["periods"]):
+        raise ValueError("節次不正確。")
+    day_key = day_key_for_date(event_date)
+    teachers = {teacher["teacher"]: teacher for teacher in data["teachers"]}
+    applicant = raw.get("applicant")
+    if applicant not in teachers:
+        raise ValueError("找不到申請人老師。")
+    applicant_slot = get_slot(teachers[applicant], day_key, period)
+    lesson = applicant_slot.get("lesson")
+    klass = find_class(data, lesson.get("class") if lesson else None)
+    if not klass:
+        return []
+
+    eligible = []
+    monday, _ = week_range(event_date)
+    for day_index, key in enumerate(DAY_KEYS):
+        slot_date = (monday + timedelta(days=day_index)).isoformat()
+        if data.get("effective_start") and not data["effective_start"] <= slot_date <= data["effective_end"]:
+            continue
+        for class_slot in klass["timetable"][key]:
+            class_lesson = class_slot.get("lesson")
+            if not class_lesson or adjustment_lock_reason(class_slot):
+                continue
+            teacher = class_lesson.get("teacher")
+            if teacher not in teachers:
+                continue
+            slot_period = class_slot["period"]
+            teacher_slot = get_slot(teachers[teacher], key, slot_period)
+            teacher_lesson = teacher_slot.get("lesson")
+            if not teacher_lesson or teacher_lesson.get("class") != klass["class"] or adjustment_lock_reason(teacher_slot):
+                continue
+            if adjustment_at_teacher_slot(data, teacher, slot_date, slot_period):
+                continue
+            eligible.append({
+                "date": slot_date, "day_key": key, "day": DAY_LABELS[key],
+                "period": slot_period, "time": class_slot.get("time", ""),
+                "teacher": teacher, "lesson": normalize_lesson(class_lesson),
+            })
+
+    source = next((slot for slot in eligible if (slot["date"], slot["period"], slot["teacher"])
+                   == (event_date, period, applicant)), None)
+    if source is None:
+        return []
+
+    def can_move(teacher, destination):
+        return (
+            not get_slot(teachers[teacher], destination["day_key"], destination["period"]).get("lesson")
+            and not adjustment_at_teacher_slot(data, teacher, destination["date"], destination["period"])
+        )
+
+    others = [slot for slot in eligible if slot["teacher"] != applicant]
+    next_slots = [slot for slot in others if can_move(applicant, slot)]
+    last_slots = [slot for slot in others if can_move(slot["teacher"], source)]
+    return [
+        {"class": klass["class"], "slots": [source, next_slot, last_slot]}
+        for next_slot in next_slots
+        for last_slot in last_slots
+        if next_slot["teacher"] != last_slot["teacher"] and can_move(next_slot["teacher"], last_slot)
+    ]
 
 
 def find_cross_swap_candidate(raw, source_data, target_data):
@@ -539,6 +642,9 @@ class ScheduleHandler(SimpleHTTPRequestHandler):
         if parsed.path == "/api/cross-swap-candidate":
             self.handle_cross_swap_candidate(parsed)
             return
+        if parsed.path == "/api/triangle-swap-candidates":
+            self.handle_triangle_swap_candidates(parsed)
+            return
         super().do_GET()
 
     def do_POST(self):
@@ -604,6 +710,16 @@ class ScheduleHandler(SimpleHTTPRequestHandler):
             source_data = apply_adjustments(deepcopy(base_data), database_path, raw["date"])
             target_data = apply_adjustments(deepcopy(base_data), database_path, raw["swap_date"])
             self.send_json(find_cross_swap_candidate(raw, source_data, target_data))
+        except Exception as error:
+            self.send_json({"error": str(error)}, HTTPStatus.BAD_REQUEST)
+
+    def handle_triangle_swap_candidates(self, parsed):
+        try:
+            params = parse_qs(parsed.query)
+            database_path = safe_database_path(params.get("database", ["schedule_database.json"])[0])
+            raw = {key: params.get(key, [""])[0] for key in ("date", "period", "applicant")}
+            data = apply_adjustments(read_json(database_path), database_path, raw["date"])
+            self.send_json({"candidates": find_triangle_swap_candidates(raw, data)})
         except Exception as error:
             self.send_json({"error": str(error)}, HTTPStatus.BAD_REQUEST)
 

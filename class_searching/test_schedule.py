@@ -77,6 +77,66 @@ class ScheduleTests(unittest.TestCase):
         self.assertEqual(data['classes'][0]['timetable']['mon'][0]['lesson']['teacher'],'TeacherB')
         self.assertEqual(data['classes'][0]['timetable']['tue'][1]['lesson']['teacher'],'TeacherA')
 
+    def triangle_request(self):
+        klass = self.base['classes'][0]
+        teachers = self.base['teachers']
+        lesson = dict(subject='History', teacher='TeacherC', teachers=['TeacherC'], raw='History',
+                      **{'class': 'Class1', 'classes': ['Class1']})
+        server.get_slot(klass, 'wed', 3)['lesson'] = lesson
+        server.get_slot(teachers[2], 'wed', 3)['lesson'] = deepcopy(lesson)
+        # Neither B nor C can directly swap with A, but A → B → C → A works.
+        server.get_slot(teachers[1], 'mon', 1)['lesson'] = {'raw': 'Busy'}
+        server.get_slot(teachers[0], 'wed', 3)['lesson'] = {'raw': 'Busy'}
+        return dict(type='triangle_swap', date=self.original, period=1, applicant='TeacherA', targets=[
+            dict(date=(self.monday + timedelta(days=1)).isoformat(), period=2, teacher='TeacherB'),
+            dict(date=(self.monday + timedelta(days=2)).isoformat(), period=3, teacher='TeacherC'),
+        ])
+
+    def test_triangle_swap_projection_and_cancellation(self):
+        raw = self.triangle_request()
+        candidates = server.find_triangle_swap_candidates(raw, self.base)
+        self.assertEqual([[slot['teacher'] for slot in candidate['slots']] for candidate in candidates],
+                         [['TeacherA', 'TeacherB', 'TeacherC']])
+        record = server.validate_adjustment(raw, self.base, self.path)
+        server.save_adjustments({'adjustments': [record]})
+        data = self.project(self.original)
+        klass = data['classes'][0]
+        for day, period, outgoing, incoming, subject in [
+            ('mon', 1, 'TeacherA', 'TeacherC', 'History'),
+            ('tue', 2, 'TeacherB', 'TeacherA', 'Physics'),
+            ('wed', 3, 'TeacherC', 'TeacherB', 'Geography'),
+        ]:
+            lesson = server.get_slot(klass, day, period)['lesson']
+            self.assertEqual((lesson['teacher'], lesson['subject']), (incoming, subject))
+            self.assertEqual(server.get_slot(server.find_teacher(data, incoming), day, period)['lesson'], lesson)
+            self.assertIsNone(server.get_slot(server.find_teacher(data, outgoing), day, period)['lesson'])
+        self.assertEqual(data['announcements'][0]['id'], record['id'])
+        self.assertEqual(self.project(self.target)['classes'], self.base['classes'])
+        with self.assertRaises(ValueError):
+            server.validate_adjustment(raw, data, self.path)
+        with self.assertRaisesRegex(ValueError, '已有三角調課'):
+            server.validate_adjustment(dict(type='substitute', date=self.original, period=1,
+                                            applicant='TeacherB', substitute_teacher='TeacherA'), data, self.path)
+        record['status'] = 'cancelled'
+        server.save_adjustments({'adjustments': [record]})
+        restored = self.project(self.original)
+        self.assertEqual(restored['classes'], self.base['classes'])
+        self.assertFalse(restored['announcements'])
+
+    def test_triangle_swap_rechecks_availability_locks_and_week(self):
+        raw = self.triangle_request()
+        busy, locked, out_of_term = [deepcopy(self.base) for _ in range(3)]
+        server.get_slot(busy['teachers'][1], 'wed', 3)['lesson'] = {'raw': 'Busy'}
+        server.get_slot(locked['classes'][0], 'wed', 3)['lesson']['raw'] = '探究與實作'
+        out_of_term.update(effective_start=self.original, effective_end=raw['targets'][0]['date'])
+        for data in (busy, locked, out_of_term):
+            self.assertFalse(server.find_triangle_swap_candidates(raw, data))
+            with self.assertRaises(ValueError):
+                server.validate_adjustment(raw, data, self.path)
+        cross_week = {**raw, 'targets': [{**raw['targets'][0], 'date': self.target}, raw['targets'][1]]}
+        with self.assertRaises(ValueError):
+            server.validate_adjustment(cross_week, self.base, self.path)
+
     def test_substitution(self):
         raw=dict(type='substitute',date=self.original,period=1,applicant='TeacherA',substitute_teacher='TeacherC')
         record=server.validate_adjustment(raw,self.project(self.original),self.path)

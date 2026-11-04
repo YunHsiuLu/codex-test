@@ -389,6 +389,11 @@ button:disabled {
 
 .swap-scope {
   width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.swap-scope button {
+  min-width: 0;
 }
 
 .action-box {

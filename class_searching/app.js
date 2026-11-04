@@ -9,6 +9,7 @@ let pageView = "announcements";
 let selected = { dayKey: "mon", period: 1 };
 let swapScope = "same-week";
 let crossSwap = { targetDate: "", targetPeriod: 1, candidate: null, error: "" };
+let triangleRequest = 0;
 
 const $ = (id) => document.getElementById(id);
 
@@ -88,11 +89,18 @@ function adjustmentForSlot(teacherName, dayKey, period) {
         [adjustment.applicant, adjustment.swap_teacher].includes(teacherName)
       );
     }
+    if (adjustment.type === "triangle_swap") {
+      return triangleMoves(adjustment.slots).some(([source, destination]) =>
+        destination.date === date && destination.period === period &&
+        [source.teacher, destination.teacher].includes(teacherName),
+      );
+    }
     return false;
   });
 }
 
 function adjustmentLabel(adjustment) {
+  if (adjustment.type === "triangle_swap") return "此時段已有三角調課";
   return adjustment.type === "swap" ? "此時段已有調課" : "此時段已有代課";
 }
 
@@ -239,7 +247,8 @@ function substituteTeacherOptions(applicant) {
       (teacher) =>
         teacher.teacher !== applicant.teacher &&
         (!domain || teacher.domain === domain) &&
-        isFree(teacher, selected.dayKey, selected.period),
+        isFree(teacher, selected.dayKey, selected.period) &&
+        adjustmentForSlot(teacher.teacher, selected.dayKey, selected.period)?.type !== "triangle_swap",
     )
     .map((teacher) => `<option value="${teacher.teacher}">${teacher.domain}｜${teacher.teacher}</option>`)
     .join("");
@@ -271,7 +280,9 @@ function renderTimetable() {
         const empty = slot.lesson ? "" : "empty";
         const dateLabel = slotDate(dayKey);
         const adjustment = adjustmentForSlot(teacher.teacher, dayKey, period.period);
-        const adjusted = adjustment ? `adjusted adjusted-${adjustment.type}` : "";
+        const adjusted = adjustment
+          ? `adjusted adjusted-${adjustment.type === "substitute" ? "substitute" : "swap"}`
+          : "";
         const locks = slot.adjustment_lock_reasons || {swap:slot.adjustment_lock_reason, substitute:slot.adjustment_lock_reason};
         const lockReason = locks.swap || locks.substitute || "";
         const lockLabel = locks.swap && !locks.substitute ? '可代課，不可調課' : '不可調整';
@@ -349,13 +360,17 @@ function renderQuickActions(teacher, slot) {
     $("addSubstitute").addEventListener("click", createSubstitute);
   } else {
     const scopeButtons = `
-      <div class="segmented swap-scope" role="group" aria-label="調課範圍">
-        <button id="sameWeekSwap" class="${swapScope === "same-week" ? "active" : ""}" type="button">同週調課</button>
-        <button id="crossDateSwap" class="${swapScope === "cross-date" ? "active" : ""}" type="button">跨日期調課</button>
+      <div class="segmented swap-scope" role="group" aria-label="調課方式">
+        ${[["same-week", "同週調課"], ["cross-date", "跨日期調課"], ["triangle", "三角調課"]]
+          .map(([scope, label]) => `<button type="button" data-swap-scope="${scope}" aria-pressed="${swapScope === scope}" class="${swapScope === scope ? "active" : ""}">${label}</button>`)
+          .join("")}
       </div>
     `;
-    if (swapScope === "same-week") {
-      $("quickActions").innerHTML = `${scopeButtons}<p class="muted action-hint">從下方同班級調課建議中選擇一筆登記。</p>`;
+    if (swapScope !== "cross-date") {
+      const hint = swapScope === "triangle"
+        ? "同班級、同一週內的三堂課循環互換。每位老師在調入的時段都須空堂。"
+        : "從下方同班級調課建議中選擇一筆登記。";
+      $("quickActions").innerHTML = `${scopeButtons}<p class="muted action-hint">${hint}</p>`;
     } else {
       const targetDate = crossSwap.targetDate || nextWeekDate(selected.dayKey);
       const targetPeriod = crossSwap.targetPeriod || selected.period;
@@ -390,8 +405,9 @@ function renderQuickActions(teacher, slot) {
       });
       $("findCrossSwap").addEventListener("click", findCrossSwap);
     }
-    $("sameWeekSwap").addEventListener("click", () => setSwapScope("same-week"));
-    $("crossDateSwap").addEventListener("click", () => setSwapScope("cross-date"));
+    $("quickActions").querySelectorAll("[data-swap-scope]").forEach((button) => {
+      button.addEventListener("click", () => setSwapScope(button.dataset.swapScope));
+    });
   }
 }
 
@@ -409,6 +425,10 @@ function renderSubstitutes(teacher) {
 function renderSwaps(teacher, slot) {
   if (swapScope === "cross-date") {
     renderCrossDateSwap(slot);
+    return;
+  }
+  if (swapScope === "triangle") {
+    renderTriangleSwaps(teacher, slot);
     return;
   }
   $("resultTitle").textContent = "同週調課";
@@ -442,6 +462,54 @@ function renderSwaps(teacher, slot) {
   document.querySelectorAll("[data-swap-index]").forEach((button) => {
     button.addEventListener("click", () => createSwap(swaps[Number(button.dataset.swapIndex)]));
   });
+}
+
+function triangleMoves(slots) {
+  return slots.map((source, index) => [source, slots[(index + 1) % slots.length]]);
+}
+
+function triangleDetails(slots) {
+  const label = (slot) => eventSlotLabel(slot.date, slot.day, slot.period, slot.time);
+  return triangleMoves(slots).map(([source, destination]) => `
+    <p><strong>${source.teacher}｜${source.lesson.subject}</strong><br />
+      ${label(source)} → ${label(destination)}</p>
+  `).join("");
+}
+
+async function renderTriangleSwaps(teacher, slot) {
+  $("resultTitle").textContent = "三角調課";
+  if (!slot.lesson || adjustmentForSlot(teacher.teacher, selected.dayKey, selected.period)) {
+    $("results").innerHTML = `<p class="empty-state">請選擇尚未登記調代課的有課時段。</p>`;
+    return;
+  }
+  const request = triangleRequest;
+  const params = new URLSearchParams({
+    database: $("semesterSelect").value,
+    date: slotDate(selected.dayKey),
+    period: String(selected.period),
+    applicant: teacher.teacher,
+  });
+  $("results").innerHTML = `<p class="empty-state" role="status">正在查詢三角調課組合……</p>`;
+  try {
+    const { candidates } = await apiFetch(`/api/triangle-swap-candidates?${params}`);
+    if (request !== triangleRequest) return;
+    $("results").innerHTML = candidates.map((candidate, index) => `
+      <article class="swap-card">
+        <div class="swap-title"><strong>${candidate.class}</strong></div>
+        ${triangleDetails(candidate.slots)}
+        <button class="secondary-action" type="button" data-triangle-index="${index}">登記三角調課</button>
+      </article>
+    `).join("") || `<p class="empty-state">這堂課沒有可行的同週三角調課組合。</p>`;
+    $("results").querySelectorAll("[data-triangle-index]").forEach((button) => {
+      button.addEventListener("click", () => createTriangleSwap(candidates[Number(button.dataset.triangleIndex)]));
+    });
+  } catch (error) {
+    if (request !== triangleRequest) return;
+    const message = document.createElement("p");
+    message.className = "empty-state";
+    message.textContent = `三角調課查詢失敗：${error.message}`;
+    $("results").replaceChildren(message);
+  }
 }
 
 function renderCrossDateSwap(slot) {
@@ -478,6 +546,7 @@ function renderCrossDateSwap(slot) {
 }
 
 function renderResults() {
+  triangleRequest += 1;
   const teacher = getTeacher($("teacherSelect").value);
   const slot = getSlot(teacher, selected.dayKey, selected.period);
   $("selectedSlot").textContent = eventSlotLabel(slotDate(selected.dayKey), slot.day, slot.period, slot.time);
@@ -544,6 +613,29 @@ async function createSwap(swap) {
     await loadSelectedSemester("調課已登記，課表與公告已更新。");
   } catch (error) {
     setStatus(`調課未登記：${error.message}`, true);
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function createTriangleSwap(candidate) {
+  const [source, ...targets] = candidate.slots;
+  const payload = {
+    type: "triangle_swap",
+    date: source.date,
+    period: source.period,
+    applicant: source.teacher,
+    targets: targets.map(({ date, period, teacher }) => ({ date, period, teacher })),
+  };
+  try {
+    setLoading(true, "正在登記三角調課……");
+    await apiFetch(`/api/adjustments?database=${apiDatabase()}`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    await loadSelectedSemester("三角調課已登記，課表與公告已更新。");
+  } catch (error) {
+    setStatus(`三角調課未登記：${error.message}`, true);
   } finally {
     setLoading(false);
   }
@@ -620,9 +712,10 @@ function renderAnnouncements() {
   $("announcements").innerHTML =
     announcements
       .map((item) => {
-        const typeLabel = item.type === "swap" ? "調課" : "代課";
-        const detail =
-          item.type === "swap"
+        const typeLabel = { swap: "調課", triangle_swap: "三角調課", substitute: "代課" }[item.type];
+        const detail = item.type === "triangle_swap"
+          ? `<p>${item.class}｜申請人：${item.applicant}</p>${triangleDetails(item.slots)}`
+          : item.type === "swap"
             ? `
               <p>原時段：${eventSlotLabel(item.date, item.day, item.period, item.time)}｜${item.lesson.raw}</p>
               <p>互換：${eventSlotLabel(item.swap_date, item.swap_day, item.swap_period, item.swap_time)}｜${item.swap_lesson.raw}</p>
@@ -686,7 +779,7 @@ async function init() {
     clearCrossSwap();
     renderModeButtons();
     renderResults();
-    setStatus("已切換至調課模式。可選擇同週或跨日期調課。");
+    setStatus("已切換至調課模式。可選擇同週、跨日期或三角調課。");
   });
 
   await loadSemesters();
@@ -711,6 +804,7 @@ async function loadSemesters() {
 }
 
 async function loadSelectedSemester(successMessage = "課表已更新。") {
+  triangleRequest += 1;
   clearCrossSwap();
   setLoading(true, "正在載入課表……");
   try {
