@@ -11,6 +11,8 @@ __pycache__/
 databases/
 _ocr_test/
 adjustments.json
+adjustments.json.tmp
+/.adjustments-*/
 schedule_database.json
 teacher_course_stats.json
 teacher_directory.json

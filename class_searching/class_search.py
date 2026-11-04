@@ -4,6 +4,8 @@ import argparse
 import json
 from pathlib import Path
 
+from server import is_enrichment_lesson
+
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_PATH = BASE_DIR / "schedule_database.json"
@@ -138,15 +140,17 @@ def find_swaps_for_slot(data, teacher_name, day_key, period, limit=None):
         return []
     teacher = find_teacher(data, teacher_name)
     teacher_slot = get_slot(teacher, day_key, period)
-    if not teacher_slot["lesson"]:
+    if not teacher_slot["lesson"] or is_enrichment_lesson(teacher_slot["lesson"]):
         return []
 
     results = []
     for klass, class_slot in class_slots_for_teacher(data, teacher["teacher"], day_key, period):
+        if is_enrichment_lesson(class_slot["lesson"]):
+            continue
         for other_day in DAY_KEYS:
             for other_class_slot in klass["timetable"][other_day]:
                 other_lesson = other_class_slot["lesson"]
-                if not other_lesson:
+                if not other_lesson or is_enrichment_lesson(other_lesson):
                     continue
                 if other_class_slot["period"] == 8:
                     continue
@@ -159,6 +163,9 @@ def find_swaps_for_slot(data, teacher_name, day_key, period, limit=None):
                     other_teacher = find_teacher(data, other_teacher_name)
                 except SystemExit:
                     continue
+                other_slot = get_slot(other_teacher, other_day, other_class_slot["period"])
+                if other_slot["lesson"] and is_enrichment_lesson(other_slot["lesson"]):
+                    continue
                 if is_free(teacher, other_day, other_class_slot["period"]) and is_free(
                     other_teacher, day_key, period
                 ):
@@ -170,7 +177,7 @@ def find_swaps_for_slot(data, teacher_name, day_key, period, limit=None):
                             "my_class_slot": class_slot,
                             "other_teacher": other_teacher["teacher"],
                             "other_code": other_teacher["teacher_code"],
-                            "other_slot": get_slot(other_teacher, other_day, other_class_slot["period"]),
+                            "other_slot": other_slot,
                             "other_class_slot": other_class_slot,
                         }
                     )

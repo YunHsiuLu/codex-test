@@ -149,7 +149,7 @@ class ScheduleTests(unittest.TestCase):
             server.validate_adjustment(raw,data,self.path)
 
     def test_locked_courses_source_and_target(self):
-        labels = ['領域時間 共同時間', '自主學習', '高二自主學習', '物理充實',
+        labels = ['領域時間 共同時間', '自主學習', '高二自主學習',
                   '行政/主管會議', '處室會議', '高中科主席會 議']
         for label in labels:
             for adjustment_type in ['substitute', 'swap']:
@@ -232,6 +232,46 @@ class ScheduleTests(unittest.TestCase):
             server.validate_adjustment(self.raw, self.base, self.path, target)
         with self.assertRaisesRegex(ValueError, '探究'):
             server.find_cross_swap_candidate(self.raw, self.base, target)
+
+    def test_enrichment_substitute_preserves_unnamed_grade_block(self):
+        for subject, grade_block in [('物理充實', '高二充實'), ('化學充實', '高三充實(二)'),
+                                     ('公民充實創新應用', None)]:
+            with self.subTest(subject=subject):
+                data = deepcopy(self.base)
+                teacher_slot = server.get_slot(data['teachers'][0], 'mon', 1)
+                teacher_slot['lesson'].update(subject=subject, tags=['跨班課程'])
+                if grade_block:
+                    class_slot = server.get_slot(data['classes'][0], 'mon', 1)
+                    class_slot['lesson'].update(subject=grade_block, teacher='', teachers=[])
+                else:
+                    teacher_slot['lesson'].update({'class': '', 'classes': []})
+                server.annotate_adjustment_locks(data)
+                self.assertFalse(teacher_slot['adjustment_lock_reasons']['substitute'])
+                self.assertIn('充實', teacher_slot['adjustment_lock_reasons']['swap'])
+                for kind in ('swap', 'triangle_swap'):
+                    with self.assertRaisesRegex(ValueError, '充實課可代課，但不可調課'):
+                        server.validate_adjustment({**self.raw, 'type': kind}, data, self.path)
+                raw = {**self.raw, 'type': 'substitute', 'substitute_teacher': 'TeacherC'}
+                record = server.validate_adjustment(raw, data, self.path)
+                server.save_adjustments({'adjustments': [record]})
+                result = server.apply_adjustments(deepcopy(data), self.path, self.original)
+                self.assertIsNone(server.get_slot(result['teachers'][0], 'mon', 1)['lesson'])
+                self.assertEqual(server.get_slot(result['teachers'][2], 'mon', 1)['lesson']['subject'], subject)
+                self.assertEqual(result['classes'], data['classes'])
+
+    def test_enrichment_cannot_be_swap_target(self):
+        data = deepcopy(self.base)
+        server.get_slot(data['classes'][0], 'tue', 2)['lesson']['raw'] = '高 三 充 實'
+        for target_date in (self.target, (self.monday + timedelta(days=1)).isoformat()):
+            raw = {**self.raw, 'swap_date': target_date}
+            with self.assertRaisesRegex(ValueError, '充實'):
+                server.validate_adjustment(raw, data, self.path, data)
+            with self.assertRaisesRegex(ValueError, '充實'):
+                server.find_cross_swap_candidate(raw, data, data)
+        triangle = self.triangle_request()
+        self.assertTrue(server.find_triangle_swap_candidates(triangle, self.base))
+        server.get_slot(self.base['teachers'][2], 'wed', 3)['lesson']['subject'] = '化學充實'
+        self.assertFalse(server.find_triangle_swap_candidates(triangle, self.base))
 
     def test_reject_conflicts_and_special_courses(self):
         for changes in [{'swap_date':self.original,'swap_period':1},{'swap_period':8},{'swap_teacher':'TeacherC'}]:

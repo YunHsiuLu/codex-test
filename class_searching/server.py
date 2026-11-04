@@ -178,6 +178,11 @@ def require_single_class_lesson(lesson, allow_coteaching=False):
         raise ValueError('共同授課暫不開放直接調代課。')
 
 
+def is_enrichment_lesson(lesson):
+    return any('充實' in ''.join(str(lesson.get(key, '')).split())
+               for key in ('subject', 'class', 'raw'))
+
+
 def adjustment_lock_reason(slot, adjustment_type='swap'):
     if adjustment_type == 'swap' and int(slot.get('period', 0)) == 8:
         return '第八節可代課，但不可調課。'
@@ -187,9 +192,11 @@ def adjustment_lock_reason(slot, adjustment_type='swap'):
     content = ''.join(str(lesson.get(key, '')) for key in ('subject', 'class', 'raw'))
     content = ''.join(content.split())
     for keyword, reason in [('領域時間', '領域時間'), ('共同時間', '共同時間'),
-                            ('自主學習', '自主學習'), ('充實', '充實課程'), ('會議', '會議時段')]:
+                            ('自主學習', '自主學習'), ('會議', '會議時段')]:
         if keyword in content:
             return f'{reason}不可調代課。'
+    if is_enrichment_lesson(lesson):
+        return '充實課可代課，但不可調課。' if adjustment_type == 'swap' else ''
     inquiry = '探究' in content
     if inquiry and adjustment_type == 'swap':
         return '探究與實作課可代課，但不可調課。'
@@ -235,6 +242,10 @@ def class_slot_for_lesson(data, lesson, day_key: str, period: int):
     return get_slot(klass, day_key, period)
 
 
+def class_lesson_teachers(lesson):
+    return lesson.get('teachers') or ([lesson['teacher']] if lesson.get('teacher') else [])
+
+
 def apply_substitute(data, adjustment):
     day_key = adjustment["day_key"]
     period = int(adjustment["period"])
@@ -252,14 +263,17 @@ def apply_substitute(data, adjustment):
     class_slot = class_slot_for_lesson(data, original_lesson, day_key, period)
     if class_slot:
         class_lesson = normalize_lesson(class_slot.get('lesson') or original_lesson)
-        names = class_lesson.get('teachers') or [class_lesson.get('teacher', adjustment['applicant'])]
-        names = [substitute_teacher['teacher'] if name == adjustment['applicant'] else name for name in names]
-        class_lesson['teachers'] = names
-        class_lesson['teacher'] = '、'.join(names)
-        class_lesson['raw'] = ' '.join(filter(None, [class_lesson.get('subject'),
-                                      class_lesson['teacher'], class_lesson.get('class'), class_lesson.get('location')]))
-        class_lesson['lines'] = [class_lesson['raw']]
-        class_slot['lesson'] = class_lesson
+        names = class_lesson_teachers(class_lesson)
+        # A grade-wide enrichment block without named teachers has no roster to update.
+        if names or not is_enrichment_lesson(class_lesson):
+            names = names or [adjustment['applicant']]
+            names = [substitute_teacher['teacher'] if name == adjustment['applicant'] else name for name in names]
+            class_lesson['teachers'] = names
+            class_lesson['teacher'] = '、'.join(names)
+            class_lesson['raw'] = ' '.join(filter(None, [class_lesson.get('subject'),
+                                          class_lesson['teacher'], class_lesson.get('class'), class_lesson.get('location')]))
+            class_lesson['lines'] = [class_lesson['raw']]
+            class_slot['lesson'] = class_lesson
     original_slot["lesson"] = None
     get_slot(substitute_teacher, day_key, period)["lesson"] = substituted_lesson
 
@@ -393,8 +407,11 @@ def validate_adjustment(raw, data, database_path: Path, target_data=None):
     source_class_slot = class_slot_for_lesson(data, applicant_slot['lesson'], day_key, period)
     if source_class_slot and source_class_slot.get('lesson'):
         require_adjustable_slot(source_class_slot, lock_type)
-        class_teachers = source_class_slot['lesson'].get('teachers') or [source_class_slot['lesson'].get('teacher')]
-        if applicant['teacher'] not in class_teachers:
+        class_lesson = source_class_slot['lesson']
+        class_teachers = class_lesson_teachers(class_lesson)
+        unnamed_enrichment = (not class_teachers and is_enrichment_lesson(class_lesson)
+                              and is_enrichment_lesson(applicant_slot['lesson']))
+        if not unnamed_enrichment and applicant['teacher'] not in class_teachers:
             raise ValueError('申請人與班級授課資料不一致，請先確認課表。')
 
     adjustment = {
