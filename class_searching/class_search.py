@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from server import is_enrichment_lesson
+from server import adjustment_lock_reason
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -140,17 +140,17 @@ def find_swaps_for_slot(data, teacher_name, day_key, period, limit=None):
         return []
     teacher = find_teacher(data, teacher_name)
     teacher_slot = get_slot(teacher, day_key, period)
-    if not teacher_slot["lesson"] or is_enrichment_lesson(teacher_slot["lesson"]):
+    if not teacher_slot["lesson"] or adjustment_lock_reason(teacher_slot):
         return []
 
     results = []
     for klass, class_slot in class_slots_for_teacher(data, teacher["teacher"], day_key, period):
-        if is_enrichment_lesson(class_slot["lesson"]):
+        if adjustment_lock_reason(class_slot):
             continue
         for other_day in DAY_KEYS:
             for other_class_slot in klass["timetable"][other_day]:
                 other_lesson = other_class_slot["lesson"]
-                if not other_lesson or is_enrichment_lesson(other_lesson):
+                if not other_lesson or adjustment_lock_reason(other_class_slot):
                     continue
                 if other_class_slot["period"] == 8:
                     continue
@@ -164,7 +164,7 @@ def find_swaps_for_slot(data, teacher_name, day_key, period, limit=None):
                 except SystemExit:
                     continue
                 other_slot = get_slot(other_teacher, other_day, other_class_slot["period"])
-                if other_slot["lesson"] and is_enrichment_lesson(other_slot["lesson"]):
+                if adjustment_lock_reason(other_slot):
                     continue
                 if is_free(teacher, other_day, other_class_slot["period"]) and is_free(
                     other_teacher, day_key, period
