@@ -1,0 +1,36 @@
+﻿2026-11-06 14:56:17 ========================================
+2026-11-06 14:56:17 CKSH RIOT CLEANUP
+2026-11-06 14:56:17 COMPUTER: 112-C9-018
+2026-11-06 14:56:17 USER: user
+2026-11-06 14:56:17 START: 11/06/2026 14:56:17
+2026-11-06 14:56:17 ========================================
+2026-11-06 14:56:21 [STOP RIOT PROCESSES]
+2026-11-06 14:56:30 [STOP RIOT PROCESSES]
+2026-11-06 14:56:30 [C DRIVE RESIDUAL SCAN START]
+2026-11-06 14:56:30 SCAN START: C:\Program Files
+2026-11-06 14:56:36 SCAN FINISHED: C:\Program Files
+2026-11-06 14:56:36 SCAN START: C:\Program Files (x86)
+2026-11-06 14:56:40 SCAN FINISHED: C:\Program Files (x86)
+2026-11-06 14:56:40 SCAN START: C:\ProgramData
+2026-11-06 14:56:42 SCAN FINISHED: C:\ProgramData
+2026-11-06 14:56:42 SCAN START: C:\Users
+2026-11-06 14:56:50 RESIDUAL FILE: blackthorn-vandal-level-4variant-3-purple-shear_valorant_full_skin_2874308.webp.lnk
+2026-11-06 14:56:50 FULL PATH: C:\Users\user\AppData\Roaming\Microsoft\Windows\Recent\blackthorn-vandal-level-4variant-3-purple-shear_valorant_full_skin_2874308.webp.lnk
+2026-11-06 14:56:50 LAST MODIFIED: 2026-04-01 10:19:41
+2026-11-06 14:56:50 TYPE: File
+2026-11-06 14:56:50 SIZE: 814 bytes
+2026-11-06 14:56:50 RESIDUAL FILE: blackthorn-vandal-level-4variant-3-purple-shear_valorant_full_skin_2874308.webp
+2026-11-06 14:56:50 FULL PATH: C:\Users\user\Downloads\blackthorn-vandal-level-4variant-3-purple-shear_valorant_full_skin_2874308.webp
+2026-11-06 14:56:50 LAST MODIFIED: 2026-04-01 10:19:41
+2026-11-06 14:56:50 TYPE: File
+2026-11-06 14:56:50 SIZE: 13662 bytes
+2026-11-06 14:56:50 SCAN FINISHED: C:\Users
+2026-11-06 14:56:50 [C DRIVE RESIDUAL SCAN FINISHED]
+2026-11-06 14:56:50 TOTAL RESIDUAL MATCHES: 2
+2026-11-06 14:56:50 ========================================
+2026-11-06 14:56:50 CLEANUP SUMMARY
+2026-11-06 14:56:50 FILES RECORDED: 0
+2026-11-06 14:56:50 DIRECTORIES REMOVED: 0
+2026-11-06 14:56:50 FAILURES: 0
+2026-11-06 14:56:50 FINISHED: 11/06/2026 14:56:50
+2026-11-06 14:56:50 ========================================

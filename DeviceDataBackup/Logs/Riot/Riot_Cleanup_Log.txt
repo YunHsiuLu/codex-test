@@ -1,0 +1,27 @@
+Cleanup started: 2026/11/05 週四 15:39:11.08 
+錯誤: 找不到處理程序 "RiotClientServices.exe"。
+錯誤: 找不到處理程序 "RiotClientUx.exe"。
+錯誤: 找不到處理程序 "RiotClientUxRender.exe"。
+錯誤: 找不到處理程序 "RiotClientCrashHandler.exe"。
+錯誤: 找不到處理程序 "VALORANT.exe"。
+錯誤: 找不到處理程序 "VALORANT-Win64-Shipping.exe"。
+錯誤: 找不到處理程序 "LeagueClient.exe"。
+錯誤: 找不到處理程序 "LeagueClientUx.exe"。
+錯誤: 找不到處理程序 "vgtray.exe"。
+[SC] OpenService 無法 1060:
+
+指定的服務並不是已安裝的服務。
+
+[SC] OpenService 無法 1060:
+
+指定的服務並不是已安裝的服務。
+
+[SC] OpenService 無法 1060:
+
+指定的服務並不是已安裝的服務。
+
+[SC] OpenService 無法 1060:
+
+指定的服務並不是已安裝的服務。
+
+Cleanup finished: 2026/11/05 週四 15:39:12.43 

@@ -1,0 +1,26 @@
+﻿
+========================================
+Computer: 110-C1-016
+User: user
+Scan Time: 2026-11-06 16:29:45
+Previous BAT Change: 2026-11-06 16:06:46
+
+=== Wallpaper Cache Before Reset ===
+Scan Time: 2026-11-06 16:29:45
+Cache Directory: C:\Users\user\AppData\Roaming\Microsoft\Windows\Themes\TranscodedWallpaperCached
+Wallpaper cache directory not found.
+
+Wallpaper reset not yet performed.
+
+=== Wallpaper Reset Result ===
+Computer: 110-C1-016
+User: user
+Previous BAT Change: 2026-11-06 16:06:46
+Current BAT Change: 2026-11-06 16:29:46
+Source: E:\Notice.jpg
+Destination: C:\Users\user\Pictures\Notice.jpg
+Wallpaper Mode: Fit
+Background: Black
+Result: SUCCESS
+========================================
+
