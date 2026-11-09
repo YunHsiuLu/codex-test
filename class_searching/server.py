@@ -195,6 +195,10 @@ def adjustment_lock_reason(slot, adjustment_type='swap'):
                             ('自主學習', '自主學習'), ('會議', '會議時段')]:
         if keyword in content:
             return f'{reason}不可調代課。'
+    if adjustment_type == 'swap':
+        for activity in ('學校活動', '班級活動'):
+            if activity in content:
+                return f'{activity}不可調課。'
     if is_enrichment_lesson(lesson):
         return '充實課可代課，但不可調課。' if adjustment_type == 'swap' else ''
     inquiry = '探究' in content

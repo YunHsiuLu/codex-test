@@ -10,6 +10,7 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 import server
+import class_search
 from modern_schedule import clean_name, parse_lesson
 
 
@@ -136,6 +137,42 @@ class ScheduleTests(unittest.TestCase):
         cross_week = {**raw, 'targets': [{**raw['targets'][0], 'date': self.target}, raw['targets'][1]]}
         with self.assertRaises(ValueError):
             server.validate_adjustment(cross_week, self.base, self.path)
+
+    def test_activities_cannot_participate_in_triangle_swap(self):
+        raw = self.triangle_request()
+        self.assertTrue(server.find_triangle_swap_candidates(raw, self.base))
+        for activity in ('學校活動', '班 級 活 動'):
+            for owner in ('teachers', 'classes'):
+                for index, (day, period) in enumerate((('mon', 1), ('tue', 2), ('wed', 3))):
+                    with self.subTest(activity=activity, owner=owner, position=index):
+                        data = deepcopy(self.base)
+                        entity = data[owner][index if owner == 'teachers' else 0]
+                        server.get_slot(entity, day, period)['lesson']['subject'] = activity
+                        self.assertFalse(server.find_triangle_swap_candidates(raw, data))
+                        with self.assertRaises(ValueError):
+                            server.validate_adjustment(raw, data, self.path)
+
+    def test_activities_cannot_be_swap_source_or_target(self):
+        for activity in ('學校活動', '班級活動'):
+            for owner in ('teachers', 'classes'):
+                for source in (True, False):
+                    with self.subTest(activity=activity, owner=owner, source=source):
+                        data = deepcopy(self.base)
+                        entity = data[owner][0 if source or owner == 'classes' else 1]
+                        day, period = ('mon', 1) if source else ('tue', 2)
+                        server.get_slot(entity, day, period)['lesson']['raw'] = activity
+                        annotated = server.annotate_adjustment_locks(deepcopy(data))
+                        teacher = annotated['teachers'][0 if source else 1]
+                        locks = server.get_slot(teacher, day, period)['adjustment_lock_reasons']
+                        self.assertEqual(locks['swap'], f'{activity}不可調課。')
+                        self.assertFalse(locks['substitute'])
+                        self.assertFalse(class_search.find_swaps_for_slot(data, 'TeacherA', 'mon', 1))
+                        for target_date in (self.target, (self.monday + timedelta(days=1)).isoformat()):
+                            raw = {**self.raw, 'swap_date': target_date}
+                            with self.assertRaisesRegex(ValueError, '活動不可調課'):
+                                server.validate_adjustment(raw, data, self.path, data)
+                            with self.assertRaisesRegex(ValueError, '活動不可調課'):
+                                server.find_cross_swap_candidate(raw, data, data)
 
     def test_substitution(self):
         raw=dict(type='substitute',date=self.original,period=1,applicant='TeacherA',substitute_teacher='TeacherC')
