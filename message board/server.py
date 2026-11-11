@@ -3,6 +3,7 @@ from flask_socketio import SocketIO
 import sqlite3
 import os
 from datetime import datetime
+from contextlib import closing
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
@@ -49,6 +50,13 @@ def index():
 
 @app.route('/health')
 def health():
+    try:
+        # Read-only mode must not silently create an empty database after a move.
+        with closing(sqlite3.connect(f'file:{DB_PATH}?mode=ro', uri=True, timeout=2)) as conn:
+            conn.execute('SELECT id FROM messages LIMIT 1').fetchone()
+    except sqlite3.Error:
+        app.logger.exception('Database health check failed')
+        return jsonify(status='error'), 503
     return jsonify(status='ok')
 
 @app.route('/service-worker.js')

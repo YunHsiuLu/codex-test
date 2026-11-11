@@ -11,6 +11,37 @@ CERT_LOG_FILE="$SCRIPT_DIR/cert-server.log"
 PRIVATE_CERT_DIR="$SCRIPT_DIR/data/https/private"
 PUBLIC_CERT_DIR="$SCRIPT_DIR/data/https/public"
 
+# Detach from the launching terminal/job so the services survive its exit.
+start_detached() {
+    "$PYTHON" - "$@" <<'PY'
+import subprocess
+import sys
+with open(sys.argv[1], 'ab', buffering=0) as log:
+    process = subprocess.Popen(
+        sys.argv[2:], stdin=subprocess.DEVNULL, stdout=log, stderr=log,
+        start_new_session=True, close_fds=True,
+    )
+print(process.pid)
+PY
+}
+
+check_board() {
+    "$PYTHON" - "$PUBLIC_CERT_DIR/teacher-messenger-ca.crt" <<'PY'
+import ssl
+import sys
+import urllib.request
+try:
+    context = ssl.create_default_context(cafile=sys.argv[1])
+    for path in ('/health', '/', '/service-worker.js'):
+        with urllib.request.urlopen('https://127.0.0.1:5001' + path,
+                                    context=context, timeout=3) as response:
+            if response.status != 200:
+                raise RuntimeError('Unhealthy response')
+except Exception:
+    sys.exit(1)
+PY
+}
+
 get_lan_ip() {
     local interface
     local address
@@ -78,10 +109,9 @@ if [[ -f "$CERT_PID_FILE" ]]; then
 fi
 
 if [[ ! -f "$CERT_PID_FILE" ]]; then
-    nohup "$PYTHON" -m http.server 5003 \
+    CERT_PID=$(start_detached "$CERT_LOG_FILE" "$PYTHON" -m http.server 5003 \
         --bind 0.0.0.0 \
-        --directory "$PUBLIC_CERT_DIR" >> "$CERT_LOG_FILE" 2>&1 &
-    CERT_PID=$!
+        --directory "$PUBLIC_CERT_DIR")
     echo "$CERT_PID" > "$CERT_PID_FILE"
     sleep 1
     if ! kill -0 "$CERT_PID" 2>/dev/null; then
@@ -95,7 +125,7 @@ if [[ -f "$PID_FILE" ]]; then
     PID=$(<"$PID_FILE")
     if kill -0 "$PID" 2>/dev/null; then
         MODE=$(cat "$MODE_FILE" 2>/dev/null || true)
-        if [[ "$MODE" == "https" && "$CERT_RENEWED" == false ]]; then
+        if [[ "$MODE" == "https" && "$CERT_RENEWED" == false ]] && check_board; then
             echo "留言板已在背景執行，PID：$PID"
             show_urls
             exit 0
@@ -107,19 +137,19 @@ if [[ -f "$PID_FILE" ]]; then
 fi
 
 cd "$SCRIPT_DIR"
-SSL_CERT_FILE="$PRIVATE_CERT_DIR/server-cert.pem" \
+PID=$(SSL_CERT_FILE="$PRIVATE_CERT_DIR/server-cert.pem" \
 SSL_KEY_FILE="$PRIVATE_CERT_DIR/server-key.pem" \
-nohup "$PYTHON" server.py >> "$LOG_FILE" 2>&1 &
-PID=$!
+start_detached "$LOG_FILE" "$PYTHON" "$SCRIPT_DIR/server.py")
 echo "$PID" > "$PID_FILE"
 echo "https" > "$MODE_FILE"
 sleep 1
 
-if kill -0 "$PID" 2>/dev/null; then
+if kill -0 "$PID" 2>/dev/null && check_board; then
     echo "留言板已在背景啟動，PID：$PID"
     show_urls
     echo "紀錄：$LOG_FILE"
 else
+    kill "$PID" 2>/dev/null || true
     rm -f "$PID_FILE" "$MODE_FILE"
     echo "留言板啟動失敗，請查看：$LOG_FILE"
     exit 1

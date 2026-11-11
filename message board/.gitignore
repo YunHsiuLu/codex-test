@@ -3,3 +3,4 @@ data/server.pid
 data/server.mode
 data/cert-server.pid
 cert-server.log
+!HANDOFF.md
